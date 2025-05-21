@@ -28,12 +28,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Inertia::share('enums', function () {
             return [
-                'userStatus' => UserStatusEnum::toSelectArray(),
-                'requestStatus' => RequestStatusEnum::toSelectArray(),
-                'attendanceStatus' => AttendanceStatusEnum::toSelectArray(),
-                'documentType' => DocumentTypeEnum::toSelectArray(),
-                'gender' => GenderEnum::toSelectArray(),
-                'maritalStatus' => MaritalStatusEnum::toSelectArray(),
+                'userStatus' => UserStatusEnum::toArray(),
+                'requestStatus' => RequestStatusEnum::toArray(),
+                'attendanceStatus' => AttendanceStatusEnum::toArray(),
+                'documentType' => DocumentTypeEnum::toArray(),
+                'gender' => GenderEnum::toArray(),
+                'maritalStatus' => MaritalStatusEnum::toArray(),
             ];
         });
     }
