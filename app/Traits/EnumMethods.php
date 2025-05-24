@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Traits;
- 
+
 
 trait EnumMethods
 {
@@ -42,11 +42,14 @@ trait EnumMethods
      * @param int $id The enum value to search for
      * @return self|null The matching enum case or null if not found
      */
-    public static function fromId(int $id): ?self
+    public static function fromId(int $id): ?array
     {
         foreach (self::cases() as $case) {
             if ($case->value === $id) {
-                return $case;
+                return [
+                    'id' => $case->value,
+                    'name' => ucfirst($case->name())
+                ];
             }
         }
         return null;
