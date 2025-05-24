@@ -26,7 +26,7 @@ const sidebarNavItems: NavItem[] = [
 ];
 
 type AccessControlLayoutProps = PropsWithChildren<{
-    headings: HeadingsProps;
+    headings?: HeadingsProps;
 }>;
 
 export default function AccessControlLayout({ children, headings }: AccessControlLayoutProps) {
@@ -57,9 +57,9 @@ export default function AccessControlLayout({ children, headings }: AccessContro
                     ))}
                 </nav>
                 <Heading
-                    title={headings.title}
-                    description={headings.description}
-                    className={headings.className ?? 'mb-4'}
+                    title={headings?.title ?? ''}
+                    description={headings?.description ?? ''}
+                    className={headings?.className ?? 'mb-4'}
                 />
                 <Separator className="my-6 md:hidden" />
                 <div className="flex-1">
