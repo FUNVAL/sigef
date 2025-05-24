@@ -8,36 +8,34 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AccessControlLayout from '@/layouts/access-control/layout';
-import { type CreateUserForm, type CreateUserProps, type EnumsProps } from '@/types/users';
+import { type UserForm, type EditUserProps, type EnumsProps } from '@/types/users';
 
 
-export default function CreateUser({ roles }: CreateUserProps) {
-    const { data, setData, post, errors, processing, recentlySuccessful } = useForm<CreateUserForm>(initialData);
+export default function EditUser({ user, roles }: EditUserProps) {
+    console.log(user);
+    const { data, setData, put, errors, processing, recentlySuccessful } =
+        useForm<UserForm>(getUserInitialData(user));
 
     const { enums } = usePage<{ enums: EnumsProps }>().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('users.store'), {
+        put(route('users.update', user.id), {
             preserveScroll: true,
         });
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={getEditUserBreadcrumbs(user.id)}>
+
             <Head title="Control de accesos" />
+
             <AccessControlLayout headings={{
-                title: 'Crear usuario',
-                description: 'Formulario para crear un nuevo usuario',
+                title: 'Editar usuario',
+                description: 'Formulario para editar usuario',
             }}>
                 <div className="space-y-8">
                     <form onSubmit={submit} className="space-y-8">
@@ -51,7 +49,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                     <Label htmlFor="firstname">Primer Nombre</Label>
                                     <Input
                                         id="firstname"
-                                        name="firstname"
                                         value={data.firstname}
                                         onChange={(e) => setData('firstname', e.target.value)}
                                         required
@@ -64,7 +61,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                     <Label htmlFor="middle_name">Segundo Nombre</Label>
                                     <Input
                                         id="middle_name"
-                                        name="middle_name"
                                         value={data.middle_name}
                                         onChange={(e) => setData('middle_name', e.target.value)}
                                         placeholder="Segundo nombre (opcional)"
@@ -76,7 +72,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                     <Label htmlFor="lastname">Primer Apellido</Label>
                                     <Input
                                         id="lastname"
-                                        name="lastname"
                                         value={data.lastname}
                                         onChange={(e) => setData('lastname', e.target.value)}
                                         required
@@ -89,7 +84,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                     <Label htmlFor="second_lastname">Segundo Apellido</Label>
                                     <Input
                                         id="second_lastname"
-                                        name="second_lastname"
                                         value={data.second_lastname}
                                         onChange={(e) => setData('second_lastname', e.target.value)}
                                         placeholder="Segundo apellido (opcional)"
@@ -101,7 +95,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                     <Label htmlFor="email">Correo Electrónico</Label>
                                     <Input
                                         id="email"
-                                        name="email"
                                         type="email"
                                         value={data.email}
                                         onChange={(e) => setData('email', e.target.value)}
@@ -114,7 +107,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                 <div className="grid gap-2">
                                     <Label htmlFor="gender">Género</Label>
                                     <Select
-                                        name="gender"
                                         value={String(data.gender)}
                                         onValueChange={(value) => setData('gender', Number(value))}
                                     >
@@ -144,7 +136,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                 <div className="grid gap-2">
                                     <Label htmlFor="document_type">Tipo de Documento</Label>
                                     <Select
-                                        name="document_type"
                                         value={String(data.document_type)}
                                         onValueChange={(value) => setData('document_type', Number(value))}
                                     >
@@ -166,7 +157,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                     <Label htmlFor="document_number">Número de Documento</Label>
                                     <Input
                                         id="document_number"
-                                        name="document_number"
                                         value={data.document_number}
                                         onChange={(e) => setData('document_number', e.target.value)}
                                         required
@@ -179,7 +169,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                     <Label htmlFor="birth_date">Fecha de Nacimiento</Label>
                                     <Input
                                         id="birth_date"
-                                        name="birth_date"
                                         type="date"
                                         value={data.birth_date}
                                         onChange={(e) => setData('birth_date', e.target.value)}
@@ -190,7 +179,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                 <div className="grid gap-2">
                                     <Label htmlFor="marital_status">Estado Civil</Label>
                                     <Select
-                                        name="marital_status"
                                         value={String(data.marital_status)}
                                         onValueChange={(value) => setData('marital_status', Number(value))}
                                     >
@@ -221,7 +209,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                     <Label htmlFor="address">Dirección</Label>
                                     <Input
                                         id="address"
-                                        name="address"
                                         value={data.address}
                                         onChange={(e) => setData('address', e.target.value)}
                                         placeholder="Dirección completa"
@@ -233,7 +220,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                     <Label htmlFor="contact_phone_1">Teléfono Principal</Label>
                                     <Input
                                         id="contact_phone_1"
-                                        name="contact_phone_1"
                                         value={data.contact_phone_1}
                                         onChange={(e) => setData('contact_phone_1', e.target.value)}
                                         placeholder="Teléfono principal"
@@ -245,7 +231,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                     <Label htmlFor="contact_phone_2">Teléfono Secundario</Label>
                                     <Input
                                         id="contact_phone_2"
-                                        name="contact_phone_2"
                                         value={data.contact_phone_2}
                                         onChange={(e) => setData('contact_phone_2', e.target.value)}
                                         placeholder="Teléfono secundario (opcional)"
@@ -265,7 +250,6 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                 <div className="grid gap-2">
                                     <Label htmlFor="role_id">Rol</Label>
                                     <Select
-                                        name="role_id"
                                         value={String(data.role_id)}
                                         onValueChange={(value) => setData('role_id', Number(value))}
                                     >
@@ -274,24 +258,38 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                         </SelectTrigger>
                                         <SelectContent>
                                             {roles.map(role => (
-                                                <SelectItem
-                                                    key={role.id}
-                                                    value={String(role.id)}
-                                                    className="capitalize"
-                                                    disabled={role.name.toLowerCase() === 'student'}
-                                                >
-                                                    {role.name}
-                                                </SelectItem>
+                                                <SelectItem key={role.id} value={String(role.id)} className='capitalize'>{role.name}</SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
                                     <InputError message={errors.role_id} />
                                 </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="user_status">Estado del Usuario</Label>
+                                    <Select
+                                        value={String(data.status)}
+                                        onValueChange={(value) => setData('status', Number(value))}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Seleccione estado" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {enums.userStatus?.map((status) => (
+                                                <SelectItem key={status.id} value={String(status.id)}>
+                                                    {status.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError message={errors.status} />
+                                </div>
                             </div>
+
                         </div>
 
                         <div className="flex items-center gap-4 pt-4 border-t">
-                            <Button type="submit" disabled={processing}>Crear Usuario</Button>
+                            <Button type="submit" disabled={processing}>Actualizar Usuario</Button>
                             <Button type="button" variant="outline" onClick={() => window.history.back()}>
                                 Cancelar
                             </Button>
@@ -303,7 +301,7 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-green-600">Usuario creado correctamente</p>
+                                <p className="text-sm text-green-600">Usuario actualizado correctamente</p>
                             </Transition>
                         </div>
                     </form>
@@ -312,36 +310,37 @@ export default function CreateUser({ roles }: CreateUserProps) {
         </AppLayout>
     );
 }
-// This is the initial data for the form
-// It is used to set the initial state of the form fields
-const initialData = {
-    firstname: '',
-    middle_name: '',
-    lastname: '',
-    second_lastname: '',
-    email: '',
-    gender: 0,
-    document_type: 0,
-    document_number: '',
-    birth_date: '',
-    marital_status: 0,
-    address: '',
-    contact_phone_1: '',
-    contact_phone_2: '',
-    role_id: 0,
+
+// Función para obtener los datos iniciales del formulario
+function getUserInitialData(user: EditUserProps['user']): UserForm {
+    return {
+        firstname: user.firstname ?? '',
+        middle_name: user.middle_name ?? '',
+        lastname: user.lastname ?? '',
+        second_lastname: user.second_lastname ?? '',
+        email: user.email ?? '',
+        gender: user.gender.id, // Ya es un número
+        document_type: user.document_type.id, // Ya es un número
+        document_number: user.document_number ?? '',
+        birth_date: user.birth_date ?? '',
+        marital_status: user.marital_status.id, // Ya es un número
+        address: user.address ?? '',
+        contact_phone_1: user.contact_phone_1 ?? '',
+        contact_phone_2: user.contact_phone_2 ?? '',
+        role_id: user.roles[0]?.id ?? 0, // Aseguramos un valor numérico por defecto
+        status: user.status.id, // Ya es un número
+    };
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Control de Accesos',
-        href: '/access-control/users',
-    },
-    {
-        title: 'Usuarios',
-        href: '/access-control/users',
-    },
-    {
-        title: 'Crear Usuario',
-        href: '/access-control/users/create',
-    },
-];
+function getEditUserBreadcrumbs(userId: number): BreadcrumbItem[] {
+    return [
+        {
+            title: 'Control de Accesos',
+            href: '/access-control/users',
+        },
+        {
+            title: 'Editar usuario',
+            href: `/access-control/users/${userId}/editar`,
+        },
+    ];
+}

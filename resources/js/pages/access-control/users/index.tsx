@@ -12,6 +12,10 @@ const breadcrumbs: BreadcrumbItem[] = [
         title: 'Control de Accesos',
         href: '/access-control/users',
     },
+    {
+        title: 'Usuarios',
+        href: '/access-control/users',
+    },
 ];
 
 
@@ -19,7 +23,7 @@ export default function Users({ users }: { users: [User] }) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Control de accesos" />
+                <Head title="Control de accesos" />
             <AccessControlLayout headings={{
                 title: 'Lista de usuarios',
                 description: 'Gestión de usuarios y roles',
