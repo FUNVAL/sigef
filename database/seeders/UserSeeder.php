@@ -3,8 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder; 
+use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
@@ -17,11 +16,11 @@ class UserSeeder extends Seeder
             'firstname' => 'Jorge',
             'lastname' => 'Sosa',
             'email' => 'admin@mail.com',
-            'gender' => 'male',
-            'document_type' => 'dni',
+            'gender' => 1,
+            'document_type' => 1,
             'document_number' => '12345678',
             'birth_date' => '1990-01-01',
-            'marital_status' => 'single',
+            'marital_status' => 1,
             'address' => '123 Main St',
             'contact_phone_1' => '1234567890',
             'contact_phone_2' => '0987654321',
