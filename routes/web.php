@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -14,17 +15,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::middleware('auth')->group(function () {
-        Route::redirect('access-control', 'access-control/users');
-
-        Route::get('access-control/users', [UserController::class, 'index'] )->name('users.all');
+        // access control routes (users) 
+        Route::get('access-control/users', [UserController::class, 'index'])->name('users.index');
         Route::get('access-control/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::get('access-control/users/{id}', [UserController::class, 'view'])->name('users.edit');
+        Route::get('access-control/users/{id}', [UserController::class, 'edit'])->name('users.edit');
+
+        // access control routes (roles)
+        Route::get('access-control', [RoleController::class, 'index'])->name('access.index');
+        Route::post('access-control/roles/create', [RoleController::class, 'store'])->name('access.store');
+        Route::put('access-control/roles/{roleId}', [RoleController::class, 'updateRolePermissions'])->name('roles.permissions.update');
+
+
 
         Route::get('settings/appearance', function () {
             return Inertia::render('settings/appearance');
         })->name('appearance');
     });
-    
 });
 
 require __DIR__ . '/settings.php';
