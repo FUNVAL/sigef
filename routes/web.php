@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CountryController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -25,9 +26,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // access control routes (roles)
-        Route::get('access-control', [RoleController::class, 'index'])->name('access.index');
-        Route::post('access-control/roles/create', [RoleController::class, 'store'])->name('access.store');
-        Route::put('access-control/roles/{roleId}', [RoleController::class, 'updateRolePermissions'])->name('roles.permissions.update');
+        Route::prefix('access-control')->name('roles.')->group(function () {
+            Route::get('/', [RoleController::class, 'index'])->name('index');
+            Route::post('/roles/create', [RoleController::class, 'store'])->name('store');
+            Route::put('{/roles/roleId}', [RoleController::class, 'updateRolePermissions'])->name('permissions.update');
+        });
+
+
+        // countries routes 
+        Route::prefix('countries')->name('countries.')->group(function () {
+            Route::get('/', [CountryController::class, 'index'])->name('countries.index');
+            Route::get('create', [CountryController::class, 'create'])->name('countries.create');
+            Route::post('create', [CountryController::class, 'store'])->name('countries.store');
+            Route::get('{id}', [CountryController::class, 'edit'])->name('countries.edit');
+            Route::put('{id}', [CountryController::class, 'update'])->name('countries.update');
+        });
 
         Route::get('settings/appearance', function () {
             return Inertia::render('settings/appearance');
