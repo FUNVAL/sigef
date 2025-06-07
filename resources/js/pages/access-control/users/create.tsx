@@ -29,6 +29,12 @@ export default function CreateUser({ roles }: CreateUserProps) {
 
         post(route('users.store'), {
             preserveScroll: true,
+            onSuccess: () => {
+                setData(initialData); // Reset form data after successful submission
+            },
+            onError: (error) => {
+                console.error('Error creating user:', error);
+            },
         });
     };
 
