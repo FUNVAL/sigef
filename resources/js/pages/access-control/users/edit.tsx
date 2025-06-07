@@ -14,7 +14,6 @@ import { type UserForm, type EditUserProps, type EnumsProps } from '@/types/user
 
 
 export default function EditUser({ user, roles }: EditUserProps) {
-    console.log(user);
     const { data, setData, put, errors, processing, recentlySuccessful } =
         useForm<UserForm>(getUserInitialData(user));
 
@@ -25,6 +24,9 @@ export default function EditUser({ user, roles }: EditUserProps) {
 
         put(route('users.update', user.id), {
             preserveScroll: true,
+            onError: (errors) => {
+                console.error('Error al actualizar el usuario:', errors);
+            }
         });
     };
 
@@ -258,7 +260,14 @@ export default function EditUser({ user, roles }: EditUserProps) {
                                         </SelectTrigger>
                                         <SelectContent>
                                             {roles.map(role => (
-                                                <SelectItem key={role.id} value={String(role.id)} className='capitalize'>{role.name}</SelectItem>
+                                                <SelectItem
+                                                    key={role.id}
+                                                    value={String(role.id)}
+                                                    className='capitalize'
+                                                    disabled={role.name === 'Student'}
+                                                >
+                                                    {role.name}
+                                                </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
@@ -289,20 +298,10 @@ export default function EditUser({ user, roles }: EditUserProps) {
                         </div>
 
                         <div className="flex items-center gap-4 pt-4 border-t">
-                            <Button type="submit" disabled={processing}>Actualizar Usuario</Button>
-                            <Button type="button" variant="outline" onClick={() => window.history.back()}>
+                            <Button type="submit" disabled={processing} className='cursor-pointer'>Actualizar Usuario</Button>
+                            <Button type="button" variant="outline" className='cursor-pointer' onClick={() => window.history.back()}>
                                 Cancelar
                             </Button>
-
-                            <Transition
-                                show={recentlySuccessful}
-                                enter="transition ease-in-out"
-                                enterFrom="opacity-0"
-                                leave="transition ease-in-out"
-                                leaveTo="opacity-0"
-                            >
-                                <p className="text-sm text-green-600">Usuario actualizado correctamente</p>
-                            </Transition>
                         </div>
                     </form>
                 </div>
@@ -311,7 +310,6 @@ export default function EditUser({ user, roles }: EditUserProps) {
     );
 }
 
-// Función para obtener los datos iniciales del formulario
 function getUserInitialData(user: EditUserProps['user']): UserForm {
     return {
         firstname: user.firstname ?? '',
@@ -319,16 +317,16 @@ function getUserInitialData(user: EditUserProps['user']): UserForm {
         lastname: user.lastname ?? '',
         second_lastname: user.second_lastname ?? '',
         email: user.email ?? '',
-        gender: user.gender.id, // Ya es un número
-        document_type: user.document_type.id, // Ya es un número
+        gender: user.gender.id,
+        document_type: user.document_type.id,
         document_number: user.document_number ?? '',
         birth_date: user.birth_date ?? '',
-        marital_status: user.marital_status.id, // Ya es un número
+        marital_status: user.marital_status.id,
         address: user.address ?? '',
         contact_phone_1: user.contact_phone_1 ?? '',
         contact_phone_2: user.contact_phone_2 ?? '',
         role_id: user.roles[0]?.id ?? 0, // Aseguramos un valor numérico por defecto
-        status: user.status.id, // Ya es un número
+        status: user.status.id,
     };
 }
 
@@ -336,6 +334,10 @@ function getEditUserBreadcrumbs(userId: number): BreadcrumbItem[] {
     return [
         {
             title: 'Control de Accesos',
+            href: '/access-control',
+        },
+        {
+            title: 'Usuarios',
             href: '/access-control/users',
         },
         {
