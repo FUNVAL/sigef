@@ -16,16 +16,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::middleware('auth')->group(function () {
         // access control routes (users) 
-        Route::get('access-control/users', [UserController::class, 'index'])->name('users.index');
-        Route::get('access-control/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::get('access-control/users/{id}', [UserController::class, 'edit'])->name('users.edit');
+        Route::prefix('access-control/users')->name('users.')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::get('create', [UserController::class, 'create'])->name('create');
+            Route::get('{id}', [UserController::class, 'edit'])->name('edit');
+            Route::post('create', [UserController::class, 'store'])->name('store');
+            Route::put('{id}', [UserController::class, 'update'])->name('update');
+        });
 
         // access control routes (roles)
         Route::get('access-control', [RoleController::class, 'index'])->name('access.index');
         Route::post('access-control/roles/create', [RoleController::class, 'store'])->name('access.store');
         Route::put('access-control/roles/{roleId}', [RoleController::class, 'updateRolePermissions'])->name('roles.permissions.update');
-
-
 
         Route::get('settings/appearance', function () {
             return Inertia::render('settings/appearance');
