@@ -2,7 +2,7 @@ import { User } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "../ui/checkbox";
 import {
-    DropdownMenu, 
+    DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
+import TextLink from "../text-link";
 
 export const columns: ColumnDef<User>[] = [
     {
@@ -96,6 +97,20 @@ export const columns: ColumnDef<User>[] = [
         },
     },
     {
+        accessorKey: "status.name",
+        header: "Estado",
+        cell: ({ row }) => {
+            const user = row.original;
+            return (
+                <div className="flex items-center space-x-2">
+                    <div className={`font-medium ${user.status.name === 'Activo' ? 'text-green-600' : 'text-red-600'}`}>
+                        {user.status.name}
+                    </div>
+                </div>
+            );
+        },
+    },
+    {
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
@@ -116,8 +131,11 @@ export const columns: ColumnDef<User>[] = [
                             Copy ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Ver Usuario</DropdownMenuItem>
-                        <DropdownMenuItem>Ver Permisos</DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <TextLink href={route('users.edit', user.id)} className="flex items-center space-x-2">
+                                Editar
+                            </TextLink>
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
