@@ -10,7 +10,9 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-
+import { useForm } from '@inertiajs/react';
+import { CreateRoleForm } from '@/types/roles';
+import { LoaderCircle } from 'lucide-react';
 interface NewRoleDialogProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
@@ -24,47 +26,69 @@ interface NewRoleDialogProps {
 const NewRoleDialog: React.FC<NewRoleDialogProps> = ({
     isOpen,
     setIsOpen,
-    newRoleName,
-    setNewRoleName,
-    newRoleDescription,
-    setNewRoleDescription,
-    createNewRole,
 }) => {
+
+    const { data, setData, post, processing, errors, reset } = useForm<Required<CreateRoleForm>>({
+        name: '',
+        description: '',
+    });
+
+    async function handleCreateRole(e: React.FormEvent) {
+        e.preventDefault();
+        post(route('access.store'), {
+            onSuccess: () => {
+                reset();
+                setIsOpen(false);
+            },
+            onError: (err) => {
+                console.error(err);
+            },
+        });
+    }
+
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create New Role</DialogTitle>
+                    <DialogTitle>Crear Nuevo Rol</DialogTitle>
                     <DialogDescription>
-                        Define a new role and its permissions.
+                        Define un nuevo rol para gestionar permisos y asignaciones de usuarios.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
+                <form className="grid gap-4 py-4" onSubmit={handleCreateRole}>
                     <div className="grid gap-2">
-                        <Label htmlFor="roleName">Role Name</Label>
+                        <Label htmlFor="roleName">Nombre del Rol</Label>
                         <Input
-                            id="roleName"
-                            value={newRoleName}
-                            onChange={(e) => setNewRoleName(e.target.value)}
-                            placeholder="e.g. Marketing Manager"
+                            id="name"
+                            value={data.name}
+                            onChange={(e) => setData({ ...data, name: e.target.value })}
+                            placeholder="ej. Administrador de Marketing"
                             className="col-span-3"
                         />
+                        {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="roleDescription">Description</Label>
+                        <Label htmlFor="roleDescription">Descripción</Label>
                         <Input
-                            id="roleDescription"
-                            value={newRoleDescription}
-                            onChange={(e) => setNewRoleDescription(e.target.value)}
-                            placeholder="Brief description of this role's purpose"
+                            id="description"
+                            value={data.description}
+                            onChange={(e) => setData({ ...data, description: e.target.value })}
+                            placeholder="ej. Responsable de la estrategia de marketing"
                             className="col-span-3"
                         />
+                        {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
                     </div>
-                </div>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                    <Button type="submit" onClick={createNewRole}>Create Role</Button>
-                </DialogFooter>
+
+                    <DialogFooter>
+                        <Button variant="outline" className='cursor-pointer' disabled={processing} onClick={() => setIsOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button type="submit" disabled={processing} className='cursor-pointer'>
+                            Create Role
+                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                        </Button>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     );

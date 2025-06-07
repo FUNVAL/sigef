@@ -11,7 +11,7 @@ import UnsavedChanges from '@/components/roles/UnsavedChanges';
 import ActionFooter from '@/components/roles/ActionFooter';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import { RolePermissionsProps, Roles } from '@/types/roles';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -22,15 +22,18 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
     const [newRoleName, setNewRoleName] = useState('');
     const [newRoleDescription, setNewRoleDescription] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedPermissions, setSelectedPermissions] = useState<number[]>([]);
     const [isNewRoleDialogOpen, setIsNewRoleDialogOpen] = useState(false);
     const [unsavedChanges, setUnsavedChanges] = useState<number[]>([]);
     const [removedPermissions, setRemovedPermissions] = useState<number[]>([]);
     // Nuevo estado para rastrear el grupo expandido, inicializado con el ID del primer grupo
     const [expandedGroupId, setExpandedGroupId] = useState<number | null>(1);
 
-
-
+    const { data, setData, put, processing, errors, reset } = useForm<{ permissions: number[] }>({
+        permissions: [],
+    });
+    function setSelectedPermissions(permissions: number[]) {
+        setData('permissions', permissions);
+    }
     React.useEffect(() => {
 
         setSelectedPermissions(getSelectedRolePermission(roles, selectedRole));
@@ -42,7 +45,7 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
         const group = Object.values(permissions).find(g => g.id === groupId);
         if (!group) return;
 
-        const newPermissions = [...selectedPermissions];
+        const newPermissions = [...data.permissions];
         let newUnsavedChanges = [...unsavedChanges];
         let newRemovedPermissions = [...removedPermissions];
 
@@ -60,35 +63,33 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
     };
 
     const handlePermissionToggle = (id: number) => {
-        setSelectedPermissions(prev => {
-            if (prev.includes(id)) {
-                const newState = [...prev,]
-                const index = newState.indexOf(id);
-                newState.splice(index, 1);
-                setUnsavedChanges(prev => prev.filter(key => key !== id));
-                setRemovedPermissions(prev => [...prev, id]);
-                return newState;
-            }
-            else {
-                const newState = [...prev, id]
-                setUnsavedChanges(prev => [...prev, id]);
-                setRemovedPermissions(prev => prev.filter(key => key !== id));
-                return newState;
-            }
-
-        });
+        let newPermissions: number[];
+        if (data.permissions.includes(id)) {
+            newPermissions = data.permissions.filter(pid => pid !== id);
+            setUnsavedChanges(prev => prev.filter(key => key !== id));
+            setRemovedPermissions(prev => [...prev, id]);
+        } else {
+            newPermissions = [...data.permissions, id];
+            setUnsavedChanges(prev => [...prev, id]);
+            setRemovedPermissions(prev => prev.filter(key => key !== id));
+        }
+        setSelectedPermissions(newPermissions);
     };
 
     const handleUnassignAll = (groupId: number) => {
         const group = Object.values(permissions).find(g => g.id === groupId);
+        console.table(group?.permissions);
         if (!group) return;
-        const newPermissions = [...selectedPermissions];
+        const newPermissions = [...data.permissions];
+        console.table(newPermissions);
         let newUnsavedChanges = [...unsavedChanges];
         let newRemovedPermissions = [...removedPermissions];
 
         group.permissions.forEach(permission => {
-            newPermissions.splice(newPermissions.indexOf(Number(permission.id)), 1);
-            if (!newRemovedPermissions.includes(Number(permission.id))) {
+            const included = newPermissions.includes(Number(permission.id));
+            included &&
+                newPermissions.splice(newPermissions.indexOf(Number(permission.id)), 1);
+            if (!newRemovedPermissions.includes(Number(permission.id)) && included) {
                 newRemovedPermissions.push(Number(permission.id));
             }
             newUnsavedChanges = newUnsavedChanges.filter(id => id !== Number(permission.id));
@@ -109,14 +110,14 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
     };
 
     const saveChanges = () => {
-        // Aquí iría la lógica para guardar los cambios en los permisos
-        console.log('Saving changes for role:', selectedRole);
-        console.log('Added permissions:', unsavedChanges);
-        console.log('Removed permissions:', removedPermissions);
-
-        // Después de guardar exitosamente:
-        setUnsavedChanges([]);
-        setRemovedPermissions([]);
+        console.log(data.permissions);
+        put(route('roles.permissions.update', selectedRole), {
+            onSuccess: () => {
+                // Resetear estados después de guardar exitosamente
+                setUnsavedChanges([]);
+                setRemovedPermissions([]);
+            }
+        });
     };
 
     // Filtrar los grupos de permisos según el término de búsqueda
@@ -134,8 +135,7 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
     }
 
     const filteredPermissionGroups = getFilteredPermissionGroups(searchTerm);
-    // Si hay grupos filtrados y el grupo expandido actual no está en la lista filtrada,
-    // expandir el primer grupo de la lista filtrada si existe
+
     React.useEffect(() => {
         if (filteredPermissionGroups.length > 0) {
             const expandedGroupExists = filteredPermissionGroups
@@ -147,6 +147,7 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
             setExpandedGroupId(null);
         }
     }, [filteredPermissionGroups, expandedGroupId]);
+
 
     // Función para manejar la expansión de grupos
     const handleGroupExpand = (groupId: number) => {
@@ -184,7 +185,7 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
                                 <PermissionGroup
                                     key={group.id}
                                     group={group}
-                                    selectedPermissions={selectedPermissions}
+                                    selectedPermissions={data.permissions}
                                     handlePermissionToggle={handlePermissionToggle}
                                     handleAssignAll={handleAssignAll}
                                     handleUnassignAll={handleUnassignAll}
@@ -232,4 +233,4 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 function getSelectedRolePermission(roles: Roles[], selectedRole: string): any {
     return roles.find(role => role.id === parseInt(selectedRole))?.permissions || [];
-} 
+}
