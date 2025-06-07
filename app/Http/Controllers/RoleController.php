@@ -60,8 +60,6 @@ class RoleController extends Controller
             ]);
 
             return redirect()->route('access.index')
-                ->with('success', 'Rol  creado exitosamente.');
-            return redirect()->route('access.index')
                 ->with('success', 'Rol "' . $role->name . '" creado exitosamente.');
         } catch (\Exception $e) {
             // Solo para errores no relacionados con la validación
