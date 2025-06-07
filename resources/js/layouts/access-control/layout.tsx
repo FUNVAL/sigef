@@ -14,13 +14,13 @@ type HeadingsProps = {
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Usuarios',
-        href: '/access-control/users',
+        title: 'Accesos',
+        href: '/access-control',
         icon: null,
     },
     {
-        title: 'Roles',
-        href: '/access-control/roles',
+        title: 'Usuarios',
+        href: '/access-control/users',
         icon: null,
     },
 ];
