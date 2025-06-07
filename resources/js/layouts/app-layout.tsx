@@ -1,3 +1,4 @@
+import { SuccessAlert } from '@/components/globals/success-alert';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
 import { CloudCog } from 'lucide-react';
@@ -8,11 +9,12 @@ interface AppLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
 }
 
-export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {  
-    
+export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
+
     return (
         <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
             {children}
+            <SuccessAlert />
         </AppLayoutTemplate>
     )
 };
