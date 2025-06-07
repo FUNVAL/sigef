@@ -29,7 +29,7 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
     // Nuevo estado para rastrear el grupo expandido, inicializado con el ID del primer grupo
     const [expandedGroupId, setExpandedGroupId] = useState<number | null>(1);
 
-    const { flash } = usePage().props;
+
 
     React.useEffect(() => {
 
@@ -216,14 +216,6 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
                         setNewRoleDescription={setNewRoleDescription}
                         createNewRole={createNewRole}
                     />
-                    {
-                        (flash as { error?: string })?.error && (
-                            <Alert variant="destructive" className="mt-4">
-                                <AlertTitle>Error</AlertTitle>
-                                <AlertDescription>{(flash as { error?: string }).error}</AlertDescription>
-                            </Alert>
-                        )
-                    }
                 </div>
             </AccessControlLayout>
         </AppLayout>
