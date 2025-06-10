@@ -10,10 +10,13 @@ import { Button } from '@/components/ui/button';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Control de Accesos',
+        href: '/access-control',
+    },
+    {
+        title: 'Usuarios',
         href: '/access-control/users',
     },
 ];
-
 
 export default function Users({ users }: { users: [User] }) {
 

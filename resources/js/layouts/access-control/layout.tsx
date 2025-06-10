@@ -14,19 +14,19 @@ type HeadingsProps = {
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Usuarios',
-        href: '/access-control/users',
+        title: 'Accesos',
+        href: '/access-control',
         icon: null,
     },
     {
-        title: 'Roles',
-        href: '/access-control/roles',
+        title: 'Usuarios',
+        href: '/access-control/users',
         icon: null,
     },
 ];
 
 type AccessControlLayoutProps = PropsWithChildren<{
-    headings: HeadingsProps;
+    headings?: HeadingsProps;
 }>;
 
 export default function AccessControlLayout({ children, headings }: AccessControlLayoutProps) {
@@ -57,9 +57,9 @@ export default function AccessControlLayout({ children, headings }: AccessContro
                     ))}
                 </nav>
                 <Heading
-                    title={headings.title}
-                    description={headings.description}
-                    className={headings.className ?? 'mb-4'}
+                    title={headings?.title ?? ''}
+                    description={headings?.description ?? ''}
+                    className={headings?.className ?? 'mb-4'}
                 />
                 <Separator className="my-6 md:hidden" />
                 <div className="flex-1">

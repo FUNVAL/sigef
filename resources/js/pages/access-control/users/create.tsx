@@ -1,6 +1,6 @@
 import { type BreadcrumbItem } from '@/types';
 import { Transition } from '@headlessui/react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import InputError from '@/components/input-error';
 import HeadingSmall from '@/components/heading-small';
@@ -16,56 +16,25 @@ import {
     SelectValue
 } from '@/components/ui/select';
 import AccessControlLayout from '@/layouts/access-control/layout';
+import { type CreateUserForm, type CreateUserProps, type EnumsProps } from '@/types/users';
 
-type UserForm = {
-    firstname: string;
-    middle_name: string;
-    lastname: string;
-    second_lastname: string;
-    email: string;
-    gender: string;
-    document_type: string;
-    document_number: string;
-    birth_date: string;
-    marital_status: string;
-    address: string;
-    contact_phone_1: string;
-    contact_phone_2: string;
-    role_id: string;
-    password: string;
-    password_confirmation: string;
-}
-const initialData = {
-    firstname: '',
-    middle_name: '',
-    lastname: '',
-    second_lastname: '',
-    email: '',
-    gender: '',
-    document_type: '',
-    document_number: '',
-    birth_date: '',
-    marital_status: '',
-    address: '',
-    contact_phone_1: '',
-    contact_phone_2: '',
-    role_id: '',
-    password: '',
-    password_confirmation: '',
-}
-export default function CreateUser() {
-    const { data, setData, post, errors, processing, recentlySuccessful } = useForm<UserForm>(initialData);
-    const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Control de Accesos',
-            href: '/access-control/users',
-        },
-    ];
+
+export default function CreateUser({ roles }: CreateUserProps) {
+    const { data, setData, post, errors, processing, recentlySuccessful } = useForm<CreateUserForm>(initialData);
+
+    const { enums } = usePage<{ enums: EnumsProps }>().props;
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
         post(route('users.store'), {
             preserveScroll: true,
+            onSuccess: () => {
+                setData(initialData); // Reset form data after successful submission
+            },
+            onError: (error) => {
+                console.error('Error creating user:', error);
+            },
         });
     };
 
@@ -77,17 +46,18 @@ export default function CreateUser() {
                 description: 'Formulario para crear un nuevo usuario',
             }}>
                 <div className="space-y-8">
-                    <form onSubmit={submit} className="space-y-8"> 
-                        <div className="space-y-6">
-                            <HeadingSmall 
-                                title="Datos personales" 
-                                description="Información básica del usuario" 
+                    <form onSubmit={submit} className="space-y-8">
+                        <div className="space-y-6 border-b pb-6">
+                            <HeadingSmall
+                                title="Datos personales"
+                                description="Información básica del usuario"
                             />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="grid gap-2">
                                     <Label htmlFor="firstname">Primer Nombre</Label>
                                     <Input
                                         id="firstname"
+                                        name="firstname"
                                         value={data.firstname}
                                         onChange={(e) => setData('firstname', e.target.value)}
                                         required
@@ -100,6 +70,7 @@ export default function CreateUser() {
                                     <Label htmlFor="middle_name">Segundo Nombre</Label>
                                     <Input
                                         id="middle_name"
+                                        name="middle_name"
                                         value={data.middle_name}
                                         onChange={(e) => setData('middle_name', e.target.value)}
                                         placeholder="Segundo nombre (opcional)"
@@ -111,6 +82,7 @@ export default function CreateUser() {
                                     <Label htmlFor="lastname">Primer Apellido</Label>
                                     <Input
                                         id="lastname"
+                                        name="lastname"
                                         value={data.lastname}
                                         onChange={(e) => setData('lastname', e.target.value)}
                                         required
@@ -123,6 +95,7 @@ export default function CreateUser() {
                                     <Label htmlFor="second_lastname">Segundo Apellido</Label>
                                     <Input
                                         id="second_lastname"
+                                        name="second_lastname"
                                         value={data.second_lastname}
                                         onChange={(e) => setData('second_lastname', e.target.value)}
                                         placeholder="Segundo apellido (opcional)"
@@ -134,6 +107,7 @@ export default function CreateUser() {
                                     <Label htmlFor="email">Correo Electrónico</Label>
                                     <Input
                                         id="email"
+                                        name="email"
                                         type="email"
                                         value={data.email}
                                         onChange={(e) => setData('email', e.target.value)}
@@ -146,16 +120,19 @@ export default function CreateUser() {
                                 <div className="grid gap-2">
                                     <Label htmlFor="gender">Género</Label>
                                     <Select
-                                        value={data.gender}
-                                        onValueChange={(value) => setData('gender', value)}
+                                        name="gender"
+                                        value={String(data.gender)}
+                                        onValueChange={(value) => setData('gender', Number(value))}
                                     >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Seleccione género" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="M">Masculino</SelectItem>
-                                            <SelectItem value="F">Femenino</SelectItem>
-                                            <SelectItem value="O">Otro</SelectItem>
+                                            {enums.gender?.map((status) => (
+                                                <SelectItem key={status.id} value={String(status.id)}>
+                                                    {status.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <InputError message={errors.gender} />
@@ -164,25 +141,28 @@ export default function CreateUser() {
                         </div>
 
                         {/* Documentos */}
-                        <div className="space-y-6">
-                            <HeadingSmall 
-                                title="Documentos e identificación" 
+                        <div className="space-y-6 border-b pb-6">
+                            <HeadingSmall
+                                title="Documentos e identificación"
                                 description="Información de documentos oficiales"
                             />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="grid gap-2">
                                     <Label htmlFor="document_type">Tipo de Documento</Label>
                                     <Select
-                                        value={data.document_type}
-                                        onValueChange={(value) => setData('document_type', value)}
+                                        name="document_type"
+                                        value={String(data.document_type)}
+                                        onValueChange={(value) => setData('document_type', Number(value))}
                                     >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Seleccione tipo" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="DNI">DNI</SelectItem>
-                                            <SelectItem value="Pasaporte">Pasaporte</SelectItem>
-                                            <SelectItem value="Cédula">Cédula</SelectItem>
+                                            {enums.documentType?.map((doc) => (
+                                                <SelectItem key={doc.id} value={String(doc.id)}>
+                                                    {doc.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <InputError message={errors.document_type} />
@@ -192,6 +172,7 @@ export default function CreateUser() {
                                     <Label htmlFor="document_number">Número de Documento</Label>
                                     <Input
                                         id="document_number"
+                                        name="document_number"
                                         value={data.document_number}
                                         onChange={(e) => setData('document_number', e.target.value)}
                                         required
@@ -204,6 +185,7 @@ export default function CreateUser() {
                                     <Label htmlFor="birth_date">Fecha de Nacimiento</Label>
                                     <Input
                                         id="birth_date"
+                                        name="birth_date"
                                         type="date"
                                         value={data.birth_date}
                                         onChange={(e) => setData('birth_date', e.target.value)}
@@ -214,17 +196,19 @@ export default function CreateUser() {
                                 <div className="grid gap-2">
                                     <Label htmlFor="marital_status">Estado Civil</Label>
                                     <Select
-                                        value={data.marital_status}
-                                        onValueChange={(value) => setData('marital_status', value)}
+                                        name="marital_status"
+                                        value={String(data.marital_status)}
+                                        onValueChange={(value) => setData('marital_status', Number(value))}
                                     >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Seleccione estado" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="soltero">Soltero/a</SelectItem>
-                                            <SelectItem value="casado">Casado/a</SelectItem>
-                                            <SelectItem value="divorciado">Divorciado/a</SelectItem>
-                                            <SelectItem value="viudo">Viudo/a</SelectItem>
+                                            {enums.maritalStatus?.map((status) => (
+                                                <SelectItem key={status.id} value={String(status.id)}>
+                                                    {status.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <InputError message={errors.marital_status} />
@@ -233,9 +217,9 @@ export default function CreateUser() {
                         </div>
 
                         {/* Contacto */}
-                        <div className="space-y-6">
-                            <HeadingSmall 
-                                title="Información de contacto" 
+                        <div className="space-y-6 border-b pb-6">
+                            <HeadingSmall
+                                title="Información de contacto"
                                 description="Datos para contactar al usuario"
                             />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -243,6 +227,7 @@ export default function CreateUser() {
                                     <Label htmlFor="address">Dirección</Label>
                                     <Input
                                         id="address"
+                                        name="address"
                                         value={data.address}
                                         onChange={(e) => setData('address', e.target.value)}
                                         placeholder="Dirección completa"
@@ -254,6 +239,7 @@ export default function CreateUser() {
                                     <Label htmlFor="contact_phone_1">Teléfono Principal</Label>
                                     <Input
                                         id="contact_phone_1"
+                                        name="contact_phone_1"
                                         value={data.contact_phone_1}
                                         onChange={(e) => setData('contact_phone_1', e.target.value)}
                                         placeholder="Teléfono principal"
@@ -265,6 +251,7 @@ export default function CreateUser() {
                                     <Label htmlFor="contact_phone_2">Teléfono Secundario</Label>
                                     <Input
                                         id="contact_phone_2"
+                                        name="contact_phone_2"
                                         value={data.contact_phone_2}
                                         onChange={(e) => setData('contact_phone_2', e.target.value)}
                                         placeholder="Teléfono secundario (opcional)"
@@ -276,53 +263,35 @@ export default function CreateUser() {
 
                         {/* Sistema */}
                         <div className="space-y-6">
-                            <HeadingSmall 
-                                title="Datos de acceso al sistema" 
+                            <HeadingSmall
+                                title="Datos de acceso al sistema"
                                 description="Configuración de acceso y permisos"
                             />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="grid gap-2">
                                     <Label htmlFor="role_id">Rol</Label>
                                     <Select
-                                        value={data.role_id}
-                                        onValueChange={(value) => setData('role_id', value)}
+                                        name="role_id"
+                                        value={String(data.role_id)}
+                                        onValueChange={(value) => setData('role_id', Number(value))}
                                     >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Seleccione rol" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="1">Administrador</SelectItem>
-                                            <SelectItem value="2">Usuario</SelectItem>
-                                            <SelectItem value="3">Auditor</SelectItem>
+                                            {roles.map(role => (
+                                                <SelectItem
+                                                    key={role.id}
+                                                    value={String(role.id)}
+                                                    className="capitalize"
+                                                    disabled={role.name.toLowerCase() === 'student'}
+                                                >
+                                                    {role.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <InputError message={errors.role_id} />
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <Label htmlFor="password">Contraseña</Label>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        value={data.password}
-                                        onChange={(e) => setData('password', e.target.value)}
-                                        required
-                                        placeholder="Contraseña segura"
-                                    />
-                                    <InputError message={errors.password} />
-                                </div>
-
-                                <div className="grid gap-2 md:col-start-2">
-                                    <Label htmlFor="password_confirmation">Confirmar Contraseña</Label>
-                                    <Input
-                                        id="password_confirmation"
-                                        type="password"
-                                        value={data.password_confirmation}
-                                        onChange={(e) => setData('password_confirmation', e.target.value)}
-                                        required
-                                        placeholder="Confirme la contraseña"
-                                    />
-                                    <InputError message={errors.password_confirmation} />
                                 </div>
                             </div>
                         </div>
@@ -349,3 +318,36 @@ export default function CreateUser() {
         </AppLayout>
     );
 }
+// This is the initial data for the form
+// It is used to set the initial state of the form fields
+const initialData = {
+    firstname: '',
+    middle_name: '',
+    lastname: '',
+    second_lastname: '',
+    email: '',
+    gender: 0,
+    document_type: 0,
+    document_number: '',
+    birth_date: '',
+    marital_status: 0,
+    address: '',
+    contact_phone_1: '',
+    contact_phone_2: '',
+    role_id: 0,
+}
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Control de Accesos',
+        href: '/access-control/users',
+    },
+    {
+        title: 'Usuarios',
+        href: '/access-control/users',
+    },
+    {
+        title: 'Crear Usuario',
+        href: '/access-control/users/create',
+    },
+];

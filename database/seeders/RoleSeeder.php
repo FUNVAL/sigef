@@ -1,8 +1,7 @@
 <?php
 
 namespace Database\Seeders;
-
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+ 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -15,14 +14,14 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         Role::insert([
-            ['name' => 'admin', 'guard_name' => 'web'],
-            ['name' => 'student', 'guard_name' => 'web'],
-            ['name' => 'teacher', 'guard_name' => 'web'],
-            ['name' => 'controller', 'guard_name' => 'web'],
-            ['name' => 'recruiter', 'guard_name' => 'web'],
+            ['name' => 'Admin', 'description' => 'Usuario con acceso completo al sistema', 'guard_name' => 'web'],
+            ['name' => 'Student', 'description' => 'Usuario con rol de estudiante', 'guard_name' => 'web'],
+            ['name' => 'Teacher', 'description' => 'Usuario con rol de profesor', 'guard_name' => 'web'],
+            ['name' => 'Controller', 'description' => 'Usuario con permisos de control y monitoreo', 'guard_name' => 'web'],
+            ['name' => 'Recruiter', 'description' => 'Usuario encargado de reclutar nuevos estudiantes', 'guard_name' => 'web'],
         ]);
  
-        $adminRole = Role::findByName('admin'); 
+        $adminRole = Role::findByName('Admin'); 
         $adminRole->givePermissionTo(Permission::all());
     }
 }
