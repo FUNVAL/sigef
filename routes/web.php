@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StakeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,12 +27,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // access control routes (roles)
-        Route::prefix('access-control')->name('roles.')->group(function () {
+        Route::prefix('access-control')->name('access.')->group(function () {
             Route::get('/', [RoleController::class, 'index'])->name('index');
             Route::post('/roles/create', [RoleController::class, 'store'])->name('store');
-            Route::put('{/roles/roleId}', [RoleController::class, 'updateRolePermissions'])->name('permissions.update');
+            Route::put('/roles/{roleId}', [RoleController::class, 'updateRolePermissions'])->name('permissions.update');
         });
-
 
         // countries routes 
         Route::prefix('countries')->name('countries.')->group(function () {
@@ -40,6 +40,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('create', [CountryController::class, 'store'])->name('countries.store');
             Route::get('{id}', [CountryController::class, 'edit'])->name('countries.edit');
             Route::put('{id}', [CountryController::class, 'update'])->name('countries.update');
+        });
+
+        // stakes routes
+        Route::prefix('stakes')->name('stakes.')->group(function () {
+            Route::get('/', [StakeController::class, 'index'])->name('stakes.index');
+            Route::get('create', [StakeController::class, 'create'])->name('stakes.create');
+            Route::post('create', [StakeController::class, 'store'])->name('stakes.store');
+            Route::get('{id}', [StakeController::class, 'edit'])->name('stakes.edit');
+            Route::put('{id}', [StakeController::class, 'update'])->name('stakes.update');
         });
 
         Route::get('settings/appearance', function () {

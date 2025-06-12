@@ -11,10 +11,9 @@ import UnsavedChanges from '@/components/roles/UnsavedChanges';
 import ActionFooter from '@/components/roles/ActionFooter';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import { RolePermissionsProps, Roles } from '@/types/roles';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 
 export default function RolePermissions({ roles, permissions }: RolePermissionsProps) {
@@ -110,8 +109,7 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
     };
 
     const saveChanges = () => {
-        console.log(data.permissions);
-        put(route('roles.permissions.update', selectedRole), {
+        put(route('access.permissions.update', selectedRole), {
             onSuccess: () => {
                 // Resetear estados después de guardar exitosamente
                 setUnsavedChanges([]);
