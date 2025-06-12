@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\CourseModalityEnum;
 use App\Models\Course;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class CourseSeeder extends Seeder
@@ -14,22 +14,84 @@ class CourseSeeder extends Seeder
     public function run(): void
     {
         Course::insert([
-            ['name' => 'Inglés para Call Center', 'status' => true],
-            ['name' => 'Interpretación de servicios especializados', 'status' => true],
-            ['name' => 'Ciberseguridad', 'status' => true],
-            ['name' => 'Soldadura industrial', 'status' => true],
-            ['name' => 'Reparación de celulares', 'status' => true],
-            ['name' => 'Técnico logístico & SAP', 'status' => true],
-            ['name' => 'Asistentes contables bilingües', 'status' => true],
-            ['name' => 'Asesor comercial', 'status' => true],
-            ['name' => 'Asesor financiero', 'status' => true],
-            ['name' => 'Mecánica de motocicletas', 'status' => true],
-            ['name' => 'Aire acondicionado y Línea Blanca', 'status' => true],
-            ['name' => 'Auxiliar de farmacia', 'status' => true],
-            ['name' => 'Carpintería en aluminio y Melamina', 'status' => true],
-            ['name' => 'Conectividad y redes', 'status' => true],
-            ['name' => 'Marketing digital', 'status' => true],
-            ['name' => 'Desarrollador Web FrontEnd', 'status' => true]
+            [
+                'name' => 'Asesor Comercial',
+                'duration' => 5,
+                'modality' => CourseModalityEnum::ONLINE->value,
+                'status' => true,
+            ],
+            [
+                'name' => 'Aire Acondicionado y Linea Blanca',
+                'duration' => 8,
+                'modality' => CourseModalityEnum::HYBRID->value,
+                'status' => true,
+            ],
+            [
+                'name' => 'Asesor Financiero',
+                'duration' => 7,
+                'modality' => CourseModalityEnum::ONLINE->value,
+                'status' => true,
+            ],
+            [
+                'name' => 'Auxiliar de Farmacia',
+                'duration' => 8,
+                'modality' => CourseModalityEnum::ONLINE->value,
+                'status' => true,
+            ],
+            [
+                'name' => 'Carpinteria en Aluminio & Melamine',
+                'duration' => 6,
+                'modality' => CourseModalityEnum::HYBRID->value,
+                'status' => true,
+            ],
+            [
+                'name' => 'Conectividad y redes',
+                'duration' => 7,
+                'modality' => CourseModalityEnum::HYBRID->value,
+                'status' => true,
+            ],
+            [
+                'name' => 'Desarrollo Web Frontend',
+                'duration' => 12,
+                'modality' => CourseModalityEnum::ONLINE->value,
+                'status' => true,
+            ],
+            [
+                'name' => 'Inglés',
+                'duration' => 20,
+                'modality' => CourseModalityEnum::ONLINE->value,
+                'status' => true,
+            ],
+            [
+                'name' => "Intérprete de Servicios Especializados",
+                'duration' => 3,
+                'modality' => CourseModalityEnum::ONLINE->value,
+                'status' => true,
+            ],
+            [
+                'name' => "IT Administator",
+                'duration' => 8,
+                'modality' => CourseModalityEnum::ONLINE->value,
+                'status' => true,
+            ],
+            [
+                'name' => "Logístico Sap",
+                'duration' => 7,
+                'modality' => CourseModalityEnum::ONLINE->value,
+                'status' => true,
+            ],
+            [
+                'name' => "Diseño Grafico & Marketing Digital",
+                'duration' => 7,
+                'modality' => CourseModalityEnum::ONLINE->value,
+                'status' => true,
+            ],
+            [
+                'name' => "Mecánica de Motos",
+                'duration' => 6,
+                'modality' => CourseModalityEnum::HYBRID->value,
+                'status' => true,
+            ],
         ]);
     }
 }
