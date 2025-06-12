@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('code', 3)->unique()->nullable();
             $table->string('flag', 10)->nullable();
+            $table->string('phone_code', 10)->nullable();
             $table->timestamps();
         });
     }
