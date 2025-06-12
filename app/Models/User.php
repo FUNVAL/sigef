@@ -42,13 +42,6 @@ class User extends Authenticatable
         'status'
     ];
 
-    protected $cast = [
-        'status' =>  UserStatusEnum::class,
-        'document_type' => DocumentTypeEnum::class,
-        'gender' => GenderEnum::class,
-        'marital_status' => MaritalStatusEnum::class,
-    ];
-
     /**
      * The attributes that should be hidden for serialization.
      *

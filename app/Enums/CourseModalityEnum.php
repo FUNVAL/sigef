@@ -7,6 +7,7 @@ use App\Traits\EnumMethods;
 enum CourseModalityEnum: int
 {
     use EnumMethods;
+
     case ONLINE = 1;
     case IN_PERSON = 2;
     case HYBRID = 3;

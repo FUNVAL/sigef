@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Enums\AttendanceStatusEnum;
+use App\Enums\CourseModalityEnum;
 use App\Enums\DocumentTypeEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
@@ -34,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
                 'documentType' => DocumentTypeEnum::toArray(),
                 'gender' => GenderEnum::toArray(),
                 'maritalStatus' => MaritalStatusEnum::toArray(),
+                'courseModality' => CourseModalityEnum::toArray(),
             ];
         });
     }

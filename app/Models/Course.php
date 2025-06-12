@@ -15,7 +15,7 @@ class Course extends Model
     ];
 
     protected $casts = [
-        'status' => 'boolean'
+        'status' => 'boolean',
     ];
 
     protected $hidden = [
@@ -23,10 +23,9 @@ class Course extends Model
         'updated_at',
     ];
 
-    public function getModalityAttribute($value): ?array
+    public function getModalityAttribute(): ?array
     {
-        $modality = CourseModalityEnum::fromId($value);
-        return $modality;
+        return  CourseModalityEnum::fromId($this->attributes['modality']);
     }
 
     public function getDurationAttribute($value): string
