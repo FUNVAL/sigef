@@ -16,7 +16,7 @@ enum CourseModalityEnum: int
         return match ($this) {
             self::ONLINE => 'En Línea',
             self::IN_PERSON => 'Presencial',
-            self::HYBRID => 'Híbrido',
+            self::HYBRID => 'Semipresencial',
         };
     }
 }
