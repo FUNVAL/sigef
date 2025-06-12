@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CountrySeeder::class,
             StakeSeeder::class,
+            CourseSeeder::class,
 
             // Add other seeders here
         ]);
