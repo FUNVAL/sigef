@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\CourseModalityEnum;
+use App\Enums\StatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->integer('duration')->nullable();
             $table->integer('modality')->default(CourseModalityEnum::ONLINE->value);
-            $table->boolean('status')->default(true);
+            $table->integer('status')->default(StatusEnum::ACTIVE->value);
             $table->timestamps();
         });
     }
