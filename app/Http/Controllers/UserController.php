@@ -15,9 +15,14 @@ class UserController extends Controller
     public function index()
     {
 
-        return  Inertia::render('access-control/users/index', [
-            'users' => User::where('status', '!=', 'inactivo')->get(),
-        ]);
+        try {
+            return Inertia::render('access-control/users/index', [
+                'users' => User::where('status', '!=', 'inactivo')->get(),
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => 'Failed to load users: ' . $e->getMessage()]);
+        }
     }
 
     /**
