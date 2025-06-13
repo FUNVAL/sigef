@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CourseModalityEnum;
+use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model
@@ -12,10 +13,6 @@ class Course extends Model
         'duration',
         'modality',
         'status',
-    ];
-
-    protected $casts = [
-        'status' => 'boolean',
     ];
 
     protected $hidden = [
@@ -28,8 +25,8 @@ class Course extends Model
         return  CourseModalityEnum::fromId($this->attributes['modality']);
     }
 
-    public function getDurationAttribute($value): string
+    public function getStatusAttribute(): ?array
     {
-        return $value . ' ' . ($value === 1 ? 'semana' : 'semanas');
+        return StatusEnum::fromId($this->attributes['status']);
     }
 }
