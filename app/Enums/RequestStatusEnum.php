@@ -8,18 +8,14 @@ enum RequestStatusEnum: int
 {
     use EnumMethods;
 
-    case DRAFT = 1;
-    case SUBMITTED = 2;
-    case UNDER_REVIEW = 3;
-    case APPROVED = 4;
-    case REJECTED = 5;
+    case PENDING = 1;
+    case APPROVED = 2;
+    case REJECTED = 3;
 
     public function name(): string
     {
         return match ($this) {
-            self::DRAFT => 'Borrador',
-            self::SUBMITTED => 'Enviado',
-            self::UNDER_REVIEW => 'En Revisión',
+            self::PENDING => 'Pendiente',
             self::APPROVED => 'Aprobado',
             self::REJECTED => 'Rechazado',
         };
