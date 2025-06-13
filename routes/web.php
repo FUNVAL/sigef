@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StakeController;
 use App\Http\Controllers\UserController;
@@ -49,6 +50,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('create', [StakeController::class, 'store'])->name('stakes.store');
             Route::get('{id}', [StakeController::class, 'edit'])->name('stakes.edit');
             Route::put('{id}', [StakeController::class, 'update'])->name('stakes.update');
+        });
+
+        Route::prefix('courses')->name('courses.')->group(function () {
+            Route::get('/', [CourseController::class, 'index'])->name('index');
+            Route::post('create', [CourseController::class, 'store'])->name('store');
+            Route::put('{id}', [CourseController::class, 'update'])->name('update');
+            Route::delete('{id}', [CourseController::class, 'destroy'])->name('destroy');
         });
 
         Route::get('settings/appearance', function () {
