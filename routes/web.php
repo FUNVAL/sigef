@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\ReferenceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StakeController;
 use App\Http\Controllers\UserController;
@@ -57,6 +58,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('create', [CourseController::class, 'store'])->name('store');
             Route::put('{id}', [CourseController::class, 'update'])->name('update');
             Route::delete('{id}', [CourseController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('references')->name('references.')->group(function () {
+            Route::get('/', [ReferenceController::class, 'index'])->name('index');
+            Route::get('create', [ReferenceController::class, 'create'])->name('create');
+            Route::post('create', [ReferenceController::class, 'store'])->name('store');
+            Route::get('{id}', [ReferenceController::class, 'edit'])->name('edit');
+            Route::put('{id}', [ReferenceController::class, 'update'])->name('update');
+            Route::delete('{id}', [ReferenceController::class, 'destroy'])->name('destroy');
         });
 
         Route::get('settings/appearance', function () {
