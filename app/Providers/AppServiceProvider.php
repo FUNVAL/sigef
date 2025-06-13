@@ -7,6 +7,7 @@ use App\Enums\CourseModalityEnum;
 use App\Enums\DocumentTypeEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
+use App\Enums\ReferenceStatusEnum;
 use App\Enums\RequestStatusEnum;
 use App\Enums\StatusEnum;
 use App\Enums\UserStatusEnum;
@@ -38,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
                 'maritalStatus' => MaritalStatusEnum::toArray(),
                 'courseModality' => CourseModalityEnum::toArray(),
                 'statusEnum' => StatusEnum::toArray(),
+                'referenceStatus' =>  ReferenceStatusEnum::toArray(),
             ];
         });
     }

@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             CountrySeeder::class,
             StakeSeeder::class,
             CourseSeeder::class,
+            ReferenceSeeder::class,
 
             // Add other seeders here
         ]);
