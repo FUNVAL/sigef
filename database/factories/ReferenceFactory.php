@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\RequestStatusEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -37,7 +38,7 @@ class ReferenceFactory extends Factory
             'country_id' => fake()->numberBetween(1, 8),
             'phone' => fake()->phoneNumber(),
             'stake_id' => fake()->numberBetween(1, 10),
-            'status' => fake()->boolean(),
+            'status' => fake()->randomElement(RequestStatusEnum::values()), // Assuming 1: Pending, 2: Approved, 3: Rejected
             'reason' => fake()->numberBetween(1, 11),
             'referrer_name' => fake()->name(),
             'referrer_phone' => fake()->phoneNumber(),

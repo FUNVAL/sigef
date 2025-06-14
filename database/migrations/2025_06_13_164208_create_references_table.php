@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\GenderEnum;
+use App\Enums\RequestStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,7 @@ return new class extends Migration
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
             $table->string('phone')->nullable();
             $table->foreignId('stake_id')->constrained()->onDelete('cascade');
-            $table->boolean('status')->default(false);
+            $table->integer('status')->default(RequestStatusEnum::PENDING->value);
             $table->integer('reason')->nullable();
             $table->string('referrer_name')->nullable();
             $table->string('referrer_phone')->nullable();

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\GenderEnum;
-use App\Enums\MaritalStatusEnum;
 use App\Enums\ReferenceStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +20,7 @@ class Reference extends Model
         'phone',
         'stake_id',
         'status',
-        'reason',
+        'declined_reason',
         'referrer_name',
         'referrer_phone',
         'relationship_with_referred',
@@ -67,7 +66,6 @@ class Reference extends Model
         return ReferenceStatusEnum::fromId($this->attributes['reason']);
     }
 
-    // Getters que usan relaciones
     public function getCountryAttribute()
     {
         return $this->country()->first();

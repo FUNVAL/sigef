@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\GenderEnum;
+use App\Enums\ReferenceStatusEnum;
+use App\Enums\RequestStatusEnum;
 use App\Models\Reference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -130,12 +133,12 @@ class ReferenceController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'string|max:255',
-                'gender' => 'integer',
+                'gender' => 'required|integer|in:' . implode(',', [GenderEnum::values()]), // Assuming
                 'country_id' => 'exists:countries,id',
                 'phone' => 'nullable|string|max:20',
                 'stake_id' => 'exists:stakes,id',
-                'status' => 'boolean',
-                'reason' => 'nullable|integer',
+                'status' => 'required|in:' . implode(',', [RequestStatusEnum::values()]), // Assuming 0: Pending, 1: Approved
+                'declined_reason' => 'nullable|integer|in:' . implode(',', [ReferenceStatusEnum::values()]), // Assuming reasons are defined in the enum
                 'referrer_name' => 'nullable|string|max:255',
                 'referrer_phone' => 'nullable|string|max:20',
                 'relationship_with_referred' => 'nullable|string|max:255',
