@@ -20,8 +20,7 @@ class DatabaseSeeder extends Seeder
             StakeSeeder::class,
             CourseSeeder::class,
             ReferenceSeeder::class,
-
-            // Add other seeders here
+            PreInscriptionSeeder::class,
         ]);
     }
 }
