@@ -14,7 +14,32 @@ class PreInscription extends Model
     /** @use HasFactory<\Database\Factories\PreInscriptionFactory> */
     use HasFactory;
 
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'first_name',
+        'middle_name',
+        'last_name',
+        'second_last_name',
+        'gender',
+        'age',
+        'phone',
+        'email',
+        'marital_status',
+        'served_mission',
+        'currently_working',
+        'job_type_preference',
+        'available_full_time',
+        'status',
+        'comments',
+        'declined_reason',
+        'modified_by',
+        'country_id',
+        'stake_id',
+    ];
 
     public function country(): BelongsTo
     {
