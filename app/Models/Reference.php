@@ -61,9 +61,9 @@ class Reference extends Model
         return GenderEnum::fromId($this->attributes['gender']);
     }
 
-    public function getReasonAttribute(): ?array
+    public function getDeclinedReasonAttribute(): ?array
     {
-        return ReferenceStatusEnum::fromId($this->attributes['reason']);
+        return ReferenceStatusEnum::fromId($this->attributes['declined_reason']);
     }
 
     public function getCountryAttribute()
