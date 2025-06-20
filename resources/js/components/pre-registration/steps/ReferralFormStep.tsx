@@ -1,18 +1,85 @@
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import { CountrySelect } from "@/components/ui/countryselect"
-
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ReferralFormData, countries } from '../../../types/forms'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { ReferralFormData, Country, countries } from '../../../types/forms'
 import { Users, ArrowLeft } from "lucide-react"
 
 interface ReferralFormStepProps {
-  onNext: (data: ReferralFormData) => void;
-  onBack: () => void;
+  onNext: (data: ReferralFormData) => void
+  onBack: () => void
+}
+
+interface CountrySelectProps {
+  countries: Country[]
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
+}
+
+// CountrySelect con buscador fijo arriba y soporte para modo oscuro
+function CountrySelect({ countries, value, onChange, placeholder }: CountrySelectProps) {
+  const [search, setSearch] = useState("")
+  const filteredCountries = countries.filter((country) =>
+    country.nombre.toLowerCase().includes(search.toLowerCase())
+  )
+
+  const selectRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+        setSearch("")
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent
+        ref={selectRef}
+        className="pt-2 max-h-60 overflow-auto bg-background dark:bg-gray-900"
+      >
+        <div className="px-3 pb-2 sticky top-0 bg-background dark:bg-gray-900 z-10 border-b border-muted dark:border-gray-700">
+          <Input
+            autoFocus
+            placeholder="Buscar país..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full bg-background dark:bg-gray-900 text-foreground"
+          />
+        </div>
+
+        {filteredCountries.length > 0 ? (
+          filteredCountries.map((country) => (
+            <SelectItem key={country.nombre} value={country.nombre}>
+              {country.nombre}
+            </SelectItem>
+          ))
+        ) : (
+          <div className="p-4 text-center text-muted-foreground select-none">
+            No se encontraron países
+          </div>
+        )}
+      </SelectContent>
+    </Select>
+  )
 }
 
 export function ReferralFormStep({ onNext, onBack }: ReferralFormStepProps) {
@@ -41,7 +108,21 @@ export function ReferralFormStep({ onNext, onBack }: ReferralFormStepProps) {
   }
 
   const updateFormData = (field: keyof ReferralFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData(prev => {
+      const updated = { ...prev, [field]: value }
+
+      // Si cambia el país, actualizar código telefónico
+      if (field === 'pais') {
+        const selectedCountry = countries.find(c => c.nombre === value)
+        if (selectedCountry) {
+          if (!updated.telefono.startsWith(selectedCountry.codigo)) {
+            updated.telefono = `${selectedCountry.codigo} `
+          }
+        }
+      }
+
+      return updated
+    })
   }
 
   return (
@@ -74,7 +155,10 @@ export function ReferralFormStep({ onNext, onBack }: ReferralFormStepProps) {
 
               <div>
                 <Label htmlFor="genero">Género *</Label>
-                <Select value={formData.genero} onValueChange={(value) => updateFormData('genero', value)}>
+                <Select
+                  value={formData.genero}
+                  onValueChange={(value) => updateFormData('genero', value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona género" />
                   </SelectTrigger>
@@ -99,31 +183,15 @@ export function ReferralFormStep({ onNext, onBack }: ReferralFormStepProps) {
                 />
               </div>
 
-              {/* <div>
-                <Label htmlFor="pais">País *</Label>
-                <Select value={formData.pais} onValueChange={(value) => updateFormData('pais', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona país" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countries.map((country) => (
-                      <SelectItem key={country} value={country}>
-                        {country}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div> */}
-
               <div>
                 <Label htmlFor="pais">País *</Label>
                 <CountrySelect
                   countries={countries}
                   value={formData.pais}
                   onChange={(value) => updateFormData("pais", value)}
+                  placeholder="Selecciona país"
                 />
               </div>
-
 
               <div>
                 <Label htmlFor="telefono">Teléfono </Label>
@@ -178,7 +246,10 @@ export function ReferralFormStep({ onNext, onBack }: ReferralFormStepProps) {
 
                 <div className="md:col-span-2">
                   <Label htmlFor="relacionConReferido">Relación con la persona referida *</Label>
-                  <Select value={formData.relacionConReferido} onValueChange={(value) => updateFormData('relacionConReferido', value)}>
+                  <Select
+                    value={formData.relacionConReferido}
+                    onValueChange={(value) => updateFormData('relacionConReferido', value)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona la relación" />
                     </SelectTrigger>

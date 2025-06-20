@@ -1,3 +1,13 @@
+
+
+/* Desde aqui */
+
+// Primero tipos básicos
+export interface Country {
+  nombre: string;
+  codigo: string;
+}
+
 export interface ReferralFormData {
   nombre: string;
   genero: string;
@@ -23,11 +33,9 @@ export interface PreRegistrationFormData {
   correo: string;
   estadoCivil: string;
   haServidoMision: string;
-  // Female-specific fields
   estaTrabajando?: string;
   tipoEmpleoDeseado?: string;
   disponibilidadHorario?: string;
-  // Course selection
   cursoSeleccionado?: string;
 }
 
@@ -36,6 +44,28 @@ export interface Course {
   tiempo: string;
   modalidad: string;
 }
+
+// Luego los datos, ya usando el tipo definido antes
+export const countries: Country[] = [
+  { nombre: "Argentina", codigo: "+54" },
+  { nombre: "Bolivia", codigo: "+591" },
+  { nombre: "Brasil", codigo: "+55" },
+  { nombre: "Chile", codigo: "+56" },
+  { nombre: "Colombia", codigo: "+57" },
+  { nombre: "Costa Rica", codigo: "+506" },
+  { nombre: "Ecuador", codigo: "+593" },
+  { nombre: "El Salvador", codigo: "+503" },
+  { nombre: "Guatemala", codigo: "+502" },
+  { nombre: "Honduras", codigo: "+504" },
+  { nombre: "México", codigo: "+52" },
+  { nombre: "Nicaragua", codigo: "+505" },
+  { nombre: "Panamá", codigo: "+507" },
+  { nombre: "Paraguay", codigo: "+595" },
+  { nombre: "Perú", codigo: "+51" },
+  { nombre: "República Dominicana", codigo: "+1" },
+  { nombre: "Uruguay", codigo: "+598" },
+  { nombre: "Venezuela", codigo: "+58" }
+];
 
 export const courses: Course[] = [
   { nombre: "Asesor Comercial", tiempo: "5 semanas", modalidad: "En línea" },
@@ -53,14 +83,7 @@ export const courses: Course[] = [
   { nombre: "Mecánica de Motos", tiempo: "6 semanas", modalidad: "Semipresencial" }
 ];
 
-export const countries = [
-  "Argentina", "Bolivia", "Brasil", "Chile", "Colombia", "Costa Rica", 
-  "Ecuador", "El Salvador", "Guatemala", "Honduras", "México", 
-  "Nicaragua", "Panamá", "Paraguay", "Perú", "República Dominicana", 
-  "Uruguay", "Venezuela"
-];
-
-// JSON Output Formats
+// Formatos de salida para enviar al backend
 export interface ReferralFormOutput {
   tipo: 'referencia';
   datos: ReferralFormData;
