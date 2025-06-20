@@ -18,9 +18,9 @@ export function StepIndicator({ currentStep, totalSteps, stepTitles }: StepIndic
                 className={cn(
                   "flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium transition-colors",
                   step < currentStep
-                    ? "border-funval-blue bg-funval-blue text-white"
+                    ? "border-funval-blue bg-[rgb(46_131_242_/_1)] text-white"
                     : step === currentStep
-                    ? "border-funval-blue bg-funval-blue text-white"
+                    ? "border-funval-blue bg-[rgb(46_131_242_/_1)] text-white"
                     : "border-muted-foreground/30 bg-background text-muted-foreground"
                 )}
               >
@@ -32,7 +32,7 @@ export function StepIndicator({ currentStep, totalSteps, stepTitles }: StepIndic
               </div>
               <p className={cn(
                 "mt-2 text-xs font-medium text-center max-w-[80px]",
-                step <= currentStep ? "text-funval-blue" : "text-muted-foreground"
+                step <= currentStep ? "text-[rgb(46_131_242_/_1)]" : "text-muted-foreground"
               )}>
                 {stepTitles[index]}
               </p>
@@ -42,7 +42,7 @@ export function StepIndicator({ currentStep, totalSteps, stepTitles }: StepIndic
                 className={cn(
                   "mx-4 h-0.5 w-16 transition-colors",
                   step < currentStep
-                    ? "bg-funval-blue"
+                    ? "bg-[rgb(46_131_242_/_1)]"
                     : "bg-muted-foreground/30"
                 )}
               />

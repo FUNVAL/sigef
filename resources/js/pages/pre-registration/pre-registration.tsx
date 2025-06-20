@@ -222,7 +222,7 @@ function PreRegistration() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-200 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       
       <main className="container mx-auto px-4 py-8">
@@ -239,7 +239,7 @@ function PreRegistration() {
         </div>
       </main>
 
-      <footer className="border-t border-border/40 mt-16">
+      <footer className="border-t border-border/40 mt-16 dark:bg-gray-950">
         <div className="container mx-auto px-4 py-6">
           <div className="text-center text-sm text-muted-foreground">
             <p>&copy; 2025 FUNVAL Internacional. Todos los derechos reservados.</p>

@@ -23,7 +23,7 @@ export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps
     <div className="max-w-2xl mx-auto">
       <Card className="border-2">
         <CardHeader className="text-center pb-4">
-          <CardTitle className="text-2xl font-bold text-funval-blue">
+          <CardTitle className="text-2xl font-bold text-[rgb(46_131_242_/_1)]">
             ¿Qué acción deseas realizar?
           </CardTitle>
           <p className="text-muted-foreground mt-2">
@@ -34,13 +34,13 @@ export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps
           <RadioGroup
             value={selectedAction}
             onValueChange={(value) => setSelectedAction(value as 'referral' | 'preregistration')}
-            className="space-y-4"
+            className="space-y-4 checked:bg-[rgb(46_131_242_/_1)] "
           >
             <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
               <RadioGroupItem value="referral" id="referral" />
               <div className="flex items-center space-x-3 flex-1">
-                <div className="w-12 h-12 rounded-full bg-funval-blue/10 flex items-center justify-center">
-                  <Users className="h-6 w-6 text-funval-blue" />
+                <div className="w-12 h-12 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center">
+                  <Users className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
                 </div>
                 <div className="flex-1">
                   <Label htmlFor="referral" className="text-base font-medium cursor-pointer">
@@ -56,8 +56,8 @@ export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps
             <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
               <RadioGroupItem value="preregistration" id="preregistration" />
               <div className="flex items-center space-x-3 flex-1">
-                <div className="w-12 h-12 rounded-full bg-funval-blue/10 flex items-center justify-center">
-                  <UserPlus className="h-6 w-6 text-funval-blue" />
+                <div className="w-12 h-12 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center">
+                  <UserPlus className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
                 </div>
                 <div className="flex-1">
                   <Label htmlFor="preregistration" className="text-base font-medium cursor-pointer">
@@ -78,7 +78,7 @@ export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps
               size="lg"
               className="min-w-[120px]"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="h-4 w-4 mr-2 hover:text-[rgb(46_131_242_/_1)]" />
               Anterior
             </Button>
             
@@ -87,7 +87,7 @@ export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps
               disabled={!selectedAction}
               variant="funval"
               size="lg"
-              className="min-w-[200px]"
+              className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Continuar
             </Button>

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { CountrySelect } from "@/components/ui/countryselect"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { PreRegistrationFormData, countries } from '../../../types/forms'
@@ -39,7 +40,7 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
 
   const isFormValid = () => {
     const requiredFields = [
-      'primerNombre', 'primerApellido', 'genero', 'edad', 'pais', 
+      'primerNombre', 'primerApellido', 'genero', 'edad', 'pais',
       'telefono', 'estacaZona', 'correo', 'estadoCivil', 'haServidoMision'
     ]
     return requiredFields.every(field => formData[field as keyof PreRegistrationFormData]?.trim() !== '')
@@ -53,10 +54,10 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
     <div className="max-w-3xl mx-auto">
       <Card className="border-2">
         <CardHeader className="text-center pb-4">
-          <div className="mx-auto w-16 h-16 rounded-full bg-funval-blue/10 flex items-center justify-center mb-4">
-            <UserPlus className="h-8 w-8 text-funval-blue" />
+          <div className="mx-auto w-16 h-16 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center mb-4">
+            <UserPlus className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
           </div>
-          <CardTitle className="text-2xl font-bold text-funval-blue">
+          <CardTitle className="text-2xl font-bold text-funval-blue text-[rgb(46_131_242_/_1)]">
             Formulario de Pre-inscripción
           </CardTitle>
           <p className="text-muted-foreground mt-2">
@@ -67,7 +68,7 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="primerNombre">Primer nombre *</Label>
+                <Label htmlFor="primerNombre">Primer nombre </Label>
                 <Input
                   id="primerNombre"
                   value={formData.primerNombre}
@@ -88,7 +89,7 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
               </div>
 
               <div>
-                <Label htmlFor="primerApellido">Primer apellido *</Label>
+                <Label htmlFor="primerApellido">Primer apellido </Label>
                 <Input
                   id="primerApellido"
                   value={formData.primerApellido}
@@ -122,7 +123,7 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
               </div>
 
               <div>
-                <Label htmlFor="edad">Edad *</Label>
+                <Label htmlFor="edad">Edad </Label>
                 <Input
                   id="edad"
                   type="number"
@@ -137,22 +138,16 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
 
               <div>
                 <Label htmlFor="pais">País *</Label>
-                <Select value={formData.pais} onValueChange={(value) => updateFormData('pais', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona país" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countries.map((country) => (
-                      <SelectItem key={country} value={country}>
-                        {country}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <CountrySelect
+                  countries={countries}
+                  value={formData.pais}
+                  onChange={(value) => updateFormData("pais", value)}
+                  placeholder="Selecciona país"
+                />
               </div>
 
               <div>
-                <Label htmlFor="telefono">Teléfono *</Label>
+                <Label htmlFor="telefono">Teléfono </Label>
                 <Input
                   id="telefono"
                   value={formData.telefono}
@@ -163,7 +158,7 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
               </div>
 
               <div>
-                <Label htmlFor="estacaZona">Estaca/Zona *</Label>
+                <Label htmlFor="estacaZona">Estaca/Distrito/Misión </Label>
                 <Input
                   id="estacaZona"
                   value={formData.estacaZona}
@@ -174,7 +169,7 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
               </div>
 
               <div>
-                <Label htmlFor="correo">Correo electrónico *</Label>
+                <Label htmlFor="correo">Correo electrónico </Label>
                 <Input
                   id="correo"
                   type="email"
@@ -196,7 +191,6 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                     <SelectItem value="casado">Casado/a</SelectItem>
                     <SelectItem value="divorciado">Divorciado/a</SelectItem>
                     <SelectItem value="viudo">Viudo/a</SelectItem>
-                    <SelectItem value="union_libre">Unión libre</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -228,16 +222,16 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                 size="lg"
                 className="min-w-[120px]"
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
+                <ArrowLeft className="h-4 w-4 mr-2  " />
                 Anterior
               </Button>
-              
+
               <Button
                 type="submit"
                 disabled={!isFormValid()}
                 variant="funval"
                 size="lg"
-                className="min-w-[200px]"
+                className="min-w-[200px] bg-[rgb(46_131_242_/_1)] hover:bg-[rgb(46_131_242_/_1)]/90 transition-colors text-white"
               >
                 Continuar
               </Button>

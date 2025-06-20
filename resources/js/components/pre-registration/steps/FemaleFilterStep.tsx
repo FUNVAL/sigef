@@ -92,10 +92,10 @@ export function FemaleFilterStep({ formData, onNext, onShowMessage, onBack }: Fe
     <div className="max-w-2xl mx-auto">
       <Card className="border-2">
         <CardHeader className="text-center pb-4">
-          <div className="mx-auto w-16 h-16 rounded-full bg-funval-blue/10 flex items-center justify-center mb-4">
-            <Users2 className="h-8 w-8 text-funval-blue" />
+          <div className="mx-auto w-16 h-16 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center mb-4">
+            <Users2 className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
           </div>
-          <CardTitle className="text-2xl font-bold text-funval-blue">
+          <CardTitle className="text-2xl font-bold text-[rgb(46_131_242_/_1)]">
             Preguntas de Evaluación
           </CardTitle>
           <p className="text-muted-foreground mt-2">
@@ -194,7 +194,7 @@ export function FemaleFilterStep({ formData, onNext, onShowMessage, onBack }: Fe
               disabled={!canProceed}
               variant="funval"
               size="lg"
-              className="min-w-[200px]"
+              className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Continuar
             </Button>

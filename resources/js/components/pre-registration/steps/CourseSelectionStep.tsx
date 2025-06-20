@@ -31,10 +31,10 @@ export function CourseSelectionStep({ formData, onNext, onBack }: CourseSelectio
     <div className="max-w-5xl mx-auto">
       <Card className="border-2">
         <CardHeader className="text-center pb-4">
-          <div className="mx-auto w-16 h-16 rounded-full bg-funval-blue/10 flex items-center justify-center mb-4">
-            <GraduationCap className="h-8 w-8 text-funval-blue" />
+          <div className="mx-auto w-16 h-16 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center mb-4">
+            <GraduationCap className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
           </div>
-          <CardTitle className="text-2xl font-bold text-funval-blue">
+          <CardTitle className="text-2xl font-bold text-[rgb(46_131_242_/_1)]">
             Selecciona tu Curso
           </CardTitle>
           <p className="text-muted-foreground mt-2">
@@ -75,7 +75,7 @@ export function CourseSelectionStep({ formData, onNext, onBack }: CourseSelectio
                 >
                   <>
                     {courses.map((course, index) => (
-                      <TableRow key={index} className="hover:bg-muted/50">
+                      <TableRow key={index} className="hover:bg-muted/50 ">
                         <TableCell>
                           <RadioGroupItem
                             value={course.nombre}
@@ -91,7 +91,7 @@ export function CourseSelectionStep({ formData, onNext, onBack }: CourseSelectio
                           </Label>
                         </TableCell>
                         <TableCell>
-                          <span className="text-funval-blue font-medium">
+                          <span className="text-[rgb(46_131_242_/_1)] font-medium">
                             {course.tiempo}
                           </span>
                         </TableCell>
@@ -113,7 +113,7 @@ export function CourseSelectionStep({ formData, onNext, onBack }: CourseSelectio
           </div>
 
           {selectedCourse && (
-            <div className="mt-6 p-4 bg-funval-blue/5 border border-funval-blue/20 rounded-lg">
+            <div className="mt-6 p-4 bg-[rgb(46_131_242_/_1)]/5 border border-[rgb(46_131_242_/_1)]/20 rounded-lg">
               <h3 className="font-semibold text-funval-darkBlue mb-2">
                 Curso seleccionado: {selectedCourse}
               </h3>
@@ -140,7 +140,7 @@ export function CourseSelectionStep({ formData, onNext, onBack }: CourseSelectio
               disabled={!selectedCourse}
               variant="funval"
               size="lg"
-              className="min-w-[200px]"
+              className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Finalizar Pre-inscripción
             </Button>
