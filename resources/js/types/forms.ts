@@ -1,12 +1,15 @@
 
-
-/* Desde aqui */
-
 // Primero tipos básicos
 export interface Country {
   nombre: string;
   codigo: string;
 }
+
+export interface Estaca {
+  id: number
+  nombre: string
+}
+
 
 export interface ReferralFormData {
   nombre: string;
@@ -82,6 +85,12 @@ export const courses: Course[] = [
   { nombre: "Diseño Gráfico & Marketing Digital", tiempo: "7 semanas", modalidad: "En línea" },
   { nombre: "Mecánica de Motos", tiempo: "6 semanas", modalidad: "Semipresencial" }
 ];
+
+export const estacas: Estaca[] = [
+  { id: 1, nombre: 'Estaca Guatemala Norte' },
+  { id: 2, nombre: 'Distrito Cobán' },
+  { id: 3, nombre: 'Misión El Salvador' },
+]
 
 // Formatos de salida para enviar al backend
 export interface ReferralFormOutput {

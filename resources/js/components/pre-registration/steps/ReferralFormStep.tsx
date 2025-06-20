@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ReferralFormData, Country, countries } from '../../../types/forms'
+import { ReferralFormData, Country, countries, estacas } from '../../../types/forms'
 import { Users, ArrowLeft } from "lucide-react"
 
 interface ReferralFormStepProps {
@@ -205,15 +205,24 @@ export function ReferralFormStep({ onNext, onBack }: ReferralFormStepProps) {
               </div>
 
               <div>
-                <Label htmlFor="estacaZona">Estaca/Distrito/Misión </Label>
-                <Input
-                  id="estacaZona"
+                <Label htmlFor="estacaZona">Estaca/Distrito/Misión *</Label>
+                <Select
                   value={formData.estacaZona}
-                  onChange={(e) => updateFormData('estacaZona', e.target.value)}
-                  placeholder="Estaca o zona"
-                  required
-                />
+                  onValueChange={(value) => updateFormData('estacaZona', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona una estaca" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {estacas.map((item) => (
+                      <SelectItem key={item.id} value={item.nombre}>
+                        {item.nombre}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+
             </div>
 
             <div className="border-t pt-6">

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { UserPlus, ArrowLeft } from "lucide-react"
-import { PreRegistrationFormData, Country, countries } from '../../../types/forms'
+import { PreRegistrationFormData, Country, countries, estacas } from '../../../types/forms'
 
 interface PreRegistrationFormStepProps {
   onNext: (data: PreRegistrationFormData) => void
@@ -187,7 +187,25 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
               <InputGroup id="telefono" label="Teléfono" value={formData.telefono} onChange={updateFormData} required />
 
               {/* Estaca */}
-              <InputGroup id="estacaZona" label="Estaca/Distrito/Misión" value={formData.estacaZona} onChange={updateFormData} required />
+              <div>
+                <Label htmlFor="estacaZona">Estaca/Distrito/Misión *</Label>
+                <Select
+                  value={formData.estacaZona}
+                  onValueChange={(value) => updateFormData('estacaZona', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona una estaca" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {estacas.map((item) => (
+                      <SelectItem key={item.id} value={item.nombre}>
+                        {item.nombre}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
 
               {/* Correo */}
               <InputGroup id="correo" label="Correo electrónico" value={formData.correo} onChange={updateFormData} type="email" required />
