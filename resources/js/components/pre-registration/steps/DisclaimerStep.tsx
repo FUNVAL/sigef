@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { AlertTriangle } from "lucide-react"
+/* import { AlertTriangle } from "lucide-react" */
 
 interface DisclaimerStepProps {
   onNext: () => void;
@@ -16,38 +16,31 @@ export function DisclaimerStep({ onNext }: DisclaimerStepProps) {
     <div className="max-w-3xl mx-auto">
       <Card className="border-2">
         <CardHeader className="text-center pb-4">
-          <div className="mx-auto w-16 h-16 rounded-full bg-funval-blue/10 flex items-center justify-center mb-4">
-            <AlertTriangle className="h-8 w-8 text-funval-blue" />
+          <div className="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4">
+           {/*  <AlertTriangle className="h-8 w-8 text-funval-blue" /> */}
+           <img src="/brujula.png" alt="FunvalBrujula" className="h-12 w-12" />
           </div>
-          <CardTitle className="text-2xl font-bold text-funval-blue">
-            Términos y Condiciones - FUNVAL Internacional
+          <CardTitle className="text-4xl font-bold text-[rgb(46_131_242_/_1)]">
+            ¡Bienvenido a FUNVAL Internacional!  
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="prose prose-sm max-w-none dark:prose-invert">
             <div className="bg-muted/50 p-6 rounded-lg space-y-4">
               <h3 className="text-lg font-semibold text-funval-darkBlue">
-                Información Importante sobre Nuestros Programas
+                Nos complace recibir tu aplicación o referencia.
               </h3>
               
               <div className="space-y-3 text-sm">
-                <p>
-                  <strong>FUNVAL Internacional</strong> es una organización sin fines de lucro dedicada a brindar 
-                  capacitaciones técnicas de alta calidad en países de Latinoamérica.
+                <p className="text-funval-darkBlue">
+                  Este programa está diseñado <strong>para personas con necesidad de encontrar un empleo y comprometidas a estudiar de manera intensiva 10-12 horas diarias de lunes a viernes.</strong>
                 </p>
                 
                 <p>
-                  Al continuar con este formulario, usted acepta que:
+                  Si tú o tu amigo son esta persona, ¡adelante! estamos deseosos de poder acompañarte en la búsqueda de empleo.
                 </p>
                 
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>La información proporcionada será utilizada exclusivamente para fines de evaluación y contacto</li>
-                  <li>Los programas están dirigidos a personas que cumplan con los requisitos específicos de cada curso</li>
-                  <li>FUNVAL se reserva el derecho de seleccionar candidatos basándose en criterios académicos y disponibilidad</li>
-                  <li>Las referencias de "estaca/zona" hacen referencia a unidades organizacionales de la Iglesia de Jesucristo de los Santos de los Últimos Días</li>
-                  <li>El proceso de selección puede tomar entre 24 a 72 horas hábiles</li>
-                  <li>Los cursos tienen requisitos específicos de dedicación horaria y compromiso</li>
-                </ul>
+               
                 
                 <p className="text-funval-darkBlue font-medium">
                   Los datos personales serán tratados con confidencialidad y no serán compartidos con terceros 
@@ -61,7 +54,10 @@ export function DisclaimerStep({ onNext }: DisclaimerStepProps) {
             <Checkbox
               id="terms"
               checked={accepted}
-              onCheckedChange={(checked) => setAccepted(checked as boolean)}
+              className="data-[state=checked]:bg-[rgb(46_131_242_/_1)] data-[state=checked]:text-white"
+              onCheckedChange={(checked) => setAccepted(checked as boolean)
+                
+              }
             />
             <Label
               htmlFor="terms"
@@ -78,7 +74,7 @@ export function DisclaimerStep({ onNext }: DisclaimerStepProps) {
               disabled={!accepted}
               variant="funval"
               size="lg"
-              className="min-w-[200px]"
+              className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Continuar
             </Button>

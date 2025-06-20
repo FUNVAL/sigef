@@ -12,14 +12,14 @@ export function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 rounded-full funval-gradient flex items-center justify-center">
-            <span className="text-white font-bold text-sm">F</span>
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-funval-blue">FUNVAL</h1>
-            <p className="text-xs text-muted-foreground">Internacional</p>
+          <div className="w-35 h-10">
+            
+            <img src="/Sinfondo.png" alt="imagenFunval" />
+            
           </div>
         </div>
-        
+
         <Button
           variant="ghost"
           size="icon"

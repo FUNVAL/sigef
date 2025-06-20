@@ -22,22 +22,22 @@ export function MessageStep({
       case 'success':
         return <CheckCircle2 className="h-12 w-12 text-green-600" />
       case 'warning':
-        return <AlertCircle className="h-12 w-12 text-orange-500" />
+        return <AlertCircle className="h-12 w-12 hidden" />
       case 'info':
-        return <Info className="h-12 w-12 text-funval-blue" />
+        return <Info className="h-12 w-12 hidden" />
       default:
-        return <Users className="h-12 w-12 text-funval-blue" />
+        return <Users className="h-12 w-12 text-[rgb(46_131_242_/_1)]" />
     }
   }
 
   const getCardStyle = () => {
     switch (type) {
       case 'success':
-        return 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950'
+        return 'border-blue-100 bg-blue-50 dark:border-gray-900 dark:bg-gray-900'
       case 'warning':
-        return 'border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950'
+        return 'border-blue-100 bg-blue-50 dark:border-gray-900 dark:bg-gray-900'
       case 'info':
-        return 'border-funval-blue/20 bg-funval-blue/5'
+        return 'border-blue-100 bg-blue-50 dark:border-gray-900 dark:bg-gray-900'
       default:
         return 'border-2'
     }
@@ -49,7 +49,7 @@ export function MessageStep({
       case 'success':
         return '¡Proceso Completado!'
       case 'warning':
-        return 'Información Importante'
+        return 'Información'
       case 'info':
         return 'Información'
       default:
@@ -61,9 +61,9 @@ export function MessageStep({
     <div className="max-w-2xl mx-auto">
       <Card className={`border-2 ${getCardStyle()}`}>
         <CardHeader className="text-center pb-4">
-          <div className="mx-auto w-20 h-20 rounded-full bg-background flex items-center justify-center mb-4 shadow-sm">
+         {/*  <div className="mx-auto w-20 h-20 rounded-full bg-background flex items-center justify-center mb-4 shadow-sm">
             {getIcon()}
-          </div>
+          </div> */}
           <CardTitle className="text-2xl font-bold text-funval-blue">
             {getTitle()}
           </CardTitle>

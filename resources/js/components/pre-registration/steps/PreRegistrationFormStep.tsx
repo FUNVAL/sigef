@@ -1,16 +1,85 @@
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { PreRegistrationFormData, countries } from '../../../types/forms'
 import { UserPlus, ArrowLeft } from "lucide-react"
+import { PreRegistrationFormData, Country, countries, estacas } from '../../../types/forms'
 
 interface PreRegistrationFormStepProps {
-  onNext: (data: PreRegistrationFormData) => void;
-  onBack: () => void;
+  onNext: (data: PreRegistrationFormData) => void
+  onBack: () => void
+}
+
+interface CountrySelectProps {
+  countries: Country[]
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
+}
+
+// CountrySelect adaptado a dark mode
+function CountrySelect({ countries, value, onChange, placeholder }: CountrySelectProps) {
+  const [search, setSearch] = useState("")
+  const filteredCountries = countries.filter((country) =>
+    country.nombre.toLowerCase().includes(search.toLowerCase())
+  )
+
+  const selectRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+        setSearch("")
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent
+        ref={selectRef}
+        className="pt-2 max-h-60 overflow-auto bg-background dark:bg-gray-900"
+      >
+        <div className="px-3 pb-2 sticky top-0 z-10 bg-background dark:bg-gray-900 border-b border-muted dark:border-gray-700">
+          <Input
+            autoFocus
+            placeholder="Buscar país..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full bg-background dark:bg-gray-900 text-foreground"
+          />
+        </div>
+
+        {filteredCountries.length > 0 ? (
+          filteredCountries.map((country) => (
+            <SelectItem key={country.nombre} value={country.nombre}>
+              {country.nombre}
+            </SelectItem>
+          ))
+        ) : (
+          <div className="p-4 text-center text-muted-foreground select-none">
+            No se encontraron países
+          </div>
+        )}
+      </SelectContent>
+    </Select>
+  )
 }
 
 export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormStepProps) {
@@ -39,24 +108,38 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
 
   const isFormValid = () => {
     const requiredFields = [
-      'primerNombre', 'primerApellido', 'genero', 'edad', 'pais', 
+      'primerNombre', 'primerApellido', 'genero', 'edad', 'pais',
       'telefono', 'estacaZona', 'correo', 'estadoCivil', 'haServidoMision'
     ]
     return requiredFields.every(field => formData[field as keyof PreRegistrationFormData]?.trim() !== '')
   }
 
   const updateFormData = (field: keyof PreRegistrationFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData(prev => {
+      const updated = { ...prev, [field]: value }
+
+      if (field === "pais") {
+        const selected = countries.find((c) => c.nombre === value)
+        if (selected) {
+          const codigo = selected.codigo
+          if (!updated.telefono.startsWith(codigo)) {
+            updated.telefono = `${codigo} `
+          }
+        }
+      }
+
+      return updated
+    })
   }
 
   return (
     <div className="max-w-3xl mx-auto">
       <Card className="border-2">
         <CardHeader className="text-center pb-4">
-          <div className="mx-auto w-16 h-16 rounded-full bg-funval-blue/10 flex items-center justify-center mb-4">
-            <UserPlus className="h-8 w-8 text-funval-blue" />
+          <div className="mx-auto w-16 h-16 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center mb-4">
+            <UserPlus className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
           </div>
-          <CardTitle className="text-2xl font-bold text-funval-blue">
+          <CardTitle className="text-2xl font-bold text-funval-blue text-[rgb(46_131_242_/_1)]">
             Formulario de Pre-inscripción
           </CardTitle>
           <p className="text-muted-foreground mt-2">
@@ -66,48 +149,13 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="primerNombre">Primer nombre *</Label>
-                <Input
-                  id="primerNombre"
-                  value={formData.primerNombre}
-                  onChange={(e) => updateFormData('primerNombre', e.target.value)}
-                  placeholder="Primer nombre"
-                  required
-                />
-              </div>
+              {/* Todos los inputs de nombres */}
+              <InputGroup id="primerNombre" label="Primer nombre" value={formData.primerNombre} onChange={updateFormData} required />
+              <InputGroup id="segundoNombre" label="Segundo nombre" value={formData.segundoNombre} onChange={updateFormData} />
+              <InputGroup id="primerApellido" label="Primer apellido" value={formData.primerApellido} onChange={updateFormData} required />
+              <InputGroup id="segundoApellido" label="Segundo apellido" value={formData.segundoApellido} onChange={updateFormData} />
 
-              <div>
-                <Label htmlFor="segundoNombre">Segundo nombre</Label>
-                <Input
-                  id="segundoNombre"
-                  value={formData.segundoNombre}
-                  onChange={(e) => updateFormData('segundoNombre', e.target.value)}
-                  placeholder="Segundo nombre (opcional)"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="primerApellido">Primer apellido *</Label>
-                <Input
-                  id="primerApellido"
-                  value={formData.primerApellido}
-                  onChange={(e) => updateFormData('primerApellido', e.target.value)}
-                  placeholder="Primer apellido"
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="segundoApellido">Segundo apellido</Label>
-                <Input
-                  id="segundoApellido"
-                  value={formData.segundoApellido}
-                  onChange={(e) => updateFormData('segundoApellido', e.target.value)}
-                  placeholder="Segundo apellido (opcional)"
-                />
-              </div>
-
+              {/* Género */}
               <div>
                 <Label htmlFor="genero">Género *</Label>
                 <Select value={formData.genero} onValueChange={(value) => updateFormData('genero', value)}>
@@ -121,70 +169,48 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                 </Select>
               </div>
 
+              {/* Edad */}
+              <InputGroup id="edad" label="Edad" value={formData.edad} onChange={updateFormData} type="number" min="16" max="65" required />
+
+              {/* País */}
               <div>
-                <Label htmlFor="edad">Edad *</Label>
-                <Input
-                  id="edad"
-                  type="number"
-                  value={formData.edad}
-                  onChange={(e) => updateFormData('edad', e.target.value)}
-                  placeholder="Edad"
-                  min="16"
-                  max="65"
-                  required
+                <Label htmlFor="pais">País *</Label>
+                <CountrySelect
+                  countries={countries}
+                  value={formData.pais}
+                  onChange={(value) => updateFormData("pais", value)}
+                  placeholder="Selecciona país"
                 />
               </div>
 
+              {/* Teléfono */}
+              <InputGroup id="telefono" label="Teléfono" value={formData.telefono} onChange={updateFormData} required />
+
+              {/* Estaca */}
               <div>
-                <Label htmlFor="pais">País *</Label>
-                <Select value={formData.pais} onValueChange={(value) => updateFormData('pais', value)}>
+                <Label htmlFor="estacaZona">Estaca/Distrito/Misión *</Label>
+                <Select
+                  value={formData.estacaZona}
+                  onValueChange={(value) => updateFormData('estacaZona', value)}
+                >
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecciona país" />
+                    <SelectValue placeholder="Selecciona una estaca" />
                   </SelectTrigger>
                   <SelectContent>
-                    {countries.map((country) => (
-                      <SelectItem key={country} value={country}>
-                        {country}
+                    {estacas.map((item) => (
+                      <SelectItem key={item.id} value={item.nombre}>
+                        {item.nombre}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div>
-                <Label htmlFor="telefono">Teléfono *</Label>
-                <Input
-                  id="telefono"
-                  value={formData.telefono}
-                  onChange={(e) => updateFormData('telefono', e.target.value)}
-                  placeholder="Número de teléfono"
-                  required
-                />
-              </div>
 
-              <div>
-                <Label htmlFor="estacaZona">Estaca/Zona *</Label>
-                <Input
-                  id="estacaZona"
-                  value={formData.estacaZona}
-                  onChange={(e) => updateFormData('estacaZona', e.target.value)}
-                  placeholder="Estaca o zona"
-                  required
-                />
-              </div>
+              {/* Correo */}
+              <InputGroup id="correo" label="Correo electrónico" value={formData.correo} onChange={updateFormData} type="email" required />
 
-              <div>
-                <Label htmlFor="correo">Correo electrónico *</Label>
-                <Input
-                  id="correo"
-                  type="email"
-                  value={formData.correo}
-                  onChange={(e) => updateFormData('correo', e.target.value)}
-                  placeholder="correo@ejemplo.com"
-                  required
-                />
-              </div>
-
+              {/* Estado Civil */}
               <div>
                 <Label htmlFor="estadoCivil">Estado civil *</Label>
                 <Select value={formData.estadoCivil} onValueChange={(value) => updateFormData('estadoCivil', value)}>
@@ -196,12 +222,12 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                     <SelectItem value="casado">Casado/a</SelectItem>
                     <SelectItem value="divorciado">Divorciado/a</SelectItem>
                     <SelectItem value="viudo">Viudo/a</SelectItem>
-                    <SelectItem value="union_libre">Unión libre</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
+            {/* Misión */}
             <div>
               <Label className="text-base font-medium">¿Has servido una misión? *</Label>
               <RadioGroup
@@ -220,6 +246,7 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
               </RadioGroup>
             </div>
 
+            {/* Botones */}
             <div className="flex justify-between pt-4">
               <Button
                 type="button"
@@ -231,13 +258,13 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Anterior
               </Button>
-              
+
               <Button
                 type="submit"
                 disabled={!isFormValid()}
                 variant="funval"
                 size="lg"
-                className="min-w-[200px]"
+                className="min-w-[200px] bg-[rgb(46_131_242_/_1)] hover:bg-[rgb(46_131_242_/_1)]/90 transition-colors text-white"
               >
                 Continuar
               </Button>
@@ -245,6 +272,33 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
           </form>
         </CardContent>
       </Card>
+    </div>
+  )
+}
+
+// InputGroup helper
+function InputGroup({
+  id,
+  label,
+  value,
+  onChange,
+  ...rest
+}: {
+  id: keyof PreRegistrationFormData
+  label: string
+  value: string
+  onChange: (field: keyof PreRegistrationFormData, value: string) => void
+  [key: string]: any
+}) {
+  return (
+    <div>
+      <Label htmlFor={id}>{label}</Label>
+      <Input
+        id={id}
+        value={value}
+        onChange={(e) => onChange(id, e.target.value)}
+        {...rest}
+      />
     </div>
   )
 }
