@@ -89,6 +89,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('settings/appearance', function () {
             return Inertia::render('settings/appearance');
         })->name('appearance');
+
+
+        Route::get('pre-registration', function () {
+            return Inertia::render('pre-registration/pre-registration');
+        })->name('pre-registration');
     });
 });
 
