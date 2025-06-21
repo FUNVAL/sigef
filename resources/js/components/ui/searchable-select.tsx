@@ -58,9 +58,9 @@ export function SearchableSelect({ data, value, onChange, searchField, id, name 
                 </div>
 
                 {filteredData.length > 0 ? (
-                    filteredData.map((country) => (
-                        <SelectItem key={country.name} value={country.id.toString()}>
-                            {country.name}
+                    filteredData.map((item) => (
+                        <SelectItem key={item.name} value={item.id.toString()}>
+                            {item.name}
                         </SelectItem>
                     ))
                 ) : (
