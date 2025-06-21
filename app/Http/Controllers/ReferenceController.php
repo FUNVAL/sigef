@@ -44,46 +44,30 @@ class ReferenceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
+
+            $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'gender' => 'integer',
+                'age' => 'required|integer|min:18|max:120',
                 'country_id' => 'required|exists:countries,id',
                 'phone' => 'nullable|string|max:20',
                 'stake_id' => 'required|exists:stakes,id',
-                'status' => 'boolean',
-                'reason' => 'nullable|integer',
                 'referrer_name' => 'nullable|string|max:255',
                 'referrer_phone' => 'nullable|string|max:20',
-                'relationship_with_referred' => 'nullable|string|max:255',
+                'relationship_with_referred' => 'nullable|numeric',
             ]);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error de validación',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
+            Reference::create($validated);
 
-            $data = $validator->validated();
-            $data['modifier_id'] = Auth::id();
-
-            $reference = Reference::create($data);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Referencia creada exitosamente',
-                'data' => $reference
-            ], 201);
+            return redirect()->back()
+                ->with('success', 'Referencia creada exitosamente');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al crear referencia',
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->back()
+                ->withErrors(['error' => $e->getMessage()])
+                ->withInput();
         }
     }
 
