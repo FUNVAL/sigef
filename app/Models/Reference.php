@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\GenderEnum;
 use App\Enums\ReferenceStatusEnum;
+use App\Enums\RequestStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -63,6 +64,9 @@ class Reference extends Model
 
     public function getDeclinedReasonAttribute(): ?array
     {
+        if (is_null($this->attributes['declined_reason'])) {
+            return null;
+        }
         return ReferenceStatusEnum::fromId($this->attributes['declined_reason']);
     }
 
@@ -80,5 +84,10 @@ class Reference extends Model
     {
         $modifier = $this->modifier()->first();
         return $modifier ? ['id' => $modifier->id, 'name' => $modifier->fullname] : null;
+    }
+
+    public function getStatusAttribute(): ?array
+    {
+        return RequestStatusEnum::fromId($this->attributes['status']);
     }
 }
