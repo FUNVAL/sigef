@@ -11,25 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ReferralFormData } from '../../../types/forms'
-import { Users, ArrowLeft, Search } from "lucide-react"
+import { Users, ArrowLeft } from "lucide-react"
 import { useForm, usePage } from "@inertiajs/react"
 import SearchableSelect from "@/components/ui/searchable-select"
+import { ReferenceFormData } from "@/types/reference"
+import { Enums } from "@/types/global"
 
 interface ReferralFormStepProps {
   onNext: (data: ReferenceFormData) => void
   onBack: () => void,
   stakes: { id: number; name: string, country_id: number }[]
   countries: { id: number; name: string; code: string }[]
-}
-
-type Enums = {
-  courseModality: { id: number; name: string }[]
-  statusEnum: { id: number; name: string }[]
-  gender: { id: number; name: string }[]
-  relationship_with_referredEnum: { id: number; name: string }[]
-  maritalStatusEnum: { id: number; name: string }[]
-  relatedReference: { id: number; name: string }[]
 }
 
 export function ReferralFormStep({ onNext, onBack, stakes, countries }: ReferralFormStepProps) {
