@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\GenderEnum;
-use App\Enums\ReferenceStatusEnum;
-use App\Enums\RequestStatusEnum;
 use App\Enums\StatusEnum;
 use App\Models\Reference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
+use App\Models\Stake;
 
 class ReferenceController extends Controller
 {
@@ -21,10 +18,15 @@ class ReferenceController extends Controller
     public function index()
     {
         try {
+            $user = Auth::user();
+            $query = Reference::query()->with(['country', 'stake', 'modifier'])->orderBy('created_at', 'desc');
+
+            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
             return  Inertia::render('pre-registration/references', [
-                'references' => Reference::with(['country', 'stake', 'modifier'])
-                    ->orderBy('created_at', 'desc')
-                    ->get()
+                'references' => $query->get()
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -135,7 +137,7 @@ class ReferenceController extends Controller
                     ],
                     'declined_description' => [
                         'nullable',
-                        'numeric',
+                        'string',
                         function ($attribute, $value, $fail) use ($request) {
                             if ((int)$request->input('status') === 3 && empty($value)) {
                                 $fail('El campo descripción de rechazo es obligatorio cuando el estatus es 3.');
@@ -175,6 +177,87 @@ class ReferenceController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error al eliminar la referencia',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get the reference dashboard data.
+     */
+    public function dashboard()
+    {
+        try {
+            $user = Auth::user();
+            $query = Reference::query()->with(['country', 'stake', 'modifier']);
+
+            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $references = $query->get();
+            $total = $references->count();
+
+            // General statistics
+            $pending = $references->where('status.id', 1)->count();
+            $accepted = $references->where('status.id', 2)->count();
+            $rejected = $references->where('status.id', 3)->count();
+            $acceptancePercentage = $total > 0 ? round(($accepted / $total) * 100, 1) : 0;
+            
+            // References this week
+            $newThisWeek = $references->where('created_at', '>=', now()->startOfWeek())->count();
+
+            $stats = [
+                'total' => $total,
+                'pending' => $pending,
+                'accepted' => $accepted,
+                'rejected' => $rejected,
+                'acceptancePercentage' => $acceptancePercentage,
+                'newThisWeek' => $newThisWeek,
+            ];
+
+            // References by country
+            $referencesByCountry = $references->groupBy('country.name')
+                ->map(function ($group, $country) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'country' => $country ?? 'No Country',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
+            // References by stake
+            $referencesByStake = $references->groupBy('stake.name')
+                ->map(function ($group, $stake) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'stake' => $stake ?? 'No Stake',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+             
+            return Inertia::render('dashboard', [
+                'data' =>[
+                    'stats' => $stats,
+                    'referencesByCountry' => $referencesByCountry,
+                    'referencesByStake' => $referencesByStake,
+                    'references' => $references
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener el dashboard de referencias',
                 'error' => $e->getMessage()
             ], 500);
         }
