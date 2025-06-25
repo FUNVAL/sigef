@@ -12,7 +12,6 @@ use App\Enums\CourseModalityEnum;
 use App\Enums\ReferenceStatusEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Exception;
 
 class PreInscriptionController extends Controller
@@ -33,6 +32,27 @@ class PreInscriptionController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        try {
+            // load view with inertia 
+            return inertia('pre-registration/pre-registration', [
+                'countries' => Country::all(),
+                'stakes' => Stake::all(),
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error loading pre-inscription creation form',
+                'error' => $th->getMessage()
+            ], 500);
+        }
+    }
+
 
     /**
      * Store a newly created resource in storage.

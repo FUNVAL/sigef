@@ -2,25 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\GenderEnum;
-use App\Enums\ReferenceStatusEnum;
-use App\Enums\RequestStatusEnum;
+use App\Enums\StatusEnum;
 use App\Models\Reference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
+use Inertia\Inertia;
+use App\Models\Stake;
 
 class ReferenceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index()
     {
         try {
-            $references = Reference::all();
-            return response()->json($references);
+            $user = Auth::user();
+            $query = Reference::query()->with(['country', 'stake', 'modifier'])->orderBy('created_at', 'desc');
+
+            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+            return  Inertia::render('pre-registration/references', [
+                'references' => $query->get()
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -44,46 +51,30 @@ class ReferenceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
+
+            $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'gender' => 'integer',
+                'age' => 'required|integer|min:18|max:120',
                 'country_id' => 'required|exists:countries,id',
                 'phone' => 'nullable|string|max:20',
                 'stake_id' => 'required|exists:stakes,id',
-                'status' => 'boolean',
-                'reason' => 'nullable|integer',
                 'referrer_name' => 'nullable|string|max:255',
                 'referrer_phone' => 'nullable|string|max:20',
-                'relationship_with_referred' => 'nullable|string|max:255',
+                'relationship_with_referred' => 'nullable|numeric',
             ]);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error de validación',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
+            Reference::create($validated);
 
-            $data = $validator->validated();
-            $data['modifier_id'] = Auth::id();
-
-            $reference = Reference::create($data);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Referencia creada exitosamente',
-                'data' => $reference
-            ], 201);
+            return redirect()->back()
+                ->with('success', 'Referencia creada exitosamente');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al crear referencia',
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->back()
+                ->withErrors(['error' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -128,46 +119,45 @@ class ReferenceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Reference $reference): JsonResponse
+    public function update(Request $request, $id)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'name' => 'string|max:255',
-                'gender' => 'required|integer|in:' . implode(',', [GenderEnum::values()]), // Assuming
-                'country_id' => 'exists:countries,id',
-                'phone' => 'nullable|string|max:20',
-                'stake_id' => 'exists:stakes,id',
-                'status' => 'required|in:' . implode(',', [RequestStatusEnum::values()]), // Assuming 0: Pending, 1: Approved
-                'declined_reason' => 'nullable|integer|in:' . implode(',', [ReferenceStatusEnum::values()]), // Assuming reasons are defined in the enum
-                'referrer_name' => 'nullable|string|max:255',
-                'referrer_phone' => 'nullable|string|max:20',
-                'relationship_with_referred' => 'nullable|string|max:255',
-            ]);
+            $reference = Reference::findOrFail($id);
+            $validated = $request->validate(
+                [
+                    'status' => 'required|in:' . implode(',', StatusEnum::values()),
+                    'declined_reason' => [
+                        'nullable',
+                        'numeric',
+                        function ($attribute, $value, $fail) use ($request) {
+                            if ((int)$request->input('status') === 3 && empty($value)) {
+                                $fail('El campo motivo de rechazo es obligatorio cuando el estatus es 3.');
+                            }
+                        },
+                    ],
+                    'declined_description' => [
+                        'nullable',
+                        'string',
+                        function ($attribute, $value, $fail) use ($request) {
+                            if ((int)$request->input('status') === 3 && empty($value)) {
+                                $fail('El campo descripción de rechazo es obligatorio cuando el estatus es 3.');
+                            }
+                        },
+                    ],
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error de validación',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
+                ]
+            );
 
-            $data = $validator->validated();
-            $data['modifier_id'] = Auth::id();
+            $validated['modifier_id'] = Auth::id();
 
-            $reference->update($data);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Referencia actualizada exitosamente',
-                'data' => $reference
-            ]);
+            $reference->update($validated);
+            $reference->save();
+            return redirect()->back()
+                ->with('success', 'Referencia actualizada exitosamente');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al actualizar la referencia',
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->back()
+                ->withErrors(['error' => $e->getMessage()])
+                ->withInput();
         }
     }
 
@@ -187,6 +177,87 @@ class ReferenceController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error al eliminar la referencia',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get the reference dashboard data.
+     */
+    public function dashboard()
+    {
+        try {
+            $user = Auth::user();
+            $query = Reference::query()->with(['country', 'stake', 'modifier']);
+
+            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $references = $query->get();
+            $total = $references->count();
+
+            // General statistics
+            $pending = $references->where('status.id', 1)->count();
+            $accepted = $references->where('status.id', 2)->count();
+            $rejected = $references->where('status.id', 3)->count();
+            $acceptancePercentage = $total > 0 ? round(($accepted / $total) * 100, 1) : 0;
+            
+            // References this week
+            $newThisWeek = $references->where('created_at', '>=', now()->startOfWeek())->count();
+
+            $stats = [
+                'total' => $total,
+                'pending' => $pending,
+                'accepted' => $accepted,
+                'rejected' => $rejected,
+                'acceptancePercentage' => $acceptancePercentage,
+                'newThisWeek' => $newThisWeek,
+            ];
+
+            // References by country
+            $referencesByCountry = $references->groupBy('country.name')
+                ->map(function ($group, $country) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'country' => $country ?? 'No Country',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
+            // References by stake
+            $referencesByStake = $references->groupBy('stake.name')
+                ->map(function ($group, $stake) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'stake' => $stake ?? 'No Stake',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+             
+            return Inertia::render('dashboard', [
+                'data' =>[
+                    'stats' => $stats,
+                    'referencesByCountry' => $referencesByCountry,
+                    'referencesByStake' => $referencesByStake,
+                    'references' => $references
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener el dashboard de referencias',
                 'error' => $e->getMessage()
             ], 500);
         }

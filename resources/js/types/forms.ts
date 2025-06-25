@@ -1,7 +1,7 @@
 // Tipos básicos
 export interface Country {
-    name: string;
-    code: string;
+  name: string;
+  code: string; 
 }
 
 export interface Stake {

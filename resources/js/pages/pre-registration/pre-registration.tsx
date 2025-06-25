@@ -10,10 +10,10 @@ import { CourseSelectionStep } from '../../components/pre-registration/steps/Cou
 import { MessageStep } from '../../components/pre-registration/steps/MessageStep'
 import { ReferralFormData, PreRegistrationFormData } from '../../types/forms'
 
-type Step = 
-  | 'disclaimer' 
-  | 'action-selection' 
-  | 'referral-form' 
+type Step =
+  | 'disclaimer'
+  | 'action-selection'
+  | 'referral-form'
   | 'preregistration-form'
   | 'female-filter'
   | 'course-selection'
@@ -26,7 +26,12 @@ type MessageData = {
   title?: string;
 }
 
-function PreRegistration() {
+type PreRegistrationProps = {
+  countries: { id: number; name: string, code: string }[];
+  stakes: { id: number; name: string, country_id: number }[];
+}
+
+function PreRegistration({ countries, stakes }: PreRegistrationProps) {
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [currentStep, setCurrentStep] = useState<Step>('disclaimer')
   const [selectedAction, setSelectedAction] = useState<'referral' | 'preregistration' | null>(null)
@@ -96,7 +101,7 @@ function PreRegistration() {
       case 'female-filter': return 4
       case 'course-selection': return 5
       case 'success-message':
-      case 'info-message': 
+      case 'info-message':
         return selectedAction === 'referral' ? 4 : 6
       default: return 1
     }
@@ -121,7 +126,7 @@ function PreRegistration() {
     }
   }
 
-  const handleReferralSubmit = (data: ReferralFormData) => {
+  const handleReferralSubmit = (data: ReferenceFormData) => {
     console.log('Referral data:', data)
     setMessageData({
       message: 'Gracias por tu referencia. Hemos recibido la información y nos pondremos en contacto con la persona referida en las próximas 24-72 horas.',
@@ -133,7 +138,7 @@ function PreRegistration() {
 
   const handlePreRegistrationSubmit = (data: PreRegistrationFormData) => {
     setPreRegistrationData(data)
-    
+
     if (data.genero === 'masculino') {
       setCurrentStep('course-selection')
     } else {
@@ -172,7 +177,12 @@ function PreRegistration() {
         return <ActionSelectionStep onNext={handleActionSelection} onBack={goBack} />
 
       case 'referral-form':
-        return <ReferralFormStep onNext={handleReferralSubmit} onBack={goBack} />
+        return <ReferralFormStep
+          onNext={handleReferralSubmit}
+          onBack={goBack}
+          countries={countries}
+          stakes={stakes}
+        />
 
       case 'preregistration-form':
         return <PreRegistrationFormStep onNext={handlePreRegistrationSubmit} onBack={goBack} />
@@ -224,7 +234,7 @@ function PreRegistration() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
       <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-      
+
       <main className="container mx-auto px-4 py-8">
         {shouldShowStepIndicator && (
           <StepIndicator
