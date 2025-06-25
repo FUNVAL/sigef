@@ -81,7 +81,7 @@ export function CompleteDialog({
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+            <DialogTrigger asChild className="flex">
                 <Button
                     variant="link"
                     aria-label={`Abrir ${dialogTitle}`}
