@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "name": "Responsable",
+        "description": "Usuario con rol de responsable",
+        "guard_name": "web"
+    },
+    {
+        "id": 2,
+        "name": "Administrador",
+        "description": "Usuario con acceso completo al sistema",
+        "guard_name": "web"
+    },
+    {
+        "id": 3,
+        "name": "Controller",
+        "description": "Usuario con permisos de control y monitoreo",
+        "guard_name": "web"
+    },
+    {
+        "id": 4,
+        "name": "IT",
+        "description": "Usuario del departamento de tecnología",
+        "guard_name": "web"
+    },
+    {
+        "id": 5,
+        "name": "Profesor",
+        "description": "Usuario con rol de profesor",
+        "guard_name": "web"
+    },
+    {
+        "id": 6,
+        "name": "Certificador",
+        "description": "Usuario encargado de certificaciones",
+        "guard_name": "web"
+    },
+    {
+        "id": 7,
+        "name": "Supervisor de responsable",
+        "description": "Usuario que supervisa a responsables",
+        "guard_name": "web"
+    },
+    {
+        "id": 8,
+        "name": "Auditor de empleo",
+        "description": "Usuario con rol de auditor de empleo",
+        "guard_name": "web"
+    },
+    {
+        "id": 9,
+        "name": "Director regional",
+        "description": "Usuario con rol de director regional",
+        "guard_name": "web"
+    },
+    {
+        "id": 10,
+        "name": "Supervisor académico",
+        "description": "Usuario con rol de supervisor académico",
+        "guard_name": "web"
+    },
+    {
+        "id": 11,
+        "name": "Director de escuela",
+        "description": "Usuario con rol de director de escuela",
+        "guard_name": "web"
+    },
+    {
+        "id": 12,
+        "name": "Director financiero",
+        "description": "Usuario con rol de director financiero",
+        "guard_name": "web"
+    }
+]
