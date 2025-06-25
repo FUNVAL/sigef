@@ -1,8 +1,8 @@
 
 // Primero tipos básicos
 export interface Country {
-  nombre: string;
-  codigo: string;
+  name: string;
+  code: string;
 }
 
 export interface Estaca {
