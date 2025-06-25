@@ -41,7 +41,7 @@ export const columns: ColumnDef<Course>[] = [
     },
     {
         accessorKey: "name",
-        header: "Nombre del curso",
+        header: "Nombre del referido",
         cell: ({ row }) => {
             const course = row.original;
             return (
