@@ -11,117 +11,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ReferralFormData, Country, countries, estacas } from '../../../types/forms'
 import { Users, ArrowLeft } from "lucide-react"
+import { useForm, usePage } from "@inertiajs/react"
+import SearchableSelect from "@/components/ui/searchable-select"
+import { ReferenceFormData } from "@/types/reference"
+import { Enums } from "@/types/global"
 
 interface ReferralFormStepProps {
-  onNext: (data: ReferralFormData) => void
-  onBack: () => void
+  onNext: (data: ReferenceFormData) => void
+  onBack: () => void,
+  stakes: { id: number; name: string, country_id: number }[]
+  countries: { id: number; name: string; code: string }[]
 }
 
-interface CountrySelectProps {
-  countries: Country[]
-  value: string
-  onChange: (value: string) => void
-  placeholder?: string
-}
+export function ReferralFormStep({ onNext, onBack, stakes, countries }: ReferralFormStepProps) {
 
-// CountrySelect con buscador fijo arriba y soporte para modo oscuro
-function CountrySelect({ countries, value, onChange, placeholder }: CountrySelectProps) {
-  const [search, setSearch] = useState("")
-  const filteredCountries = countries.filter((country) =>
-    country.nombre.toLowerCase().includes(search.toLowerCase())
-  )
-
-  const selectRef = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
-        setSearch("")
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
-
-  return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger>
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent
-        ref={selectRef}
-        className="pt-2 max-h-60 overflow-auto bg-background dark:bg-gray-900"
-      >
-        <div className="px-3 pb-2 sticky top-0 bg-background dark:bg-gray-900 z-10 border-b border-muted dark:border-gray-700">
-          <Input
-            autoFocus
-            placeholder="Buscar país..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onClick={(e) => e.stopPropagation()}
-            className="w-full bg-background dark:bg-gray-900 text-foreground"
-          />
-        </div>
-
-        {filteredCountries.length > 0 ? (
-          filteredCountries.map((country) => (
-            <SelectItem key={country.nombre} value={country.nombre}>
-              {country.nombre}
-            </SelectItem>
-          ))
-        ) : (
-          <div className="p-4 text-center text-muted-foreground select-none">
-            No se encontraron países
-          </div>
-        )}
-      </SelectContent>
-    </Select>
-  )
-}
-
-export function ReferralFormStep({ onNext, onBack }: ReferralFormStepProps) {
-  const [formData, setFormData] = useState<ReferralFormData>({
-    nombre: '',
-    genero: '',
-    edad: '',
-    pais: '',
-    telefono: '',
-    estacaZona: '',
-    nombreQuienRefiere: '',
-    telefonoQuienRefiere: '',
-    relacionConReferido: ''
-  })
+  const { data, setData, post, processing, errors, reset } = useForm<Required<ReferenceFormData>>(initialReferenceFormData);
+  const { enums } = usePage<{ enums: Enums }>().props;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (isFormValid()) {
-      console.log('Datos de referencia (JSON):', JSON.stringify(formData, null, 2))
-      onNext(formData)
-    }
-  }
-
-  const isFormValid = () => {
-    return Object.values(formData).every(value => value.trim() !== '')
-  }
-
-  const updateFormData = (field: keyof ReferralFormData, value: string) => {
-    setFormData(prev => {
-      const updated = { ...prev, [field]: value }
-
-      // Si cambia el país, actualizar código telefónico
-      if (field === 'pais') {
-        const selectedCountry = countries.find(c => c.nombre === value)
-        if (selectedCountry) {
-          if (!updated.telefono.startsWith(selectedCountry.codigo)) {
-            updated.telefono = `${selectedCountry.codigo} `
-          }
-        }
-      }
-
-      return updated
+    post(route('references.store'), {
+      onSuccess: (response) => {
+        onNext(data);
+        reset();
+      },
+      onError: (error) => {
+        console.error('Error al enviar la referencia:', error)
+      },
     })
   }
 
@@ -143,84 +60,100 @@ export function ReferralFormStep({ onNext, onBack }: ReferralFormStepProps) {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="nombre">Nombre completo de la persona referida </Label>
+                <Label htmlFor="name">Nombre completo de la persona referida </Label>
                 <Input
-                  id="nombre"
-                  value={formData.nombre}
-                  onChange={(e) => updateFormData('nombre', e.target.value)}
+                  id="name"
+                  name="name"
+                  value={data.name}
+                  onChange={(e) => setData('name', e.target.value)}
                   placeholder="Nombre completo"
                   required
                 />
+                {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
               </div>
 
               <div>
                 <Label htmlFor="genero">Género *</Label>
                 <Select
-                  value={formData.genero}
-                  onValueChange={(value) => updateFormData('genero', value)}
+                  value={data.gender.toString()}
+                  onValueChange={(value) => setData('gender', Number(value))}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona género" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="masculino">Masculino</SelectItem>
-                    <SelectItem value="femenino">Femenino</SelectItem>
+                    {
+                      enums.gender.map(gender =>
+                        <SelectItem key={gender.id} value={gender.id.toString()}>
+                          {gender.name}
+                        </SelectItem>
+                      )
+                    }
                   </SelectContent>
                 </Select>
+                {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
               </div>
 
               <div>
-                <Label htmlFor="edad">Edad </Label>
+                <Label htmlFor="age">Edad </Label>
                 <Input
-                  id="edad"
+                  id="age"
                   type="number"
-                  value={formData.edad}
-                  onChange={(e) => updateFormData('edad', e.target.value)}
+                  value={data.age}
+                  onChange={(e) => setData('age', Number(e.target.value))}
                   placeholder="Edad"
                   min="16"
                   max="65"
                   required
                 />
+                {errors.age && <p className="text-red-500 text-sm">{errors.age}</p>}
               </div>
 
               <div>
-                <Label htmlFor="pais">País *</Label>
-                <CountrySelect
-                  countries={countries}
-                  value={formData.pais}
-                  onChange={(value) => updateFormData("pais", value)}
-                  placeholder="Selecciona país"
+                <Label htmlFor="country_id">País *</Label>
+                <SearchableSelect
+                  data={countries}
+                  id="country_id"
+                  name="country_id"
+                  value={data.country_id.toString()}
+                  searchField="name"
+                  onChange={(value) => setData('country_id', Number(value))}
                 />
+                {errors.country_id && <p className="text-red-500 text-sm">{errors.country_id}</p>}
               </div>
 
               <div>
-                <Label htmlFor="telefono">Teléfono </Label>
+                <Label htmlFor="phone">Teléfono </Label>
                 <Input
-                  id="telefono"
-                  value={formData.telefono}
-                  onChange={(e) => updateFormData('telefono', e.target.value)}
+                  id="phone"
+                  name="phone"
+                  value={data.phone}
+                  onChange={(e) => setData('phone', e.target.value)}
                   placeholder="Número de teléfono"
                   required
                 />
+                {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
               </div>
 
               <div>
-                <Label htmlFor="estacaZona">Estaca/Distrito/Misión *</Label>
+                <Label htmlFor="stake_id">Estaca/Distrito/Misión *</Label>
                 <Select
-                  value={formData.estacaZona}
-                  onValueChange={(value) => updateFormData('estacaZona', value)}
+                  value={data.stake_id.toString()}
+                  onValueChange={(value) => setData('stake_id', Number(value))}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona una estaca" />
+                  <SelectTrigger id="stake_id" name="stake_id">
+                    <SelectValue placeholder="Selecciona una estaca" defaultChecked />
                   </SelectTrigger>
                   <SelectContent>
-                    {estacas.map((item) => (
-                      <SelectItem key={item.id} value={item.nombre}>
-                        {item.nombre}
+                    {data.country_id ? stakes.filter(stake => stake.country_id === data.country_id).map((item) => (
+                      <SelectItem key={item.id} value={item.id.toString()}>
+                        {item.name}
                       </SelectItem>
-                    ))}
+                    ))
+                      : <SelectItem value="0" disabled>Selecciona un país primero</SelectItem>}
                   </SelectContent>
                 </Select>
+                {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
               </div>
 
             </div>
@@ -232,42 +165,51 @@ export function ReferralFormStep({ onNext, onBack }: ReferralFormStepProps) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="nombreQuienRefiere">Tu nombre completo </Label>
+                  <Label htmlFor="referrer_name">Tu nombre completo </Label>
                   <Input
-                    id="nombreQuienRefiere"
-                    value={formData.nombreQuienRefiere}
-                    onChange={(e) => updateFormData('nombreQuienRefiere', e.target.value)}
+                    id="referrer_name"
+                    name="referrer_name"
+                    value={data.referrer_name}
+                    onChange={(e) => setData('referrer_name', e.target.value)}
                     placeholder="Tu nombre completo"
                     required
                   />
+                  {errors.referrer_name && <p className="text-red-500 text-sm">{errors.referrer_name}</p>}
                 </div>
 
                 <div>
-                  <Label htmlFor="telefonoQuienRefiere">Tu teléfono </Label>
+                  <Label htmlFor="referrer_phone">Tu teléfono </Label>
                   <Input
-                    id="telefonoQuienRefiere"
-                    value={formData.telefonoQuienRefiere}
-                    onChange={(e) => updateFormData('telefonoQuienRefiere', e.target.value)}
+                    id="referrer_phone"
+                    name="referrer_phone"
+                    value={data.referrer_phone}
+                    onChange={(e) => setData('referrer_phone', e.target.value)}
                     placeholder="Tu número de teléfono"
                     required
                   />
+                  {errors.referrer_phone && <p className="text-red-500 text-sm">{errors.referrer_phone}</p>}
                 </div>
 
                 <div className="md:col-span-2">
-                  <Label htmlFor="relacionConReferido">Relación con la persona referida *</Label>
+                  <Label htmlFor="relationship_with_referred">Relación con la persona referida *</Label>
                   <Select
-                    value={formData.relacionConReferido}
-                    onValueChange={(value) => updateFormData('relacionConReferido', value)}
+                    value={data.relationship_with_referred.toString()}
+                    onValueChange={(value) => setData('relationship_with_referred', Number(value))}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger name="relationship_with_referred" id="relationship_with_referred">
                       <SelectValue placeholder="Selecciona la relación" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="familiar">Familiar</SelectItem>
-                      <SelectItem value="amigo">Amigo/a</SelectItem>
-                      <SelectItem value="companero_iglesia">Miembro de la Iglesia</SelectItem>
+                      {
+                        enums.relatedReference.map((relation) => (
+                          <SelectItem key={relation.id} value={relation.id.toString()}>
+                            {relation.name}
+                          </SelectItem>
+                        ))
+                      }
                     </SelectContent>
                   </Select>
+                  {errors.relationship_with_referred && <p className="text-red-500 text-sm">{errors.relationship_with_referred}</p>}
                 </div>
               </div>
             </div>
@@ -286,8 +228,7 @@ export function ReferralFormStep({ onNext, onBack }: ReferralFormStepProps) {
 
               <Button
                 type="submit"
-                disabled={!isFormValid()}
-                variant="funval"
+                disabled={processing}
                 size="lg"
                 className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -297,6 +238,19 @@ export function ReferralFormStep({ onNext, onBack }: ReferralFormStepProps) {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </div >
   )
+}
+
+
+const initialReferenceFormData: ReferenceFormData = {
+  name: '',
+  gender: 0,
+  country_id: 0,
+  age: 0,
+  phone: '',
+  stake_id: 0,
+  referrer_name: '',
+  referrer_phone: '',
+  relationship_with_referred: 0,
 }

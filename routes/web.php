@@ -15,9 +15,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [ReferenceController::class, 'dashboard'])->name('dashboard');
 
     Route::middleware('auth')->group(function () {
         // access control routes (users) 
@@ -72,7 +70,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 Route::get('create', 'create')->name('create');
                 Route::post('create', 'store')->name('store');
                 Route::get('{id}', 'show')->name('show');
-                Route::put('{id}', 'update')->name('update');
+                Route::patch('{id}', 'update')->name('update');
                 Route::delete('{id}', 'destroy')->name('destroy');
             });
 
@@ -89,11 +87,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('settings/appearance', function () {
             return Inertia::render('settings/appearance');
         })->name('appearance');
-
-
-        Route::get('pre-registration', function () {
-            return Inertia::render('pre-registration/pre-registration');
-        })->name('pre-registration');
     });
 });
 
