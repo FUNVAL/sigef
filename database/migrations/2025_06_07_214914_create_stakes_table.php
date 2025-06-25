@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
-            $table->unique(['name', 'country_id']); // Agregando restricción única compuesta
+            $table->unique(['name', 'country_id', 'user_id']); // Agregando restricción única compuesta
             $table->timestamps();
         });
     }
