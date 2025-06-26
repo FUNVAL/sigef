@@ -39,7 +39,7 @@ class PreInscriptionController extends Controller
     public function create()
     {
         try {
-            // load view with inertia 
+            // load view with inertia
             return inertia('pre-registration/pre-registration', [
                 'countries' => Country::all(),
                 'stakes' => Stake::all(),
@@ -60,7 +60,17 @@ class PreInscriptionController extends Controller
     public function store(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
+            // Debug: Log the incoming data
+            \Log::info('Pre-inscription data received:', $request->all());
+
+            // Convert country and stake names to IDs if they are strings
+            $data = $request->all();
+            $data = $this->convertNamesToIds($data);
+
+            // Debug: Log the converted data
+            \Log::info('Pre-inscription data after conversion:', $data);
+
+            $validator = Validator::make($data, [
                 'first_name' => 'required|string|max:50',
                 'middle_name' => 'nullable|string|max:50',
                 'last_name' => 'required|string|max:50',
@@ -82,26 +92,41 @@ class PreInscriptionController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => $validator->errors()
-                ], 422);
+                // For Inertia requests, return back with errors
+                return back()->withErrors($validator->errors());
             }
 
             $preInscription = PreInscription::create($validator->validated());
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pre-inscription created successfully',
-                'data' => $preInscription
-            ], 201);
+            // For Inertia requests, redirect with success message
+            return redirect()->back()->with('success', 'Pre-inscripción creada exitosamente');
+
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating pre-inscription',
-                'error' => $e->getMessage()
-            ], 500);
+            \Log::error('Error creating pre-inscription:', ['error' => $e->getMessage()]);
+
+            // For Inertia requests, return back with error
+            return back()->withErrors(['error' => 'Error al crear la pre-inscripción: ' . $e->getMessage()]);
         }
+    }
+
+    /**
+     * Convert country and stake names to IDs if they are strings
+     */
+    private function convertNamesToIds(array $data): array
+    {
+        // Convert country name to ID if it's a string
+        if (isset($data['country_id']) && !is_numeric($data['country_id'])) {
+            $country = Country::where('name', $data['country_id'])->first();
+            $data['country_id'] = $country ? $country->id : 1; // Default to ID 1 if not found
+        }
+
+        // Convert stake name to ID if it's a string
+        if (isset($data['stake_id']) && !is_numeric($data['stake_id'])) {
+            $stake = Stake::where('name', $data['stake_id'])->first();
+            $data['stake_id'] = $stake ? $stake->id : 1; // Default to ID 1 if not found
+        }
+
+        return $data;
     }
 
     /**
