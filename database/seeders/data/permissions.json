@@ -1,0 +1,206 @@
+[
+    {
+        "name": "ver usuarios",
+        "description": "Permite ver la lista de usuarios",
+        "category": "Gestión de Usuarios",
+        "key": "user:view"
+    },
+    {
+        "name": "crear usuarios",
+        "description": "Permite crear nuevos usuarios",
+        "category": "Gestión de Usuarios",
+        "key": "user:create"
+    },
+    {
+        "name": "editar usuarios",
+        "description": "Permite editar usuarios existentes",
+        "category": "Gestión de Usuarios",
+        "key": "user:edit"
+    },
+    {
+        "name": "eliminar usuarios",
+        "description": "Permite eliminar usuarios",
+        "category": "Gestión de Usuarios",
+        "key": "user:delete"
+    },
+    {
+        "name": "ver roles",
+        "description": "Permite ver la lista de roles",
+        "category": "Gestión de Roles",
+        "key": "role:view"
+    },
+    {
+        "name": "crear roles",
+        "description": "Permite crear nuevos roles",
+        "category": "Gestión de Roles",
+        "key": "role:create"
+    },
+    {
+        "name": "editar roles",
+        "description": "Permite editar roles existentes",
+        "category": "Gestión de Roles",
+        "key": "role:edit"
+    },
+    {
+        "name": "eliminar roles",
+        "description": "Permite eliminar roles",
+        "category": "Gestión de Roles",
+        "key": "role:delete"
+    },
+    {
+        "name": "ver permisos",
+        "description": "Permite ver la lista de permisos",
+        "category": "Gestión de Permisos",
+        "key": "permission:view"
+    },
+    {
+        "name": "crear permisos",
+        "description": "Permite crear nuevos permisos",
+        "category": "Gestión de Permisos",
+        "key": "permission:create"
+    },
+    {
+        "name": "editar permisos",
+        "description": "Permite editar permisos existentes",
+        "category": "Gestión de Permisos",
+        "key": "permission:edit"
+    },
+    {
+        "name": "eliminar permisos",
+        "description": "Permite eliminar permisos",
+        "category": "Gestión de Permisos",
+        "key": "permission:delete"
+    },
+    {
+        "name": "ver grupos",
+        "description": "Permite ver la lista de grupos",
+        "category": "Gestión de Grupos",
+        "key": "group:view"
+    },
+    {
+        "name": "crear grupos",
+        "description": "Permite crear nuevos grupos",
+        "category": "Gestión de Grupos",
+        "key": "group:create"
+    },
+    {
+        "name": "editar grupos",
+        "description": "Permite editar grupos existentes",
+        "category": "Gestión de Grupos",
+        "key": "group:edit"
+    },
+    {
+        "name": "eliminar grupos",
+        "description": "Permite eliminar grupos",
+        "category": "Gestión de Grupos",
+        "key": "group:delete"
+    },
+    {
+        "name": "ver cursos",
+        "description": "Permite ver la lista de cursos",
+        "category": "Gestión de Cursos",
+        "key": "course:view"
+    },
+    {
+        "name": "crear cursos",
+        "description": "Permite crear nuevos cursos",
+        "category": "Gestión de Cursos",
+        "key": "course:create"
+    },
+    {
+        "name": "editar cursos",
+        "description": "Permite editar cursos existentes",
+        "category": "Gestión de Cursos",
+        "key": "course:edit"
+    },
+    {
+        "name": "eliminar cursos",
+        "description": "Permite eliminar cursos",
+        "category": "Gestión de Cursos",
+        "key": "course:delete"
+    },
+    {
+        "name": "ver actividades",
+        "description": "Permite ver la lista de actividades",
+        "category": "Gestión de Actividades",
+        "key": "activity:view"
+    },
+    {
+        "name": "crear actividades",
+        "description": "Permite crear nuevas actividades",
+        "category": "Gestión de Actividades",
+        "key": "activity:create"
+    },
+    {
+        "name": "editar actividades",
+        "description": "Permite editar actividades existentes",
+        "category": "Gestión de Actividades",
+        "key": "activity:edit"
+    },
+    {
+        "name": "eliminar actividades",
+        "description": "Permite eliminar actividades",
+        "category": "Gestión de Actividades",
+        "key": "activity:delete"
+    },
+    {
+        "name": "ver calificaciones",
+        "description": "Permite ver la lista de calificaciones",
+        "category": "Gestión de Calificaciones",
+        "key": "grade:view"
+    },
+    {
+        "name": "crear calificaciones",
+        "description": "Permite crear nuevas calificaciones",
+        "category": "Gestión de Calificaciones",
+        "key": "grade:create"
+    },
+    {
+        "name": "editar calificaciones",
+        "description": "Permite editar calificaciones existentes",
+        "category": "Gestión de Calificaciones",
+        "key": "grade:edit"
+    },
+    {
+        "name": "eliminar calificaciones",
+        "description": "Permite eliminar calificaciones",
+        "category": "Gestión de Calificaciones",
+        "key": "grade:delete"
+    },
+    {
+        "name": "ver reportes",
+        "description": "Permite ver la lista de reportes",
+        "category": "Gestión de Reportes",
+        "key": "report:view"
+    },
+    {
+        "name": "crear reportes",
+        "description": "Permite crear nuevos reportes",
+        "category": "Gestión de Reportes",
+        "key": "report:create"
+    },
+    {
+        "name": "editar reportes",
+        "description": "Permite editar reportes existentes",
+        "category": "Gestión de Reportes",
+        "key": "report:edit"
+    },
+    {
+        "name": "eliminar reportes",
+        "description": "Permite eliminar reportes",
+        "category": "Gestión de Reportes",
+        "key": "report:delete"
+    },
+    {
+        "name": "ver configuracion",
+        "description": "Permite ver la configuración",
+        "category": "Configuración",
+        "key": "config:view"
+    },
+    {
+        "name": "editar configuracion",
+        "description": "Permite editar la configuración",
+        "category": "Configuración",
+        "key": "config:edit"
+    }
+]
