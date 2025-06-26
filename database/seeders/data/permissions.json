@@ -120,87 +120,21 @@
         "key": "course:delete"
     },
     {
-        "name": "ver actividades",
-        "description": "Permite ver la lista de actividades",
-        "category": "Gestión de Actividades",
-        "key": "activity:view"
+        "name": "ver referencias",
+        "description": "Permite ver la lista de referencias",
+        "category": "Gestion de referencias",
+        "key": "references:show"
     },
     {
-        "name": "crear actividades",
-        "description": "Permite crear nuevas actividades",
-        "category": "Gestión de Actividades",
-        "key": "activity:create"
+        "name": "editar referencias",
+        "description": "Permite editar referencias existentes",
+        "category": "Gestion de referencias",
+        "key": "references:edit"
     },
     {
-        "name": "editar actividades",
-        "description": "Permite editar actividades existentes",
-        "category": "Gestión de Actividades",
-        "key": "activity:edit"
-    },
-    {
-        "name": "eliminar actividades",
-        "description": "Permite eliminar actividades",
-        "category": "Gestión de Actividades",
-        "key": "activity:delete"
-    },
-    {
-        "name": "ver calificaciones",
-        "description": "Permite ver la lista de calificaciones",
-        "category": "Gestión de Calificaciones",
-        "key": "grade:view"
-    },
-    {
-        "name": "crear calificaciones",
-        "description": "Permite crear nuevas calificaciones",
-        "category": "Gestión de Calificaciones",
-        "key": "grade:create"
-    },
-    {
-        "name": "editar calificaciones",
-        "description": "Permite editar calificaciones existentes",
-        "category": "Gestión de Calificaciones",
-        "key": "grade:edit"
-    },
-    {
-        "name": "eliminar calificaciones",
-        "description": "Permite eliminar calificaciones",
-        "category": "Gestión de Calificaciones",
-        "key": "grade:delete"
-    },
-    {
-        "name": "ver reportes",
-        "description": "Permite ver la lista de reportes",
-        "category": "Gestión de Reportes",
-        "key": "report:view"
-    },
-    {
-        "name": "crear reportes",
-        "description": "Permite crear nuevos reportes",
-        "category": "Gestión de Reportes",
-        "key": "report:create"
-    },
-    {
-        "name": "editar reportes",
-        "description": "Permite editar reportes existentes",
-        "category": "Gestión de Reportes",
-        "key": "report:edit"
-    },
-    {
-        "name": "eliminar reportes",
-        "description": "Permite eliminar reportes",
-        "category": "Gestión de Reportes",
-        "key": "report:delete"
-    },
-    {
-        "name": "ver configuracion",
-        "description": "Permite ver la configuración",
-        "category": "Configuración",
-        "key": "config:view"
-    },
-    {
-        "name": "editar configuracion",
-        "description": "Permite editar la configuración",
-        "category": "Configuración",
-        "key": "config:edit"
+        "name": "eliminar referencias",
+        "description": "Permite eliminar referencias",
+        "category": "Gestion de referencias",
+        "key": "references:delete"
     }
 ]
