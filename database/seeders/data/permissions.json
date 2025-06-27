@@ -123,18 +123,12 @@
         "name": "ver referencias",
         "description": "Permite ver la lista de referencias",
         "category": "Gestion de referencias",
-        "key": "references:show"
+        "key": "reference:show"
     },
     {
         "name": "editar referencias",
-        "description": "Permite editar referencias existentes",
+        "description": "Permite actualizar el estado de una referencia",
         "category": "Gestion de referencias",
-        "key": "references:edit"
-    },
-    {
-        "name": "eliminar referencias",
-        "description": "Permite eliminar referencias",
-        "category": "Gestion de referencias",
-        "key": "references:delete"
+        "key": "reference:edit"
     }
 ]
