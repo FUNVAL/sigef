@@ -25,19 +25,32 @@ type MessageData = {
   type: 'success' | 'warning' | 'info';
   title?: string;
 }
-
+/* {
+    "id": 2,
+    "name": "Aire Acondicionado y Linea Blanca",
+    "duration": 8,
+    "modality": {
+        "id": 3,
+        "name": "Semipresencial"
+    },
+    "status": {
+        "id": 1,
+        "name": "Activo"
+    }
+} */
 type PreRegistrationProps = {
   countries: { id: number; name: string, code: string }[];
   stakes: { id: number; name: string, country_id: number }[];
+  courses: { id: number; name: string; duration: number; modality: { id: number; name: string }; status: { id: number; name: string } }[];
 }
 
-function PreRegistration({ countries, stakes }: PreRegistrationProps) {
+function PreRegistration({ countries, stakes , courses}: PreRegistrationProps) {
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [currentStep, setCurrentStep] = useState<Step>('disclaimer')
   const [selectedAction, setSelectedAction] = useState<'referral' | 'preregistration' | null>(null)
   const [preRegistrationData, setPreRegistrationData] = useState<PreRegistrationFormData | null>(null)
   const [messageData, setMessageData] = useState<MessageData>({ message: '', type: 'success' })
-
+  console.log({ courses })
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark')
@@ -185,7 +198,7 @@ function PreRegistration({ countries, stakes }: PreRegistrationProps) {
         />
 
       case 'preregistration-form':
-        return <PreRegistrationFormStep onNext={handlePreRegistrationSubmit} onBack={goBack} />
+        return <PreRegistrationFormStep onNext={handlePreRegistrationSubmit} onBack={goBack} courses={courses} />
 
       case 'female-filter':
         return (
@@ -203,6 +216,7 @@ function PreRegistration({ countries, stakes }: PreRegistrationProps) {
             formData={preRegistrationData!}
             onNext={handleCourseSelection}
             onBack={goBack}
+            courses={courses}
           />
         )
 

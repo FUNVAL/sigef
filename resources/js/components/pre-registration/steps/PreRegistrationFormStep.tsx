@@ -6,7 +6,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, UserPlus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { usePage } from '@inertiajs/react';
 import { Country, PreRegistrationFormData, Stake, countries, stakes } from '../../../types/forms';
+import { Enums } from '@/types/global';
 
 interface PreRegistrationFormStepProps {
     onNext: (data: PreRegistrationFormData) => void;
@@ -71,18 +73,20 @@ function CountrySelect({ countries, value, onChange, placeholder }: CountrySelec
 }
 
 export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormStepProps) {
+    const { enums } = usePage<{ enums: Enums }>().props;
+
     const [formData, setFormData] = useState<PreRegistrationFormData>({
         first_name: '',
         middle_name: '',
         last_name: '',
         second_last_name: '',
-        gender: '',
+        gender: '0',
         age: '',
         country_id: '',
         phone: '',
         stake_id: '',
         email: '',
-        marital_status: '',
+        marital_status: '0',
         served_mission: '',
         selected_course: '',
     });
@@ -99,16 +103,18 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
         const requiredFields = [
             'first_name',
             'last_name',
-            'gender',
             'age',
             'country_id',
             'phone',
             'stake_id',
             'email',
-            'marital_status',
             'served_mission',
         ];
-        return requiredFields.every((field) => formData[field as keyof PreRegistrationFormData]?.trim() !== '');
+        const isBasicFieldsValid = requiredFields.every((field) => formData[field as keyof PreRegistrationFormData]?.trim() !== '');
+        const isGenderValid = formData.gender !== '0' && formData.gender !== '';
+        const isMaritalStatusValid = formData.marital_status !== '0' && formData.marital_status !== '';
+
+        return isBasicFieldsValid && isGenderValid && isMaritalStatusValid;
     };
 
     const updateFormData = (field: keyof PreRegistrationFormData, value: string) => {
@@ -143,21 +149,24 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Todos los inputs de nombres */}
-                            <InputGroup id="first_name" label="First name" value={formData.first_name} onChange={updateFormData} required />
-                            <InputGroup id="middle_name" label="Middle name" value={formData.middle_name} onChange={updateFormData} />
-                            <InputGroup id="last_name" label="Last name" value={formData.last_name} onChange={updateFormData} required />
-                            <InputGroup id="second_last_name" label="Second last name" value={formData.second_last_name} onChange={updateFormData} />
+                            <InputGroup id="first_name" label="Primer nombre" value={formData.first_name} onChange={updateFormData} required />
+                            <InputGroup id="middle_name" label="Segundo nombre" value={formData.middle_name} onChange={updateFormData} />
+                            <InputGroup id="last_name" label="Apellido" value={formData.last_name} onChange={updateFormData} required />
+                            <InputGroup id="second_last_name" label="Segundo apellido" value={formData.second_last_name} onChange={updateFormData} />
 
                             {/* Género */}
                             <div>
                                 <Label htmlFor="gender">Género *</Label>
-                                <Select value={formData.gender} onValueChange={(value) => updateFormData('gender', value)}>
+                                <Select value={formData.gender === '0' ? '' : formData.gender} onValueChange={(value) => updateFormData('gender', value)}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select gender" />
+                                        <SelectValue placeholder="Seleccionar género" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="male">Masculino</SelectItem>
-                                        <SelectItem value="female">Femenino</SelectItem>
+                                        {enums.gender.map(gender => (
+                                            <SelectItem key={gender.id} value={gender.id.toString()}>
+                                                {gender.name}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -165,7 +174,7 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                             {/* Edad */}
                             <InputGroup
                                 id="age"
-                                label="Age"
+                                label="Edad"
                                 value={formData.age}
                                 onChange={updateFormData}
                                 type="number"
@@ -181,19 +190,19 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                                     countries={countries}
                                     value={formData.country_id}
                                     onChange={(value) => updateFormData('country_id', value)}
-                                    placeholder="Select country"
+                                    placeholder="Selecionar país"
                                 />
                             </div>
 
                             {/* Teléfono */}
-                            <InputGroup id="phone" label="Phone" value={formData.phone} onChange={updateFormData} required />
+                            <InputGroup id="phone" label="Teléfono" value={formData.phone} onChange={updateFormData} required />
 
                             {/* Estaca */}
                             <div>
                                 <Label htmlFor="stake_id">Estaca/Distrito/Misión *</Label>
                                 <Select value={formData.stake_id} onValueChange={(value) => updateFormData('stake_id', value)}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select a stake" />
+                                        <SelectValue placeholder="Selecciona tu estaca" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {stakes.map((stake: Stake) => (
@@ -211,15 +220,16 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                             {/* Estado Civil */}
                             <div>
                                 <Label htmlFor="marital_status">Estado civil *</Label>
-                                <Select value={formData.marital_status} onValueChange={(value) => updateFormData('marital_status', value)}>
+                                <Select value={formData.marital_status === '0' ? '' : formData.marital_status} onValueChange={(value) => updateFormData('marital_status', value)}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select marital status" />
+                                        <SelectValue placeholder="Selecciona estado civil" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="single">Soltero/a</SelectItem>
-                                        <SelectItem value="married">Casado/a</SelectItem>
-                                        <SelectItem value="divorced">Divorciado/a</SelectItem>
-                                        <SelectItem value="widowed">Viudo/a</SelectItem>
+                                        {enums.maritalStatus.map(status => (
+                                            <SelectItem key={status.id} value={status.id.toString()}>
+                                                {status.name}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>

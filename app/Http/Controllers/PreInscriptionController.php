@@ -10,6 +10,7 @@ use App\Enums\MaritalStatusEnum;
 use App\Enums\RequestStatusEnum;
 use App\Enums\CourseModalityEnum;
 use App\Enums\ReferenceStatusEnum;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -55,6 +56,7 @@ class PreInscriptionController extends Controller
             return inertia('pre-registration/pre-registration', [
                 'countries' => Country::all(),
                 'stakes' => Stake::all(),
+                'courses' => Course::all()
             ]);
         } catch (\Throwable $th) {
             return response()->json([

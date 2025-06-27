@@ -73,22 +73,6 @@ export const countries: Country[] = [
     { name: 'Venezuela', code: '+58' },
 ];
 
-export const courses: Course[] = [
-    { name: 'Sales Advisor', duration: '5 weeks', modality: 'Online' },
-    { name: 'Air Conditioning & Appliances', duration: '8 weeks', modality: 'Hybrid' },
-    { name: 'Financial Advisor', duration: '7 weeks', modality: 'Online' },
-    { name: 'Pharmacy Assistant', duration: '8 weeks', modality: 'Online' },
-    { name: 'Aluminum & Melamine Carpentry', duration: '6 weeks', modality: 'Hybrid' },
-    { name: 'Networking', duration: '7 weeks', modality: 'Hybrid' },
-    { name: 'Frontend Web Development', duration: '12 weeks', modality: 'Online' },
-    { name: 'English', duration: '20 weeks', modality: 'Online' },
-    { name: 'Specialized Services Interpreter', duration: '3 weeks', modality: 'Online' },
-    { name: 'IT Administrator', duration: '8 weeks', modality: 'Online' },
-    { name: 'SAP Logistics', duration: '7 weeks', modality: 'Online' },
-    { name: 'Graphic Design & Digital Marketing', duration: '7 weeks', modality: 'Online' },
-    { name: 'Motorcycle Mechanics', duration: '6 weeks', modality: 'Hybrid' },
-];
-
 export const stakes: Stake[] = [
     { id: 1, name: 'Guatemala North Stake' },
     { id: 2, name: 'Coban District' },

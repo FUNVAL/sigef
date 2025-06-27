@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { PreRegistrationFormData, courses } from '../../../types/forms'
+import { PreRegistrationFormData } from '../../../types/forms'
 import { GraduationCap, Clock, Globe, ArrowLeft } from "lucide-react"
 import { router } from "@inertiajs/react"
 
@@ -12,9 +12,10 @@ interface CourseSelectionStepProps {
   formData: PreRegistrationFormData;
   onNext: (data: PreRegistrationFormData) => void;
   onBack: () => void;
+  courses: { id: number; name: string; duration: number; modality: { id: number; name: string }; status: { id: number; name: string } }[];
 }
 
-export function CourseSelectionStep({ formData, onNext, onBack }: CourseSelectionStepProps) {
+export function CourseSelectionStep({ formData, onNext, onBack, courses }: CourseSelectionStepProps) {
   const [selectedCourse, setSelectedCourse] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -169,11 +170,11 @@ export function CourseSelectionStep({ formData, onNext, onBack }: CourseSelectio
                         </TableCell>
                         <TableCell>
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            course.modality === "Online"
+                            course.modality.name === "En Línea"
                               ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                               : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                           }`}>
-                            {course.modality}
+                            {course.modality.name}
                           </span>
                         </TableCell>
                       </TableRow>
