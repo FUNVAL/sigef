@@ -1,3 +1,4 @@
+import CourseCatalog from '@/components/home/CourseCatalog';
 import Hero from '@/components/home/Hero';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
@@ -57,15 +58,13 @@ export default function Welcome() {
                                 <Link href={route('login')} className="text-gray-700 hover:text-blue-600">
                                     Log in
                                 </Link>
-                                <Link href={route('register')} className="text-gray-700 hover:text-blue-600">
-                                    Register
-                                </Link>
                             </>
                         )}
                     </nav>
                 </header>
 
                 <Hero />
+                <CourseCatalog />
             </div>
         </>
     );
