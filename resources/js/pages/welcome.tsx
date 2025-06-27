@@ -1,5 +1,7 @@
 import CourseCatalog from '@/components/home/CourseCatalog';
 import Hero from '@/components/home/Hero';
+import About from '@/components/home/about';
+import Video from '@/components/home/videos';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
@@ -64,7 +66,9 @@ export default function Welcome() {
                 </header>
 
                 <Hero />
+                <About />
                 <CourseCatalog />
+                <Video />
             </div>
         </>
     );
