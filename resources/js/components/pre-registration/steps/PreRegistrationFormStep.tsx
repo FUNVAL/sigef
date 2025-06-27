@@ -84,6 +84,7 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
         email: '',
         marital_status: '',
         served_mission: '',
+        selected_course: '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -272,18 +273,35 @@ function InputGroup({
     label,
     value,
     onChange,
+    type = 'text',
+    required = false,
+    min,
+    max,
     ...rest
 }: {
     id: keyof PreRegistrationFormData;
     label: string;
     value: string;
     onChange: (field: keyof PreRegistrationFormData, value: string) => void;
-    [key: string]: any;
+    type?: string;
+    required?: boolean;
+    min?: string;
+    max?: string;
 }) {
     return (
         <div>
             <Label htmlFor={id}>{label}</Label>
-            <Input id={id} name={id} value={value} onChange={(e) => onChange(id, e.target.value)} {...rest} />
+            <Input
+                id={id}
+                name={id}
+                value={value}
+                onChange={(e) => onChange(id, e.target.value)}
+                type={type}
+                required={required}
+                min={min}
+                max={max}
+                {...rest}
+            />
         </div>
     );
 }

@@ -29,6 +29,16 @@ export function CourseSelectionStep({ formData, onNext, onBack }: CourseSelectio
     }
   }
 
+  // Función auxiliar para mapear tipo de empleo a job_type_preference
+  const getJobTypePreference = (tipoEmpleo: string) => {
+    switch (tipoEmpleo) {
+      case 'trabajo_fuera_casa': return 2; // Presencial (IN_PERSON)
+      case 'trabajo_en_casa': return 1; // Remoto (ONLINE)
+      case 'emprendimiento': return 3; // Híbrido (HYBRID) - o el que más se adapte
+      default: return null;
+    }
+  }
+
   // Función para mapear los datos del frontend al formato del backend
   const mapFormDataToBackend = (data: PreRegistrationFormData, course: string) => {
     return {
@@ -42,9 +52,10 @@ export function CourseSelectionStep({ formData, onNext, onBack }: CourseSelectio
       email: data.email,
       marital_status: getMaritalStatusId(data.marital_status),
       served_mission: data.served_mission === 'yes' || data.served_mission === 'true',
-      currently_working: data.currently_working === 'yes' || data.currently_working === 'true',
-      job_type_preference: data.job_type_preference ? parseInt(data.job_type_preference) : null,
-      available_full_time: data.availability === 'yes' || data.availability === 'true',
+      // Mapear datos del filtro anterior
+      currently_working: data.estaTrabajando === 'si',
+      job_type_preference: data.tipoEmpleoDeseado ? getJobTypePreference(data.tipoEmpleoDeseado) : null,
+      available_full_time: data.disponibilidadHorario === 'si',
       status: 1, // Por defecto, nuevo
       comments: `Curso seleccionado: ${course}`,
       // El backend manejará la conversión de nombres a IDs
@@ -56,17 +67,22 @@ export function CourseSelectionStep({ formData, onNext, onBack }: CourseSelectio
   const handleSubmit = () => {
     if (selectedCourse && !isSubmitting) {
       setIsSubmitting(true)
-      
+
       const updatedData = {
         ...formData,
         cursoSeleccionado: selectedCourse
       }
-      
+
       // Mapear los datos al formato que espera el backend
       const backendData = mapFormDataToBackend(updatedData, selectedCourse)
-      
+
+      console.log('Datos del filtro recibidos:', {
+        estaTrabajando: updatedData.estaTrabajando,
+        tipoEmpleoDeseado: updatedData.tipoEmpleoDeseado,
+        disponibilidadHorario: updatedData.disponibilidadHorario
+      })
       console.log('Enviando datos al backend:', backendData)
-      
+
       // Enviar al backend usando Inertia router
       router.post(route('pre-inscription.store'), backendData, {
         onSuccess: () => {

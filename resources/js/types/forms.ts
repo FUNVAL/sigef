@@ -1,7 +1,7 @@
 // Tipos básicos
 export interface Country {
   name: string;
-  code: string; 
+  code: string;
 }
 
 export interface Stake {
@@ -34,10 +34,15 @@ export interface PreRegistrationFormData {
     email: string;
     marital_status: string;
     served_mission: string;
+    selected_course?: string;
+    // Campos que vienen del filtro anterior (FemaleFilterStep)
+    estaTrabajando?: string;
+    tipoEmpleoDeseado?: string;
+    disponibilidadHorario?: string;
+    // Campos mapeados para el backend
     currently_working?: string;
     job_type_preference?: string;
     availability?: string;
-    selected_course?: string;
 }
 
 export interface Course {

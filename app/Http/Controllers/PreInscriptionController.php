@@ -12,6 +12,8 @@ use App\Enums\CourseModalityEnum;
 use App\Enums\ReferenceStatusEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 use Exception;
 
 class PreInscriptionController extends Controller
@@ -22,12 +24,22 @@ class PreInscriptionController extends Controller
     public function index()
     {
         try {
-            $preInscriptions = PreInscription::with(['country', 'stake'])->get();
-            return response()->json($preInscriptions);
-        } catch (Exception $e) {
+            $user = Auth::user();
+
+            $query = PreInscription::query()->with(['country', 'stake'])->orderBy('created_at', 'desc');
+
+            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            return Inertia::render('pre-registration/pre-inscription', [
+                'preInscriptions' => $query->get()
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error retrieving pre-inscriptions',
+                'message' => 'Error loading pre-inscriptions',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -152,42 +164,41 @@ class PreInscriptionController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $validated = Validator::make($request->all(), [
-                'first_name' => 'required|string|max:50',
-                'middle_name' => 'nullable|string|max:50',
-                'last_name' => 'required|string|max:50',
-                'second_last_name' => 'nullable|string|max:50',
-                'gender' => 'required|integer|in:' . implode(',', GenderEnum::values()),
-                'age' => 'required|integer|min:18|max:100',
-                'phone' => 'required|string|max:20',
-                'email' => 'required|email|max:100|unique:pre_inscriptions, email' . $id,
-                'marital_status' => 'required|integer|in:' . implode(',', MaritalStatusEnum::values()),
-                'served_mission' => 'required|boolean',
-                'currently_working' => 'nullable|boolean',
-                'job_type_preference' => 'nullable|integer|in:' . implode(',', CourseModalityEnum::values()),
-                'available_full_time' => 'nullable|boolean',
-                'status' => 'nullable|integer|in:' . implode(',', RequestStatusEnum::values()),
-                'comments' => 'nullable|string',
-                'declined_reason' => 'nullable|integer|in:' . implode(',', ReferenceStatusEnum::values()),
-                'country_id' => 'required|exists:countries,id',
-                'stake_id' => 'required|exists:stakes,id',
-            ]);
-
             $preInscription = PreInscription::findOrFail($id);
-
-            $preInscription->update($validated->validated());
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Pre-inscription updated successfully',
-                'data' => $preInscription
+            $validated = $request->validate([
+                'status' => 'required|in:' . implode(',', RequestStatusEnum::values()),
+                'declined_reason' => [
+                    'nullable',
+                    'numeric',
+                    function ($attribute, $value, $fail) use ($request) {
+                        if ((int)$request->input('status') === 3 && empty($value)) {
+                            $fail('El campo motivo de rechazo es obligatorio cuando el estatus es 3.');
+                        }
+                    },
+                ],
+                'declined_description' => [
+                    'nullable',
+                    'string',
+                    function ($attribute, $value, $fail) use ($request) {
+                        if ((int)$request->input('status') === 3 && empty($value)) {
+                            $fail('El campo descripción de rechazo es obligatorio cuando el estatus es 3.');
+                        }
+                    },
+                ],
+                'comments' => 'nullable|string',
             ]);
+
+            $validated['modified_by'] = Auth::id();
+
+            $preInscription->update($validated);
+            $preInscription->save();
+
+            return redirect()->back()
+                ->with('success', 'Pre-inscripción actualizada exitosamente');
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error updating pre-inscription',
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->back()
+                ->withErrors(['error' => $e->getMessage()])
+                ->withInput();
         }
     }
 
