@@ -42,10 +42,10 @@
         "key": "role:edit"
     },
     {
-        "name": "eliminar roles",
-        "description": "Permite eliminar roles",
+        "name": "asignar permisos a roles",
+        "description": "Permite asignar permisos a roles",
         "category": "Gestión de Roles",
-        "key": "role:delete"
+        "key": "role:assign-permissions"
     },
     {
         "name": "ver permisos",
