@@ -54,48 +54,6 @@
         "key": "permission:view"
     },
     {
-        "name": "crear permisos",
-        "description": "Permite crear nuevos permisos",
-        "category": "Gestión de Permisos",
-        "key": "permission:create"
-    },
-    {
-        "name": "editar permisos",
-        "description": "Permite editar permisos existentes",
-        "category": "Gestión de Permisos",
-        "key": "permission:edit"
-    },
-    {
-        "name": "eliminar permisos",
-        "description": "Permite eliminar permisos",
-        "category": "Gestión de Permisos",
-        "key": "permission:delete"
-    },
-    {
-        "name": "ver grupos",
-        "description": "Permite ver la lista de grupos",
-        "category": "Gestión de Grupos",
-        "key": "group:view"
-    },
-    {
-        "name": "crear grupos",
-        "description": "Permite crear nuevos grupos",
-        "category": "Gestión de Grupos",
-        "key": "group:create"
-    },
-    {
-        "name": "editar grupos",
-        "description": "Permite editar grupos existentes",
-        "category": "Gestión de Grupos",
-        "key": "group:edit"
-    },
-    {
-        "name": "eliminar grupos",
-        "description": "Permite eliminar grupos",
-        "category": "Gestión de Grupos",
-        "key": "group:delete"
-    },
-    {
         "name": "ver cursos",
         "description": "Permite ver la lista de cursos",
         "category": "Gestión de Cursos",

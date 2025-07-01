@@ -31,9 +31,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // access control routes (roles)
         Route::prefix('access-control')->name('access.')
             ->controller(RoleController::class)->group(function () {
-                Route::get('/', 'index')->name('index');
-                Route::post('/roles/create', 'store')->name('store');
-                Route::put('/roles/{roleId}', 'updateRolePermissions')->name('permissions.update');
+                Route::get('/', 'index')->name('index')->middleware('can:ver roles');
+                Route::post('/roles/create', 'store')->name('store')->middleware('can:crear roles');
+                Route::put('/roles/{roleId}', 'updateRolePermissions')->name('permissions.update')->middleware('can:asignar permisos a roles');
             });
 
         // countries routes 
@@ -58,10 +58,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::prefix('courses')->name('courses.')
             ->controller(CourseController::class)->group(function () {
-                Route::get('/', 'index')->name('index');
-                Route::post('create', 'store')->name('store');
-                Route::put('{id}', 'update')->name('update');
-                Route::delete('{id}', 'destroy')->name('destroy');
+                Route::get('/', 'index')->name('index')->middleware('can:ver cursos');
+                Route::post('create', 'store')->name('store')->middleware('can:crear cursos');
+                Route::put('{id}', 'update')->name('update')->middleware('can:actualizar cursos');
+                Route::delete('{id}', 'destroy')->name('destroy')->middleware('can:eliminar cursos');
             });
 
         Route::prefix('references')->name('references.')
