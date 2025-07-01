@@ -77,10 +77,8 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
 
     const handleUnassignAll = (groupId: number) => {
         const group = Object.values(permissions).find(g => g.id === groupId);
-        console.table(group?.permissions);
         if (!group) return;
         const newPermissions = [...data.permissions];
-        console.table(newPermissions);
         let newUnsavedChanges = [...unsavedChanges];
         let newRemovedPermissions = [...removedPermissions];
 
