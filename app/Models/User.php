@@ -59,7 +59,6 @@ class User extends Authenticatable
      */
     protected $appends = [
         'fullname',
-        'user_roles',
         'user_permissions',
         'gender',
         'status',
@@ -97,17 +96,7 @@ class User extends Authenticatable
      */
     public function getUserPermissionsAttribute(): array
     {
-        return $this->getAllPermissions()->pluck('name')->toArray();
-    }
-
-    /**
-     * Get the user's roles using the new attribute.
-     *
-     * @return array
-     */
-    public function getUserRolesAttribute(): array
-    {
-        return $this->getRoleNames()->toArray();
+        return $this->getAllPermissions()->pluck('key')->toArray();
     }
 
     /**

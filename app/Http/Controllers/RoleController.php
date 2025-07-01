@@ -15,13 +15,16 @@ class RoleController extends Controller
     public function index()
     {
         // get roles estructura [ ['id' => 1, 'name' => 'admin', 'permissions' => [ 1,2,5,8 ] ] ]
-        $roleWithPermissions = Role::with('permissions')->get()->map(function ($role) {
-            return [
-                'id' => $role->id,
-                'name' => $role->name,
-                'permissions' => $role->permissions->pluck('id')->toArray(),
-            ];
-        });
+        $roleWithPermissions = Role::with('permissions')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($role) {
+                return [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'permissions' => $role->permissions->pluck('id')->toArray(),
+                ];
+            });
         $permissionsByCategory = Permission::all()->groupBy('category');
         // obtener categoris de permisos sin repetir 
 

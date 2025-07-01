@@ -17,14 +17,14 @@ import { RolePermissionsProps, Roles } from '@/types/roles';
 
 
 export default function RolePermissions({ roles, permissions }: RolePermissionsProps) {
-    const [selectedRole, setSelectedRole] = useState('1');
+    const [selectedRole, setSelectedRole] = useState('2');
     const [newRoleName, setNewRoleName] = useState('');
     const [newRoleDescription, setNewRoleDescription] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [isNewRoleDialogOpen, setIsNewRoleDialogOpen] = useState(false);
     const [unsavedChanges, setUnsavedChanges] = useState<number[]>([]);
     const [removedPermissions, setRemovedPermissions] = useState<number[]>([]);
-    // Nuevo estado para rastrear el grupo expandido, inicializado con el ID del primer grupo
+
     const [expandedGroupId, setExpandedGroupId] = useState<number | null>(1);
 
     const { data, setData, put, processing, errors, reset } = useForm<{ permissions: number[] }>({
@@ -77,10 +77,8 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
 
     const handleUnassignAll = (groupId: number) => {
         const group = Object.values(permissions).find(g => g.id === groupId);
-        console.table(group?.permissions);
         if (!group) return;
         const newPermissions = [...data.permissions];
-        console.table(newPermissions);
         let newUnsavedChanges = [...unsavedChanges];
         let newRemovedPermissions = [...removedPermissions];
 
