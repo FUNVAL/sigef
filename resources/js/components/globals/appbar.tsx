@@ -46,7 +46,7 @@ export default function Appbar({ menuOptions, className }: NavigationMenuDemoPro
                                     <NavigationMenuTrigger className={activeClass}>
                                         {option.label}
                                     </NavigationMenuTrigger>
-                                    <NavigationMenuContent className="right-0 left-auto">
+                                    <NavigationMenuContent className="right-0 left-auto z-100">
                                         <ul className="min-w-max grid gap-2 p-1">
                                             {option.items.map((item) => {
                                                 console.log(`Item: ${item.title}, Href: ${item.href}, Current Path: ${currentPath}`);

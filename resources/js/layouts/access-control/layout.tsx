@@ -22,16 +22,20 @@ export default function AccessControlLayout({ children, headings }: AccessContro
     }
 
     return (
-        <div className="px-4 py-2">
+        <div className="px-4 py-2 relative">
             <div className="flex flex-col">
-                <Heading
-                    title={headings?.title ?? ''}
-                    description={headings?.description ?? ''}
-                    className='pl-6 pt-6 text-3xl'
-                />
-                <Separator className="my-6" />
-                <div className="flex-1 p-4 pb-6">
-                    <section className="space-y-12 px-4">{children}</section>
+                {(headings?.title || headings?.description) && (
+                    <>
+                        <Heading
+                            title={headings?.title ?? ''}
+                            description={headings?.description ?? ''}
+                            className='pl-6 pt-6 text-3xl'
+                        />
+                        <Separator className="my-6" />
+                    </>
+                )}
+                <div className="flex-1 p-4 pb-6 ">
+                    <section className="space-y-12 px-4 ">{children}</section>
                 </div>
             </div>
         </div>
