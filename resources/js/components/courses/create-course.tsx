@@ -41,7 +41,7 @@ export function CreateCourse() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="secondary" className='cursor-pointer'>
+                <Button variant="link" className='cursor-pointer'>
                     Crear Curso
                 </Button>
             </DialogTrigger>
