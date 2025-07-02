@@ -6,6 +6,9 @@ import { DataTable } from '@/components/data-table/data-table';
 import { columns } from '@/components/pre-registration/references-data-table';
 import { Reference } from '@/types/reference';
 import ReferencesLayout from '@/layouts/references/layout';
+import { MenuOption } from '@/components/globals/appbar';
+import AccessControlLayout from '@/layouts/access-control/layout';
+import referencesNavItems from '@/lib/consts/referencesNavItems';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,9 +21,9 @@ export default function References({ references }: { references: Reference[] }) 
     const { auth } = usePage().props;
     console.log('References Page', auth);
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} menuOptions={referencesNavItems}>
             <Head title="Cursos" />
-            <ReferencesLayout headings={{
+            <AccessControlLayout headings={{
                 title: 'Lista de Referencias',
                 description: 'Aquí puedes ver todos las referencias que has recibido.',
             }}>
@@ -32,7 +35,7 @@ export default function References({ references }: { references: Reference[] }) 
                     />
 
                 </div>
-            </ReferencesLayout>
+            </AccessControlLayout>
         </AppLayout>
     );
 }
