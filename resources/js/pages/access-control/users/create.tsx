@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/select';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import { type CreateUserForm, type CreateUserProps, type EnumsProps } from '@/types/users';
-import navItems from '@/lib/consts/accesControlNavItems';
+import navItems from '@/lib/consts/accessControlNavItems';
 
 
 export default function CreateUser({ roles }: CreateUserProps) {

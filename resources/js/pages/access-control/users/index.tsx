@@ -4,7 +4,7 @@ import AppLayout from '@/layouts/app-layout';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import { DataTable } from '@/components/data-table/data-table';
 import { columns } from '@/components/users/user-data-table-config';
-import navItems from '@/lib/consts/accesControlNavItems';
+import navItems from '@/lib/consts/accessControlNavItems';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

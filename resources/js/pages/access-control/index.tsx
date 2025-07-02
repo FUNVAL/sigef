@@ -15,7 +15,7 @@ import { Head, useForm } from '@inertiajs/react';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import { RolePermissionsProps, Roles } from '@/types/roles';
 import { MenuOption } from '@/components/globals/appbar';
-import navItems from '@/lib/consts/accesControlNavItems';
+import navItems from '@/lib/consts/accessControlNavItems';
 
 
 export default function RolePermissions({ roles, permissions }: RolePermissionsProps) {
