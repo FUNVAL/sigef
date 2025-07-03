@@ -37,37 +37,37 @@ export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps
             className="space-y-4 checked:bg-[rgb(46_131_242_/_1)] "
           >
             <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-              <RadioGroupItem value="referral" id="referral" />
-              <div className="flex items-center space-x-3 flex-1">
-                <div className="w-12 h-12 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center">
-                  <Users className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
-                </div>
-                <div className="flex-1">
-                  <Label htmlFor="referral" className="text-base font-medium cursor-pointer">
+              <Label htmlFor="referral" className="text-base font-medium cursor-pointer">
+                <div className="flex items-center space-x-3 flex-1">
+                  <RadioGroupItem value="referral" id="referral" />
+                  <div className="w-12 h-12 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center">
+                    <Users className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
+                  </div>
+                  <div className="flex-1">
                     Referir a un amigo
-                  </Label>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Recomienda a alguien que conozcas para nuestros programas de capacitación
-                  </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Recomienda a alguien que conozcas para nuestros programas de capacitación
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </Label>
             </div>
 
             <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-              <RadioGroupItem value="preregistration" id="preregistration" />
-              <div className="flex items-center space-x-3 flex-1">
-                <div className="w-12 h-12 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center">
-                  <UserPlus className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
-                </div>
-                <div className="flex-1">
-                  <Label htmlFor="preregistration" className="text-base font-medium cursor-pointer">
+              <Label htmlFor="preregistration" className="text-base font-medium cursor-pointer">
+                <div className="flex items-center space-x-3 flex-1">
+                  <RadioGroupItem value="preregistration" id="preregistration" />
+                  <div className="w-12 h-12 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center">
+                    <UserPlus className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
+                  </div>
+                  <div className="flex-1">
                     Pre-inscribirme al curso
-                  </Label>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Completa tu pre-inscripción para participar en nuestros programas
-                  </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Completa tu pre-inscripción para participar en nuestros programas
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </Label>
             </div>
           </RadioGroup>
 
@@ -81,11 +81,10 @@ export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps
               <ArrowLeft className="h-4 w-4 mr-2 hover:text-[rgb(46_131_242_/_1)]" />
               Anterior
             </Button>
-            
+
             <Button
               onClick={handleNext}
               disabled={!selectedAction}
-              variant="funval"
               size="lg"
               className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -94,6 +93,6 @@ export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps
           </div>
         </CardContent>
       </Card>
-    </div>
+    </div >
   )
 }
