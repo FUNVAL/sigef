@@ -12,8 +12,6 @@ const UnsavedChanges: React.FC<UnsavedChangesProps> = ({
     rolePermissionsData
 }) => {
 
-    console.log({removedPermissions, unsavedChanges, rolePermissionsData});
-
     return (
         <div className="border border-amber-200 rounded-md p-4 mt-6">
             <h3 className="flex items-center text-amber-800 font-medium mb-2">

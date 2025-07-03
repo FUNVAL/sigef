@@ -46,7 +46,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'ziggy' => fn (): array => [
+            'ziggy' => fn(): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
@@ -58,7 +58,10 @@ class HandleInertiaRequests extends Middleware
             },
             'flash' => [
                 'success' => $request->session()->get('success'),
-                'error' => $request->session()->get('error'),
+                'errors' => [
+                    'message' => $request->session()->get('error'),
+                    'forbidden' => $request->session()->get('forbidden')
+                ],
             ],
         ];
     }

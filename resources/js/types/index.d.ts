@@ -20,7 +20,7 @@ export interface NavItem {
     href: string;
     icon?: LucideIcon | null;
     isActive?: boolean;
-    roles?: string[]; // Optional property to specify roles
+    permissions?: string[]; // Optional property to specify roles
 }
 
 export interface SharedData {
@@ -49,7 +49,7 @@ export interface User {
     contact_phone_1: string;
     contact_phone_2: string;
     permissions: string[];
-    roles: object[];
+    roles: { id: number, name: string }[];
     user_permissions: string[];
     user_roles: string[];
     status: {

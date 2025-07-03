@@ -26,7 +26,7 @@ export default function Courses({ courses }: { courses: [Course] }) {
                 description: 'Aquí puedes ver todos los cursos disponibles.',
             }}>
                 <div className="space-y-6 w-full flex flex-col">
-                    <div className="flex items-center justify-end">
+                    <div className="flex items-center justify-end absolute right-0 -top-16 p-4">
                         <CreateCourse />
                     </div>
                     <DataTable<Course>

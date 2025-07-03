@@ -14,20 +14,22 @@ import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import { RolePermissionsProps, Roles } from '@/types/roles';
+import { MenuOption } from '@/components/globals/appbar';
+import navItems from '@/lib/consts/accessControlNavItems';
 
 
 export default function RolePermissions({ roles, permissions }: RolePermissionsProps) {
-    const [selectedRole, setSelectedRole] = useState('1');
+    const [selectedRole, setSelectedRole] = useState('2');
     const [newRoleName, setNewRoleName] = useState('');
     const [newRoleDescription, setNewRoleDescription] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [isNewRoleDialogOpen, setIsNewRoleDialogOpen] = useState(false);
     const [unsavedChanges, setUnsavedChanges] = useState<number[]>([]);
     const [removedPermissions, setRemovedPermissions] = useState<number[]>([]);
-    // Nuevo estado para rastrear el grupo expandido, inicializado con el ID del primer grupo
+
     const [expandedGroupId, setExpandedGroupId] = useState<number | null>(1);
 
-    const { data, setData, put, processing, errors, reset } = useForm<{ permissions: number[] }>({
+    const { data, setData, put } = useForm<{ permissions: number[] }>({
         permissions: [],
     });
     function setSelectedPermissions(permissions: number[]) {
@@ -77,10 +79,8 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
 
     const handleUnassignAll = (groupId: number) => {
         const group = Object.values(permissions).find(g => g.id === groupId);
-        console.table(group?.permissions);
         if (!group) return;
         const newPermissions = [...data.permissions];
-        console.table(newPermissions);
         let newUnsavedChanges = [...unsavedChanges];
         let newRemovedPermissions = [...removedPermissions];
 
@@ -101,7 +101,6 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
     };
 
     const createNewRole = () => {
-        // Aquí iría la lógica para crear un nuevo rol en la base de datos
         console.log('Creating new role:', { name: newRoleName, description: newRoleDescription });
         setIsNewRoleDialogOpen(false);
         setNewRoleName('');
@@ -111,7 +110,6 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
     const saveChanges = () => {
         put(route('access.permissions.update', selectedRole), {
             onSuccess: () => {
-                // Resetear estados después de guardar exitosamente
                 setUnsavedChanges([]);
                 setRemovedPermissions([]);
             }
@@ -146,14 +144,12 @@ export default function RolePermissions({ roles, permissions }: RolePermissionsP
         }
     }, [filteredPermissionGroups, expandedGroupId]);
 
-
-    // Función para manejar la expansión de grupos
     const handleGroupExpand = (groupId: number) => {
         setExpandedGroupId(groupId);
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} menuOptions={navItems}>
             <Head title="Control de accesos" />
             <AccessControlLayout>
                 <div className="container mx-auto  max-w-6xl">
@@ -232,3 +228,4 @@ const breadcrumbs: BreadcrumbItem[] = [
 function getSelectedRolePermission(roles: Roles[], selectedRole: string): any {
     return roles.find(role => role.id === parseInt(selectedRole))?.permissions || [];
 }
+

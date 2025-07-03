@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/select';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import { type CreateUserForm, type CreateUserProps, type EnumsProps } from '@/types/users';
+import navItems from '@/lib/consts/accessControlNavItems';
 
 
 export default function CreateUser({ roles }: CreateUserProps) {
@@ -39,7 +40,7 @@ export default function CreateUser({ roles }: CreateUserProps) {
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} menuOptions={navItems}>
             <Head title="Control de accesos" />
             <AccessControlLayout headings={{
                 title: 'Crear usuario',

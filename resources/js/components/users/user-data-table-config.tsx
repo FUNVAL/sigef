@@ -67,7 +67,7 @@ export const columns: ColumnDef<User>[] = [
             const user = row.original;
             return (
                 <div className="flex items-center space-x-2">
-                    <div className="font-medium">{user.user_roles.map((role) => role).join(", ")}</div>
+                    <div className="font-medium">{user.roles.map((role) => role.name).join(", ")}</div>
                 </div>
             );
         },
