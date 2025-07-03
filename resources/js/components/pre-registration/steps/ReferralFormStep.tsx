@@ -16,12 +16,14 @@ import { useForm, usePage } from "@inertiajs/react"
 import SearchableSelect from "@/components/ui/searchable-select"
 import { ReferenceFormData } from "@/types/reference"
 import { Enums } from "@/types/global"
+import { Stake } from "@/types/stake"
+import { Country } from "@/types/country"
 
 interface ReferralFormStepProps {
   onNext: (data: ReferenceFormData) => void
   onBack: () => void,
-  stakes: { id: number; name: string, country_id: number }[]
-  countries: { id: number; name: string; code: string }[]
+  stakes: Stake[],
+  countries: Country[]
 }
 
 export function ReferralFormStep({ onNext, onBack, stakes, countries }: ReferralFormStepProps) {
