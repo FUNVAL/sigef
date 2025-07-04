@@ -15,9 +15,10 @@ interface SearchableSelectProps {
     searchField: string;
     id: string;
     name?: string;
+    required?: boolean;
 }
 
-export function SearchableSelect({ data, value, onChange, searchField, id, name }: SearchableSelectProps) {
+export function SearchableSelect({ data, value, onChange, searchField, id, name, ...rest }: SearchableSelectProps) {
     const [search, setSearch] = useState("")
 
     const filteredData = data.filter((item) =>
@@ -38,7 +39,7 @@ export function SearchableSelect({ data, value, onChange, searchField, id, name 
     }, [])
 
     return (
-        <Select value={value} onValueChange={onChange}>
+        <Select value={value} onValueChange={onChange} {...rest} >
             <SelectTrigger id={id} name={name || ''} className="w-full">
                 <SelectValue placeholder={`Selecciona un ${searchField}`} />
             </SelectTrigger>
