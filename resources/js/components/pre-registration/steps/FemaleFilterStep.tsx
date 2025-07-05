@@ -1,93 +1,26 @@
-import { useState } from "react"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
-import { PreRegistrationFormData } from '../../../types/forms'
-import { AlertCircle, CheckCircle2, Users2, ArrowLeft } from "lucide-react"
+import { Users2, ArrowLeft } from "lucide-react"
+import { usePage } from "@inertiajs/react"
+import { Enums } from "@/types/global"
+import { PreRegistrationRequest, PreRegistrationFormData } from "@/types/pre-inscription"
 
 interface FemaleFilterStepProps {
   formData: PreRegistrationFormData;
-  onNext: (data: PreRegistrationFormData) => void;
-  onShowMessage: (message: string, type: 'success' | 'warning' | 'info') => void;
+  onNext: () => void;
   onBack: () => void;
+  request: PreRegistrationRequest;
 }
 
-export function FemaleFilterStep({ formData, onNext, onShowMessage, onBack }: FemaleFilterStepProps) {
-  const [estaTrabajando, setEstaTrabajando] = useState('')
-  const [tipoEmpleoDeseado, setTipoEmpleoDeseado] = useState('')
-  const [disponibilidadHorario, setDisponibilidadHorario] = useState('')
+export function FemaleFilterStep({ request, onNext, onBack }: FemaleFilterStepProps) {
+  const { data: formData, setData } = request
+  const { enums } = usePage<{ enums: Enums }>().props
 
-  const handleNext = () => {
-    // Validar que todas las preguntas necesarias estén respondidas
-    if (!estaTrabajando) {
-      return
-    }
-
-    if (estaTrabajando === 'si') {
-      onShowMessage(
-        'Debido a las capacitaciones intensivas de Funval, el programa está dirigido a personas sin empleo. Si más adelante tienes la necesidad de un empleo no dudes en contactarnos nuevamente.',
-        'warning'
-      )
-      return
-    }
-
-    if (!tipoEmpleoDeseado) {
-      return
-    }
-
-    if (tipoEmpleoDeseado === 'trabajo_en_casa') {
-      onShowMessage(
-        'FUNVAL tiene alianza con empresas que requieren que las personas trabajen presencialmente. Si en el futuro esta es una opción para ti contáctanos nuevamente.',
-        'info'
-      )
-      return
-    }
-
-    if (tipoEmpleoDeseado === 'emprendimiento') {
-      onShowMessage(
-        'Excelente, pronto recibirás más información de las organizaciones aliadas con FUNVAL expertas en emprendimiento.',
-        'success'
-      )
-      return
-    }
-
-    if (tipoEmpleoDeseado === 'trabajo_fuera_casa') {
-      if (!disponibilidadHorario) {
-        return
-      }
-
-      if (disponibilidadHorario === 'no') {
-        onShowMessage(
-          'Debido a la intensidad de los programas de FUNVAL se requiere una conexión continua sin realizar otras actividades durante el programa de capacitación. Si en el futuro tienes esta disponibilidad de tiempo, vuelve a contactarnos.',
-          'warning'
-        )
-        return
-      }
-
-      if (disponibilidadHorario === 'si') {
-        // Continuar al siguiente paso con los cursos
-        const updatedData = {
-          ...formData,
-          estaTrabajando,
-          tipoEmpleoDeseado,
-          disponibilidadHorario
-        }
-        onNext(updatedData)
-      }
-    }
-  }
-
-  const canShowTipoEmpleo = estaTrabajando === 'no'
-  const canShowDisponibilidad = tipoEmpleoDeseado === 'trabajo_fuera_casa'
-  const canProceed = estaTrabajando && (
-    estaTrabajando === 'si' || 
-    (tipoEmpleoDeseado && (
-      tipoEmpleoDeseado !== 'trabajo_fuera_casa' || 
-      disponibilidadHorario
-    ))
-  )
-
+  const isWorking = formData.currently_working !== null ? formData.currently_working ? 'si' : 'no' : ''
+  const isAvailableFullTime = formData.available_full_time !== null ? formData.available_full_time ? 'si' : 'no' : ''
   return (
     <div className="max-w-2xl mx-auto">
       <Card className="border-2">
@@ -109,8 +42,8 @@ export function FemaleFilterStep({ formData, onNext, onShowMessage, onBack }: Fe
               ¿Estás trabajando actualmente? *
             </Label>
             <RadioGroup
-              value={estaTrabajando}
-              onValueChange={setEstaTrabajando}
+              value={isWorking}
+              onValueChange={(value) => setData('currently_working', value === 'si')}
               className="space-y-3"
             >
               <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
@@ -125,41 +58,39 @@ export function FemaleFilterStep({ formData, onNext, onShowMessage, onBack }: Fe
           </div>
 
           {/* Segunda pregunta: Tipo de empleo (solo si no está trabajando) */}
-          {canShowTipoEmpleo && (
+          {formData.currently_working === false && (
             <div className="space-y-4 animate-in slide-in-from-bottom-2">
               <Label className="text-lg font-semibold text-funval-darkBlue">
                 ¿Qué tipo de empleo buscas? *
               </Label>
               <RadioGroup
-                value={tipoEmpleoDeseado}
-                onValueChange={setTipoEmpleoDeseado}
+                value={formData.job_type_preference?.toString() || ''}
+                onValueChange={(value) => setData('job_type_preference', Number(value))}
                 className="space-y-3"
               >
-                <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
-                  <RadioGroupItem value="trabajo_fuera_casa" id="fuera-casa" />
-                  <Label htmlFor="fuera-casa" className="cursor-pointer">Trabajo fuera de casa</Label>
-                </div>
-                <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
-                  <RadioGroupItem value="trabajo_en_casa" id="en-casa" />
-                  <Label htmlFor="en-casa" className="cursor-pointer">Trabajo en casa</Label>
-                </div>
-                <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
-                  <RadioGroupItem value="emprendimiento" id="emprendimiento" />
-                  <Label htmlFor="emprendimiento" className="cursor-pointer">Emprendimiento</Label>
-                </div>
+                {
+                  enums?.jobType?.map((modality) => (
+                    <div key={modality.id} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
+                      <RadioGroupItem value={modality.id.toString()} id={modality.id.toString()} />
+                      <Label htmlFor={modality.id.toString()} className="cursor-pointer">
+                        {modality.name}
+                      </Label>
+                    </div>
+                  ))
+                }
               </RadioGroup>
             </div>
           )}
 
           {/* Tercera pregunta: Disponibilidad horaria (solo si seleccionó trabajo fuera de casa) */}
-          {canShowDisponibilidad && (
+          {formData.job_type_preference === 2 && (
             <div className="space-y-4 animate-in slide-in-from-bottom-2">
               <Label className="text-lg font-semibold text-funval-darkBlue">
                 ¿Tienes disponibilidad para estudiar en un horario de clases extendido de 10-12 horas diarias de lunes a viernes? *
               </Label>
               <RadioGroup
-                value={disponibilidadHorario}
-                onValueChange={setDisponibilidadHorario}
+                value={isAvailableFullTime}
+                onValueChange={(value) => setData('available_full_time', value === 'si')}
                 className="space-y-3"
               >
                 <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
@@ -188,11 +119,9 @@ export function FemaleFilterStep({ formData, onNext, onShowMessage, onBack }: Fe
               <ArrowLeft className="h-4 w-4 mr-2" />
               Anterior
             </Button>
-            
+
             <Button
-              onClick={handleNext}
-              disabled={!canProceed}
-              variant="funval"
+              onClick={onNext}
               size="lg"
               className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
