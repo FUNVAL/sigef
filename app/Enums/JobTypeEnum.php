@@ -17,7 +17,7 @@ enum JobTypeEnum: int
         return match ($this) {
             self::ONLINE => 'En Línea',
             self::IN_PERSON => 'Presencial',
-            self::OWN_BOSS => 'Empendimiento',
+            self::OWN_BOSS => 'Emprendimiento',
         };
     }
 }
