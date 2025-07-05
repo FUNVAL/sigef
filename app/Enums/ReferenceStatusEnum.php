@@ -9,33 +9,30 @@ enum ReferenceStatusEnum: int
 
     use EnumMethods;
 
-    case NOT_APPLICABLE = 1;
-    case NO_ANSWER = 2;
-    case INCORRECT_NUMBER = 3;
-    case WORK = 4;
-    case STUDIES = 5;
-    case NOT_CHURCH_MEMBER = 6;
-    case FUTURE_MISSIONARY = 7;
-    case HEALTH = 8;
-    case GRADUATE = 9;
-    case DUPLICATE = 10;
-    case TIMEOUT = 11;
+
+    case INCORRECT_NUMBER = 1;
+    case WORK = 2;
+    case STUDIES = 3;
+    case NOT_CHURCH_MEMBER = 4;
+    case FUTURE_MISSIONARY = 5;
+    case HEALTH = 6;
+    case GRADUATE = 7;
+    case DUPLICATE = 8;
+    case FEMALE = 9;
 
     public function name(): string
     {
 
         return match ($this) {
-            self::NOT_APPLICABLE => 'No aplica',
-            self::NO_ANSWER => 'No contesta',
             self::INCORRECT_NUMBER => 'Número incorrecto',
             self::WORK => 'Trabajo',
             self::STUDIES => 'Estudios',
             self::NOT_CHURCH_MEMBER => 'No es miembro de la iglesia',
-            self::FUTURE_MISSIONARY => 'Futuro Misionero',
+            self::FUTURE_MISSIONARY => 'Futuro misionero',
             self::HEALTH => 'Salud',
-            self::GRADUATE => 'Es Egresado',
+            self::GRADUATE => 'Es egresado',
             self::DUPLICATE => 'Duplicado',
-            self::TIMEOUT => 'No tiene tiempo',
+            self::FEMALE => 'FILTRADA'
         };
     }
 }
