@@ -8,11 +8,10 @@ use App\Models\Stake;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
 use App\Enums\RequestStatusEnum;
-use App\Enums\CourseModalityEnum;
+use App\Enums\JobTypeEnum;
 use App\Enums\ReferenceStatusEnum;
 use App\Models\Course;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Exception;
@@ -74,49 +73,72 @@ class PreInscriptionController extends Controller
     public function store(Request $request)
     {
         try {
-            // Debug: Log the incoming data
-            \Log::info('Pre-inscription data received:', $request->all());
-
-            // Convert country and stake names to IDs if they are strings
-            $data = $request->all();
-            $data = $this->convertNamesToIds($data);
-
-            // Debug: Log the converted data
-            \Log::info('Pre-inscription data after conversion:', $data);
-
-            $validator = Validator::make($data, [
+            $rules = [
                 'first_name' => 'required|string|max:50',
                 'middle_name' => 'nullable|string|max:50',
                 'last_name' => 'required|string|max:50',
                 'second_last_name' => 'nullable|string|max:50',
-                'gender' => 'required|integer|in:' . implode(',', GenderEnum::values()),
-                'age' => 'required|integer|min:18|max:100',
+                'gender' => 'required|numeric|in:' . implode(',', GenderEnum::values()),
+                'age' => 'required|numeric|min:18|max:100',
                 'phone' => 'required|string|max:20',
                 'email' => 'required|email|max:100|unique:pre_inscriptions',
-                'marital_status' => 'required|integer|in:' . implode(',', MaritalStatusEnum::values()),
+                'marital_status' => 'required|numeric|in:' . implode(',', MaritalStatusEnum::values()),
                 'served_mission' => 'required|boolean',
-                'currently_working' => 'nullable|boolean',
-                'job_type_preference' => 'nullable|integer|in:' . implode(',', CourseModalityEnum::values()),
-                'available_full_time' => 'nullable|boolean',
-                'status' => 'nullable|integer|in:' . implode(',', RequestStatusEnum::values()),
+                'status' => 'nullable|numeric|in:' . implode(',', RequestStatusEnum::values()),
                 'comments' => 'nullable|string',
-                'declined_reason' => 'nullable|integer|in:' . implode(',', ReferenceStatusEnum::values()),
+                'declined_reason' => 'nullable|numeric|in:' . implode(',', ReferenceStatusEnum::values()),
                 'country_id' => 'required|exists:countries,id',
-                'stake_id' => 'required|exists:stakes,id',
-            ]);
+                'stake_id' => 'required|exists:stakes,id'
+            ];
 
-            if ($validator->fails()) {
-                // For Inertia requests, return back with errors
-                return back()->withErrors($validator->errors());
+            $is_woman = $request['gender'] === GenderEnum::FEMALE->value;
+
+            if ($is_woman) {
+                $aditionalRules = [
+                    'currently_working' => 'required|boolean',
+                ];
+
+                if (!$request['currently_working']) {
+                    $aditionalRules['job_type_preference'] = 'required|numeric|in:' . implode(',', JobTypeEnum::values());
+                }
+
+                if ($request['job_type_preference'] === JobTypeEnum::IN_PERSON->value) {
+                    $aditionalRules['available_full_time'] = 'required|boolean';
+                }
+
+                $rules = array_merge($rules, $aditionalRules);
             }
 
-            $preInscription = PreInscription::create($validator->validated());
 
-            // For Inertia requests, redirect with success message
-            return redirect()->back()->with('success', 'Pre-inscripción creada exitosamente');
+            $validated = $request->validate($rules);
 
+            $preInscription =  PreInscription::create($validated);
+
+            $message =  $this->generateMessage(
+                $request['currently_working'],
+                $request['job_type_preference'],
+                $request['available_full_time'],
+                $request['gender']
+            );
+
+            $is_workig = $request['currently_working'];
+            $is_valid_job = $request['job_type_preference'] === JobTypeEnum::IN_PERSON->value;
+            $is_available = $request['available_full_time'];
+
+            if ($is_woman && ($is_workig || !$is_valid_job || !$is_available)) {
+
+                $preInscription->update([
+                    'status' => RequestStatusEnum::REJECTED->value,
+                    'declined_reason' => ReferenceStatusEnum::FEMALE->value,
+                    'comments' => 'Pre-inscripción filtrada automáticamente por criterios de género y disponibilidad laboral.',
+                    'modified_by' => 0
+                ]);
+            }
+
+            return inertia('pre-registration/request-confirmation', [
+                'response' => $message,
+            ]);
         } catch (Exception $e) {
-            \Log::error('Error creating pre-inscription:', ['error' => $e->getMessage()]);
 
             // For Inertia requests, return back with error
             return back()->withErrors(['error' => 'Error al crear la pre-inscripción: ' . $e->getMessage()]);
@@ -223,5 +245,29 @@ class PreInscriptionController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    private function generateMessage($currentlyWorking, $jobTypePreference, $availableFullTime, $gender): array
+    {
+        $response = [
+            'message' => "Gracias por tu aplicacion, Uno de nuestros representante te estara contactando entre las proximas 24-72 horas para brindarte toda la información del programa.",
+            'type' => 'success'
+        ];
+        if ($gender === GenderEnum::FEMALE->value) {
+            if ($currentlyWorking) {
+                $response['message'] = "Debido a las capacitaciones intensivas de Funval, el programa está dirigido a personas sin empleo. Si más adelante tienes la necesidad de un empleo no dudes en contactarnos nuevamente.";
+                $response['type'] = 'rejected';
+            } elseif ($jobTypePreference === JobTypeEnum::OWN_BOSS->value) {
+                $response['message'] = "Excelente, pronto recibirás más información de las organizaciones aliadas con FUNVAL expertas en emprendimiento.";
+                $response['type'] = 'rejected';
+            } elseif ($jobTypePreference === JobTypeEnum::ONLINE->value && !$availableFullTime) {
+                $response['message'] = "FUNVAL tiene alianza con empresas que requieren que las personas trabajen presencialmente. Si en el futuro esta es una opción para ti, contáctanos nuevamente.";
+                $response['type'] = 'rejected';
+            } elseif (!$availableFullTime) {
+                $response['message'] = "Debido a la intensidad de los programas de FUNVAL se requiere una conexión continua sin realizar otras actividades durante el programa de capacitación. Si en el futuro tienes esta disponibilidad de tiempo, vuelve a contactarnos.";
+                $response['type'] = 'rejected';
+            }
+        }
+        return $response;
     }
 }
