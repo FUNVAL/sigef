@@ -6,7 +6,10 @@ import { Label } from "@/components/ui/label"
 import { Users2, ArrowLeft } from "lucide-react"
 import { usePage } from "@inertiajs/react"
 import { Enums } from "@/types/global"
+import validateForm from "@/lib/schemas/validate-schemas"
 import { PreRegistrationRequest, PreRegistrationFormData } from "@/types/pre-inscription"
+import { femaleValidationSchema } from "@/lib/schemas/pre-registration"
+import { useState } from "react"
 
 interface FemaleFilterStepProps {
   formData: PreRegistrationFormData;
@@ -18,7 +21,17 @@ interface FemaleFilterStepProps {
 export function FemaleFilterStep({ request, onNext, onBack }: FemaleFilterStepProps) {
   const { data: formData, setData } = request
   const { enums } = usePage<{ enums: Enums }>().props
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const handleSubmit = () => {
+    const validate = validateForm(formData, femaleValidationSchema)
+    console.log(validate.errors);
+    if (!validate.success) {
+      setErrors(validate?.errors)
+      return;
+    }
 
+    onNext()
+  }
   const isWorking = formData.currently_working !== null ? formData.currently_working ? 'si' : 'no' : ''
   const isAvailableFullTime = formData.available_full_time !== null ? formData.available_full_time ? 'si' : 'no' : ''
   return (
@@ -55,6 +68,9 @@ export function FemaleFilterStep({ request, onNext, onBack }: FemaleFilterStepPr
                 <Label htmlFor="trabajando-no" className="cursor-pointer">No, no estoy trabajando</Label>
               </div>
             </RadioGroup>
+            {errors.currently_working && (
+              <p className="text-red-500 text-sm mt-2">{errors.currently_working}</p>
+            )}
           </div>
 
           {/* Segunda pregunta: Tipo de empleo (solo si no está trabajando) */}
@@ -79,6 +95,9 @@ export function FemaleFilterStep({ request, onNext, onBack }: FemaleFilterStepPr
                   ))
                 }
               </RadioGroup>
+              {errors.job_type_preference && (
+                <p className="text-red-500 text-sm mt-2">{errors.job_type_preference}</p>
+              )}
             </div>
           )}
 
@@ -106,6 +125,9 @@ export function FemaleFilterStep({ request, onNext, onBack }: FemaleFilterStepPr
                   </Label>
                 </div>
               </RadioGroup>
+              {errors.available_full_time && (
+                <p className="text-red-500 text-sm mt-2">{errors.available_full_time}</p>
+              )}
             </div>
           )}
 
@@ -121,7 +143,7 @@ export function FemaleFilterStep({ request, onNext, onBack }: FemaleFilterStepPr
             </Button>
 
             <Button
-              onClick={onNext}
+              onClick={handleSubmit}
               size="lg"
               className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
