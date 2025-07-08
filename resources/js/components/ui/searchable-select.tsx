@@ -15,9 +15,11 @@ interface SearchableSelectProps {
     searchField: string;
     id: string;
     name?: string;
+    required?: boolean;
+    placeholder?: string;
 }
 
-export function SearchableSelect({ data, value, onChange, searchField, id, name }: SearchableSelectProps) {
+export function SearchableSelect({ data, value, onChange, searchField, id, name, placeholder, ...rest }: SearchableSelectProps) {
     const [search, setSearch] = useState("")
 
     const filteredData = data.filter((item) =>
@@ -38,7 +40,12 @@ export function SearchableSelect({ data, value, onChange, searchField, id, name 
     }, [])
 
     return (
-        <Select value={value} onValueChange={onChange}>
+        <Select
+            value={value}
+            onValueChange={(val) => { onChange(val); setSearch(""); }}
+            name={name}
+            {...rest}
+        >
             <SelectTrigger id={id} name={name || ''} className="w-full">
                 <SelectValue placeholder={`Selecciona un ${searchField}`} />
             </SelectTrigger>
@@ -46,10 +53,10 @@ export function SearchableSelect({ data, value, onChange, searchField, id, name 
                 ref={selectRef}
                 className="pt-2 max-h-60 overflow-auto bg-background dark:bg-gray-900"
             >
-                <div className="px-3 pb-2 sticky top-0 bg-background dark:bg-gray-900 z-10 border-b border-muted dark:border-gray-700">
+                <div className="px-3 p-2 sticky -top-1 bg-background dark:bg-gray-900 z-10 border-b border-muted dark:border-gray-700">
                     <Input
                         autoFocus
-                        placeholder="Buscar país..."
+                        placeholder="Buscar..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         onClick={(e) => e.stopPropagation()}
@@ -58,11 +65,18 @@ export function SearchableSelect({ data, value, onChange, searchField, id, name 
                 </div>
 
                 {filteredData.length > 0 ? (
-                    filteredData.map((item) => (
-                        <SelectItem key={item.name} value={item.id.toString()}>
-                            {item.name}
-                        </SelectItem>
-                    ))
+                    <>
+                        {placeholder &&
+                            <SelectItem value={"0"} disabled>
+                                {placeholder}
+                            </SelectItem>
+                        }
+                        {filteredData.map((item) => (
+                            <SelectItem key={item.id} value={item.id.toString()}>
+                                {item.name}
+                            </SelectItem>
+                        ))}
+                    </>
                 ) : (
                     <div className="p-4 text-center text-muted-foreground select-none">
                         No se encontraron {searchField}s que coincidan con "{search}"

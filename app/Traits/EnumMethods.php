@@ -39,11 +39,15 @@ trait EnumMethods
     /**
      * Find an enum case by its value/id
      * 
-     * @param int $id The enum value to search for
+     * @param int|null $id The enum value to search for
      * @return self|null The matching enum case or null if not found
      */
-    public static function fromId(int $id): ?array
+    public static function fromId(?int $id): ?array
     {
+        if ($id === null) {
+            return null;
+        }
+        
         foreach (self::cases() as $case) {
             if ($case->value === $id) {
                 return [

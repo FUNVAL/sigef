@@ -1,7 +1,7 @@
 // Tipos básicos
 export interface Country {
-  name: string;
-  code: string; 
+    name: string;
+    code: string;
 }
 
 export interface Stake {
@@ -34,10 +34,15 @@ export interface PreRegistrationFormData {
     email: string;
     marital_status: string;
     served_mission: string;
-    currently_working?: string;
+    selected_course?: string;
+    // Campos que vienen del filtro anterior (FemaleFilterStep)
+    estaTrabajando?: string;
+    tipoEmpleoDeseado?: string;
+    disponibilidadHorario?: string;
+    // Campos mapeados para el backend
+    currently_working?: boolean;
     job_type_preference?: string;
     availability?: string;
-    selected_course?: string;
 }
 
 export interface Course {
@@ -66,22 +71,6 @@ export const countries: Country[] = [
     { name: 'Dominican Republic', code: '+1' },
     { name: 'Uruguay', code: '+598' },
     { name: 'Venezuela', code: '+58' },
-];
-
-export const courses: Course[] = [
-    { name: 'Sales Advisor', duration: '5 weeks', modality: 'Online' },
-    { name: 'Air Conditioning & Appliances', duration: '8 weeks', modality: 'Hybrid' },
-    { name: 'Financial Advisor', duration: '7 weeks', modality: 'Online' },
-    { name: 'Pharmacy Assistant', duration: '8 weeks', modality: 'Online' },
-    { name: 'Aluminum & Melamine Carpentry', duration: '6 weeks', modality: 'Hybrid' },
-    { name: 'Networking', duration: '7 weeks', modality: 'Hybrid' },
-    { name: 'Frontend Web Development', duration: '12 weeks', modality: 'Online' },
-    { name: 'English', duration: '20 weeks', modality: 'Online' },
-    { name: 'Specialized Services Interpreter', duration: '3 weeks', modality: 'Online' },
-    { name: 'IT Administrator', duration: '8 weeks', modality: 'Online' },
-    { name: 'SAP Logistics', duration: '7 weeks', modality: 'Online' },
-    { name: 'Graphic Design & Digital Marketing', duration: '7 weeks', modality: 'Online' },
-    { name: 'Motorcycle Mechanics', duration: '6 weeks', modality: 'Hybrid' },
 ];
 
 export const stakes: Stake[] = [

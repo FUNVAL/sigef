@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CourseModalityEnum;
 use App\Enums\GenderEnum;
+use App\Enums\MaritalStatusEnum;
 use App\Enums\RequestStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -53,17 +54,22 @@ class PreInscription extends Model
 
     public function getJobTypePreferenceAttribute(): ?array
     {
-        return CourseModalityEnum::fromId($this->attributes['job_type_preference']);
+        return CourseModalityEnum::fromId($this->attributes['job_type_preference'] ?? null);
     }
 
     public function getGenderAttribute(): ?array
     {
-        return GenderEnum::fromId($this->attributes['gender']);
+        return GenderEnum::fromId($this->attributes['gender'] ?? null);
+    }
+
+    public function getMaritalStatusAttribute(): ?array
+    {
+        return MaritalStatusEnum::fromId($this->attributes['marital_status'] ?? null);
     }
 
     public function getStatusAttribute(): ?array
     {
-        return RequestStatusEnum::fromId($this->attributes['status']);
+        return RequestStatusEnum::fromId($this->attributes['status'] ?? null);
     }
 
     public function getModifiedByAttribute(): ?string

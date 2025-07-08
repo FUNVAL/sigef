@@ -1,22 +1,33 @@
 import { Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
 
-interface HeaderProps {
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
-}
 
-export function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
+export function Header() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode)
+  }
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [isDarkMode])
+
   return (
-    <header className="w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="w-full border-b border-border/40 bg-white shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 ">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 rounded-full funval-gradient flex items-center justify-center">
           </div>
           <div className="w-35 h-10">
-            
+
             <img src="/Sinfondo.png" alt="imagenFunval" />
-            
+
           </div>
         </div>
 

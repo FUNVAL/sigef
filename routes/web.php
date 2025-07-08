@@ -18,7 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [ReferenceController::class, 'dashboard'])->name('dashboard');
 
     Route::middleware('auth')->group(function () {
-        // access control routes (users) 
+        // access control routes (users)
         Route::prefix('access-control/users')->name('users.')
             ->controller(UserController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
@@ -36,7 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 Route::put('/roles/{roleId}', 'updateRolePermissions')->name('permissions.update')->middleware('can:asignar permisos a roles');
             });
 
-        // countries routes 
+        // countries routes
         Route::prefix('countries')->name('countries.')
             ->controller(CountryController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
@@ -78,7 +78,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->controller(PreInscriptionController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('create', 'create')->name('create');
-                Route::post('create', 'store')->name('store');
+                Route::post('/', 'store')->name('store');
                 Route::get('{id}', 'show')->name('show');
                 Route::put('{id}', 'update')->name('update');
                 Route::delete('{id}', 'destroy')->name('destroy');

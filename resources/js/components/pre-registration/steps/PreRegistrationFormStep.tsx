@@ -5,128 +5,47 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, UserPlus } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { Country, PreRegistrationFormData, Stake, countries, stakes } from '../../../types/forms';
+import { usePage } from '@inertiajs/react';
+import { PreRegistrationFormData } from '../../../types/forms';
+import { Enums } from '@/types/global';
+import SearchableSelect from '@/components/ui/searchable-select';
+import { Country } from '@/types/country';
+import { Stake } from '@/types/stake';
+import { useState } from 'react';
+import validateForm from '@/lib/schemas/validate-schemas';
+import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
 
 interface PreRegistrationFormStepProps {
-    onNext: (data: PreRegistrationFormData) => void;
+    onNext: () => void;
     onBack: () => void;
-}
-
-interface CountrySelectProps {
     countries: Country[];
-    value: string;
-    onChange: (value: string) => void;
-    placeholder?: string;
+    stakes: Stake[];
+    request: {
+        data: PreRegistrationFormData;
+        setData: (field: keyof PreRegistrationFormData, value: any) => void;
+        post: (...args: any[]) => void;
+        processing: boolean;
+        errors: Record<string, string>;
+    };
 }
 
-// CountrySelect adaptado a dark mode
-function CountrySelect({ countries, value, onChange, placeholder }: CountrySelectProps) {
-    const [search, setSearch] = useState('');
-    const filteredCountries = countries.filter((country) => country.name.toLowerCase().includes(search.toLowerCase()));
+export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes = [], request }: PreRegistrationFormStepProps) {
 
-    const selectRef = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
-                setSearch('');
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-
-    return (
-        <Select value={value} onValueChange={onChange}>
-            <SelectTrigger>
-                <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
-            <SelectContent ref={selectRef} className="bg-background max-h-60 overflow-auto pt-2 dark:bg-gray-900">
-                <div className="bg-background border-muted sticky top-0 z-10 border-b px-3 pb-2 dark:border-gray-700 dark:bg-gray-900">
-                    <Input
-                        autoFocus
-                        placeholder="Buscar país..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        onClick={(e) => e.stopPropagation()}
-                        className="bg-background text-foreground w-full dark:bg-gray-900"
-                        name="country_search"
-                    />
-                </div>
-
-                {filteredCountries.length > 0 ? (
-                    filteredCountries.map((country) => (
-                        <SelectItem key={country.name} value={country.name}>
-                            {country.name}
-                        </SelectItem>
-                    ))
-                ) : (
-                    <div className="text-muted-foreground p-4 text-center select-none">No se encontraron países</div>
-                )}
-            </SelectContent>
-        </Select>
-    );
-}
-
-export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormStepProps) {
-    const [formData, setFormData] = useState<PreRegistrationFormData>({
-        first_name: '',
-        middle_name: '',
-        last_name: '',
-        second_last_name: '',
-        gender: '',
-        age: '',
-        country_id: '',
-        phone: '',
-        stake_id: '',
-        email: '',
-        marital_status: '',
-        served_mission: '',
-    });
+    const { data: formData, setData } = request;
+    const { enums } = usePage<{ enums: Enums }>().props;
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (isFormValid()) {
-            console.log('Datos de pre-inscripción (JSON):', JSON.stringify(formData, null, 2));
-            onNext(formData);
+        const validationErrors = validateForm(formData, preRegistrationSchema);
+
+        if (!validationErrors?.success) {
+            setErrors(validationErrors?.errors ?? {});
+            return;
         }
-    };
+        onNext();
 
-    const isFormValid = () => {
-        const requiredFields = [
-            'first_name',
-            'last_name',
-            'gender',
-            'age',
-            'country_id',
-            'phone',
-            'stake_id',
-            'email',
-            'marital_status',
-            'served_mission',
-        ];
-        return requiredFields.every((field) => formData[field as keyof PreRegistrationFormData]?.trim() !== '');
-    };
-
-    const updateFormData = (field: keyof PreRegistrationFormData, value: string) => {
-        setFormData((prev) => {
-            const updated = { ...prev, [field]: value };
-
-            if (field === 'country_id') {
-                const selected = countries.find((c) => c.name === value);
-                if (selected) {
-                    const code = selected.code;
-                    if (!updated.phone.startsWith(code)) {
-                        updated.phone = `${code} `;
-                    }
-                }
-            }
-
-            return updated;
-        });
-    };
+    }
 
     return (
         <div className="mx-auto max-w-3xl">
@@ -135,112 +54,225 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                     <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[rgb(46_131_242_/_1)]/10">
                         <UserPlus className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
                     </div>
-                    <CardTitle className="text-funval-blue text-2xl font-bold text-[rgb(46_131_242_/_1)]">Formulario de Pre-inscripción</CardTitle>
-                    <p className="text-muted-foreground mt-2">Completa tus datos personales para el proceso de inscripción</p>
+                    <CardTitle className="text-funval-blue text-2xl font-bold text-[rgb(46_131_242_/_1)]">
+                        Formulario de Pre-inscripción
+                    </CardTitle>
+                    <p className="text-muted-foreground mt-2">
+                        Completa tus datos personales para el proceso de inscripción
+                    </p>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form className="space-y-6" onSubmit={handleSubmit} noValidate>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            {/* Todos los inputs de nombres */}
-                            <InputGroup id="first_name" label="First name" value={formData.first_name} onChange={updateFormData} required />
-                            <InputGroup id="middle_name" label="Middle name" value={formData.middle_name} onChange={updateFormData} />
-                            <InputGroup id="last_name" label="Last name" value={formData.last_name} onChange={updateFormData} required />
-                            <InputGroup id="second_last_name" label="Second last name" value={formData.second_last_name} onChange={updateFormData} />
-
+                            {/* Primer Nombre */}
+                            <div>
+                                <Label htmlFor="first_name">Primer Nombre</Label>
+                                <Input
+                                    id="first_name"
+                                    name="first_name"
+                                    value={formData.first_name}
+                                    onChange={(e) => setData('first_name', e.target.value)}
+                                    placeholder="Nombre completo"
+                                    autoComplete='given-name'
+                                    required
+                                />
+                                {errors.first_name && <p className="text-red-500 text-sm">{errors.first_name}</p>}
+                            </div>
+                            {/* Segundo Nombre */}
+                            <div>
+                                <Label htmlFor="middle_name">Segundo Nombre</Label>
+                                <Input
+                                    id="middle_name"
+                                    name="middle_name"
+                                    autoComplete='additional-name'
+                                    value={formData.middle_name}
+                                    onChange={(e) => setData('middle_name', e.target.value)}
+                                    placeholder="Segundo nombre"
+                                />
+                                {errors.middle_name && <p className="text-red-500 text-sm">{errors.middle_name}</p>}
+                            </div>
+                            {/* Apellido */}
+                            <div>
+                                <Label htmlFor="last_name">Apellido</Label>
+                                <Input
+                                    id="last_name"
+                                    name="last_name"
+                                    autoComplete='family-name'
+                                    value={formData.last_name}
+                                    onChange={(e) => setData('last_name', e.target.value)}
+                                    placeholder="Apellido"
+                                    required
+                                />
+                                {errors.last_name && <p className="text-red-500 text-sm">{errors.last_name}</p>}
+                            </div>
+                            {/* Segundo Apellido */}
+                            <div>
+                                <Label htmlFor="second_last_name">Segundo Apellido</Label>
+                                <Input
+                                    id="second_last_name"
+                                    name="second_last_name"
+                                    autoComplete='family-name'
+                                    value={formData.second_last_name}
+                                    onChange={(e) => setData('second_last_name', e.target.value)}
+                                    placeholder="Segundo apellido"
+                                />
+                                {errors.second_last_name && <p className="text-red-500 text-sm">{errors.second_last_name}</p>}
+                            </div>
                             {/* Género */}
                             <div>
-                                <Label htmlFor="gender">Género *</Label>
-                                <Select value={formData.gender} onValueChange={(value) => updateFormData('gender', value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select gender" />
+                                <Label htmlFor="gender">Género</Label>
+                                <Select value={formData.gender.toString()}
+                                    onValueChange={(value) => setData('gender', Number(value))}
+                                    name="gender"
+                                    required
+                                >
+                                    <SelectTrigger id='gender'>
+                                        <SelectValue placeholder="Seleccionar género" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="male">Masculino</SelectItem>
-                                        <SelectItem value="female">Femenino</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {/* Edad */}
-                            <InputGroup
-                                id="age"
-                                label="Age"
-                                value={formData.age}
-                                onChange={updateFormData}
-                                type="number"
-                                min="18"
-                                max="100"
-                                required
-                            />
-
-                            {/* País */}
-                            <div>
-                                <Label htmlFor="country_id">Pais *</Label>
-                                <CountrySelect
-                                    countries={countries}
-                                    value={formData.country_id}
-                                    onChange={(value) => updateFormData('country_id', value)}
-                                    placeholder="Select country"
-                                />
-                            </div>
-
-                            {/* Teléfono */}
-                            <InputGroup id="phone" label="Phone" value={formData.phone} onChange={updateFormData} required />
-
-                            {/* Estaca */}
-                            <div>
-                                <Label htmlFor="stake_id">Estaca/Distrito/Misión *</Label>
-                                <Select value={formData.stake_id} onValueChange={(value) => updateFormData('stake_id', value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a stake" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {stakes.map((stake: Stake) => (
-                                            <SelectItem key={stake.id} value={stake.name}>
-                                                {stake.name}
+                                        <SelectItem value="0" disabled>Selecciona un género</SelectItem>
+                                        {enums.gender.map(gender => (
+                                            <SelectItem key={gender.id} value={gender.id.toString()}>
+                                                {gender.name}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
+                                {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
                             </div>
-
-                            {/* Correo */}
-                            <InputGroup id="email" label="Email" value={formData.email} onChange={updateFormData} type="email" required />
-
-                            {/* Estado Civil */}
+                            {/* Edad */}
                             <div>
-                                <Label htmlFor="marital_status">Estado civil *</Label>
-                                <Select value={formData.marital_status} onValueChange={(value) => updateFormData('marital_status', value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select marital status" />
+                                <Label htmlFor="age">Edad</Label>
+                                <Input
+                                    id="age"
+                                    name="age"
+                                    autoComplete='age'
+                                    type="number"
+                                    value={formData.age}
+                                    onChange={(e) => setData('age', e.target.value)}
+                                    min="18"
+                                    max="100"
+                                    required
+                                />
+                                {errors.age && <p className="text-red-500 text-sm">{errors.age}</p>}
+                            </div>
+                            {/* País */}
+                            <div>
+                                <Label htmlFor="country_id">País</Label>
+                                <SearchableSelect
+                                    data={countries}
+                                    id="country_id"
+                                    name="country_id"
+                                    value={formData.country_id.toString()}
+                                    searchField="name"
+                                    onChange={(value) => setData('country_id', Number(value))}
+                                    placeholder="Selecciona un país"
+                                    required
+                                />
+                                {errors.country_id && <p className="text-red-500 text-sm">{errors.country_id}</p>}
+                            </div>
+                            {/* Teléfono */}
+                            <div>
+                                <Label htmlFor="phone">Teléfono</Label>
+                                <Input
+                                    id="phone"
+                                    name="phone"
+                                    autoComplete='tel'
+                                    value={formData.phone}
+                                    onChange={(e) => setData('phone', e.target.value)}
+                                    placeholder="Teléfono"
+                                    required
+                                />
+                                {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+                            </div>
+                            {/* Estaca */}
+                            <div>
+                                <Label htmlFor="stake_id">Estaca/Distrito/Misión</Label>
+                                <Select
+                                    value={formData.stake_id.toString()}
+                                    onValueChange={(value) => setData('stake_id', Number(value))}
+                                    required
+                                    name='stake_id'
+                                >
+                                    <SelectTrigger id="stake_id" name="stake_id" >
+                                        <SelectValue defaultChecked />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="single">Soltero/a</SelectItem>
-                                        <SelectItem value="married">Casado/a</SelectItem>
-                                        <SelectItem value="divorced">Divorciado/a</SelectItem>
-                                        <SelectItem value="widowed">Viudo/a</SelectItem>
+                                        {formData.country_id ?
+                                            <>
+                                                <SelectItem value="0" disabled>Selecciona una Estaca</SelectItem>
+                                                {stakes.filter(stake => stake.country_id.toString() === formData.country_id.toString()).map((item) => (
+                                                    <SelectItem key={item.id} value={item.id.toString()}>
+                                                        {item.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </> : <SelectItem value="0" disabled>Selecciona un país primero</SelectItem>}
                                     </SelectContent>
                                 </Select>
+                                {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
+                            </div>
+                            {/* Correo */}
+                            <div>
+                                <Label htmlFor="email">Email</Label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    autoComplete='email'
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={(e) => setData('email', e.target.value)}
+                                    placeholder="Correo electrónico"
+                                    required
+                                />
+                                {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                            </div>
+                            {/* Estado Civil */}
+                            <div>
+                                <Label htmlFor="marital_status">Estado civil</Label>
+                                <Select
+                                    value={formData.marital_status.toString()}
+                                    onValueChange={(value) => setData('marital_status', Number(value))}
+                                    required
+                                    name='marital_status'
+                                >
+                                    <SelectTrigger id='marital_status' name='marital_status'>
+                                        <SelectValue defaultChecked />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <>
+                                            <SelectItem value="0" disabled>Selecciona un estado civil</SelectItem>
+                                            {enums.maritalStatus.map(status => (
+                                                <SelectItem key={status.id} value={status.id.toString()}>
+                                                    {status.name}
+                                                </SelectItem>
+                                            ))}
+                                        </>
+                                    </SelectContent>
+                                </Select>
+                                {errors.marital_status && <p className="text-red-500 text-sm">{errors.marital_status}</p>}
                             </div>
                         </div>
 
                         {/* Misión */}
                         <div>
-                            <Label className="text-base font-medium">¿Has servido una misión? *</Label>
+                            <p className="text-base font-medium">¿Has servido una misión?</p>
                             <RadioGroup
-                                value={formData.served_mission}
-                                onValueChange={(value) => updateFormData('served_mission', value)}
+                                value={formData.served_mission !== null ? formData.served_mission ? 'yes' : 'no' : ''}
+                                onValueChange={(value) => setData('served_mission', value === 'yes')}
                                 className="mt-2 flex flex-row space-x-6"
+                                name='served_mission'
+                                required
                             >
                                 <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="yes" id="mission-yes" />
+                                    <RadioGroupItem value="yes" id="mission-yes" required />
                                     <Label htmlFor="mission-yes">Si</Label>
                                 </div>
                                 <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="no" id="mission-no" />
+                                    <RadioGroupItem value="no" id="mission-no" required />
                                     <Label htmlFor="mission-no">No</Label>
                                 </div>
                             </RadioGroup>
+                            {errors.served_mission && <p className="text-red-500 text-sm">{errors.served_mission}</p>}
                         </div>
 
                         {/* Botones */}
@@ -251,8 +283,6 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                             </Button>
 
                             <Button
-                                type="submit"
-                                disabled={!isFormValid()}
                                 size="lg"
                                 className="min-w-[200px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
                             >
@@ -262,28 +292,19 @@ export function PreRegistrationFormStep({ onNext, onBack }: PreRegistrationFormS
                     </form>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     );
 }
 
-// InputGroup helper
-function InputGroup({
-    id,
-    label,
-    value,
-    onChange,
-    ...rest
-}: {
-    id: keyof PreRegistrationFormData;
-    label: string;
-    value: string;
-    onChange: (field: keyof PreRegistrationFormData, value: string) => void;
-    [key: string]: any;
-}) {
-    return (
-        <div>
-            <Label htmlFor={id}>{label}</Label>
-            <Input id={id} name={id} value={value} onChange={(e) => onChange(id, e.target.value)} {...rest} />
-        </div>
-    );
-}
+const requiredFields = [
+    'first_name',
+    'last_name',
+    'gender',
+    'age',
+    'country_id',
+    'phone',
+    'stake_id',
+    'email',
+    'marital_status',
+    'served_mission'
+] 

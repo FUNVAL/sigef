@@ -6,6 +6,7 @@ use App\Enums\AttendanceStatusEnum;
 use App\Enums\CourseModalityEnum;
 use App\Enums\DocumentTypeEnum;
 use App\Enums\GenderEnum;
+use App\Enums\JobTypeEnum;
 use App\Enums\MaritalStatusEnum;
 use App\Enums\ReferenceStatusEnum;
 use App\Enums\RelatedReferenceEnum;
@@ -42,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
                 'statusEnum' => StatusEnum::toArray(),
                 'referenceStatus' =>  ReferenceStatusEnum::toArray(),
                 'relatedReference' => RelatedReferenceEnum::toArray(),
+                'jobType' =>  JobTypeEnum::toArray(),
             ];
         });
     }
