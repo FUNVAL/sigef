@@ -6,18 +6,13 @@ import { Label } from "@/components/ui/label"
 import { Users, UserPlus, ArrowLeft } from "lucide-react"
 
 interface ActionSelectionStepProps {
-  onNext: (action: 'referral' | 'preregistration') => void;
+  onNext: () => void;
   onBack: () => void;
+  onAction: (action: 'referral' | 'preregistration') => void;
+  action: 'referral' | 'preregistration' | '';
 }
 
-export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps) {
-  const [selectedAction, setSelectedAction] = useState<'referral' | 'preregistration' | ''>('')
-
-  const handleNext = () => {
-    if (selectedAction) {
-      onNext(selectedAction)
-    }
-  }
+export function ActionSelectionStep({ onNext, onBack, onAction, action }: ActionSelectionStepProps) {
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -32,8 +27,8 @@ export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps
         </CardHeader>
         <CardContent className="space-y-6">
           <RadioGroup
-            value={selectedAction}
-            onValueChange={(value) => setSelectedAction(value as 'referral' | 'preregistration')}
+            value={action}
+            onValueChange={(value) => { onAction(value as 'referral' | 'preregistration') }}
             className="space-y-4 checked:bg-[rgb(46_131_242_/_1)] "
           >
             <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
@@ -46,7 +41,7 @@ export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps
                   <div className="flex-1">
                     Referir a un amigo
                     <p className="text-sm text-muted-foreground mt-1">
-                      Recomienda a alguien que conozcas para nuestros programas de capacitación
+                      Recomienda a alguien que conozcas para que participe de nuestros programas de capacitación
                     </p>
                   </div>
                 </div>
@@ -83,8 +78,8 @@ export function ActionSelectionStep({ onNext, onBack }: ActionSelectionStepProps
             </Button>
 
             <Button
-              onClick={handleNext}
-              disabled={!selectedAction}
+              onClick={onNext}
+              disabled={!action}
               size="lg"
               className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
