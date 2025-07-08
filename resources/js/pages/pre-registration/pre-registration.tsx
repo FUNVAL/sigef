@@ -135,15 +135,13 @@ const initialSteps: Stepper[] =
 const actions: { referral: Stepper[]; preregistration: Stepper[]; } =
 {
   referral: [
-    { title: 'Formulario', component: ReferralFormStep },
-    { title: 'Confirmación', component: MessageStep }
+    { title: 'Formulario', component: ReferralFormStep }
   ],
 
   preregistration: [
     { title: 'Datos', component: PreRegistrationFormStep },
     { title: 'Cursos', component: CourseSelectionStep },
-    { title: 'Resumen', component: OverviewStep },
-    { title: 'Confirmación', component: MessageStep }
+    { title: 'Resumen', component: OverviewStep }
   ]
 }
 
