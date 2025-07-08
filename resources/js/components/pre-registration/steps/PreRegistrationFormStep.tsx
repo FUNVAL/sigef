@@ -34,6 +34,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
     const { data: formData, setData } = request;
     const { enums } = usePage<{ enums: Enums }>().props;
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const filteredStakes = formData.country_id ? stakes.filter(stake => stake.country_id ===  Number(formData.country_id)) : [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -188,27 +189,14 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                             {/* Estaca */}
                             <div>
                                 <Label htmlFor="stake_id">Estaca/Distrito/Misión</Label>
-                                <Select
+                                <SearchableSelect
+                                    data={filteredStakes}
+                                    id="stake_id"
+                                    name="stake_id"
                                     value={formData.stake_id.toString()}
-                                    onValueChange={(value) => setData('stake_id', Number(value))}
-                                    required
-                                    name='stake_id'
-                                >
-                                    <SelectTrigger id="stake_id" name="stake_id" >
-                                        <SelectValue defaultChecked />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {formData.country_id ?
-                                            <>
-                                                <SelectItem value="0" disabled>Selecciona una Estaca</SelectItem>
-                                                {stakes.filter(stake => stake.country_id.toString() === formData.country_id.toString()).map((item) => (
-                                                    <SelectItem key={item.id} value={item.id.toString()}>
-                                                        {item.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </> : <SelectItem value="0" disabled>Selecciona un país primero</SelectItem>}
-                                    </SelectContent>
-                                </Select>
+                                    searchField="name"
+                                    onChange={(value) => setData('stake_id', Number(value))}
+                                />
                                 {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
                             </div>
                             {/* Correo */}
