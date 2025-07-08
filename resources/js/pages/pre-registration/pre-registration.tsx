@@ -8,258 +8,104 @@ import { PreRegistrationFormStep } from '../../components/pre-registration/steps
 import { FemaleFilterStep } from '../../components/pre-registration/steps/FemaleFilterStep'
 import { CourseSelectionStep } from '../../components/pre-registration/steps/CourseSelectionStep'
 import { MessageStep } from '../../components/pre-registration/steps/MessageStep'
-import { ReferralFormData, PreRegistrationFormData } from '../../types/forms'
+import { Stake } from '@/types/stake'
+import { Country } from '@/types/country'
+import { Course } from '@/types/course'
+import { useForm } from '@inertiajs/react'
+import { OverviewStep } from '@/components/pre-registration/steps/OverviewStep'
+import { PreRegistrationFormData } from '@/types/pre-inscription'
 
-type Step =
-  | 'disclaimer'
-  | 'action-selection'
-  | 'referral-form'
-  | 'preregistration-form'
-  | 'female-filter'
-  | 'course-selection'
-  | 'success-message'
-  | 'info-message'
 
 type MessageData = {
   message: string;
   type: 'success' | 'warning' | 'info';
   title?: string;
 }
-/* {
-    "id": 2,
-    "name": "Aire Acondicionado y Linea Blanca",
-    "duration": 8,
-    "modality": {
-        "id": 3,
-        "name": "Semipresencial"
-    },
-    "status": {
-        "id": 1,
-        "name": "Activo"
-    }
-} */
+
 type PreRegistrationProps = {
-  countries: { id: number; name: string, code: string }[];
-  stakes: { id: number; name: string, country_id: number }[];
-  courses: { id: number; name: string; duration: number; modality: { id: number; name: string }; status: { id: number; name: string } }[];
+  countries: Country[];
+  stakes: Stake[];
+  courses: Course[];
 }
 
-function PreRegistration({ countries, stakes , courses}: PreRegistrationProps) {
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  const [currentStep, setCurrentStep] = useState<Step>('disclaimer')
-  const [selectedAction, setSelectedAction] = useState<'referral' | 'preregistration' | null>(null)
-  const [preRegistrationData, setPreRegistrationData] = useState<PreRegistrationFormData | null>(null)
-  const [messageData, setMessageData] = useState<MessageData>({ message: '', type: 'success' })
-  console.log({ courses })
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [isDarkMode])
+type Stepper = {
+  title: string;
+  component: React.ComponentType<any>;
+}
 
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
-  }
 
-  const resetForm = () => {
-    setCurrentStep('disclaimer')
-    setSelectedAction(null)
-    setPreRegistrationData(null)
-    setMessageData({ message: '', type: 'success' })
-  }
+export default function PreRegistration({ countries, stakes, courses }: PreRegistrationProps) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [stepper, setStepper] = useState<Stepper[]>(initialSteps);
+  const [selectedAction, setSelectedAction] = useState<'referral' | 'preregistration' | ''>('');
+  const request = useForm<PreRegistrationFormData>(initialData);
 
-  const goBack = () => {
-    switch (currentStep) {
-      case 'action-selection':
-        setCurrentStep('disclaimer')
-        break
-      case 'referral-form':
-        setCurrentStep('action-selection')
-        break
-      case 'preregistration-form':
-        setCurrentStep('action-selection')
-        break
-      case 'female-filter':
-        setCurrentStep('preregistration-form')
-        break
-      case 'course-selection':
-        if (preRegistrationData?.genero === 'femenino') {
-          setCurrentStep('female-filter')
-        } else {
-          setCurrentStep('preregistration-form')
-        }
-        break
-      default:
-        break
+  const nextStep = () => {
+    if (currentStep < stepper.length - 1) {
+      setCurrentStep(currentStep + 1);
     }
   }
 
-  const getStepTitles = () => {
-    if (selectedAction === 'referral') {
-      return ['Términos', 'Acción', 'Formulario', 'Confirmación']
-    } else if (selectedAction === 'preregistration') {
-      return ['Términos', 'Acción', 'Datos', 'Evaluación', 'Cursos', 'Confirmación']
+  const previousStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
     }
-    return ['Términos', 'Acción', 'Formulario', 'Confirmación']
-  }
-
-  const getCurrentStepNumber = (): number => {
-    switch (currentStep) {
-      case 'disclaimer': return 1
-      case 'action-selection': return 2
-      case 'referral-form': return 3
-      case 'preregistration-form': return 3
-      case 'female-filter': return 4
-      case 'course-selection': return 5
-      case 'success-message':
-      case 'info-message':
-        return selectedAction === 'referral' ? 4 : 6
-      default: return 1
-    }
-  }
-
-  const getTotalSteps = (): number => {
-    if (selectedAction === 'referral') return 4
-    if (selectedAction === 'preregistration') return 6
-    return 4
-  }
-
-  const handleDisclaimerNext = () => {
-    setCurrentStep('action-selection')
   }
 
   const handleActionSelection = (action: 'referral' | 'preregistration') => {
-    setSelectedAction(action)
-    if (action === 'referral') {
-      setCurrentStep('referral-form')
-    } else {
-      setCurrentStep('preregistration-form')
+    setSelectedAction(action);
+    setStepper([
+      ...initialSteps,
+      ...actions[action]
+    ]);
+  }
+
+  useEffect(() => {
+    // Solo aplica para preregistration
+    if (selectedAction !== 'preregistration') return;
+
+    const baseSteps = [
+      ...initialSteps,
+      ...actions.preregistration
+    ];
+
+    // Si es mujer, insertar Evaluación después de Datos
+    if (Number(request.data.gender) === 2) {
+      const dataStepIndex = baseSteps.findIndex(step => step.title === 'Datos');
+      if (dataStepIndex !== -1) {
+        baseSteps.splice(dataStepIndex + 1, 0, { title: 'Evaluación', component: FemaleFilterStep });
+      }
     }
-  }
 
-  const handleReferralSubmit = (data: ReferenceFormData) => {
-    console.log('Referral data:', data)
-    setMessageData({
-      message: 'Gracias por tu referencia. Hemos recibido la información y nos pondremos en contacto con la persona referida en las próximas 24-72 horas.',
-      type: 'success',
-      title: '¡Referencia Enviada!'
-    })
-    setCurrentStep('success-message')
-  }
+    setStepper(baseSteps);
+  }, [request.data.gender, selectedAction]);
 
-  const handlePreRegistrationSubmit = (data: PreRegistrationFormData) => {
-    setPreRegistrationData(data)
-
-    if (data.genero === 'masculino') {
-      setCurrentStep('course-selection')
-    } else {
-      setCurrentStep('female-filter')
-    }
-  }
-
-  const handleFemaleFilterNext = (data: PreRegistrationFormData) => {
-    setPreRegistrationData(data)
-    setCurrentStep('course-selection')
-  }
-
-  const handleFemaleFilterMessage = (message: string, type: 'success' | 'warning' | 'info') => {
-    setMessageData({ message, type })
-    setCurrentStep('info-message')
-  }
-
-  const handleCourseSelection = (data: PreRegistrationFormData) => {
-    console.log('Final pre-registration data:', data)
-    setMessageData({
-      message: `Gracias por completar tu pre-inscripción al curso de ${data.cursoSeleccionado}. Hemos recibido tu información y pronto te contactaremos para continuar con el proceso.`,
-      type: 'success',
-      title: '¡Pre-inscripción Completada!'
-    })
-    setCurrentStep('success-message')
-  }
-
-  const shouldShowStepIndicator = !['success-message', 'info-message'].includes(currentStep)
-
-  const renderCurrentStep = () => {
-    switch (currentStep) {
-      case 'disclaimer':
-        return <DisclaimerStep onNext={handleDisclaimerNext} />
-
-      case 'action-selection':
-        return <ActionSelectionStep onNext={handleActionSelection} onBack={goBack} />
-
-      case 'referral-form':
-        return <ReferralFormStep
-          onNext={handleReferralSubmit}
-          onBack={goBack}
-          countries={countries}
-          stakes={stakes}
-        />
-
-      case 'preregistration-form':
-        return <PreRegistrationFormStep onNext={handlePreRegistrationSubmit} onBack={goBack} courses={courses} />
-
-      case 'female-filter':
-        return (
-          <FemaleFilterStep
-            formData={preRegistrationData!}
-            onNext={handleFemaleFilterNext}
-            onShowMessage={handleFemaleFilterMessage}
-            onBack={goBack}
-          />
-        )
-
-      case 'course-selection':
-        return (
-          <CourseSelectionStep
-            formData={preRegistrationData!}
-            onNext={handleCourseSelection}
-            onBack={goBack}
-            courses={courses}
-          />
-        )
-
-      case 'success-message':
-        return (
-          <MessageStep
-            message={messageData.message}
-            type={messageData.type}
-            title={messageData.title}
-            onRestart={resetForm}
-          />
-        )
-
-      case 'info-message':
-        return (
-          <MessageStep
-            message={messageData.message}
-            type={messageData.type}
-            title={messageData.title}
-            onRestart={resetForm}
-          />
-        )
-
-      default:
-        return <DisclaimerStep onNext={handleDisclaimerNext} />
-    }
-  }
+  const CurrentStepComponent = stepper[currentStep].component;
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
-      <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+      <Header />
 
       <main className="container mx-auto px-4 py-8">
-        {shouldShowStepIndicator && (
-          <StepIndicator
-            currentStep={getCurrentStepNumber()}
-            totalSteps={getTotalSteps()}
-            stepTitles={getStepTitles()}
-          />
-        )}
+        <StepIndicator
+          currentStep={currentStep + 1}
+          totalSteps={stepper.length}
+          stepTitles={stepper.map(step => step.title)}
+        />
 
         <div className="mt-8">
-          {renderCurrentStep()}
+          <CurrentStepComponent
+            countries={countries}
+            stakes={stakes}
+            courses={courses}
+            onAction={handleActionSelection}
+            action={selectedAction}
+            onNext={nextStep}
+            onBack={previousStep}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            request={request}
+          />
         </div>
       </main>
 
@@ -277,4 +123,46 @@ function PreRegistration({ countries, stakes , courses}: PreRegistrationProps) {
   )
 }
 
-export default PreRegistration
+
+
+
+const initialSteps: Stepper[] =
+  [
+    { title: 'Términos', component: DisclaimerStep },
+    { title: 'Acción', component: ActionSelectionStep },
+  ]
+
+const actions: { referral: Stepper[]; preregistration: Stepper[]; } =
+{
+  referral: [
+    { title: 'Formulario', component: ReferralFormStep },
+    { title: 'Confirmación', component: MessageStep }
+  ],
+
+  preregistration: [
+    { title: 'Datos', component: PreRegistrationFormStep },
+    { title: 'Cursos', component: CourseSelectionStep },
+    { title: 'Resumen', component: OverviewStep },
+    { title: 'Confirmación', component: MessageStep }
+  ]
+}
+
+const initialData: PreRegistrationFormData = {
+  first_name: '',
+  middle_name: '',
+  last_name: '',
+  second_last_name: '',
+  gender: 0,
+  age: 0,
+  phone: '',
+  email: '',
+  marital_status: 0,
+  served_mission: null,
+  country_id: 0,
+  stake_id: 0,
+  course_id: 0,
+
+  currently_working: null,
+  job_type_preference: null,
+  available_full_time: null,
+}

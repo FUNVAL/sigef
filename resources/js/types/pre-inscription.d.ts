@@ -127,3 +127,34 @@ export type {
     PreInscriptionFilters,
     PreInscriptionsPaginatedResponse,
 };
+
+
+export type PreRegistrationRequest = {
+
+    data: PreRegistrationFormData;
+    setData: (field: keyof PreRegistrationFormData, value: any) => void;
+    post: (...args: any[]) => void;
+    processing: boolean;
+    errors: Record<string, string>;
+
+}
+
+export type PreRegistrationFormData = {
+    first_name: string;
+    middle_name?: string;
+    last_name: string;
+    second_last_name?: string;
+    gender: number;
+    age: number;
+    phone: string;
+    email: string;
+    marital_status: number;
+    served_mission: boolean | null;
+    country_id: number;
+    stake_id: number;
+    course_id?: number;
+
+    job_type_preference?: number | null;
+    currently_working?: boolean | null;
+    available_full_time?: boolean | null;
+}

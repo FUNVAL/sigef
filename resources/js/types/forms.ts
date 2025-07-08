@@ -1,7 +1,7 @@
 // Tipos básicos
 export interface Country {
-  name: string;
-  code: string;
+    name: string;
+    code: string;
 }
 
 export interface Stake {
@@ -40,7 +40,7 @@ export interface PreRegistrationFormData {
     tipoEmpleoDeseado?: string;
     disponibilidadHorario?: string;
     // Campos mapeados para el backend
-    currently_working?: string;
+    currently_working?: boolean;
     job_type_preference?: string;
     availability?: string;
 }
