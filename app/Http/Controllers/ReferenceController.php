@@ -68,9 +68,13 @@ class ReferenceController extends Controller
             ]);
 
             Reference::create($validated);
-
-            return redirect()->back()
-                ->with('success', 'Referencia creada exitosamente');
+            $message = [
+                'message' => "Gracias por tu referencia, Uno de nuestros representante estara contactando a tu referido entre las proximas 24-72 horas para brindarle toda la información del programa.",
+                'type' => 'success'
+            ];
+            return inertia('pre-registration/request-confirmation', [
+                'response' => $message,
+            ]);
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
@@ -204,7 +208,7 @@ class ReferenceController extends Controller
             $accepted = $references->where('status.id', 2)->count();
             $rejected = $references->where('status.id', 3)->count();
             $acceptancePercentage = $total > 0 ? round(($accepted / $total) * 100, 1) : 0;
-            
+
             // References this week
             $newThisWeek = $references->where('created_at', '>=', now()->startOfWeek())->count();
 
@@ -244,16 +248,15 @@ class ReferenceController extends Controller
                 ->sortByDesc('quantity')
                 ->values()
                 ->toArray();
-             
+
             return Inertia::render('dashboard', [
-                'data' =>[
+                'data' => [
                     'stats' => $stats,
                     'referencesByCountry' => $referencesByCountry,
                     'referencesByStake' => $referencesByStake,
                     'references' => $references
                 ]
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
