@@ -7,20 +7,14 @@ import { ReferralFormStep } from '../../components/pre-registration/steps/Referr
 import { PreRegistrationFormStep } from '../../components/pre-registration/steps/PreRegistrationFormStep'
 import { FemaleFilterStep } from '../../components/pre-registration/steps/FemaleFilterStep'
 import { CourseSelectionStep } from '../../components/pre-registration/steps/CourseSelectionStep'
-import { MessageStep } from '../../components/pre-registration/steps/MessageStep'
 import { Stake } from '@/types/stake'
 import { Country } from '@/types/country'
 import { Course } from '@/types/course'
 import { useForm } from '@inertiajs/react'
 import { OverviewStep } from '@/components/pre-registration/steps/OverviewStep'
 import { PreRegistrationFormData } from '@/types/pre-inscription'
-
-
-type MessageData = {
-  message: string;
-  type: 'success' | 'warning' | 'info';
-  title?: string;
-}
+import { ReferenceFormData } from '@/types/reference'
+import { OverviewReferralStep } from '@/components/pre-registration/steps/Overview-Referral-Step'
 
 type PreRegistrationProps = {
   countries: Country[];
@@ -38,47 +32,52 @@ export default function PreRegistration({ countries, stakes, courses }: PreRegis
   const [currentStep, setCurrentStep] = useState(0);
   const [stepper, setStepper] = useState<Stepper[]>(initialSteps);
   const [selectedAction, setSelectedAction] = useState<'referral' | 'preregistration' | ''>('');
-  const request = useForm<PreRegistrationFormData>(initialData);
+  const initialData = selectedAction === 'referral' ? referenceInitialData : preRegistrationInitialData;
+
+  const request = useForm(initialData);
 
   const nextStep = () => {
     if (currentStep < stepper.length - 1) {
       setCurrentStep(currentStep + 1);
     }
-  }
+  };
 
   const previousStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
-  }
+  };
 
   const handleActionSelection = (action: 'referral' | 'preregistration') => {
     setSelectedAction(action);
-    setStepper([
-      ...initialSteps,
-      ...actions[action]
-    ]);
-  }
+    setStepper([...initialSteps, ...actions[action]]);
+  };
 
   useEffect(() => {
-    // Solo aplica para preregistration
-    if (selectedAction !== 'preregistration') return;
+    if (selectedAction === 'preregistration') {
+      const baseSteps = [...initialSteps, ...actions.preregistration];
 
-    const baseSteps = [
-      ...initialSteps,
-      ...actions.preregistration
-    ];
-
-    // Si es mujer, insertar Evaluación después de Datos
-    if (Number(request.data.gender) === 2) {
-      const dataStepIndex = baseSteps.findIndex(step => step.title === 'Datos');
-      if (dataStepIndex !== -1) {
-        baseSteps.splice(dataStepIndex + 1, 0, { title: 'Evaluación', component: FemaleFilterStep });
+      if (Number(request.data.gender) === 2) {
+        const dataStepIndex = baseSteps.findIndex(step => step.title === 'Datos');
+        if (dataStepIndex !== -1) {
+          baseSteps.splice(dataStepIndex + 1, 0, { title: 'Evaluación', component: FemaleFilterStep });
+        }
       }
-    }
 
-    setStepper(baseSteps);
+      setStepper(baseSteps);
+    }
   }, [request.data.gender, selectedAction]);
+
+  // Add this useEffect to reset form data when action changes
+  useEffect(() => {
+    if (selectedAction) {
+      const newInitialData = selectedAction === 'referral' ? referenceInitialData : preRegistrationInitialData;
+      request.reset();
+      Object.entries(newInitialData).forEach(([key, value]) => {
+        request.setData(key as any, value);
+      });
+    }
+  }, [selectedAction]);
 
   const CurrentStepComponent = stepper[currentStep].component;
 
@@ -120,7 +119,7 @@ export default function PreRegistration({ countries, stakes, courses }: PreRegis
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
 
@@ -135,7 +134,8 @@ const initialSteps: Stepper[] =
 const actions: { referral: Stepper[]; preregistration: Stepper[]; } =
 {
   referral: [
-    { title: 'Formulario', component: ReferralFormStep }
+    { title: 'Formulario', component: ReferralFormStep },
+    { title: 'Resumen', component: OverviewReferralStep }
   ],
 
   preregistration: [
@@ -145,7 +145,7 @@ const actions: { referral: Stepper[]; preregistration: Stepper[]; } =
   ]
 }
 
-const initialData: PreRegistrationFormData = {
+const preRegistrationInitialData: PreRegistrationFormData = {
   first_name: '',
   middle_name: '',
   last_name: '',
@@ -163,4 +163,16 @@ const initialData: PreRegistrationFormData = {
   currently_working: null,
   job_type_preference: null,
   available_full_time: null,
+}
+
+const referenceInitialData: ReferenceFormData = {
+  name: '',
+  gender: 0,
+  country_id: 0,
+  age: 0,
+  phone: '',
+  stake_id: 0,
+  referrer_name: '',
+  referrer_phone: '',
+  relationship_with_referred: 0,
 }
