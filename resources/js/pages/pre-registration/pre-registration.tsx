@@ -16,6 +16,14 @@ import { PreRegistrationFormData } from '@/types/pre-inscription'
 import { ReferenceFormData } from '@/types/reference'
 import { OverviewReferralStep } from '@/components/pre-registration/steps/Overview-Referral-Step'
 
+
+
+type MessageData = {
+  message: string;
+  type: 'success' | 'warning' | 'info';
+  title?: string;
+}
+
 type PreRegistrationProps = {
   countries: Country[];
   stakes: Stake[];
@@ -26,7 +34,6 @@ type Stepper = {
   title: string;
   component: React.ComponentType<any>;
 }
-
 
 export default function PreRegistration({ countries, stakes, courses }: PreRegistrationProps) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -175,4 +182,5 @@ const referenceInitialData: ReferenceFormData = {
   referrer_name: '',
   referrer_phone: '',
   relationship_with_referred: 0,
+
 }

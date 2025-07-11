@@ -1,5 +1,4 @@
 import { ReferenceFormData } from "./reference";
-
 /**
  * Tipo base para una pre-inscripción con todos sus campos y relaciones
  */
@@ -132,7 +131,6 @@ export type {
 
 
 export type PreRegistrationRequest = {
-
     data: any;
     setData: ((field: any, value: any) => void);
     post: (...args: any[]) => void;

@@ -20,9 +20,11 @@ import { Country } from "@/types/country"
 import { referralFormSchema } from "@/lib/schemas/referral"
 import validateForm from "@/lib/schemas/validate-schemas"
 import { useState } from "react"
+
 interface ReferralFormStepProps {
   onNext: () => void
   onBack: () => void,
+
   request: {
     data: ReferenceFormData;
     setData: (field: keyof ReferenceFormData, value: any) => void;
@@ -34,7 +36,10 @@ interface ReferralFormStepProps {
 export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }: ReferralFormStepProps) {
   const { setData, data } = request;
   const { enums } = usePage<{ enums: Enums }>().props;
+
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const filteredStakes = data.country_id ? stakes.filter(stake => stake.country_id === data.country_id) : [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,27 +151,15 @@ export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }
 
               <div>
                 <Label htmlFor="stake_id">Estaca/Distrito/Misión</Label>
-                <Select
+
+                <SearchableSelect
+                  data={filteredStakes}
+                  id="stake_id"
+                  name="stake_id"
                   value={data.stake_id.toString()}
-                  onValueChange={(value) => setData('stake_id', Number(value))}
-                  required
-                  name='stake_id'
-                >
-                  <SelectTrigger id="stake_id" name="stake_id" >
-                    <SelectValue defaultChecked />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {data.country_id ?
-                      <>
-                        <SelectItem value="0" disabled>Selecciona una Estaca</SelectItem>
-                        {stakes.filter(stake => stake.country_id.toString() === data.country_id.toString()).map((item) => (
-                          <SelectItem key={item.id} value={item.id.toString()}>
-                            {item.name}
-                          </SelectItem>
-                        ))}
-                      </> : <SelectItem value="0" disabled>Selecciona un país primero</SelectItem>}
-                  </SelectContent>
-                </Select>
+                  searchField="name"
+                  onChange={(value) => setData('stake_id', Number(value))}
+                />
                 {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
               </div>
 
@@ -245,7 +238,7 @@ export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }
 
               <Button
                 size="lg"
-                className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="min-w-[130px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Enviar Referencia
               </Button>
