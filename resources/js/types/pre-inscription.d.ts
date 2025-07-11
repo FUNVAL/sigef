@@ -1,3 +1,4 @@
+import { ReferenceFormData } from "./reference";
 /**
  * Tipo base para una pre-inscripción con todos sus campos y relaciones
  */
@@ -130,9 +131,8 @@ export type {
 
 
 export type PreRegistrationRequest = {
-
-    data: PreRegistrationFormData;
-    setData: (field: keyof PreRegistrationFormData, value: any) => void;
+    data: any;
+    setData: ((field: any, value: any) => void);
     post: (...args: any[]) => void;
     processing: boolean;
     errors: Record<string, string>;

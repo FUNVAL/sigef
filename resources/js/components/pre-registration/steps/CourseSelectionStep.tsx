@@ -38,6 +38,7 @@ export function CourseSelectionStep({ onNext, onBack, courses, request }: Course
           </p>
         </CardHeader>
         <CardContent className="space-y-6 ">
+
           <RadioGroup
             name="course_id"
             value={formData.course_id?.toString()}

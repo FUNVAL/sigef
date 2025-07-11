@@ -33,7 +33,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
 
     const { data: formData, setData } = request;
     const { enums } = usePage<{ enums: Enums }>().props;
-    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [errors, setErrors] = useState<Record<string, string>>({}); 
     const filteredStakes = formData.country_id ? stakes.filter(stake => stake.country_id ===  Number(formData.country_id)) : [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -45,7 +45,6 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
             return;
         }
         onNext();
-
     }
 
     return (
@@ -189,6 +188,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                             {/* Estaca */}
                             <div>
                                 <Label htmlFor="stake_id">Estaca/Distrito/Misión</Label>
+
                                 <SearchableSelect
                                     data={filteredStakes}
                                     id="stake_id"
@@ -197,6 +197,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                                     searchField="name"
                                     onChange={(value) => setData('stake_id', Number(value))}
                                 />
+                              
                                 {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
                             </div>
                             {/* Correo */}
