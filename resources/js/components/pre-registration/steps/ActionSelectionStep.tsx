@@ -81,7 +81,7 @@ export function ActionSelectionStep({ onNext, onBack, onAction, action }: Action
               onClick={onNext}
               disabled={!action}
               size="lg"
-              className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="min-w-[140px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Continuar
             </Button>

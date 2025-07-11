@@ -272,7 +272,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
 
                             <Button
                                 size="lg"
-                                className="min-w-[200px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                                className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
                             >
                                 Continuar
                             </Button>
