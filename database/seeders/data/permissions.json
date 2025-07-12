@@ -81,12 +81,36 @@
         "name": "ver referencias",
         "description": "Permite ver la lista de referencias",
         "category": "Gestion de referencias",
-        "key": "reference:show"
+        "key": "reference:view"
     },
     {
         "name": "editar referencias",
         "description": "Permite actualizar el estado de una referencia",
         "category": "Gestion de referencias",
         "key": "reference:edit"
+    },
+    {
+        "name": "actualizar referencias",
+        "description": "Permite actualizar los datos de una referencia sin cambiar su estado",
+        "category": "Gestion de referencias",
+        "key": "reference:update"
+    },
+    {
+        "name": "ver pre-inscripciones",
+        "description": "Permite ver la lista de pre-inscripciones",
+        "category": "Gestión de Pre-Inscripciones",
+        "key": "pre-inscription:view"
+    },
+    {
+        "name": "editar pre-inscripciones",
+        "description": "Permite editar pre-inscripciones existentes",
+        "category": "Gestión de Pre-Inscripciones",
+        "key": "pre-inscription:edit"
+    },
+    {
+        "name": "actualizar pre-inscripciones",
+        "description": "Permite actualizar los datos de una pre-inscripción sin cambiar su estado",
+        "category": "Gestión de Pre-Inscripciones",
+        "key": "pre-inscription:update"
     }
 ]
