@@ -40,10 +40,10 @@ export const columns: ColumnDef<PreInscription>[] = [
                 `${preInscription.first_name} ${preInscription.middle_name || ''} ${preInscription.last_name} ${preInscription.second_last_name || ''}`.trim();
             return (
                 <div className="space-y-1">
-                    <div className="font-medium">{fullName}</div>
-                    <div className="text-sm text-gray-500">
+                    <p className="font-medium">{fullName}</p>
+                    <p className="text-sm text-gray-500">
                         {preInscription.gender?.name} • {preInscription.age} años
-                    </div>
+                    </p>
                 </div>
             );
         },
@@ -55,8 +55,8 @@ export const columns: ColumnDef<PreInscription>[] = [
             const preInscription = row.original;
             return (
                 <div className="space-y-1">
-                    <div className="text-sm font-medium">{preInscription.email}</div>
-                    <div className="text-sm text-gray-500">{preInscription.phone}</div>
+                    <p className="text-sm font-medium">{preInscription.email}</p>
+                    <p className="text-sm text-gray-500">{preInscription.phone}</p>
                 </div>
             );
         },
@@ -71,8 +71,8 @@ export const columns: ColumnDef<PreInscription>[] = [
 
             return (
                 <div className="space-y-1 text-sm">
-                    <div className="font-medium">{country}</div>
-                    <div className="text-gray-500">{stake}</div>
+                    <p className="font-medium">{country}</p>
+                    <p className="text-gray-500">{stake}</p>
                 </div>
             );
         },
@@ -82,7 +82,7 @@ export const columns: ColumnDef<PreInscription>[] = [
         header: 'Estado Civil',
         cell: ({ row }) => {
             const preInscription = row.original;
-            return <div className="text-sm">{preInscription.marital_status?.name || 'No especificado'}</div>;
+            return <p className="text-sm">{preInscription.marital_status?.name || 'No especificado'}</p>;
         },
     },
 
@@ -100,7 +100,7 @@ export const columns: ColumnDef<PreInscription>[] = [
         header: 'Fecha',
         cell: ({ row }) => {
             const preInscription = row.original;
-            return <div className="text-sm">{preInscription.created_at ? new Date(preInscription.created_at).toLocaleDateString() : '-'}</div>;
+            return <p className="text-sm">{preInscription.created_at ? new Date(preInscription.created_at).toLocaleDateString() : '-'}</p>;
         },
     },
     {
