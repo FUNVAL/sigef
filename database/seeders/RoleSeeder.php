@@ -25,5 +25,16 @@ class RoleSeeder extends Seeder
 
         $adminRole = Role::findByName('Administrador');
         $adminRole->givePermissionTo(Permission::all());
+
+        $controllerRole = Role::findByName('Controller');
+        $controllerPermissions = Permission::whereIn('key', [
+            'reference:view',
+            'reference:edit',
+            'reference:update',
+            'pre-inscription:view',
+            'pre-inscription:edit',
+            'pre-inscription:update'
+        ])->get();
+        $controllerRole->givePermissionTo($controllerPermissions);
     }
 }
