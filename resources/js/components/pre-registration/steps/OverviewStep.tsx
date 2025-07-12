@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, UserCheck } from "lucide-react"
+import { ArrowLeft, UserCheck, Loader } from "lucide-react"
 import { Country } from "@/types/country"
 import { Stake } from "@/types/stake"
 import { Enums } from "@/types/global"
@@ -119,16 +119,25 @@ export function OverviewStep({ request, countries, stakes, onNext, onBack, }: Ov
                         </div>
                     </div>
                     <form className="flex justify-between pt-4" onSubmit={handleSubmit}>
-                        <Button type="button" onClick={onBack} variant="outline" size="lg" className="min-w-[120px]">
+                        <Button
+                            type="button"
+                            onClick={onBack}
+                            variant="outline"
+                            size="lg"
+                            disabled={processing}
+                            className="min-w-[120px]"
+                        >
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Anterior
                         </Button>
 
                         <Button
                             size="lg"
-                            className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                            disabled={processing}
+                            className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90 disabled:bg-gray-300 disabled:text-gray-500"
                         >
-                            Enviar
+                            {processing && <Loader className="mr-2 h-4 w-4 animate-spin" />}
+                            {processing ? "Enviando..." : "Enviar"}
                         </Button>
                     </form>
                 </CardContent>
