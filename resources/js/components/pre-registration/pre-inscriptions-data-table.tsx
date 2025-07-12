@@ -63,7 +63,7 @@ export const columns: ColumnDef<PreInscription>[] = [
     },
     {
         id: 'church_contact',
-        header: 'Ubicacion',
+        header: 'Ubicación',
         cell: ({ row }) => {
             const preInscription = row.original;
             const country = preInscription.country?.name || 'País no especificado';
