@@ -1,5 +1,3 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "../ui/checkbox";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -7,43 +5,39 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
-import { MoreHorizontal } from "lucide-react";
-import { type PreInscription } from "@/types/pre-inscription";
-import PreInscriptionOverview from "./pre-inscription-overview";
-import PreInscriptionReview from "./pre-inscription-review";
+} from '@/components/ui/dropdown-menu';
+import { type PreInscription } from '@/types/pre-inscription';
+import { ColumnDef } from '@tanstack/react-table';
+import { MoreHorizontal } from 'lucide-react';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import { Checkbox } from '../ui/checkbox';
+import PreInscriptionOverview from './pre-inscription-overview';
+import PreInscriptionReview from './pre-inscription-review';
 
 export const columns: ColumnDef<PreInscription>[] = [
     {
-        id: "select",
+        id: 'select',
         header: ({ table }) => (
             <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
+                checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
                 onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                 aria-label="Select all"
             />
         ),
         cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
+            <Checkbox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />
         ),
         enableSorting: false,
         enableHiding: false,
     },
     {
-        accessorKey: "first_name",
-        header: "Candidato",
+        accessorKey: 'first_name',
+        header: 'Candidato',
         cell: ({ row }) => {
             const preInscription = row.original;
-            const fullName = `${preInscription.first_name} ${preInscription.middle_name || ''} ${preInscription.last_name} ${preInscription.second_last_name || ''}`.trim();
+            const fullName =
+                `${preInscription.first_name} ${preInscription.middle_name || ''} ${preInscription.last_name} ${preInscription.second_last_name || ''}`.trim();
             return (
                 <div className="space-y-1">
                     <div className="font-medium">{fullName}</div>
@@ -55,8 +49,8 @@ export const columns: ColumnDef<PreInscription>[] = [
         },
     },
     {
-        accessorKey: "email",
-        header: "Contacto",
+        accessorKey: 'email',
+        header: 'Contacto',
         cell: ({ row }) => {
             const preInscription = row.original;
             return (
@@ -68,89 +62,50 @@ export const columns: ColumnDef<PreInscription>[] = [
         },
     },
     {
-        accessorKey: "country.name",
-        header: "País",
+        id: 'church_contact',
+        header: 'Ubicacion',
         cell: ({ row }) => {
             const preInscription = row.original;
+            const country = preInscription.country?.name || 'País no especificado';
+            const stake = preInscription.stake?.name || 'Estaca no especificada';
+
             return (
-                <div className="text-sm">{preInscription.country?.name}</div>
-            );
-        },
-    },
-    {
-        accessorKey: "stake.name",
-        header: "Estaca",
-        cell: ({ row }) => {
-            const preInscription = row.original;
-            return (
-                <div className="text-sm">{preInscription.stake?.name}</div>
-            );
-        },
-    },
-    {
-        accessorKey: "marital_status",
-        header: "Estado Civil",
-        cell: ({ row }) => {
-            const preInscription = row.original;
-            return (
-                <div className="text-sm">{preInscription.marital_status?.name || 'No especificado'}</div>
-            );
-        },
-    },
-    {
-        accessorKey: "job_type_preference",
-        header: "Preferencia Laboral",
-        cell: ({ row }) => {
-            const preInscription = row.original;
-            return (
-                <div className="text-sm">
-                    {preInscription.job_type_preference?.name || 'No especificado'}
+                <div className="space-y-1 text-sm">
+                    <div className="font-medium">{country}</div>
+                    <div className="text-gray-500">{stake}</div>
                 </div>
             );
         },
     },
     {
-        accessorKey: "served_mission",
-        header: "Misión",
+        accessorKey: 'marital_status',
+        header: 'Estado Civil',
         cell: ({ row }) => {
             const preInscription = row.original;
-            return (
-                <Badge variant={preInscription.served_mission ? "default" : "secondary"}>
-                    {preInscription.served_mission ? "Sí" : "No"}
-                </Badge>
-            );
+            return <div className="text-sm">{preInscription.marital_status?.name || 'No especificado'}</div>;
+        },
+    },
+
+    {
+        accessorKey: 'served_mission',
+        header: 'Misión',
+        cell: ({ row }) => {
+            const preInscription = row.original;
+            return <Badge variant={preInscription.served_mission ? 'default' : 'secondary'}>{preInscription.served_mission ? 'Sí' : 'No'}</Badge>;
+        },
+    },
+
+    {
+        accessorKey: 'created_at',
+        header: 'Fecha',
+        cell: ({ row }) => {
+            const preInscription = row.original;
+            return <div className="text-sm">{preInscription.created_at ? new Date(preInscription.created_at).toLocaleDateString() : '-'}</div>;
         },
     },
     {
-        accessorKey: "available_full_time",
-        header: "Disponibilidad",
-        cell: ({ row }) => {
-            const preInscription = row.original;
-            if (preInscription.available_full_time === null || preInscription.available_full_time === undefined) {
-                return <div className="text-sm text-gray-500">No especificado</div>;
-            }
-            return (
-                <Badge variant={preInscription.available_full_time ? "default" : "secondary"}>
-                    {preInscription.available_full_time ? "Tiempo completo" : "Tiempo parcial"}
-                </Badge>
-            );
-        },
-    },
-    {
-        accessorKey: "created_at",
-        header: "Fecha",
-        cell: ({ row }) => {
-            const preInscription = row.original;
-            return (
-                <div className="text-sm">
-                    {preInscription.created_at ? new Date(preInscription.created_at).toLocaleDateString() : '-'}
-                </div>
-            );
-        },
-    },
-    {
-        accessorKey: "status",
-        header: "Estado",
+        accessorKey: 'status',
+        header: 'Estado',
         cell: ({ row }) => {
             const preInscription = row.original;
             if (!preInscription.status) {
@@ -160,27 +115,19 @@ export const columns: ColumnDef<PreInscription>[] = [
             const status = preInscription.status.name.toLowerCase();
 
             return (
-                <Badge
-                    variant={
-                        status === "aprobado"
-                            ? "default"
-                            : status === "rechazado"
-                                ? "destructive"
-                                : "secondary"
-                    }
-                >
+                <Badge variant={status === 'aprobado' ? 'default' : status === 'rechazado' ? 'destructive' : 'secondary'}>
                     {preInscription.status.name}
                 </Badge>
             );
         },
     },
     {
-        id: "actions",
-        header: "Acciones",
+        id: 'actions',
+        header: 'Acciones',
         enableHiding: false,
         cell: ({ row }) => {
             const preInscription = row.original;
-            const isPending = preInscription.status?.name.toLowerCase() === "pendiente";
+            const isPending = preInscription.status?.name.toLowerCase() === 'pendiente';
 
             return (
                 <DropdownMenu>
@@ -194,23 +141,16 @@ export const columns: ColumnDef<PreInscription>[] = [
                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {isPending && (
-                            <DropdownMenuItem
-                                className="text-blue-600 focus:text-blue-700 focus:bg-blue-50"
-                                asChild
-                            >
-                                <PreInscriptionReview
-                                    preInscription={preInscription}
-                                />
+                            <DropdownMenuItem className="text-blue-600 focus:bg-blue-50 focus:text-blue-700" asChild>
+                                <PreInscriptionReview preInscription={preInscription} />
                             </DropdownMenuItem>
                         )}
                         <DropdownMenuItem className="focus:bg-blue-50" asChild>
-                            <PreInscriptionOverview
-                                preInscription={preInscription}
-                            />
+                            <PreInscriptionOverview preInscription={preInscription} />
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-            )
+            );
         },
     },
 ];
