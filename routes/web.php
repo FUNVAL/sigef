@@ -14,6 +14,9 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+Route::get('inscription-reference', [PreInscriptionController::class, 'create'])
+    ->name('inscription-reference');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [ReferenceController::class, 'dashboard'])->name('dashboard');
 
