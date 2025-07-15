@@ -7,6 +7,8 @@ import { Enums } from "@/types/global";
 import { PreRegistrationRequest } from "@/types/pre-inscription";
 import { usePage } from "@inertiajs/react";
 import { ReferenceFormData } from "@/types/reference";
+import { StepperContext } from "@/pages/forms/stepper-provider";
+import { useContext } from "react";
 
 interface OverviewReferralStepProps {
     request: {
@@ -18,11 +20,11 @@ interface OverviewReferralStepProps {
     };
     countries: Country[];
     stakes: Stake[];
-    onNext: () => void;
-    onBack: () => void;
 }
 
-export function OverviewReferralStep({ request, countries, stakes, onNext, onBack }: OverviewReferralStepProps) {
+export function OverviewReferralStep({ request, countries, stakes }: OverviewReferralStepProps) {
+    const { nextStep, previousStep } = useContext(StepperContext);
+
     const { data, post, processing } = request;
     const { enums } = usePage<{ enums: Enums }>().props;
 
@@ -40,7 +42,12 @@ export function OverviewReferralStep({ request, countries, stakes, onNext, onBac
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route("references.store"));
+        post(route("references.store"), {
+            onSuccess: () => nextStep(),
+            onError: (err: unknown) => {
+                console.error("Error al enviar la referencia:", err);
+            },
+        });
     }
 
     return (
@@ -87,7 +94,7 @@ export function OverviewReferralStep({ request, countries, stakes, onNext, onBac
                         </div>
                     </div>
                     <form className="flex justify-between pt-4" onSubmit={handleSubmit} >
-                        <Button type="button" onClick={onBack} variant="outline" size="lg" className="min-w-[120px]">
+                        <Button type="button" onClick={previousStep} variant="outline" size="lg" className="min-w-[120px]">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Anterior
                         </Button>

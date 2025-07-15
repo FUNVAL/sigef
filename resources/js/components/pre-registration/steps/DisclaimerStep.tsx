@@ -1,15 +1,12 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-/* import { AlertTriangle } from "lucide-react" */
+import { StepperContext } from "@/pages/forms/stepper-provider"
 
-interface DisclaimerStepProps {
-  onNext: () => void;
-}
-
-export function DisclaimerStep({ onNext }: DisclaimerStepProps) {
+export function DisclaimerStep() {
+  const { nextStep } = useContext(StepperContext);
   const [accepted, setAccepted] = useState(false)
 
   return (
@@ -70,7 +67,7 @@ export function DisclaimerStep({ onNext }: DisclaimerStepProps) {
 
           <div className="flex justify-center pt-4">
             <Button
-              onClick={onNext}
+              onClick={nextStep}
               disabled={!accepted}
               size="lg"
               className="min-w-[200px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"

@@ -1,18 +1,20 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Users, UserPlus, ArrowLeft } from "lucide-react"
+import { StepperContext } from "@/pages/forms/stepper-provider"
+import { Link } from "@inertiajs/react"
 
 interface ActionSelectionStepProps {
-  onNext: () => void;
-  onBack: () => void;
-  onAction: (action: 'referral' | 'preregistration') => void;
-  action: 'referral' | 'preregistration' | '';
+  onAction: (action: 'reference-form' | 'pre-inscription-form') => void;
+  action: 'reference-form' | 'pre-inscription-form' | '';
 }
 
-export function ActionSelectionStep({ onNext, onBack, onAction, action }: ActionSelectionStepProps) {
+export function ActionSelectionStep() {
+  const { nextStep, previousStep } = useContext(StepperContext);
+  const [action, setAction] = useState<ActionSelectionStepProps['action']>('');
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -27,14 +29,14 @@ export function ActionSelectionStep({ onNext, onBack, onAction, action }: Action
         </CardHeader>
         <CardContent className="space-y-6">
           <RadioGroup
+            className="space-y-4 checked:bg-[rgb(46_131_242_/_1)]"
             value={action}
-            onValueChange={(value) => { onAction(value as 'referral' | 'preregistration') }}
-            className="space-y-4 checked:bg-[rgb(46_131_242_/_1)] "
+            onValueChange={(value) => setAction(value as ActionSelectionStepProps['action'])}
           >
             <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
               <Label htmlFor="referral" className="text-base font-medium cursor-pointer">
                 <div className="flex items-center space-x-3 flex-1">
-                  <RadioGroupItem value="referral" id="referral" />
+                  <RadioGroupItem value="reference-form" id="referral" />
                   <div className="w-12 h-12 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center">
                     <Users className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
                   </div>
@@ -51,7 +53,7 @@ export function ActionSelectionStep({ onNext, onBack, onAction, action }: Action
             <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
               <Label htmlFor="preregistration" className="text-base font-medium cursor-pointer">
                 <div className="flex items-center space-x-3 flex-1">
-                  <RadioGroupItem value="preregistration" id="preregistration" />
+                  <RadioGroupItem value="pre-inscription-form" id="preregistration" />
                   <div className="w-12 h-12 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center">
                     <UserPlus className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
                   </div>
@@ -68,7 +70,7 @@ export function ActionSelectionStep({ onNext, onBack, onAction, action }: Action
 
           <div className="flex justify-between pt-4">
             <Button
-              onClick={onBack}
+              onClick={previousStep}
               variant="outline"
               size="lg"
               className="min-w-[120px]"
@@ -78,12 +80,19 @@ export function ActionSelectionStep({ onNext, onBack, onAction, action }: Action
             </Button>
 
             <Button
-              onClick={onNext}
               disabled={!action}
+              onClick={nextStep}
+              asChild
               size="lg"
-              className="min-w-[140px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`min-w-[140px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 ${!action && 'opacity-50 cursor-not-allowed'}`}
             >
-              Continuar
+              <Link
+                href={`${action}?step=2`}
+                tabIndex={!action ? -1 : 0}
+                aria-disabled={!action}
+              >
+                Continuar
+              </Link>
             </Button>
           </div>
         </CardContent>
