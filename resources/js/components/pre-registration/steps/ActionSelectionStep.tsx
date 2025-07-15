@@ -8,8 +8,8 @@ import { StepperContext } from "@/pages/forms/stepper-provider"
 import { Link } from "@inertiajs/react"
 
 interface ActionSelectionStepProps {
-  onAction: (action: 'reference-form' | 'pre-inscription-form') => void;
-  action: 'reference-form' | 'pre-inscription-form' | '';
+  onAction: (action: 'reference-form' | 'preinscription-form') => void;
+  action: 'reference-form' | 'preinscription-form' | '';
 }
 
 export function ActionSelectionStep() {
@@ -53,7 +53,7 @@ export function ActionSelectionStep() {
             <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
               <Label htmlFor="preregistration" className="text-base font-medium cursor-pointer">
                 <div className="flex items-center space-x-3 flex-1">
-                  <RadioGroupItem value="pre-inscription-form" id="preregistration" />
+                  <RadioGroupItem value="preinscription-form" id="preregistration" />
                   <div className="w-12 h-12 rounded-full bg-[rgb(46_131_242_/_1)]/10 flex items-center justify-center">
                     <UserPlus className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
                   </div>

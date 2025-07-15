@@ -9,31 +9,32 @@ import { Enums } from "@/types/global"
 import validateForm from "@/lib/schemas/validate-schemas"
 import { PreRegistrationRequest, PreRegistrationFormData } from "@/types/pre-inscription"
 import { femaleValidationSchema } from "@/lib/schemas/pre-registration"
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { StepperContext } from "@/pages/forms/stepper-provider"
 
 interface FemaleFilterStepProps {
-  formData: PreRegistrationFormData;
-  onNext: () => void;
-  onBack: () => void;
   request: PreRegistrationRequest;
 }
 
-export function FemaleFilterStep({ request, onNext, onBack }: FemaleFilterStepProps) {
-  const { data: formData, setData } = request
-  const { enums } = usePage<{ enums: Enums }>().props
-  const [errors, setErrors] = useState<Record<string, string>>({})
+export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
+
+  const { nextStep, previousStep } = useContext(StepperContext);
+  const { data, setData } = request;
+  const { enums } = usePage<{ enums: Enums }>().props;
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const handleSubmit = () => {
-    const validate = validateForm(formData, femaleValidationSchema)
-    console.log(validate.errors);
+    const validate = validateForm(data, femaleValidationSchema);
     if (!validate.success) {
-      setErrors(validate?.errors)
+      setErrors(validate?.errors);
       return;
     }
-
-    onNext()
+    nextStep();
   }
-  const isWorking = formData.currently_working !== null ? formData.currently_working ? 'si' : 'no' : ''
-  const isAvailableFullTime = formData.available_full_time !== null ? formData.available_full_time ? 'si' : 'no' : ''
+
+  const isWorking = data.currently_working !== null ? data.currently_working ? 'si' : 'no' : '';
+  const isAvailableFullTime = data.available_full_time !== null ? data.available_full_time ? 'si' : 'no' : '';
+
   return (
     <div className="max-w-2xl mx-auto">
       <Card className="border-2">
@@ -74,13 +75,13 @@ export function FemaleFilterStep({ request, onNext, onBack }: FemaleFilterStepPr
           </div>
 
           {/* Segunda pregunta: Tipo de empleo (solo si no está trabajando) */}
-          {formData.currently_working === false && (
+          {data.currently_working === false && (
             <div className="space-y-4 animate-in slide-in-from-bottom-2">
               <Label className="text-lg font-semibold text-funval-darkBlue">
                 ¿Qué tipo de empleo buscas? *
               </Label>
               <RadioGroup
-                value={formData.job_type_preference?.toString() || ''}
+                value={data.job_type_preference?.toString() || ''}
                 onValueChange={(value) => setData('job_type_preference', Number(value))}
                 className="space-y-3"
               >
@@ -102,7 +103,7 @@ export function FemaleFilterStep({ request, onNext, onBack }: FemaleFilterStepPr
           )}
 
           {/* Tercera pregunta: Disponibilidad horaria (solo si seleccionó trabajo fuera de casa) */}
-          {formData.job_type_preference === 2 && (
+          {data.job_type_preference === 2 && (
             <div className="space-y-4 animate-in slide-in-from-bottom-2">
               <Label className="text-lg font-semibold text-funval-darkBlue">
                 ¿Tienes disponibilidad para estudiar en un horario de clases extendido de 10-12 horas diarias de lunes a viernes? *
@@ -133,7 +134,7 @@ export function FemaleFilterStep({ request, onNext, onBack }: FemaleFilterStepPr
 
           <div className="flex justify-between pt-4">
             <Button
-              onClick={onBack}
+              onClick={previousStep}
               variant="outline"
               size="lg"
               className="min-w-[120px]"

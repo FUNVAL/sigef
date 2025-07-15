@@ -6,45 +6,42 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, UserPlus } from 'lucide-react';
 import { usePage } from '@inertiajs/react';
-import { PreRegistrationFormData } from '../../../types/forms';
 import { Enums } from '@/types/global';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { Country } from '@/types/country';
 import { Stake } from '@/types/stake';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import validateForm from '@/lib/schemas/validate-schemas';
 import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
+import { StepperContext } from '@/pages/forms/stepper-provider';
+import { PreRegistrationFormData } from '@/types/pre-inscription';
 
 interface PreRegistrationFormStepProps {
-    onNext: () => void;
-    onBack: () => void;
     countries: Country[];
     stakes: Stake[];
     request: {
         data: PreRegistrationFormData;
         setData: (field: keyof PreRegistrationFormData, value: any) => void;
-        post: (...args: any[]) => void;
-        processing: boolean;
         errors: Record<string, string>;
     };
 }
 
-export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes = [], request }: PreRegistrationFormStepProps) {
-
-    const { data: formData, setData } = request;
+export function PreRegistrationFormStep({ countries = [], stakes = [], request }: PreRegistrationFormStepProps) {
+    const { nextStep, previousStep } = useContext(StepperContext)
+    const { data, setData } = request;
     const { enums } = usePage<{ enums: Enums }>().props;
-    const [errors, setErrors] = useState<Record<string, string>>({}); 
-    const filteredStakes = formData.country_id ? stakes.filter(stake => stake.country_id ===  Number(formData.country_id)) : [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const filteredStakes = data.country_id ? stakes.filter(stake => stake.country_id === Number(data.country_id)) : [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const validationErrors = validateForm(formData, preRegistrationSchema);
+        const validationErrors = validateForm(data, preRegistrationSchema);
 
         if (!validationErrors?.success) {
             setErrors(validationErrors?.errors ?? {});
             return;
         }
-        onNext();
+        nextStep();
     }
 
     return (
@@ -70,7 +67,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                                 <Input
                                     id="first_name"
                                     name="first_name"
-                                    value={formData.first_name}
+                                    value={data.first_name}
                                     onChange={(e) => setData('first_name', e.target.value)}
                                     placeholder="Nombre completo"
                                     autoComplete='given-name'
@@ -85,7 +82,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                                     id="middle_name"
                                     name="middle_name"
                                     autoComplete='additional-name'
-                                    value={formData.middle_name}
+                                    value={data.middle_name}
                                     onChange={(e) => setData('middle_name', e.target.value)}
                                     placeholder="Segundo nombre"
                                 />
@@ -98,7 +95,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                                     id="last_name"
                                     name="last_name"
                                     autoComplete='family-name'
-                                    value={formData.last_name}
+                                    value={data.last_name}
                                     onChange={(e) => setData('last_name', e.target.value)}
                                     placeholder="Apellido"
                                     required
@@ -112,7 +109,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                                     id="second_last_name"
                                     name="second_last_name"
                                     autoComplete='family-name'
-                                    value={formData.second_last_name}
+                                    value={data.second_last_name}
                                     onChange={(e) => setData('second_last_name', e.target.value)}
                                     placeholder="Segundo apellido"
                                 />
@@ -121,7 +118,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                             {/* Género */}
                             <div>
                                 <Label htmlFor="gender">Género</Label>
-                                <Select value={formData.gender.toString()}
+                                <Select value={data.gender.toString()}
                                     onValueChange={(value) => setData('gender', Number(value))}
                                     name="gender"
                                     required
@@ -148,7 +145,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                                     name="age"
                                     autoComplete='age'
                                     type="number"
-                                    value={formData.age}
+                                    value={data.age}
                                     onChange={(e) => setData('age', e.target.value)}
                                     min="18"
                                     max="100"
@@ -163,7 +160,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                                     data={countries}
                                     id="country_id"
                                     name="country_id"
-                                    value={formData.country_id.toString()}
+                                    value={data.country_id.toString()}
                                     searchField="name"
                                     onChange={(value) => setData('country_id', Number(value))}
                                     placeholder="Selecciona un país"
@@ -178,7 +175,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                                     id="phone"
                                     name="phone"
                                     autoComplete='tel'
-                                    value={formData.phone}
+                                    value={data.phone}
                                     onChange={(e) => setData('phone', e.target.value)}
                                     placeholder="Teléfono"
                                     required
@@ -193,11 +190,11 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                                     data={filteredStakes}
                                     id="stake_id"
                                     name="stake_id"
-                                    value={formData.stake_id.toString()}
+                                    value={data.stake_id.toString()}
                                     searchField="name"
                                     onChange={(value) => setData('stake_id', Number(value))}
                                 />
-                              
+
                                 {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
                             </div>
                             {/* Correo */}
@@ -208,7 +205,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                                     name="email"
                                     autoComplete='email'
                                     type="email"
-                                    value={formData.email}
+                                    value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
                                     placeholder="Correo electrónico"
                                     required
@@ -219,7 +216,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                             <div>
                                 <Label htmlFor="marital_status">Estado civil</Label>
                                 <Select
-                                    value={formData.marital_status.toString()}
+                                    value={data.marital_status.toString()}
                                     onValueChange={(value) => setData('marital_status', Number(value))}
                                     required
                                     name='marital_status'
@@ -246,7 +243,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
                         <div>
                             <p className="text-base font-medium">¿Has servido una misión?</p>
                             <RadioGroup
-                                value={formData.served_mission !== null ? formData.served_mission ? 'yes' : 'no' : ''}
+                                value={data.served_mission !== null ? data.served_mission ? 'yes' : 'no' : ''}
                                 onValueChange={(value) => setData('served_mission', value === 'yes')}
                                 className="mt-2 flex flex-row space-x-6"
                                 name='served_mission'
@@ -266,7 +263,7 @@ export function PreRegistrationFormStep({ onNext, onBack, countries = [], stakes
 
                         {/* Botones */}
                         <div className="flex justify-between pt-4">
-                            <Button type="button" onClick={onBack} variant="outline" size="lg" className="min-w-[120px]">
+                            <Button type="button" onClick={previousStep} variant="outline" size="lg" className="min-w-[120px]">
                                 <ArrowLeft className="mr-2 h-4 w-4" />
                                 Anterior
                             </Button>

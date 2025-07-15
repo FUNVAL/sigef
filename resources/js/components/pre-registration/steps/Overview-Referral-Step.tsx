@@ -4,7 +4,6 @@ import { ArrowLeft, Loader, Users } from "lucide-react";
 import { Country } from "@/types/country";
 import { Stake } from "@/types/stake";
 import { Enums } from "@/types/global";
-import { PreRegistrationRequest } from "@/types/pre-inscription";
 import { usePage } from "@inertiajs/react";
 import { ReferenceFormData } from "@/types/reference";
 import { StepperContext } from "@/pages/forms/stepper-provider";
