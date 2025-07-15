@@ -52,7 +52,8 @@ class PreInscriptionController extends Controller
     {
         try {
             // load view with inertia
-            return inertia('pre-registration/pre-registration', [
+            return inertia('forms/pre-inscription-form', [
+                'step' => request()->input('step', 0),
                 'countries' => Country::all(),
                 'stakes' => Stake::all(),
                 'courses' => Course::all()
@@ -135,9 +136,7 @@ class PreInscriptionController extends Controller
                 ]);
             }
 
-            return inertia('pre-registration/request-confirmation', [
-                'response' => $message,
-            ]);
+            return  back()->with('success', $message);
         } catch (Exception $e) {
 
             // For Inertia requests, return back with error
