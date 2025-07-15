@@ -9,11 +9,18 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
-Route::get('/inscription-reference', [PreInscriptionController::class, 'create'])
-    ->name('inscription-reference');
+Route::get('preinscription-form', [PreInscriptionController::class, 'create'])
+    ->name('preinscription-form');
 
 Route::post('/pre-inscription', [PreInscriptionController::class, 'store'])
     ->name('pre-inscription.store');
 
 Route::post('/references', [ReferenceController::class, 'store'])
     ->name('references.store');
+
+Route::get('/reference-form', [ReferenceController::class, 'create'])
+    ->name('/reference-form');
+
+# formulario publico que maneja la preinscripcion y referencias
+Route::get('preinscription-reference', fn() => Inertia::render('forms/pre-registration'))
+    ->name('preinscription-reference');

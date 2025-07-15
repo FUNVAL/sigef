@@ -60,7 +60,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('references')->name('references.')
         ->controller(ReferenceController::class)->group(function () {
             Route::get('/', 'index')->name('index');
-            // Route::get('create', 'create')->name('create');
             Route::get('{id}', 'show')->name('show');
             Route::patch('{id}', 'update')->name('update');
             Route::delete('{id}', 'destroy')->name('destroy');
@@ -69,7 +68,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('pre-inscription')->name('pre-inscription.')
         ->controller(PreInscriptionController::class)->group(function () {
             Route::get('/', 'index')->name('index');
-            // Route::get('create', 'create')->name('create');
             Route::get('{id}', 'show')->name('show');
             Route::put('{id}', 'update')->name('update');
             Route::delete('{id}', 'destroy')->name('destroy');
