@@ -9,7 +9,7 @@ export function MessageStep() {
 
   const flashMessage = useMemo(() => {
     return (flash as { success?: { type: string, message: string } })?.success;
-  }, [flash]);
+  }, []);
 
   useEffect(() => {
     const storedMessage = sessionStorage.getItem('successMessage');
