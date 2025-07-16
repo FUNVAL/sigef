@@ -70,7 +70,10 @@ class ReferenceController extends Controller
 
             Reference::create($validated);
 
-            $message =  "Gracias por tu referencia, Uno de nuestros representante estara contactando a tu referido entre las proximas 24-72 horas para brindarle toda la información del programa.";
+            $message =  [
+                'type' => 'success',
+                'message' => "Gracias por tu referencia, Uno de nuestros representante estara contactando a tu referido entre las proximas 24-72 horas para brindarle toda la información del programa."
+            ];
 
             return  back()->with('success', $message);
         } catch (\Illuminate\Validation\ValidationException $e) {
