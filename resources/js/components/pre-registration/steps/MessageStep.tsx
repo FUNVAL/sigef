@@ -1,15 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle2, CircleX } from "lucide-react"
 import { Link, router, usePage } from "@inertiajs/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export function MessageStep() {
   const { flash } = usePage().props;
   const [message, setMessage] = useState<string | null>(null);
-  const flashMessage = (flash as { success?: { type: string, message: string } })?.success;
+
+  const flashMessage = useMemo(() => {
+    return (flash as { success?: { type: string, message: string } })?.success;
+  }, [flash]);
+
   useEffect(() => {
     const storedMessage = sessionStorage.getItem('successMessage');
-    console.log('Flash Message:', flashMessage);
+
     if (flashMessage) {
       sessionStorage.setItem('successMessage', flashMessage.message);
       setMessage(flashMessage.message);
