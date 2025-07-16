@@ -114,15 +114,16 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
               </div>
 
               <div>
-                <Label htmlFor="age">Edad </Label>
+                <Label htmlFor="age">Edad</Label>
                 <Input
                   id="age"
+                  name="age"
+                  autoComplete='age'
                   type="number"
                   value={data.age}
-                  onChange={(e) => setData('age', Number(e.target.value))}
-                  placeholder="Edad"
-                  min="16"
-                  max="65"
+                  onChange={(e) => setData('age', e.target.value)}
+                  min="18"
+                  max="100"
                   required
                 />
                 {errors.age && <p className="text-red-500 text-sm">{errors.age}</p>}
