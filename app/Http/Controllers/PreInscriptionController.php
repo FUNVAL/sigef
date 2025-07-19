@@ -74,6 +74,19 @@ class PreInscriptionController extends Controller
     public function store(Request $request)
     {
         try {
+            // Validación manual del correo
+            $emailCheck = $this->checkEmailPreInscription($request->input('email'));
+            if ($emailCheck['exists']) {
+                $queryParams = array_merge($request->query(), ['step' => 5]);
+                $previousUrl = url()->previous();
+                #remove step query parameter from previous URL
+                $previousUrl = preg_replace('/([&?]step=\d+)/', '', $previousUrl);
+                // If the previous URL has a query string, append the new query parameters 
+                return redirect()->to($previousUrl . '?' . http_build_query($queryParams))
+                    ->withInput()
+                    ->with('success',  $emailCheck['message']);
+            }
+
             $rules = [
                 'first_name' => 'required|string|max:50',
                 'middle_name' => 'nullable|string|max:50',
@@ -142,26 +155,6 @@ class PreInscriptionController extends Controller
             // For Inertia requests, return back with error
             return back()->withErrors(['error' => 'Error al crear la pre-inscripción: ' . $e->getMessage()]);
         }
-    }
-
-    /**
-     * Convert country and stake names to IDs if they are strings
-     */
-    private function convertNamesToIds(array $data): array
-    {
-        // Convert country name to ID if it's a string
-        if (isset($data['country_id']) && !is_numeric($data['country_id'])) {
-            $country = Country::where('name', $data['country_id'])->first();
-            $data['country_id'] = $country ? $country->id : 1; // Default to ID 1 if not found
-        }
-
-        // Convert stake name to ID if it's a string
-        if (isset($data['stake_id']) && !is_numeric($data['stake_id'])) {
-            $stake = Stake::where('name', $data['stake_id'])->first();
-            $data['stake_id'] = $stake ? $stake->id : 1; // Default to ID 1 if not found
-        }
-
-        return $data;
     }
 
     /**
@@ -268,5 +261,68 @@ class PreInscriptionController extends Controller
             }
         }
         return $response;
+    }
+
+    /**
+     * Verifica si el correo ya existe y retorna un mensaje personalizado si aplica.
+     */
+    private function checkEmailPreInscription($email)
+    {
+        $preInscription = PreInscription::where('email', $email)->first();
+        if (!$preInscription) {
+            return ['exists' => false];
+        }
+
+        $statusId = is_array($preInscription->status) ? $preInscription->status["id"] : $preInscription->status;
+        $genderId = is_array($preInscription->gender) ? $preInscription->gender["id"] : $preInscription->gender;
+        $jobTypePref = is_array($preInscription->job_type_preference ?? null) ? $preInscription->job_type_preference["id"] : ($preInscription->job_type_preference ?? null);
+
+        // Obtener responsable del stake (si existe)
+        $responsableEmail = optional(optional($preInscription->stake)->user)->email ?? 'soporte@funval.org';
+
+        // Si está pendiente
+        if ($statusId == RequestStatusEnum::PENDING->value) {
+            $hours = $preInscription->created_at->diffInHours(now());
+            $message = $hours > 72
+                ? "Ya existe una solicitud pendiente con este correo electrónico. Si no has recibido respuesta, por favor contacta a $responsableEmail para más información."
+                : "Ya existe una solicitud pendiente con este correo electrónico. Por favor espera a que uno de nuestros representantes se comunique contigo. El plazo estimado de respuesta es de 24 a 72 horas. Si tienes alguna duda, contacta a $responsableEmail.";
+
+            return [
+                'exists' => true,
+                'message' => [
+                    'type' => 'rejected',
+                    'message' => $message
+                ]
+            ];
+        }
+
+        // Si fue rechazada y es mujer
+        if (
+            $statusId == RequestStatusEnum::REJECTED->value &&
+            $genderId == GenderEnum::FEMALE->value
+        ) {
+            $msg = $this->generateMessage(
+                $preInscription->currently_working,
+                $jobTypePref,
+                $preInscription->available_full_time,
+                $genderId
+            );
+            return [
+                'exists' => true,
+                'message' => [
+                    'type' => $msg['type'],
+                    'message' => "Ya existe una solicitud con este correo electrónico y había sido previamente rechazada con el siguiente motivo:\n\n " . $msg['message']
+                ]
+            ];
+        }
+
+        // Otro caso: simplemente existe
+        return [
+            'exists' => true,
+            'message' => [
+                'type' => 'rejected',
+                'message' => "Ya existe una solicitud con este correo electrónico."
+            ]
+        ];
     }
 }
