@@ -12,8 +12,21 @@ type HeadingsProps = {
     className?: string;
 };
 
+const sidebarNavItems: NavItem[] = [
+    {
+        title: 'Usuarios',
+        href: '/access-control/users',
+        icon: null,
+    },
+    {
+        title: 'Roles',
+        href: '/access-control/roles',
+        icon: null,
+    },
+];
+
 type AccessControlLayoutProps = PropsWithChildren<{
-    headings?: HeadingsProps;
+    headings: HeadingsProps;
 }>;
 
 export default function AccessControlLayout({ children, headings }: AccessControlLayoutProps) {
@@ -21,21 +34,36 @@ export default function AccessControlLayout({ children, headings }: AccessContro
         return null;
     }
 
+    const currentPath = (window.location.pathname).split('/').slice(0, 3).join('/');
+
     return (
-        <div className="px-4 py-2 relative">
+        <div className="px-4 py-2">
             <div className="flex flex-col">
-                {(headings?.title || headings?.description) && (
-                    <>
-                        <Heading
-                            title={headings?.title ?? ''}
-                            description={headings?.description ?? ''}
-                            className='pl-6 pt-6 text-3xl'
-                        />
-                        <Separator className="my-6" />
-                    </>
-                )}
-                <div className="flex-1 p-4 pb-6 ">
-                    <section className="space-y-12 px-4 ">{children}</section>
+                <nav className="flex space-x-2  justify-end py-2">
+                    {sidebarNavItems.map((item, index) => (
+                        <Button
+                            key={`${item.href}-${index}`}
+                            size="sm"
+                            variant="ghost"
+                            asChild
+                            className={cn('justify-start', {
+                                'bg-muted': currentPath === item.href,
+                            })}
+                        >
+                            <Link href={item.href} prefetch>
+                                {item.title}
+                            </Link>
+                        </Button>
+                    ))}
+                </nav>
+                <Heading
+                    title={headings.title}
+                    description={headings.description}
+                    className={headings.className ?? 'mb-4'}
+                />
+                <Separator className="my-6 md:hidden" />
+                <div className="flex-1">
+                    <section className="space-y-12 px-4">{children}</section>
                 </div>
             </div>
         </div>

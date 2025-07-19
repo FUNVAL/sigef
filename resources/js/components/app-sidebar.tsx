@@ -1,15 +1,13 @@
+import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react'; 
 import AppLogo from './app-logo';
-import { getNavItems } from '@/lib/consts/navItems';
-import { SharedData } from '@/types';
+import { mainNavItems } from '@/lib/consts/navItems';
 
 
 export function AppSidebar() {
-    const { auth } = usePage<SharedData>().props;
-
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -25,10 +23,10 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={getNavItems(auth.user.user_permissions)} />
+                <NavMain items={mainNavItems} />
             </SidebarContent>
 
-            <SidebarFooter>
+            <SidebarFooter> 
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

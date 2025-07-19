@@ -29,9 +29,6 @@ return new class extends Migration
             $table->bigIncrements('id'); // permission id
             $table->string('name');       // For MyISAM use string('name', 225); // (or 166 for InnoDB with Redundant/Compact row format)
             $table->string('guard_name')->default('web'); // For MyISAM use string('guard_name', 25);
-            $table->string('key'); // Tipo de modelo al que se le asigna el permiso
-            $table->text('description'); // Descripción del permiso
-            $table->string('category'); // Categoría/tipo para agrupar permisos
             $table->timestamps();
 
             $table->unique(['name', 'guard_name']);
@@ -46,7 +43,6 @@ return new class extends Migration
             }
             $table->string('name');       // For MyISAM use string('name', 225); // (or 166 for InnoDB with Redundant/Compact row format)
             $table->string('guard_name')->default('web'); // For MyISAM use string('guard_name', 25);
-            $table->text('description')->nullable(); // Descripción del rol
             $table->timestamps();
             if ($teams || config('permission.testing')) {
                 $table->unique([$columnNames['team_foreign_key'], 'name', 'guard_name']);

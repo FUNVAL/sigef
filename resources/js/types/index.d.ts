@@ -20,7 +20,7 @@ export interface NavItem {
     href: string;
     icon?: LucideIcon | null;
     isActive?: boolean;
-    permissions?: string[]; // Optional property to specify roles
+    roles?: string[]; // Optional property to specify roles
 }
 
 export interface SharedData {
@@ -30,11 +30,11 @@ export interface SharedData {
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
     [key: string]: unknown;
-}
-
+} 
+ 
 export interface User {
-    id: number;
-    firstname: string;
+    id: number; 
+    firstname: string;  
     middle_name: string;
     lastname: string;
     second_lastname: string;
@@ -47,13 +47,9 @@ export interface User {
     marital_status: string;
     address: string;
     contact_phone_1: string;
-    contact_phone_2: string;
+    contact_phone_2: string; 
     permissions: string[];
-    roles: { id: number, name: string }[];
+    roles: object[];
     user_permissions: string[];
     user_roles: string[];
-    status: {
-        id: number;
-        name: string;
-    };
 }
