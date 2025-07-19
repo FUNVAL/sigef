@@ -21,6 +21,7 @@ import { referralFormSchema } from "@/lib/schemas/referral"
 import validateForm from "@/lib/schemas/validate-schemas"
 import { useContext, useEffect, useState } from "react"
 import { StepperContext } from "@/pages/forms/stepper-provider";
+import PhoneInput from "@/components/ui/phone-input";
 
 interface ReferralFormStepProps {
   request: {
@@ -146,13 +147,15 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
 
               <div>
                 <Label htmlFor="phone">Teléfono </Label>
-                <Input
+                <PhoneInput
                   id="phone"
                   name="phone"
                   value={data.phone}
                   onChange={(e) => setData('phone', e.target.value)}
                   placeholder="Número de teléfono"
                   autoComplete="tel"
+                  countries={countries}
+                  dependency={data.country_id}
                   required
                 />
                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
@@ -194,12 +197,14 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
 
                 <div>
                   <Label htmlFor="referrer_phone">Tu teléfono </Label>
-                  <Input
+                  <PhoneInput
                     id="referrer_phone"
                     name="referrer_phone"
                     value={data.referrer_phone}
                     onChange={(e) => setData('referrer_phone', e.target.value)}
                     placeholder="Tu número de teléfono"
+                    countries={countries}
+                    dependency={data.country_id}
                     required
                   />
                   {errors.referrer_phone && <p className="text-red-500 text-sm">{errors.referrer_phone}</p>}

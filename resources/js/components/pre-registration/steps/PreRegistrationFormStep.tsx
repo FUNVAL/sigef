@@ -15,6 +15,7 @@ import validateForm from '@/lib/schemas/validate-schemas';
 import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { PreRegistrationFormData } from '@/types/pre-inscription';
+import PhoneInput from '@/components/ui/phone-input';
 
 interface PreRegistrationFormStepProps {
     countries: Country[];
@@ -43,7 +44,10 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
         }
         nextStep();
     }
-
+    const phoneCode = () => {
+        const selectedCountry = countries.find(c => c.id === data.country_id);
+        return `${selectedCountry?.code} (${selectedCountry?.phone_code})` || "+1 (USA)"
+    }
     return (
         <div className="mx-auto max-w-3xl">
             <Card className="border-2">
@@ -171,15 +175,21 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                             {/* Teléfono */}
                             <div>
                                 <Label htmlFor="phone">Teléfono</Label>
-                                <Input
-                                    id="phone"
-                                    name="phone"
-                                    autoComplete='tel'
-                                    value={data.phone}
-                                    onChange={(e) => setData('phone', e.target.value)}
-                                    placeholder="Teléfono"
-                                    required
-                                />
+                                <div className="flex">
+                                    <PhoneInput
+                                        id="phone"
+                                        name="phone"
+                                        autoComplete='tel'
+                                        type='tel'
+                                        value={data.phone}
+                                        onChange={(e) => setData('phone', e.target.value)}
+                                        placeholder="Número de teléfono"
+                                        className="rounded-l-none"
+                                        countries={countries}
+                                        dependency={data.country_id}
+                                        required
+                                    />
+                                </div>
                                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
                             </div>
                             {/* Estaca */}
@@ -293,4 +303,4 @@ const requiredFields = [
     'email',
     'marital_status',
     'served_mission'
-] 
+]
