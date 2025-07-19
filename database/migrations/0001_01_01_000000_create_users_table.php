@@ -1,15 +1,11 @@
 <?php
 
-use App\Enums\DocumentTypeEnum;
-use App\Enums\GenderEnum;
-use App\Enums\MaritalStatusEnum;
-use App\Enums\UserStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
-{
+{ 
     /**
      * Run the migrations.
      */
@@ -23,16 +19,15 @@ return new class extends Migration
             $table->string('second_lastname')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->integer('gender')->default(GenderEnum::MALE->value);
-            $table->integer('document_type')->default(DocumentTypeEnum::IDENTITY_CARD->value);
+            $table->enum('gender', ['male', 'female']);
+            $table->enum('document_type', ['dni', 'passport']);
             $table->string('document_number');
             $table->date('birth_date');
-            $table->integer('marital_status')->default(MaritalStatusEnum::SINGLE->value);
+            $table->string('marital_status');
             $table->string('address');
             $table->string('contact_phone_1');
             $table->string('contact_phone_2')->nullable();
             $table->string('password');
-            $table->integer('status')->default(UserStatusEnum::ACTIVE->value);
             $table->rememberToken();
             $table->timestamps();
         });

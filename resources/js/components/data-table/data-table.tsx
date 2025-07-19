@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
-  DropdownMenuContent,
+  DropdownMenuContent, 
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -31,7 +31,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table" 
 
 interface DataTableProps<TData> {
   data: TData[];
@@ -39,10 +39,10 @@ interface DataTableProps<TData> {
   filterKey: string;
 }
 
-export function DataTable<TData>({
-  data,
-  columns,
-  filterKey
+export function DataTable<TData>({ 
+  data, 
+  columns, 
+  filterKey 
 }: DataTableProps<TData>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -108,8 +108,8 @@ export function DataTable<TData>({
         </DropdownMenu>
       </div>
       <div className="rounded-md border">
-        <Table className="">
-          <TableHeader className="text-base py-2">
+        <Table>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -127,7 +127,7 @@ export function DataTable<TData>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className="dark:bg-black">
+          <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow

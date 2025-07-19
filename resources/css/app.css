@@ -68,7 +68,6 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -156,13 +155,5 @@
 
     body {
         @apply bg-background text-foreground;
-    }
-
-    button {
-        @apply cursor-pointer;
-    }
-
-    label:has(+:is(*:required, *[aria-required="true"])) {
-        @apply after:content-['*'] after:text-red-500 after:ml-1 after:text-base;
     }
 }
