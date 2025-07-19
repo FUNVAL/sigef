@@ -84,7 +84,6 @@ class ReferenceController extends Controller
                 ->withInput();
         } catch (\Exception $e) {
             return back()
-                ->with(['step' => 2])
                 ->withErrors(['error' => $e->getMessage()])
                 ->withInput();
         }
