@@ -40,6 +40,18 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
   const { enums } = usePage<{ enums: Enums }>().props;
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  // obtener query param full
+
+  const isFull = new URLSearchParams(window.location.search).get('full') === 'true';
+
+  const handleBack = () => {
+    if (isFull) {
+      window.history.back();
+    } else {
+      previousStep();
+    }
+  }
+
   const filteredStakes = data.country_id ?
     stakes.filter(stake => stake.country_id === data.country_id) :
     [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
@@ -241,7 +253,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
             <div className="flex justify-between pt-4">
               <Button
                 type="button"
-                onClick={previousStep}
+                onClick={handleBack}
                 variant="outline"
                 size="lg"
                 className="min-w-[120px]"

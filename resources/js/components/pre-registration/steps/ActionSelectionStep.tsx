@@ -87,7 +87,7 @@ export function ActionSelectionStep() {
               className={`min-w-[140px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 ${!action && 'opacity-50 cursor-not-allowed'}`}
             >
               <Link
-                href={`${action}?step=2`}
+                href={`${action}?step=2&full=true`}
                 tabIndex={!action ? -1 : 0}
                 aria-disabled={!action}
               >

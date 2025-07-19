@@ -44,10 +44,17 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
         }
         nextStep();
     }
-    const phoneCode = () => {
-        const selectedCountry = countries.find(c => c.id === data.country_id);
-        return `${selectedCountry?.code} (${selectedCountry?.phone_code})` || "+1 (USA)"
+
+    const isFull = new URLSearchParams(window.location.search).get('full') === 'true';
+
+    const handleBack = () => {
+        if (isFull) {
+            window.history.back();
+        } else {
+            previousStep();
+        }
     }
+
     return (
         <div className="mx-auto max-w-3xl">
             <Card className="border-2">
@@ -273,7 +280,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
 
                         {/* Botones */}
                         <div className="flex justify-between pt-4">
-                            <Button type="button" onClick={previousStep} variant="outline" size="lg" className="min-w-[120px]">
+                            <Button type="button" onClick={handleBack} variant="outline" size="lg" className="min-w-[120px]">
                                 <ArrowLeft className="mr-2 h-4 w-4" />
                                 Anterior
                             </Button>
