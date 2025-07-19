@@ -46,11 +46,23 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'ziggy' => fn (): array => [
+            'ziggy' => fn(): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'errors' => function () use ($request) {
+                return $request->session()->get('errors')
+                    ? $request->session()->get('errors')->getBag('default')->getMessages()
+                    : (object) [];
+            },
+            'flash' => [
+                'success' => $request->session()->get('success'),
+                'errors' => [
+                    'message' => $request->session()->get('error'),
+                    'forbidden' => $request->session()->get('forbidden')
+                ],
+            ],
         ];
     }
 }

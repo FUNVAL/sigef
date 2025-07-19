@@ -2,10 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Contracts\Permission;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,10 +14,13 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
         $this->call([
             PermissionSeeder::class,
-            RoleSeeder::class, 
+            RoleSeeder::class,
             UserSeeder::class,
-
-            // Add other seeders here
+            CountrySeeder::class,
+            StakeSeeder::class,
+            CourseSeeder::class,
+            // ReferenceSeeder::class,
+            // PreInscriptionSeeder::class,
         ]);
     }
 }
