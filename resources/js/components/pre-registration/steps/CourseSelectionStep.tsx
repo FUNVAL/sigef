@@ -1,28 +1,32 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { PreRegistrationFormData } from '../../../types/forms'
 import { GraduationCap, Clock, Globe, ArrowLeft } from "lucide-react"
 import { Course } from "@/types/course"
-import { PreRegistrationRequest } from "@/types/pre-inscription"
+import { PreRegistrationFormData, PreRegistrationRequest } from "@/types/pre-inscription"
+import { useContext } from "react"
+import { StepperContext } from "@/pages/forms/stepper-provider"
 
 interface CourseSelectionStepProps {
-  formData: PreRegistrationFormData;
-  onNext: () => void;
-  onBack: () => void;
   courses: Course[];
-  request: PreRegistrationRequest;
+  request: {
+    data: PreRegistrationFormData;
+    setData: (field: keyof PreRegistrationFormData, value: any) => void;
+    errors: Record<string, string>;
+  };
 }
 
-export function CourseSelectionStep({ onNext, onBack, courses, request }: CourseSelectionStepProps) {
-  const { data: formData, setData } = request;
+export function CourseSelectionStep({ courses, request }: CourseSelectionStepProps) {
+  const { data, setData } = request;
+  const { nextStep, previousStep } = useContext(StepperContext);
 
-  const selectedCourse = courses.find(course => course.id === formData.course_id)?.name || '';
+  const selectedCourse = courses.find(course => course.id === data.course_id)?.name || '';
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onNext();
+    nextStep();
   }
+
   return (
     <form className="max-w-5xl mx-auto" onSubmit={handleSubmit}>
       <Card className="border-2">
@@ -41,7 +45,7 @@ export function CourseSelectionStep({ onNext, onBack, courses, request }: Course
 
           <RadioGroup
             name="course_id"
-            value={formData.course_id?.toString()}
+            value={data.course_id?.toString()}
             onValueChange={val => setData('course_id', Number(val))}
             className="space-y-4"
           >
@@ -49,7 +53,7 @@ export function CourseSelectionStep({ onNext, onBack, courses, request }: Course
               <label
                 key={course.id}
                 htmlFor={`course-${index}`}
-                className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border rounded-lg cursor-pointer transition hover:bg-muted/50 select-none ${formData.course_id === course.id ? 'ring-2 ring-[rgb(46_131_242_/_1)] bg-[rgb(46_131_242_/_1)]/5' : ''}`}
+                className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border rounded-lg cursor-pointer transition hover:bg-muted/50 select-none ${data.course_id === course.id ? 'ring-2 ring-[rgb(46_131_242_/_1)] bg-[rgb(46_131_242_/_1)]/5' : ''}`}
                 tabIndex={0}
               >
 
@@ -60,7 +64,7 @@ export function CourseSelectionStep({ onNext, onBack, courses, request }: Course
                       value={course.id.toString()}
                       id={`course-${index}`}
                       className="size-5 mt-1"
-                      checked={formData.course_id === course.id}
+                      checked={data.course_id === course.id}
                       aria-label={course.name}
                       tabIndex={-1}
                     />
@@ -69,7 +73,7 @@ export function CourseSelectionStep({ onNext, onBack, courses, request }: Course
                     </div>
                   </div>
                   <div className="flex items-center gap-2 sm:text-[16px]">
-                    <Clock className="h-4 w-4 text-[rgb(46_131_242_/_1)]"/>
+                    <Clock className="h-4 w-4 text-[rgb(46_131_242_/_1)]" />
                     <span className="text-[rgb(46_131_242_/_1)] font-medium">
                       {course.duration} semanas
                     </span>
@@ -102,7 +106,7 @@ export function CourseSelectionStep({ onNext, onBack, courses, request }: Course
 
           <div className="flex justify-between pt-4">
             <Button
-              onClick={onBack}
+              onClick={previousStep}
               variant="outline"
               size="lg"
               className="min-w-[120px]"
@@ -113,7 +117,7 @@ export function CourseSelectionStep({ onNext, onBack, courses, request }: Course
 
             <Button
               type="submit"
-              disabled={!formData.course_id}
+              disabled={!data.course_id}
               variant="default"
               size="lg"
               className="min-w-[140px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"

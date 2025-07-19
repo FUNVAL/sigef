@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import type { route as routeFn } from 'ziggy-js';
 
 declare global {
@@ -19,3 +20,8 @@ type Enums = {
     relatedReference: EnumItem[];
     jobType: EnumItem[];
 };
+
+type Stepper = {
+    title: string;
+    component: ReactNode;
+}

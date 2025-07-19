@@ -6,26 +6,25 @@ import { Stake } from "@/types/stake"
 import { Enums } from "@/types/global"
 import { PreRegistrationRequest } from "@/types/pre-inscription"
 import { usePage } from "@inertiajs/react"
+import { useContext } from "react"
+import { StepperContext } from "@/pages/forms/stepper-provider"
 
 interface OverviewStepProps {
     request: PreRegistrationRequest;
     countries: Country[];
     stakes: Stake[];
-    onNext: () => void;
-    onBack: () => void;
 }
 
-export function OverviewStep({ request, countries, stakes, onNext, onBack, }: OverviewStepProps) {
+export function PreInscriptionOverviewStep({ request, countries, stakes }: OverviewStepProps) {
     const { data, post, processing } = request;
     const { enums } = usePage<{ enums: Enums }>().props;
-
+    const { nextStep, previousStep } = useContext(StepperContext);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         post(route('pre-inscription.store'), {
             onSuccess: (message: any) => {
-                console.log("Datos enviados correctamente:", message);
-                onNext();
+                nextStep();
             },
             onError: (error: unknown) => {
                 console.error("Error al enviar los datos:", error);
@@ -63,31 +62,40 @@ export function OverviewStep({ request, countries, stakes, onNext, onBack, }: Ov
                     <div className="prose prose-sm max-w-none dark:prose-invert">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                             <div>
-                                <strong>Primer Nombre:</strong> <span>{data.first_name || "-"}</span>
+                                <strong>Primer Nombre:</strong>
+                                <span>{data.first_name || "-"}</span>
                             </div>
                             <div>
-                                <strong>Segundo Nombre:</strong> <span>{data.middle_name || "-"}</span>
+                                <strong>Segundo Nombre:</strong>
+                                <span>{data.middle_name || "-"}</span>
                             </div>
                             <div>
-                                <strong>Apellido:</strong> <span>{data.last_name || "-"}</span>
+                                <strong>Apellido:</strong>
+                                <span>{data.last_name || "-"}</span>
                             </div>
                             <div>
-                                <strong>Segundo Apellido:</strong> <span>{data.second_last_name || "-"}</span>
+                                <strong>Segundo Apellido:</strong>
+                                <span>{data.second_last_name || "-"}</span>
                             </div>
                             <div>
-                                <strong>Género:</strong> <span>{getGenderName()}</span>
+                                <strong>Género:</strong>
+                                <span>{getGenderName()}</span>
                             </div>
                             <div>
-                                <strong>Edad:</strong> <span>{data.age || "-"}</span>
+                                <strong>Edad:</strong>
+                                <span>{data.age || "-"}</span>
                             </div>
                             <div>
-                                <strong>País:</strong> <span>{getCountryName()}</span>
+                                <strong>País:</strong>
+                                <span>{getCountryName()}</span>
                             </div>
                             <div>
-                                <strong>Teléfono:</strong> <span>{data.phone || "-"}</span>
+                                <strong>Teléfono:</strong>
+                                <span>{data.phone || "-"}</span>
                             </div>
                             <div>
-                                <strong>Estaca/Distrito/Misión:</strong> <span>{getStakeName()}</span>
+                                <strong>Estaca/Distrito/Misión:</strong>
+                                <span>{getStakeName()}</span>
                             </div>
                             <div>
                                 <strong>Email:</strong> <span>{data.email || "-"}</span>
@@ -121,7 +129,7 @@ export function OverviewStep({ request, countries, stakes, onNext, onBack, }: Ov
                     <form className="flex justify-between pt-4" onSubmit={handleSubmit}>
                         <Button
                             type="button"
-                            onClick={onBack}
+                            onClick={previousStep}
                             variant="outline"
                             size="lg"
                             disabled={processing}

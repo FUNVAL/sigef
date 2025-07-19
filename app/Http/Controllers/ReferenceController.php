@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\StatusEnum;
+use App\Models\Country;
 use App\Models\Reference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,11 +41,12 @@ class ReferenceController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): JsonResponse
+    public function create()
     {
-        return response()->json([
-            'success' => true,
-            'message' => 'Formulario para crear referencia'
+        return  Inertia::render('forms/reference-form', [
+            'step' => request()->input('step', 0),
+            'countries' => Country::all(),
+            'stakes' => Stake::all(),
         ]);
     }
 
@@ -54,7 +56,6 @@ class ReferenceController extends Controller
     public function store(Request $request)
     {
         try {
-
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'gender' => 'integer',
@@ -68,15 +69,22 @@ class ReferenceController extends Controller
             ]);
 
             Reference::create($validated);
-            $message = [
-                'message' => "Gracias por tu referencia, Uno de nuestros representante estara contactando a tu referido entre las proximas 24-72 horas para brindarle toda la información del programa.",
-                'type' => 'success'
+
+            $message =  [
+                'type' => 'success',
+                'message' => "Gracias por tu referencia, Uno de nuestros representante estara contactando a tu referido entre las proximas 24-72 horas para brindarle toda la información del programa."
             ];
-            return inertia('pre-registration/request-confirmation', [
-                'response' => $message,
-            ]);
+
+            return  back()->with('success', $message);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $queryParams = array_merge($request->query(), ['step' => 2]);
+
+            return redirect()->to('/reference-form' . '?' . http_build_query($queryParams))
+                ->withErrors($e->errors())
+                ->withInput();
         } catch (\Exception $e) {
-            return redirect()->back()
+            return back()
+                ->with(['step' => 2])
                 ->withErrors(['error' => $e->getMessage()])
                 ->withInput();
         }

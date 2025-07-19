@@ -19,27 +19,30 @@ import { Stake } from "@/types/stake"
 import { Country } from "@/types/country"
 import { referralFormSchema } from "@/lib/schemas/referral"
 import validateForm from "@/lib/schemas/validate-schemas"
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { StepperContext } from "@/pages/forms/stepper-provider";
+import PhoneInput from "@/components/ui/phone-input";
 
 interface ReferralFormStepProps {
-  onNext: () => void
-  onBack: () => void,
-
   request: {
     data: ReferenceFormData;
     setData: (field: keyof ReferenceFormData, value: any) => void;
+    errors: Record<string, string>;
   };
   stakes: Stake[],
   countries: Country[],
 }
 
-export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }: ReferralFormStepProps) {
-  const { setData, data } = request;
+export function ReferralFormStep({ stakes, countries, request, }: ReferralFormStepProps) {
+  const { nextStep, previousStep } = useContext(StepperContext);
+
+  const { setData, data, errors: back_errors } = request;
   const { enums } = usePage<{ enums: Enums }>().props;
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const filteredStakes = data.country_id ? stakes.filter(stake => stake.country_id === data.country_id) : [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
-
+  const filteredStakes = data.country_id ?
+    stakes.filter(stake => stake.country_id === data.country_id) :
+    [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,9 +52,15 @@ export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }
       setErrors(validationErrors?.errors ?? {});
       return;
     }
-    onNext();
-
+    nextStep();
   }
+
+  useEffect(() => {
+    if (Object.keys(back_errors).length > 0) {
+      setErrors(back_errors);
+    }
+  }, [back_errors]);
+
   return (
     <div className="max-w-3xl mx-auto">
       <Card className="border-2">
@@ -106,15 +115,16 @@ export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }
               </div>
 
               <div>
-                <Label htmlFor="age">Edad </Label>
+                <Label htmlFor="age">Edad</Label>
                 <Input
                   id="age"
+                  name="age"
+                  autoComplete='age'
                   type="number"
                   value={data.age}
-                  onChange={(e) => setData('age', Number(e.target.value))}
-                  placeholder="Edad"
-                  min="16"
-                  max="65"
+                  onChange={(e) => setData('age', e.target.value)}
+                  min="18"
+                  max="100"
                   required
                 />
                 {errors.age && <p className="text-red-500 text-sm">{errors.age}</p>}
@@ -137,13 +147,15 @@ export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }
 
               <div>
                 <Label htmlFor="phone">Teléfono </Label>
-                <Input
+                <PhoneInput
                   id="phone"
                   name="phone"
                   value={data.phone}
                   onChange={(e) => setData('phone', e.target.value)}
                   placeholder="Número de teléfono"
                   autoComplete="tel"
+                  countries={countries}
+                  dependency={data.country_id}
                   required
                 />
                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
@@ -151,7 +163,6 @@ export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }
 
               <div>
                 <Label htmlFor="stake_id">Estaca/Distrito/Misión</Label>
-
                 <SearchableSelect
                   data={filteredStakes}
                   id="stake_id"
@@ -186,12 +197,14 @@ export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }
 
                 <div>
                   <Label htmlFor="referrer_phone">Tu teléfono </Label>
-                  <Input
+                  <PhoneInput
                     id="referrer_phone"
                     name="referrer_phone"
                     value={data.referrer_phone}
                     onChange={(e) => setData('referrer_phone', e.target.value)}
                     placeholder="Tu número de teléfono"
+                    countries={countries}
+                    dependency={data.country_id}
                     required
                   />
                   {errors.referrer_phone && <p className="text-red-500 text-sm">{errors.referrer_phone}</p>}
@@ -219,7 +232,8 @@ export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }
                       }
                     </SelectContent>
                   </Select>
-                  {errors.relationship_with_referred && <p className="text-red-500 text-sm">{errors.relationship_with_referred}</p>}
+                  {errors.relationship_with_referred &&
+                    <p className="text-red-500 text-sm">{errors.relationship_with_referred}</p>}
                 </div>
               </div>
             </div>
@@ -227,7 +241,7 @@ export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }
             <div className="flex justify-between pt-4">
               <Button
                 type="button"
-                onClick={onBack}
+                onClick={previousStep}
                 variant="outline"
                 size="lg"
                 className="min-w-[120px]"
@@ -240,7 +254,7 @@ export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }
                 size="lg"
                 className="min-w-[130px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Enviar Referencia
+                Continuar
               </Button>
             </div>
           </form>
@@ -248,17 +262,4 @@ export function ReferralFormStep({ onNext, onBack, stakes, countries, request, }
       </Card>
     </div >
   )
-}
-
-
-const initialReferenceFormData: ReferenceFormData = {
-  name: '',
-  gender: 0,
-  country_id: 0,
-  age: 0,
-  phone: '',
-  stake_id: 0,
-  referrer_name: '',
-  referrer_phone: '',
-  relationship_with_referred: 0,
 }
