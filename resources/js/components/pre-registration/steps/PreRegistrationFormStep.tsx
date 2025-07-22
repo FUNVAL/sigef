@@ -197,7 +197,6 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                         countries={countries}
                                         selectedCountryId={data.country_id}
                                         required
-                                        enableDropdown={true}
                                     />
                                 </div>
                                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
