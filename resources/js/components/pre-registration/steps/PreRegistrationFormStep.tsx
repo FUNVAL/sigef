@@ -15,7 +15,7 @@ import validateForm from '@/lib/schemas/validate-schemas';
 import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { PreRegistrationFormData } from '@/types/pre-inscription';
-import PhoneInput from '@/components/ui/phone-input';
+import { PhoneInput } from '@/components/ui/phone-input';
 
 interface PreRegistrationFormStepProps {
     countries: Country[];
@@ -54,6 +54,8 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
             previousStep();
         }
     }
+
+    console.log(data);
 
     return (
         <div className="mx-auto max-w-3xl">
@@ -189,12 +191,13 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                         autoComplete='tel'
                                         type='tel'
                                         value={data.phone}
-                                        onChange={(e) => setData('phone', e.target.value)}
+                                        onInputChange={(value: string) => setData('phone', value)}
                                         placeholder="Número de teléfono"
                                         className="rounded-l-none"
                                         countries={countries}
-                                        dependency={data.country_id}
+                                        selectedCountryId={data.country_id}
                                         required
+                                        enableDropdown={true}
                                     />
                                 </div>
                                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
