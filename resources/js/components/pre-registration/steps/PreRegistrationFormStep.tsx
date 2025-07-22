@@ -55,8 +55,6 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
         }
     }
 
-    console.log(data);
-
     return (
         <div className="mx-auto max-w-3xl">
             <Card className="border-2">
