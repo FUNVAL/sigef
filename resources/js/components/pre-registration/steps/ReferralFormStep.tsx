@@ -21,7 +21,7 @@ import { referralFormSchema } from "@/lib/schemas/referral"
 import validateForm from "@/lib/schemas/validate-schemas"
 import { useContext, useEffect, useState } from "react"
 import { StepperContext } from "@/pages/forms/stepper-provider";
-import PhoneInput from "@/components/ui/phone-input";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 interface ReferralFormStepProps {
   request: {
@@ -162,12 +162,14 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                 <PhoneInput
                   id="phone"
                   name="phone"
+                  autoComplete='tel'
+                  type='tel'
                   value={data.phone}
-                  onChange={(e) => setData('phone', e.target.value)}
+                  onInputChange={(value: string) => setData('phone', value)}
                   placeholder="Número de teléfono"
-                  autoComplete="tel"
+                  className="rounded-l-none"
                   countries={countries}
-                  dependency={data.country_id}
+                  selectedCountryId={data.country_id}
                   required
                 />
                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
@@ -212,12 +214,16 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                   <PhoneInput
                     id="referrer_phone"
                     name="referrer_phone"
+                    autoComplete='tel'
+                    type='tel'
                     value={data.referrer_phone}
-                    onChange={(e) => setData('referrer_phone', e.target.value)}
+                    onInputChange={(value: string) => setData('referrer_phone', value)}
                     placeholder="Tu número de teléfono"
+                    className="rounded-l-none"
                     countries={countries}
-                    dependency={data.country_id}
+                    selectedCountryId={data.country_id}
                     required
+                    enableDropdown={true}
                   />
                   {errors.referrer_phone && <p className="text-red-500 text-sm">{errors.referrer_phone}</p>}
                 </div>
