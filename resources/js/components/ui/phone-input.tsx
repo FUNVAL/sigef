@@ -92,6 +92,8 @@ export interface PhoneInputProps extends React.InputHTMLAttributes<HTMLInputElem
 const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
     ({ className, value, onInputChange, countries, selectedCountryId, enableDropdown = false, ...props }, ref) => {
 
+        const inputRef = React.useRef<HTMLInputElement>(null);
+
         const [internalCountry, setInternalCountry] = React.useState<Country | undefined>(() =>
             countries.find((c) => c.id === selectedCountryId)
         );
@@ -101,8 +103,6 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             setInternalCountry(country);
             updateInputValue(inputRef.current?.value || '', country?.phone_code || '');
         }, [selectedCountryId, countries]);
-
-        const inputRef = React.useRef<HTMLInputElement>(null);
 
         const updateInputValue = (value: string, phone_code: string) => {
             const digitsOnly = value.split(') ')[1] || '';
