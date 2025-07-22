@@ -214,7 +214,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                   <PhoneInput
                     id="referrer_phone"
                     name="referrer_phone"
-                    autoComplete='tel'
+                    autoComplete='tel-referrer'
                     type='tel'
                     value={data.referrer_phone}
                     onInputChange={(value: string) => setData('referrer_phone', value)}
