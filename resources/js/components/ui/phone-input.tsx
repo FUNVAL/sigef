@@ -106,7 +106,8 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
 
         const updateInputValue = (value: string, phone_code: string) => {
             const digitsOnly = value.split(') ')[1] || '';
-            onInputChange(`(${phone_code || ''}) ${digitsOnly}`);
+            const sanitizedValue = digitsOnly.replace(/\D/g, '');
+            onInputChange(`(${phone_code || ''}) ${sanitizedValue}`);
         }
 
         const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
