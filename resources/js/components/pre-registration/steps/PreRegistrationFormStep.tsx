@@ -35,6 +35,22 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
     const [isPhoneValid, setIsPhoneValid] = useState<boolean>(false);
     const filteredStakes = data.country_id ? stakes.filter(stake => stake.country_id === Number(data.country_id)) : [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
 
+    // Función para manejar inputs de nombres (sin espacios)
+    const handleNameInput = (field: keyof PreRegistrationFormData, value: string) => {
+        // Remover espacios, números y caracteres especiales, solo permitir letras
+        const cleanValue = value.replace(/[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ]/g, '');
+        setData(field, cleanValue);
+
+        // Limpiar error específico del campo si existe
+        if (errors[field]) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[field];
+                return newErrors;
+            });
+        }
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const validationErrors = validateForm(data, preRegistrationSchema);
@@ -100,8 +116,8 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     id="first_name"
                                     name="first_name"
                                     value={data.first_name}
-                                    onChange={(e) => setData('first_name', e.target.value)}
-                                    placeholder="Nombre completo"
+                                    onChange={(e) => handleNameInput('first_name', e.target.value)}
+                                    placeholder="Ejemplo: María"
                                     autoComplete='given-name'
                                     required
                                 />
@@ -115,8 +131,8 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     name="middle_name"
                                     autoComplete='additional-name'
                                     value={data.middle_name}
-                                    onChange={(e) => setData('middle_name', e.target.value)}
-                                    placeholder="Segundo nombre"
+                                    onChange={(e) => handleNameInput('middle_name', e.target.value)}
+                                    placeholder="Ejemplo: José"
                                 />
                                 {errors.middle_name && <p className="text-red-500 text-sm">{errors.middle_name}</p>}
                             </div>
@@ -128,8 +144,8 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     name="last_name"
                                     autoComplete='family-name'
                                     value={data.last_name}
-                                    onChange={(e) => setData('last_name', e.target.value)}
-                                    placeholder="Apellido"
+                                    onChange={(e) => handleNameInput('last_name', e.target.value)}
+                                    placeholder="Ejemplo: García"
                                     required
                                 />
                                 {errors.last_name && <p className="text-red-500 text-sm">{errors.last_name}</p>}
@@ -142,8 +158,8 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     name="second_last_name"
                                     autoComplete='family-name'
                                     value={data.second_last_name}
-                                    onChange={(e) => setData('second_last_name', e.target.value)}
-                                    placeholder="Segundo apellido"
+                                    onChange={(e) => handleNameInput('second_last_name', e.target.value)}
+                                    placeholder="Ejemplo: Rodríguez"
                                 />
                                 {errors.second_last_name && <p className="text-red-500 text-sm">{errors.second_last_name}</p>}
                             </div>
