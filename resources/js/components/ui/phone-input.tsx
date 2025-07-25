@@ -87,28 +87,54 @@ export interface PhoneInputProps extends React.InputHTMLAttributes<HTMLInputElem
     selectedCountryId?: number;
     enableDropdown?: boolean;
     onInputChange: (value: string) => void;
+    onValidationChange?: (isValid: boolean) => void;
 }
 
 const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
-    ({ className, value, onInputChange, countries, selectedCountryId, enableDropdown = false, ...props }, ref) => {
-
-        const inputRef = React.useRef<HTMLInputElement>(null);
+    ({ className, value, onInputChange, onValidationChange, countries, selectedCountryId, enableDropdown = false, ...props }, ref) => {
 
         const [internalCountry, setInternalCountry] = React.useState<Country | undefined>(() =>
             countries.find((c) => c.id === selectedCountryId)
         );
 
+        // Función helper para extraer dígitos del usuario
+        const extractUserDigits = (value: string) => {
+            let userNumber = '';
+            if (value.includes(') ')) {
+                userNumber = value.split(') ')[1] || '';
+            } else {
+                userNumber = value.replace(/\D/g, '');
+            }
+            return userNumber.replace(/\D/g, '');
+        };
+
+        const updateInputValue = (value: string, phone_code: string) => {
+            const cleanUserNumber = extractUserDigits(value);
+            const formattedValue = `(${phone_code || ''}) ${cleanUserNumber}`;
+            onInputChange(formattedValue);
+
+            // Validar que tenga al menos 8 caracteres (solo dígitos del número del usuario)
+            if (onValidationChange) {
+                onValidationChange(cleanUserNumber.length >= 8);
+            }
+        };
+
         React.useEffect(() => {
             const country = countries.find((c) => c.id === selectedCountryId);
             setInternalCountry(country);
-            updateInputValue(inputRef.current?.value || '', country?.phone_code || '');
         }, [selectedCountryId, countries]);
 
-        const updateInputValue = (value: string, phone_code: string) => {
-            const digitsOnly = value.split(') ')[1] || '';
-            const sanitizedValue = digitsOnly.replace(/\D/g, '');
-            onInputChange(`(${phone_code || ''}) ${sanitizedValue}`);
-        }
+        // Validar el valor inicial y cuando cambie
+        React.useEffect(() => {
+            if (value && internalCountry?.phone_code) {
+                const cleanUserNumber = extractUserDigits(String(value));
+                if (onValidationChange) {
+                    onValidationChange(cleanUserNumber.length >= 8);
+                }
+            } else if (onValidationChange) {
+                onValidationChange(false);
+            }
+        }, [value, internalCountry, onValidationChange]);
 
         const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             updateInputValue(e.target.value, internalCountry?.phone_code || '');
@@ -116,7 +142,9 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
 
         const handleCountrySelect = (country: Country) => {
             setInternalCountry(country);
-            updateInputValue(inputRef.current?.value || '', country.phone_code || '');
+            // Usar el valor actual del input para mantener el número ingresado
+            const currentValue = (ref as React.RefObject<HTMLInputElement>)?.current?.value || String(value || '');
+            updateInputValue(currentValue, country.phone_code || '');
         };
 
         const prefix = internalCountry ? `${internalCountry.code}` : 'País';
@@ -135,7 +163,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
 
                 <Input
                     type="tel"
-                    ref={inputRef}
+                    ref={ref}
                     value={value} // El valor del input sigue siendo controlado por el padre
                     onChange={handleInputChange}
                     placeholder="Número de teléfono"

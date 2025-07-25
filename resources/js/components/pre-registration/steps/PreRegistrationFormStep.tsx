@@ -10,7 +10,7 @@ import { Enums } from '@/types/global';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { Country } from '@/types/country';
 import { Stake } from '@/types/stake';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import validateForm from '@/lib/schemas/validate-schemas';
 import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
 import { StepperContext } from '@/pages/forms/stepper-provider';
@@ -22,21 +22,36 @@ interface PreRegistrationFormStepProps {
     stakes: Stake[];
     request: {
         data: PreRegistrationFormData;
-        setData: (field: keyof PreRegistrationFormData, value: any) => void;
+        setData: (field: keyof PreRegistrationFormData, value: string | number | boolean) => void;
         errors: Record<string, string>;
     };
 }
 
 export function PreRegistrationFormStep({ countries = [], stakes = [], request }: PreRegistrationFormStepProps) {
     const { nextStep, previousStep } = useContext(StepperContext)
-    const { data, setData } = request;
+    const { data, setData, errors: back_errors } = request;
     const { enums } = usePage<{ enums: Enums }>().props;
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [isPhoneValid, setIsPhoneValid] = useState<boolean>(false);
     const filteredStakes = data.country_id ? stakes.filter(stake => stake.country_id === Number(data.country_id)) : [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const validationErrors = validateForm(data, preRegistrationSchema);
+
+        // Validación adicional del teléfono
+        const phoneErrors: Record<string, string> = {};
+        if (!isPhoneValid) {
+            phoneErrors.phone = 'El número de teléfono debe tener al menos 8 dígitos';
+        }
+
+        if (Object.keys(phoneErrors).length > 0) {
+            setErrors(prev => ({
+                ...prev,
+                ...phoneErrors
+            }));
+            return;
+        }
 
         if (!validationErrors?.success) {
             setErrors(validationErrors?.errors ?? {});
@@ -44,6 +59,12 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
         }
         nextStep();
     }
+
+    useEffect(() => {
+        if (Object.keys(back_errors).length > 0) {
+            setErrors(back_errors);
+        }
+    }, [back_errors]);
 
     const isFull = new URLSearchParams(window.location.search).get('full') === 'true';
 
@@ -190,6 +211,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                         type='tel'
                                         value={data.phone}
                                         onInputChange={(value: string) => setData('phone', value)}
+                                        onValidationChange={setIsPhoneValid}
                                         placeholder="Número de teléfono"
                                         className="rounded-l-none"
                                         countries={countries}
@@ -288,6 +310,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                             <Button
                                 size="lg"
                                 className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                                disabled={!isPhoneValid}
                             >
                                 Continuar
                             </Button>
@@ -298,16 +321,3 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
         </div >
     );
 }
-
-const requiredFields = [
-    'first_name',
-    'last_name',
-    'gender',
-    'age',
-    'country_id',
-    'phone',
-    'stake_id',
-    'email',
-    'marital_status',
-    'served_mission'
-]

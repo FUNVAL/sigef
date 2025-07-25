@@ -26,7 +26,7 @@ import { PhoneInput } from "@/components/ui/phone-input";
 interface ReferralFormStepProps {
   request: {
     data: ReferenceFormData;
-    setData: (field: keyof ReferenceFormData, value: any) => void;
+    setData: (field: keyof ReferenceFormData, value: string | number | boolean) => void;
     errors: Record<string, string>;
   };
   stakes: Stake[],
@@ -40,6 +40,8 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
   const { enums } = usePage<{ enums: Enums }>().props;
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isPhoneValid, setIsPhoneValid] = useState<boolean>(false);
+  const [isReferrerPhoneValid, setIsReferrerPhoneValid] = useState<boolean>(false);
   // obtener query param full
 
   const isFull = new URLSearchParams(window.location.search).get('full') === 'true';
@@ -59,6 +61,23 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validateForm(data, referralFormSchema);
+
+    // Validación adicional de los teléfonos
+    const phoneErrors: Record<string, string> = {};
+    if (!isPhoneValid) {
+      phoneErrors.phone = 'El número de teléfono debe tener al menos 8 dígitos';
+    }
+    if (!isReferrerPhoneValid) {
+      phoneErrors.referrer_phone = 'Tu número de teléfono debe tener al menos 8 dígitos';
+    }
+
+    if (Object.keys(phoneErrors).length > 0) {
+      setErrors(prev => ({
+        ...prev,
+        ...phoneErrors
+      }));
+      return;
+    }
 
     if (!validationErrors?.success) {
       setErrors(validationErrors?.errors ?? {});
@@ -166,6 +185,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                   type='tel'
                   value={data.phone}
                   onInputChange={(value: string) => setData('phone', value)}
+                  onValidationChange={setIsPhoneValid}
                   placeholder="Número de teléfono"
                   className="rounded-l-none"
                   countries={countries}
@@ -218,6 +238,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                     type='tel'
                     value={data.referrer_phone}
                     onInputChange={(value: string) => setData('referrer_phone', value)}
+                    onValidationChange={setIsReferrerPhoneValid}
                     placeholder="Tu número de teléfono"
                     className="rounded-l-none"
                     countries={countries}
@@ -271,6 +292,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
               <Button
                 size="lg"
                 className="min-w-[130px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!isPhoneValid || !isReferrerPhoneValid}
               >
                 Continuar
               </Button>
