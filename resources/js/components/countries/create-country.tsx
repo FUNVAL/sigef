@@ -44,14 +44,14 @@ export function CreateCountry() {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="link" className='cursor-pointer'>
-                    Crear Curso
+                    Crear Pais
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[525px]">
                 <DialogHeader>
-                    <DialogTitle>Crear Curso</DialogTitle>
+                    <DialogTitle>Crear Pais</DialogTitle>
                     <DialogDescription>
-                        Aquí puedes crear un nuevo curso. Asegúrate de completar todos los campos requeridos.
+                        Aquí puedes agregar un nuevo pais. Asegúrate de completar todos los campos requeridos.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
