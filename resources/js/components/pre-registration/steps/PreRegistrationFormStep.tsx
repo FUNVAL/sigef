@@ -200,7 +200,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                         countries={countries}
                                         selectedCountryId={data.country_id}
                                         required
-                                        minLength={13}
+                                        minLength={3}
                                         maxLength={18}
                                     />
                                 </div>

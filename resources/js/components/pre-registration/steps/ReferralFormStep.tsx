@@ -170,7 +170,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                   countries={countries}
                   selectedCountryId={data.country_id}
                   required
-                  minLength={13}
+                  minLength={3}
                   maxLength={18}
                 />
                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
@@ -225,7 +225,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                     selectedCountryId={data.country_id}
                     required
                     enableDropdown={true}
-                    minLength={13}
+                    minLength={3}
                     maxLength={18}
                   />
                   {errors.referrer_phone && <p className="text-red-500 text-sm">{errors.referrer_phone}</p>}
