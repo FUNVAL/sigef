@@ -68,7 +68,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                         <UserPlus className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
                     </div>
                     <CardTitle className="text-funval-blue text-2xl font-bold text-[rgb(46_131_242_/_1)]">
-                        Formulario de Pre-inscripción
+                        Formulario de preinscripción
                     </CardTitle>
                     <p className="text-muted-foreground mt-2">
                         Completa tus datos personales para el proceso de inscripción
