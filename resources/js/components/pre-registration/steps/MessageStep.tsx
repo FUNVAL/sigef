@@ -22,10 +22,6 @@ export function MessageStep() {
     } else {
       router.visit('/preinscription-reference');
     }
-
-    return () => {
-      // sessionStorage.removeItem('successMessage');
-    };
   }, [flash]);
 
   if (!message) {
@@ -41,25 +37,23 @@ export function MessageStep() {
               flashMessage?.type === 'success' ? (
                 <CheckCircle2 className="h-12 w-12 text-[rgb(46_131_242_/_1)]" />
               ) : (
-                <CircleX className="h-12 w-12 text-red-500" />
+                <CheckCircle2 className="h-12 w-12 text-red-500" />
               )
             }
           </div>
           <CardTitle className="text-2xl font-bold text-funval-blue">
             Confirmación de Solicitud
           </CardTitle>
-          <p className="text-base leading-relaxed">
-            Gracias por tu solicitud. Hemos recibido tu información correctamente.
+          <p className="text-base leading-none">
+            Hemos recibido tu información correctamente.
           </p>
         </CardHeader>
         <CardContent className="text-center space-y-6">
-          <div className={`prose prose-sm max-w-none p-2 rounded-md ${flashMessage?.type === 'success'
+          <div className={`max-w-none p-4 rounded-md ${flashMessage?.type === 'success'
             ? 'bg-blue-50 dark:bg-blue-950'
             : 'bg-red-50 dark:bg-red-950'
             }`}>
-            <p className="text-lg leading-relaxed">
-              {message}
-            </p>
+            <p dangerouslySetInnerHTML={{ __html: message }} className="text-lg leading-normal text-justify" />
           </div>
 
           <div className="flex justify-center pt-4">
