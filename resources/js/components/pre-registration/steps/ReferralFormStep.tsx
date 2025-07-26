@@ -40,7 +40,6 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
   const { enums } = usePage<{ enums: Enums }>().props;
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  // obtener query param full
 
   const isFull = new URLSearchParams(window.location.search).get('full') === 'true';
 
@@ -171,6 +170,8 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                   countries={countries}
                   selectedCountryId={data.country_id}
                   required
+                  minLength={3}
+                  maxLength={18}
                 />
                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
               </div>
@@ -224,6 +225,8 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                     selectedCountryId={data.country_id}
                     required
                     enableDropdown={true}
+                    minLength={3}
+                    maxLength={18}
                   />
                   {errors.referrer_phone && <p className="text-red-500 text-sm">{errors.referrer_phone}</p>}
                 </div>

@@ -55,6 +55,11 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
         }
     }
 
+    const cleanSpaces = (field: keyof PreRegistrationFormData, value: string) => {
+        const cleanedValue = value.replace(/\s+/g, ' ').trim();
+        setData(field, cleanedValue);
+    }
+
     return (
         <div className="mx-auto max-w-3xl">
             <Card className="border-2">
@@ -79,7 +84,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     id="first_name"
                                     name="first_name"
                                     value={data.first_name}
-                                    onChange={(e) => setData('first_name', e.target.value)}
+                                    onChange={(e) => cleanSpaces('first_name', e.target.value)}
                                     placeholder="Nombre completo"
                                     autoComplete='given-name'
                                     required
@@ -94,7 +99,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     name="middle_name"
                                     autoComplete='additional-name'
                                     value={data.middle_name}
-                                    onChange={(e) => setData('middle_name', e.target.value)}
+                                    onChange={(e) => cleanSpaces('middle_name', e.target.value)}
                                     placeholder="Segundo nombre"
                                 />
                                 {errors.middle_name && <p className="text-red-500 text-sm">{errors.middle_name}</p>}
@@ -107,7 +112,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     name="last_name"
                                     autoComplete='family-name'
                                     value={data.last_name}
-                                    onChange={(e) => setData('last_name', e.target.value)}
+                                    onChange={(e) => cleanSpaces('last_name', e.target.value)}
                                     placeholder="Apellido"
                                     required
                                 />
@@ -121,7 +126,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     name="second_last_name"
                                     autoComplete='family-name'
                                     value={data.second_last_name}
-                                    onChange={(e) => setData('second_last_name', e.target.value)}
+                                    onChange={(e) => cleanSpaces('second_last_name', e.target.value)}
                                     placeholder="Segundo apellido"
                                 />
                                 {errors.second_last_name && <p className="text-red-500 text-sm">{errors.second_last_name}</p>}
@@ -195,6 +200,8 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                         countries={countries}
                                         selectedCountryId={data.country_id}
                                         required
+                                        minLength={3}
+                                        maxLength={18}
                                     />
                                 </div>
                                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
