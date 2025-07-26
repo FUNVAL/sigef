@@ -10,7 +10,7 @@ import { Enums } from '@/types/global';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { Country } from '@/types/country';
 import { Stake } from '@/types/stake';
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import validateForm from '@/lib/schemas/validate-schemas';
 import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
 import { StepperContext } from '@/pages/forms/stepper-provider';
@@ -55,10 +55,10 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
         }
     }
 
-    const cleanSpaces = (field: keyof PreRegistrationFormData, value: string) => {
+    const cleanSpaces = useCallback((field: keyof PreRegistrationFormData, value: string) => {
         const cleanedValue = value.replace(/\s+/g, ' ').trim();
         setData(field, cleanedValue);
-    }
+    }, [setData]);
 
     return (
         <div className="mx-auto max-w-3xl">
