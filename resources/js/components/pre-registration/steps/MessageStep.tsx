@@ -48,7 +48,7 @@ export function MessageStep() {
             Hemos recibido tu información correctamente.
           </p>
         </CardHeader>
-        <CardContent className="text-center space-y-6">
+        <CardContent className="space-y-6">
           <div className={`max-w-none p-4 rounded-md ${flashMessage?.type === 'success'
             ? 'bg-blue-50 dark:bg-blue-950'
             : 'bg-red-50 dark:bg-red-950'
