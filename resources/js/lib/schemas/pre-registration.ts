@@ -17,7 +17,7 @@ export const preRegistrationSchema = z.object({
     gender: z.number().min(1, "El género es obligatorio."),
     age: z.coerce.number().min(18, "Edad mínima 18").max(100, "Edad máxima 100."),
     country_id: z.number().min(1, "El país es obligatorio."),
-    phone: z.string().min(10, "El telefono debe tener al menos 10 dígitos."),
+    phone: z.string().min(10, "El teléfono debe tener al menos 10 dígitos."),
     stake_id: z.number().min(1, "La estaca es obligatoria."),
     email: z.string().email("Correo inválido."),
     marital_status: z.number().min(1, "El estado civil es obligatorio."),
