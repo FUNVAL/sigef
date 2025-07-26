@@ -72,7 +72,7 @@ class ReferenceController extends Controller
 
             $message =  [
                 'type' => 'success',
-                'message' => "¡Gracias por tu referencia!\n\nValoramos mucho que hayas pensado en alguien para compartir esta oportunidad. Queremos que sepas  que uno de nuestros representantes se comunicará directamente con tu referido en las próximas 72  horas para brindarle toda la información sobre el programa y acompañarlo en este proceso."
+                'message' => "<strong>¡Gracias por tu referencia!</strong><br/>Valoramos mucho que hayas pensado en alguien para compartir esta oportunidad. Queremos que sepas que uno de nuestros representantes se comunicará directamente con tu referido en las próximas 72 horas para brindarle toda la información sobre el programa y acompañarlo en este proceso."
             ];
 
             return  back()->with('success', $message);
