@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Enums;
 
@@ -16,12 +16,12 @@ enum MaritalStatusEnum: int
 
     public function name(): string
     {
-        return match($this) {
-            self::SINGLE => 'Soltero',
-            self::MARRIED => 'Casado',
-            self::DIVORCED => 'Divorciado',
-            self::WIDOWED => 'Viudo',
-            self::SEPARATED => 'Separado',
+        return match ($this) {
+            self::SINGLE => __('common.marital_status.single'),
+            self::MARRIED => __('common.marital_status.married'),
+            self::DIVORCED => __('common.marital_status.divorced'),
+            self::WIDOWED => __('common.marital_status.widowed'),
+            self::SEPARATED => __('common.marital_status.separated'),
         };
-    } 
+    }
 }

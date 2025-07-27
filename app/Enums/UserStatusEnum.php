@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Enums;
 
@@ -9,13 +9,13 @@ enum UserStatusEnum: int
     use EnumMethods;
 
     case ACTIVE = 1;
-    case INACTIVE = 2; 
+    case INACTIVE = 2;
 
     public function name(): string
     {
-        return match($this) {
-            self::ACTIVE => 'Activo',
-            self::INACTIVE => 'Inactivo' 
+        return match ($this) {
+            self::ACTIVE => __('common.user_status.active'),
+            self::INACTIVE => __('common.user_status.inactive'),
         };
-    } 
+    }
 }

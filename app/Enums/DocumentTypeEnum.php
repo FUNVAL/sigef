@@ -10,14 +10,14 @@ enum DocumentTypeEnum: int
 
     case IDENTITY_CARD = 1;
     case PASSPORT = 2;
-    case DRIVER_LICENSE = 3; 
+    case DRIVER_LICENSE = 3;
 
     public function name(): string
     {
         return match ($this) {
-            self::IDENTITY_CARD => 'Cédula de Identidad',
-            self::PASSPORT => 'Pasaporte',
-            self::DRIVER_LICENSE => 'Licencia de Conducir', 
+            self::IDENTITY_CARD => __('common.document_type.identity_card'),
+            self::PASSPORT => __('common.document_type.passport'),
+            self::DRIVER_LICENSE => __('common.document_type.driver_license'),
         };
     }
 }
