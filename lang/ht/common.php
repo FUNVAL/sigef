@@ -144,7 +144,7 @@ return [
     'messages' => [
         'success' => [
             'pre_inscription_created' => 'Mèsi pou aplikasyon ou! Youn nan reprezantan nou yo ap kontakte ou nan 72 è k ap vini yo.',
-            'reference_created' => 'Mèsi pou referans ou! Nou apresye anpil ke ou te panse nan yon moun pou pataje opòtinite sa a.',
+            'reference_created' => '<strong>Mèsi pou referans ou!</strong><br/>Nou apresye anpil ke ou te panse nan yon moun pou pataje opòtinite sa a. Nou vle ou konnen ke youn nan reprezantan nou yo pral kontakte moun ou refere a direkteman nan pwochen 72 èdtan yo pou bay yo tout enfòmasyon sou pwogram nan epi gide yo nan pwosesis sa a.',
             'updated' => 'Mete ajou ak siksè',
             'deleted' => 'Efase ak siksè',
         ],
@@ -234,5 +234,13 @@ return [
             'title' => 'Pre-enskri pou kou a',
             'description' => 'Konplete pre-enskripsyon ou pou patisipe nan pwogram fòmasyon travay nou yo.',
         ],
+    ],
+
+    // Message Step
+    'message_step' => [
+        'redirecting' => 'Redireksyon...',
+        'confirmation_title' => 'Konfimasyon Demann',
+        'confirmation_subtitle' => 'Nou resevwa enfòmasyon ou yo kòrèkteman.',
+        'back_to_home' => 'Retounen nan Akèy',
     ],
 ];

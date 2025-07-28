@@ -144,7 +144,7 @@ return [
     'messages' => [
         'success' => [
             'pre_inscription_created' => 'Obrigado pela sua candidatura! Um de nossos representantes entrará em contato em até 72 horas.',
-            'reference_created' => 'Obrigado pela sua indicação! Valorizamos muito você ter pensado em alguém para compartilhar esta oportunidade.',
+            'reference_created' => '<strong>Obrigado pela sua indicação!</strong><br/>Valorizamos muito você ter pensado em alguém para compartilhar esta oportunidade. Queremos que saiba que um de nossos representantes entrará em contato diretamente com a pessoa indicada nas próximas 72 horas para fornecer todas as informações sobre o programa e acompanhá-la neste processo.',
             'updated' => 'Atualizado com sucesso',
             'deleted' => 'Excluído com sucesso',
         ],
@@ -234,5 +234,13 @@ return [
             'title' => 'Pré-inscrever-me no curso',
             'description' => 'Complete sua pré-inscrição para participar dos nossos programas de capacitação para o emprego.',
         ],
+    ],
+
+    // Message Step
+    'message_step' => [
+        'redirecting' => 'Redirecionando...',
+        'confirmation_title' => 'Confirmação de Solicitação',
+        'confirmation_subtitle' => 'Recebemos suas informações corretamente.',
+        'back_to_home' => 'Voltar ao Início',
     ],
 ];

@@ -145,7 +145,7 @@ return [
     'messages' => [
         'success' => [
             'pre_inscription_created' => 'Thank you for your application! One of our representatives will contact you within 72 hours.',
-            'reference_created' => 'Thank you for your reference! We really appreciate you thinking of someone to share this opportunity.',
+            'reference_created' => '<strong>Thank you for your reference!</strong><br/>We really appreciate you thinking of someone to share this opportunity. We want you to know that one of our representatives will contact your referred person directly within the next 72 hours to provide them with all the information about the program and guide them through this process.',
             'updated' => 'Successfully updated',
             'deleted' => 'Successfully deleted',
         ],
@@ -235,5 +235,13 @@ return [
             'title' => 'Pre-register for the course',
             'description' => 'Complete your pre-registration to participate in our job training programs.',
         ],
+    ],
+
+    // Message Step
+    'message_step' => [
+        'redirecting' => 'Redirecting...',
+        'confirmation_title' => 'Request Confirmation',
+        'confirmation_subtitle' => 'We have received your information correctly.',
+        'back_to_home' => 'Back to Home',
     ],
 ];

@@ -144,7 +144,7 @@ return [
     'messages' => [
         'success' => [
             'pre_inscription_created' => '¡Gracias por tu aplicación! Uno de nuestros representantes se pondrá en contacto contigo en las próximas 72 horas.',
-            'reference_created' => '¡Gracias por tu referencia! Valoramos mucho que hayas pensado en alguien para compartir esta oportunidad.',
+            'reference_created' => '<strong>¡Gracias por tu referencia!</strong><br/>Valoramos mucho que hayas pensado en alguien para compartir esta oportunidad. Queremos que sepas que uno de nuestros representantes se comunicará directamente con tu referido en las próximas 72 horas para brindarle toda la información sobre el programa y acompañarlo en este proceso.',
             'updated' => 'Actualizado exitosamente',
             'deleted' => 'Eliminado exitosamente',
         ],
@@ -234,5 +234,13 @@ return [
             'title' => 'Preinscribirme al curso',
             'description' => 'Completa tu preinscripción para participar en nuestros programas de capacitación para el empleo.',
         ],
+    ],
+
+    // Message Step
+    'message_step' => [
+        'redirecting' => 'Redirigiendo...',
+        'confirmation_title' => 'Confirmación de Solicitud',
+        'confirmation_subtitle' => 'Hemos recibido tu información correctamente.',
+        'back_to_home' => 'Volver al Inicio',
     ],
 ];
