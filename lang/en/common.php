@@ -104,6 +104,7 @@ return [
         'referral' => [
             'title' => 'Reference Form',
             'description' => 'Share the details of the person you want to refer',
+            'referrer_info' => 'Referrer Information',
             'fields' => [
                 'name' => 'Full name of the referred person',
                 'name_placeholder' => 'Full name',

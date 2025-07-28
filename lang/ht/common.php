@@ -104,6 +104,7 @@ return [
         'referral' => [
             'title' => 'Fòm Referans',
             'description' => 'Pataje done moun ou vle rekòmande a',
+            'referrer_info' => 'Enfòmasyon moun ki rekòmande',
             'fields' => [
                 'name' => 'Non konplè moun yo rekòmande a',
                 'name_placeholder' => 'Non konplè',

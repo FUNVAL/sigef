@@ -104,6 +104,7 @@ return [
         'referral' => [
             'title' => 'Formulario de Referencia',
             'description' => 'Comparte los datos de la persona que deseas referir',
+            'referrer_info' => 'Información de quien refiere',
             'fields' => [
                 'name' => 'Nombre completo de la persona referida',
                 'name_placeholder' => 'Nombre completo',
