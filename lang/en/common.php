@@ -75,6 +75,13 @@ return [
         'pre_inscription' => [
             'title' => 'Pre-registration Form',
             'description' => 'Complete your personal information to proceed with your pre-registration',
+            'course_selection' => [
+                'title' => 'Select Your Course',
+                'description' => 'Choose the training program that best fits your interests and professional goals',
+                'selected_course' => 'Selected course:',
+                'selection_confirmation' => 'You have selected this course for your pre-registration process. By continuing, you confirm your interest in participating in this program.',
+                'duration' => 'weeks',
+            ],
             'female_filter' => [
                 'title' => 'Evaluation Questions',
                 'description' => 'These questions help us determine if our programs are suitable for you',

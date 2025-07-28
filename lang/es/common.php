@@ -75,6 +75,13 @@ return [
         'pre_inscription' => [
             'title' => 'Formulario de Pre-inscripción',
             'description' => 'Complete la información personal para proceder con su pre-inscripción',
+            'course_selection' => [
+                'title' => 'Selecciona tu Curso',
+                'description' => 'Elige el programa de capacitación que más se adapte a tus intereses y objetivos profesionales',
+                'selected_course' => 'Curso seleccionado:',
+                'selection_confirmation' => 'Has seleccionado este curso para tu proceso de pre-inscripción. Al continuar confirmas tu interés en participar en este programa.',
+                'duration' => 'semanas',
+            ],
             'female_filter' => [
                 'title' => 'Preguntas de Evaluación',
                 'description' => 'Estas preguntas nos ayudan a determinar si nuestros programas son adecuados para ti',

@@ -75,6 +75,13 @@ return [
         'pre_inscription' => [
             'title' => 'Fòm Pré-enskripsyon',
             'description' => 'Ranpli enfòmasyon pèsonèl ou yo pou w kontinye ak pré-enskripsyon ou an',
+            'course_selection' => [
+                'title' => 'Chwazi Kou Ou',
+                'description' => 'Chwazi pwogram fòmasyon ki pi bon pou enterè ak objektif pwofesyonèl ou yo',
+                'selected_course' => 'Kou ki chwazi:',
+                'selection_confirmation' => 'Ou chwazi kou sa a pou pwosesis pré-enskripsyon ou. Lè w kontinye, w konfime enterè w nan patisipe nan pwogram sa a.',
+                'duration' => 'semèn',
+            ],
             'female_filter' => [
                 'title' => 'Kesyon Evalyasyon',
                 'description' => 'Kesyon sa yo ede nou detèmine si pwogram nou yo bon pou ou',

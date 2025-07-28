@@ -64,6 +64,13 @@ type Translation = {
         pre_inscription: {
             title: string;
             description: string;
+            course_selection: {
+                title: string;
+                description: string;
+                selected_course: string;
+                selection_confirmation: string;
+                duration: string;
+            };
             female_filter: {
                 title: string;
                 description: string;

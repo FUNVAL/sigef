@@ -6,6 +6,8 @@ import { Course } from "@/types/course"
 import { PreRegistrationFormData, PreRegistrationRequest } from "@/types/pre-inscription"
 import { useContext } from "react"
 import { StepperContext } from "@/pages/forms/stepper-provider"
+import { usePage } from "@inertiajs/react"
+import { Enums, Translation } from "@/types/global"
 
 interface CourseSelectionStepProps {
   courses: Course[];
@@ -19,6 +21,11 @@ interface CourseSelectionStepProps {
 export function CourseSelectionStep({ courses, request }: CourseSelectionStepProps) {
   const { data, setData } = request;
   const { nextStep, previousStep } = useContext(StepperContext);
+  const { enums, forms, ui } = usePage<{
+    enums: Enums;
+    forms: Translation['forms'];
+    ui: Translation['ui'];
+  }>().props;
 
   const selectedCourse = courses.find(course => course.id === data.course_id)?.name || '';
 
@@ -35,10 +42,10 @@ export function CourseSelectionStep({ courses, request }: CourseSelectionStepPro
             <GraduationCap className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
           </div>
           <CardTitle className="text-2xl font-bold text-[rgb(46_131_242_/_1)]">
-            Selecciona tu Curso
+            {forms.pre_inscription.course_selection.title}
           </CardTitle>
           <p className="text-muted-foreground mt-2">
-            Elige el programa de capacitación que más se adapte a tus intereses y objetivos profesionales
+            {forms.pre_inscription.course_selection.description}
           </p>
         </CardHeader>
         <CardContent className="space-y-6 ">
@@ -75,7 +82,7 @@ export function CourseSelectionStep({ courses, request }: CourseSelectionStepPro
                   <div className="flex items-center gap-2 sm:text-[16px]">
                     <Clock className="h-4 w-4 text-[rgb(46_131_242_/_1)]" />
                     <span className="text-[rgb(46_131_242_/_1)] font-medium">
-                      {course.duration} semanas
+                      {course.duration} {forms.pre_inscription.course_selection.duration}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -95,11 +102,10 @@ export function CourseSelectionStep({ courses, request }: CourseSelectionStepPro
           {selectedCourse && (
             <div className="mt-6 p-4 bg-[rgb(46_131_242_/_1)]/5 border border-[rgb(46_131_242_/_1)]/20 rounded-lg">
               <h3 className="font-semibold text-funval-darkBlue mb-2">
-                Curso seleccionado: {selectedCourse}
+                {forms.pre_inscription.course_selection.selected_course} {selectedCourse}
               </h3>
               <p className="text-sm text-muted-foreground">
-                Has seleccionado este curso para tu proceso de pre-inscripción.
-                Al continuar confirmas tu interés en participar en este programa.
+                {forms.pre_inscription.course_selection.selection_confirmation}
               </p>
             </div>
           )}
@@ -112,7 +118,7 @@ export function CourseSelectionStep({ courses, request }: CourseSelectionStepPro
               className="min-w-[120px]"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Anterior
+              {ui.buttons.previous}
             </Button>
 
             <Button
@@ -122,7 +128,7 @@ export function CourseSelectionStep({ courses, request }: CourseSelectionStepPro
               size="lg"
               className="min-w-[140px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Continuar
+              {ui.buttons.continue}
             </Button>
           </div>
         </CardContent>
