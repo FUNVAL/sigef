@@ -21,7 +21,7 @@ import { referralFormSchema } from "@/lib/schemas/referral"
 import validateForm from "@/lib/schemas/validate-schemas"
 import { useContext, useEffect, useState } from "react"
 import { StepperContext } from "@/pages/forms/stepper-provider";
-import PhoneInput from "@/components/ui/phone-input";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 interface ReferralFormStepProps {
   request: {
@@ -40,6 +40,17 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
   const { enums } = usePage<{ enums: Enums }>().props;
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const isFull = new URLSearchParams(window.location.search).get('full') === 'true';
+
+  const handleBack = () => {
+    if (isFull) {
+      window.history.back();
+    } else {
+      previousStep();
+    }
+  }
+
   const filteredStakes = data.country_id ?
     stakes.filter(stake => stake.country_id === data.country_id) :
     [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
@@ -150,13 +161,17 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                 <PhoneInput
                   id="phone"
                   name="phone"
+                  autoComplete='tel'
+                  type='tel'
                   value={data.phone}
-                  onChange={(e) => setData('phone', e.target.value)}
+                  onInputChange={(value: string) => setData('phone', value)}
                   placeholder="Número de teléfono"
-                  autoComplete="tel"
+                  className="rounded-l-none"
                   countries={countries}
-                  dependency={data.country_id}
+                  selectedCountryId={data.country_id}
                   required
+                  minLength={3}
+                  maxLength={18}
                 />
                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
               </div>
@@ -200,12 +215,18 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                   <PhoneInput
                     id="referrer_phone"
                     name="referrer_phone"
+                    autoComplete='tel-referrer'
+                    type='tel'
                     value={data.referrer_phone}
-                    onChange={(e) => setData('referrer_phone', e.target.value)}
+                    onInputChange={(value: string) => setData('referrer_phone', value)}
                     placeholder="Tu número de teléfono"
+                    className="rounded-l-none"
                     countries={countries}
-                    dependency={data.country_id}
+                    selectedCountryId={data.country_id}
                     required
+                    enableDropdown={true}
+                    minLength={3}
+                    maxLength={18}
                   />
                   {errors.referrer_phone && <p className="text-red-500 text-sm">{errors.referrer_phone}</p>}
                 </div>
@@ -241,7 +262,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
             <div className="flex justify-between pt-4">
               <Button
                 type="button"
-                onClick={previousStep}
+                onClick={handleBack}
                 variant="outline"
                 size="lg"
                 className="min-w-[120px]"

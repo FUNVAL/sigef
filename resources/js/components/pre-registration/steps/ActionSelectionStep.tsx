@@ -43,7 +43,7 @@ export function ActionSelectionStep() {
                   <div className="flex-1">
                     Referir a un amigo
                     <p className="text-sm text-muted-foreground mt-1">
-                      Recomienda a alguien que conozcas para que participe de nuestros programas de capacitación
+                      Recomienda a alguien que conozcas para que participe de nuestros programas de capacitación para el empleo.
                     </p>
                   </div>
                 </div>
@@ -58,9 +58,9 @@ export function ActionSelectionStep() {
                     <UserPlus className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
                   </div>
                   <div className="flex-1">
-                    Pre-inscribirme al curso
+                    Preinscribirme al curso
                     <p className="text-sm text-muted-foreground mt-1">
-                      Completa tu pre-inscripción para participar en nuestros programas
+                      Completa tu preinscripción para participar en nuestros programas de capacitación para el empleo.
                     </p>
                   </div>
                 </div>
@@ -87,7 +87,7 @@ export function ActionSelectionStep() {
               className={`min-w-[140px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 ${!action && 'opacity-50 cursor-not-allowed'}`}
             >
               <Link
-                href={`${action}?step=2`}
+                href={`${action}?step=2&full=true`}
                 tabIndex={!action ? -1 : 0}
                 aria-disabled={!action}
               >

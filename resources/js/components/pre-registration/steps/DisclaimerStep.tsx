@@ -30,18 +30,15 @@ export function DisclaimerStep() {
 
               <div className="space-y-3 text-sm">
                 <p className="text-funval-darkBlue">
-                  Este programa está diseñado <strong>para personas con necesidad de encontrar un empleo y comprometidas a estudiar de manera intensiva 10-12 horas diarias de lunes a viernes.</strong>
+                  Este programa está dirigido a personas que buscan empleo y están dispuestas a comprometerse con un proceso intensivo de formación, dedicando entre <strong>10 y 12 horas diarias de lunes a viernes.</strong>
                 </p>
 
                 <p>
-                  Si tú o tu amigo son esta persona, ¡adelante! estamos deseosos de poder acompañarte en la búsqueda de empleo.
+                  Si tú o la persona referida tienen la motivación y el compromiso para alcanzar este objetivo, ¡adelante! Estamos entusiasmados por acompañarlos en la búsqueda de empleo.
                 </p>
 
-
-
                 <p className="text-funval-darkBlue font-medium">
-                  Los datos personales serán tratados con confidencialidad y no serán compartidos con terceros
-                  sin su consentimiento expreso.
+                  Queremos asegurarte de que toda la información personal será tratada con estricta confidencialidad y <strong>no será compartida con terceros sin consentimiento previo.</strong>
                 </p>
               </div>
             </div>

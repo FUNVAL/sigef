@@ -74,6 +74,17 @@ class PreInscriptionController extends Controller
     public function store(Request $request)
     {
         try {
+            // Validación manual del correo
+            $emailCheck = $this->checkEmailPreInscription($request->input('email'));
+            if ($emailCheck['exists']) {
+                $queryParams = array_merge($request->query(), ['step' => 5]);
+                $previousUrl = url()->previous();
+                $previousUrl = preg_replace('/([&?]step=\d+)/', '', $previousUrl);
+                return redirect()->to($previousUrl . '?' . http_build_query($queryParams))
+                    ->withInput()
+                    ->with('success',  $emailCheck['message']);
+            }
+
             $rules = [
                 'first_name' => 'required|string|max:50',
                 'middle_name' => 'nullable|string|max:50',
@@ -142,26 +153,6 @@ class PreInscriptionController extends Controller
             // For Inertia requests, return back with error
             return back()->withErrors(['error' => 'Error al crear la pre-inscripción: ' . $e->getMessage()]);
         }
-    }
-
-    /**
-     * Convert country and stake names to IDs if they are strings
-     */
-    private function convertNamesToIds(array $data): array
-    {
-        // Convert country name to ID if it's a string
-        if (isset($data['country_id']) && !is_numeric($data['country_id'])) {
-            $country = Country::where('name', $data['country_id'])->first();
-            $data['country_id'] = $country ? $country->id : 1; // Default to ID 1 if not found
-        }
-
-        // Convert stake name to ID if it's a string
-        if (isset($data['stake_id']) && !is_numeric($data['stake_id'])) {
-            $stake = Stake::where('name', $data['stake_id'])->first();
-            $data['stake_id'] = $stake ? $stake->id : 1; // Default to ID 1 if not found
-        }
-
-        return $data;
     }
 
     /**
@@ -249,24 +240,90 @@ class PreInscriptionController extends Controller
     private function generateMessage($currentlyWorking, $jobTypePreference, $availableFullTime, $gender): array
     {
         $response = [
-            'message' => "Gracias por tu aplicacion, Uno de nuestros representante te estara contactando entre las proximas 24-72 horas para brindarte toda la información del programa.",
+            'message' => "<strong>¡Gracias por tu aplicación!</strong><br/>Uno de nuestros representantes se pondrá en contacto contigo en las próximas 72 horas para brindarte toda la información sobre el programa y resolver cualquier duda que puedas tener.<br/><br/>Agradecemos tu interés y estamos emocionados de acompañarte en este proceso.",
             'type' => 'success'
         ];
         if ($gender === GenderEnum::FEMALE->value) {
             if ($currentlyWorking) {
-                $response['message'] = "Debido a las capacitaciones intensivas de Funval, el programa está dirigido a personas sin empleo. Si más adelante tienes la necesidad de un empleo no dudes en contactarnos nuevamente.";
+
+                $response['message'] = "<strong>Gracias por tu interés en el programa de FUNVAL.</strong><br/> Debido a la naturaleza intensiva de nuestras capacitaciones, este programa está dirigido a personas que actualmente no tienen empleo.<br/><br/> Si en el futuro te encuentras en búsqueda de un empleo, no dudes en contactarnos nuevamente.<br/><br/> Además, te compartimos los siguientes enlaces sobre organizaciones aliadas a Funval que podrían ser de tu interés:
+                <a href=\"https://www.the-academy.org/contact/\" target=\"_blank\" class=\"text-blue-600 underline\">La Academia</a> y 
+                <a href=\"https://mentorseducation.org/\" target=\"_blank\" class=\"text-blue-600 underline\">Mentors</a>.";
+
                 $response['type'] = 'rejected';
             } elseif ($jobTypePreference === JobTypeEnum::OWN_BOSS->value) {
-                $response['message'] = "Excelente, pronto recibirás más información de las organizaciones aliadas con FUNVAL expertas en emprendimiento.";
+
+                $response['message'] = "<strong>¡Excelente!</strong><br/>Muy pronto recibirás información de nuestras organizaciones aliadas especializadas en emprendimiento, quienes comparten con FUNVAL el compromiso de impulsar nuevas oportunidades para personas como tú.<br/><br/>
+                Visita los siguientes enlaces para obtener más información sobre dichas organizaciones: <a href=\"https://www.the-academy.org/contact/\" target=\"_blank\" class=\"text-blue-600 underline\">La Academia</a> y <a href=\"https://mentorseducation.org/\" target=\"_blank\" class=\"text-blue-600 underline\">Mentors</a>.";
+
                 $response['type'] = 'rejected';
             } elseif ($jobTypePreference === JobTypeEnum::ONLINE->value && !$availableFullTime) {
-                $response['message'] = "FUNVAL tiene alianza con empresas que requieren que las personas trabajen presencialmente. Si en el futuro esta es una opción para ti, contáctanos nuevamente.";
+                $response['message'] = "<strong>FUNVAL mantiene alianzas con empresas que requieren modalidad de trabajo presencial.</strong><br/> Si en el futuro esta opción se ajusta a tu situación, no dudes en contactarnos nuevamente. Estaremos encantados de apoyarte en tu proceso de búsqueda laboral.<br/><br/>Además, te compartimos los siguientes enlaces sobre organizaciones aliadas a Funval que podrían ser de tu interés: <a href=\"https://www.the-academy.org/contact/\" target=\"_blank\" class=\"text-blue-600 underline\">La Academia</a> y <a href=\"https://mentorseducation.org/\" target=\"_blank\" class=\"text-blue-600 underline\">Mentors</a>.";
+
                 $response['type'] = 'rejected';
             } elseif (!$availableFullTime) {
-                $response['message'] = "Debido a la intensidad de los programas de FUNVAL se requiere una conexión continua sin realizar otras actividades durante el programa de capacitación. Si en el futuro tienes esta disponibilidad de tiempo, vuelve a contactarnos.";
+                $response['message'] = "<strong>Debido a la intensidad de los programas de FUNVAL</strong>, se requiere que los participantes cuenten con una conexión continua  y estén disponibles sin realizar otras actividades en paralelo durante el horario de capacitación.<br/><br/>Si en el futuro esta opción se ajusta a tu situación, no dudes en contactarnos nuevamente. Estaremos encantados de apoyarte en tu proceso de búsqueda laboral.<br/><br/>Además, te compartimos la siguiente información sobre organizaciones aliadas a FUNVAL que pueden ser de tu interés:<a href=\"https://www.the-academy.org/contact/\" target=\"_blank\" class=\"text-blue-600 underline\">La Academia</a> y <a href=\"https://mentorseducation.org/\" target=\"_blank\" class=\"text-blue-600 underline\">Mentors</a>.";
                 $response['type'] = 'rejected';
             }
         }
         return $response;
+    }
+
+    /**
+     * Verifica si el correo ya existe y retorna un mensaje personalizado si aplica.
+     */
+    private function checkEmailPreInscription($email)
+    {
+        $preInscription = PreInscription::where('email', $email)->first();
+        if (!$preInscription) {
+            return ['exists' => false];
+        }
+
+        $statusId = is_array($preInscription->status) ? $preInscription->status["id"] : $preInscription->status;
+        $genderId = is_array($preInscription->gender) ? $preInscription->gender["id"] : $preInscription->gender;
+        $jobTypePref = is_array($preInscription->job_type_preference ?? null) ? $preInscription->job_type_preference["id"] : ($preInscription->job_type_preference ?? null);
+
+        $responsablePhone = optional(optional($preInscription->stake)->user)->contact_phone_1;
+        if ($statusId == RequestStatusEnum::PENDING->value) {
+
+            $message = "<strong>Ya existe una solicitud pendiente asociada a este correo electrónico.</strong><br/> 
+                        Por favor, espera a que uno de nuestros representantes se comunique contigo. El plazo estimado de contacto es de hasta 72 horas.<br/><br/> Si ya ha transcurrido ese tiempo y aún no has recibido respuesta, puedes escribirnos al siguiente número: $responsablePhone.<br/><br/>Agradecemos tu paciencia y tu interés en el programa.";
+
+            return [
+                'exists' => true,
+                'message' => [
+                    'type' => 'rejected',
+                    'message' => $message
+                ]
+            ];
+        }
+
+        if (
+            $statusId == RequestStatusEnum::REJECTED->value &&
+            $genderId == GenderEnum::FEMALE->value
+        ) {
+            $msg = $this->generateMessage(
+                $preInscription->currently_working,
+                $jobTypePref,
+                $preInscription->available_full_time,
+                $genderId
+            );
+            return [
+                'exists' => true,
+                'message' => [
+                    'type' => $msg['type'],
+                    'message' => "<strong>Este correo ya ha sido registrado previamente.</strong><br/> 
+                                Hemos identificado que ya existe una solicitud asociada a este correo electrónico, la cual fue evaluada anteriormente con el siguiente resultado:<br/><br/>" . $msg['message']
+                ]
+            ];
+        }
+
+        return [
+            'exists' => true,
+            'message' => [
+                'type' => 'rejected',
+                'message' => "Ya existe una solicitud con este correo electrónico."
+            ]
+        ];
     }
 }

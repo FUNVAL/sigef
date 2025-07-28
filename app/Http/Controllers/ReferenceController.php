@@ -72,7 +72,7 @@ class ReferenceController extends Controller
 
             $message =  [
                 'type' => 'success',
-                'message' => "Gracias por tu referencia, Uno de nuestros representante estara contactando a tu referido entre las proximas 24-72 horas para brindarle toda la información del programa."
+                'message' => "<strong>¡Gracias por tu referencia!</strong><br/>Valoramos mucho que hayas pensado en alguien para compartir esta oportunidad. Queremos que sepas que uno de nuestros representantes se comunicará directamente con tu referido en las próximas 72 horas para brindarle toda la información sobre el programa y acompañarlo en este proceso."
             ];
 
             return  back()->with('success', $message);
@@ -84,7 +84,6 @@ class ReferenceController extends Controller
                 ->withInput();
         } catch (\Exception $e) {
             return back()
-                ->with(['step' => 2])
                 ->withErrors(['error' => $e->getMessage()])
                 ->withInput();
         }
