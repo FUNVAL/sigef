@@ -64,6 +64,31 @@ type Translation = {
         pre_inscription: {
             title: string;
             description: string;
+            overview: {
+                title: string;
+                subtitle: string;
+                fields: {
+                    first_name: string;
+                    middle_name: string;
+                    last_name: string;
+                    second_last_name: string;
+                    gender: string;
+                    age: string;
+                    country: string;
+                    phone: string;
+                    stake: string;
+                    email: string;
+                    marital_status: string;
+                    served_mission: string;
+                    currently_working: string;
+                    job_type_preference: string;
+                    available_full_time: string;
+                };
+                buttons: {
+                    sending: string;
+                    submit: string;
+                };
+            };
             course_selection: {
                 title: string;
                 description: string;

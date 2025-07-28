@@ -75,6 +75,31 @@ return [
         'pre_inscription' => [
             'title' => 'Pre-registration Form',
             'description' => 'Complete your personal information to proceed with your pre-registration',
+            'overview' => [
+                'title' => 'Review your data',
+                'subtitle' => 'Verify that all information is correct before submitting',
+                'fields' => [
+                    'first_name' => 'First Name:',
+                    'middle_name' => 'Middle Name:',
+                    'last_name' => 'Last Name:',
+                    'second_last_name' => 'Second Last Name:',
+                    'gender' => 'Gender:',
+                    'age' => 'Age:',
+                    'country' => 'Country:',
+                    'phone' => 'Phone:',
+                    'stake' => 'Stake/District/Mission:',
+                    'email' => 'Email:',
+                    'marital_status' => 'Marital Status:',
+                    'served_mission' => 'Have you served a mission?:',
+                    'currently_working' => 'Are you currently working?:',
+                    'job_type_preference' => 'Type of employment you are looking for:',
+                    'available_full_time' => 'Availability to work full time:',
+                ],
+                'buttons' => [
+                    'sending' => 'Sending...',
+                    'submit' => 'Submit',
+                ],
+            ],
             'course_selection' => [
                 'title' => 'Select Your Course',
                 'description' => 'Choose the training program that best fits your interests and professional goals',

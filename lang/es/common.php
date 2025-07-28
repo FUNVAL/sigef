@@ -75,6 +75,31 @@ return [
         'pre_inscription' => [
             'title' => 'Formulario de Pre-inscripción',
             'description' => 'Complete la información personal para proceder con su pre-inscripción',
+            'overview' => [
+                'title' => 'Revisa tus datos',
+                'subtitle' => 'Verifica que toda la información sea correcta antes de enviar',
+                'fields' => [
+                    'first_name' => 'Primer Nombre:',
+                    'middle_name' => 'Segundo Nombre:',
+                    'last_name' => 'Apellido:',
+                    'second_last_name' => 'Segundo Apellido:',
+                    'gender' => 'Género:',
+                    'age' => 'Edad:',
+                    'country' => 'País:',
+                    'phone' => 'Teléfono:',
+                    'stake' => 'Estaca/Distrito/Misión:',
+                    'email' => 'Email:',
+                    'marital_status' => 'Estado Civil:',
+                    'served_mission' => '¿Ha servido una misión?:',
+                    'currently_working' => '¿Estás trabajando actualmente?:',
+                    'job_type_preference' => 'Tipo de empleo que buscas:',
+                    'available_full_time' => 'Disponibilidad para trabajar a tiempo completo:',
+                ],
+                'buttons' => [
+                    'sending' => 'Enviando...',
+                    'submit' => 'Enviar',
+                ],
+            ],
             'course_selection' => [
                 'title' => 'Selecciona tu Curso',
                 'description' => 'Elige el programa de capacitación que más se adapte a tus intereses y objetivos profesionales',

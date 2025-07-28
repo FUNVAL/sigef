@@ -75,6 +75,31 @@ return [
         'pre_inscription' => [
             'title' => 'Fòm Pré-enskripsyon',
             'description' => 'Ranpli enfòmasyon pèsonèl ou yo pou w kontinye ak pré-enskripsyon ou an',
+            'overview' => [
+                'title' => 'Revize done ou yo',
+                'subtitle' => 'Verifye ke tout enfòmasyon yo kòrèk anvan ou voye yo',
+                'fields' => [
+                    'first_name' => 'Premye Non:',
+                    'middle_name' => 'Dezyèm Non:',
+                    'last_name' => 'Siyati:',
+                    'second_last_name' => 'Dezyèm Siyati:',
+                    'gender' => 'Sèks:',
+                    'age' => 'Laj:',
+                    'country' => 'Peyi:',
+                    'phone' => 'Telefòn:',
+                    'stake' => 'Poto/Distri/Misyon:',
+                    'email' => 'Imel:',
+                    'marital_status' => 'Estati Sivil:',
+                    'served_mission' => 'Ou te sèvi yon misyon?:',
+                    'currently_working' => 'Èske w ap travay kounye a?:',
+                    'job_type_preference' => 'Ki kalite travay w ap chèche:',
+                    'available_full_time' => 'Disponibilite pou travay tout tan:',
+                ],
+                'buttons' => [
+                    'sending' => 'Voye...',
+                    'submit' => 'Voye',
+                ],
+            ],
             'course_selection' => [
                 'title' => 'Chwazi Kou Ou',
                 'description' => 'Chwazi pwogram fòmasyon ki pi bon pou enterè ak objektif pwofesyonèl ou yo',

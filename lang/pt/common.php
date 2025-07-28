@@ -75,6 +75,31 @@ return [
         'pre_inscription' => [
             'title' => 'Formulário de Pré-inscrição',
             'description' => 'Complete suas informações pessoais para prosseguir com sua pré-inscrição',
+            'overview' => [
+                'title' => 'Revise seus dados',
+                'subtitle' => 'Verifique se todas as informações estão corretas antes de enviar',
+                'fields' => [
+                    'first_name' => 'Primeiro Nome:',
+                    'middle_name' => 'Segundo Nome:',
+                    'last_name' => 'Sobrenome:',
+                    'second_last_name' => 'Segundo Sobrenome:',
+                    'gender' => 'Gênero:',
+                    'age' => 'Idade:',
+                    'country' => 'País:',
+                    'phone' => 'Telefone:',
+                    'stake' => 'Estaca/Distrito/Missão:',
+                    'email' => 'Email:',
+                    'marital_status' => 'Estado Civil:',
+                    'served_mission' => 'Serviu uma missão?:',
+                    'currently_working' => 'Você está trabalhando atualmente?:',
+                    'job_type_preference' => 'Tipo de emprego que você está procurando:',
+                    'available_full_time' => 'Disponibilidade para trabalhar em tempo integral:',
+                ],
+                'buttons' => [
+                    'sending' => 'Enviando...',
+                    'submit' => 'Enviar',
+                ],
+            ],
             'course_selection' => [
                 'title' => 'Selecione seu Curso',
                 'description' => 'Escolha o programa de treinamento que melhor se adapte aos seus interesses e objetivos profissionais',
