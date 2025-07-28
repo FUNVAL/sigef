@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\StatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,7 @@ return new class extends Migration
             $table->string('code', 3)->unique()->nullable();
             $table->string('flag', 10)->nullable();
             $table->string('phone_code', 10)->nullable();
+            $table->integer('status')->default(StatusEnum::ACTIVE->value); // Assuming 1 is the default status
             $table->timestamps();
         });
     }
