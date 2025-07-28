@@ -156,6 +156,7 @@ return [
             'next' => 'Swivan',
             'previous' => 'Anvan',
             'finish' => 'Fini',
+            'continue' => 'Kontinye',
         ],
         'labels' => [
             'yes' => 'Wi',
@@ -190,5 +191,15 @@ return [
         'profile' => 'Profil',
         'password' => 'Modpas',
         'appearance' => 'Aparans',
+    ],
+
+    // Welcome Disclaimer
+    'welcome_disclaimer' => [
+        'title' => 'Byenveni nan FUNVAL Entènasyonal!',
+        'subtitle' => 'Nou kontan resevwa aplikasyon oswa referans ou.',
+        'program_description' => 'Pwogram sa a vize moun k ap chèche travay epi ki vle angaje yo nan yon pwosesis fòmasyon entansif, ki dedye ant 10 ak 12 èdtan pa jou soti lendi rive vandredi.',
+        'motivation' => 'Si ou menm oswa moun ou rekòmande a gen motivasyon ak angajman pou atenn objektif sa a, ale devan! Nou kontan akonpanye nou nan rechèch travay la.',
+        'privacy' => 'Nou vle asire ou ke tout enfòmasyon pèsonèl yo ap trete ak konfidansyalite estrikt epi yo p ap pataje yo ak tyès pati san konsantman anvan.',
+        'accept_terms' => 'Mwen li epi aksepte tèm ak kondisyon yo mansyone anwo a. Mwen konfime ke enfòmasyon mwen pral bay yo se verite epi konplè.',
     ],
 ];

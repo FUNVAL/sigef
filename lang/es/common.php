@@ -156,6 +156,7 @@ return [
             'next' => 'Siguiente',
             'previous' => 'Anterior',
             'finish' => 'Finalizar',
+            'continue' => 'Continuar',
         ],
         'labels' => [
             'yes' => 'Sí',
@@ -190,5 +191,15 @@ return [
         'profile' => 'Perfil',
         'password' => 'Contraseña',
         'appearance' => 'Apariencia',
+    ],
+
+    // Welcome Disclaimer
+    'welcome_disclaimer' => [
+        'title' => '¡Bienvenido a FUNVAL Internacional!',
+        'subtitle' => 'Nos complace recibir tu aplicación o referencia.',
+        'program_description' => 'Este programa está dirigido a personas que buscan empleo y están dispuestas a comprometerse con un proceso intensivo de formación, dedicando entre 10 y 12 horas diarias de lunes a viernes.',
+        'motivation' => 'Si tú o la persona referida tienen la motivación y el compromiso para alcanzar este objetivo, ¡adelante! Estamos entusiasmados por acompañarlos en la búsqueda de empleo.',
+        'privacy' => 'Queremos asegurarte de que toda la información personal será tratada con estricta confidencialidad y no será compartida con terceros sin consentimiento previo.',
+        'accept_terms' => 'He leído y acepto los términos y condiciones mencionados anteriormente. Confirmo que la información que proporcionaré es verídica y completa.',
     ],
 ];

@@ -156,6 +156,7 @@ return [
             'next' => 'Next',
             'previous' => 'Previous',
             'finish' => 'Finish',
+            'continue' => 'Continue',
         ],
         'labels' => [
             'yes' => 'Yes',
@@ -190,5 +191,15 @@ return [
         'profile' => 'Profile',
         'password' => 'Password',
         'appearance' => 'Appearance',
+    ],
+
+    // Welcome Disclaimer
+    'welcome_disclaimer' => [
+        'title' => 'Welcome to FUNVAL International!',
+        'subtitle' => 'We are pleased to receive your application or reference.',
+        'program_description' => 'This program is aimed at people who are looking for employment and are willing to commit to an intensive training process, dedicating between 10 and 12 hours daily from Monday to Friday.',
+        'motivation' => 'If you or the person you are referring have the motivation and commitment to achieve this goal, go ahead! We are excited to accompany you in your job search.',
+        'privacy' => 'We want to assure you that all personal information will be treated with strict confidentiality and will not be shared with third parties without prior consent.',
+        'accept_terms' => 'I have read and accept the terms and conditions mentioned above. I confirm that the information I will provide is truthful and complete.',
     ],
 ];
