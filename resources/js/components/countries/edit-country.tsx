@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,14 +24,14 @@ export function EditCountry({ country }: { country: Country }) {
     const [open, setOpen] = useState(false);
     const { enums } = usePage<{ enums: Enums }>().props;
 
-    const initialData: UpdateCountryForm = {
+   const initialData: UpdateCountryForm = {
         ...country,
         status: country.status ? country.status.id : 0,
     }
 
+    const { data, setData, put, errors, processing } = useForm<UpdateCountryForm>(initialData) 
 
 
-    const { data, setData, put, errors, processing } = useForm<UpdateCountryForm>(initialData);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -75,7 +75,7 @@ export function EditCountry({ country }: { country: Country }) {
                             <InputError message={errors.name} />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="duration">Código del Pais</Label>
+                            <Label htmlFor="code">Abreviación del Pais</Label>
                             <Input
                                 id="code"
                                 name="code"
@@ -87,17 +87,15 @@ export function EditCountry({ country }: { country: Country }) {
                             <InputError message={errors.code} />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="modality">Codigo de area</Label>
-                            <Select
-                                name="modality"
+                            <Label htmlFor="phone_code">Codigo de area</Label>
+                            <Input
+                                id="phone_code"
+                                name="phone_code"
                                 value={String(data.phone_code)}
                                 required
-                                onValueChange={(value) => setData('phone_code', value)}
-                            >
-                                <SelectTrigger id="modality">
-                                    <SelectValue placeholder="Seleccione tipo" />
-                                </SelectTrigger>
-                            </Select>
+                                onChange={(e) => setData('phone_code', e.target.value)}
+                                placeholder="Código de área"
+                            />
                             <InputError message={errors.phone_code} />
                         </div>
 
@@ -108,7 +106,6 @@ export function EditCountry({ country }: { country: Country }) {
                                 name="flag"
                                 value={data.flag}
                                 onChange={handleChange}
-                                required
                                 placeholder="URL de la bandera"
                             />
                             <InputError message={errors.flag} />
@@ -143,7 +140,7 @@ export function EditCountry({ country }: { country: Country }) {
                             Cancelar
                         </Button>
                         <Button type="submit" disabled={processing}>
-                            Guardar
+                            Actualizar
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         </Button>
                     </DialogFooter>
