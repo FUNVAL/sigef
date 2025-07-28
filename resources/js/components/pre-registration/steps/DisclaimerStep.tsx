@@ -5,21 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { StepperContext } from "@/pages/forms/stepper-provider"
 import { usePage } from "@inertiajs/react"
-
-
-type Translation = {
-  welcome_disclaimer: {
-    title: string;
-    subtitle: string;
-    program_description: string;
-    motivation: string;
-    privacy: string;
-    accept_terms: string;
-  };
-  ui: {
-    buttons: Record<string, string>
-  }
-}
+import { Translation } from "@/types/global"
 
 export function DisclaimerStep() {
   const { nextStep } = useContext(StepperContext);
