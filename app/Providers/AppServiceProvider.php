@@ -71,6 +71,9 @@ class AppServiceProvider extends ServiceProvider
             },
             'forms' => function () {
                 return __('common.forms');
+            },
+            'message_step' => function () {
+                return __('common.message_step');
             }
         ]);
     }

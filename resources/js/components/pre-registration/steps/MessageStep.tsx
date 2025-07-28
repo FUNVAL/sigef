@@ -2,9 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle2, CircleX } from "lucide-react"
 import { Link, router, usePage } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
+import { Translation } from "@/types/global";
 
 export function MessageStep() {
-  const { flash } = usePage().props;
+  const { flash, message_step } = usePage<{ flash: any, message_step: Translation['message_step'] }>().props;
   const [message, setMessage] = useState<string | null>(null);
 
   const flashMessage = useMemo(() => {
@@ -25,7 +26,7 @@ export function MessageStep() {
   }, [flash]);
 
   if (!message) {
-    return <div className="text-center py-12">Redirigiendo...</div>;
+    return <div className="text-center py-12">{message_step.redirecting}</div>;
   }
 
   return (
@@ -42,10 +43,10 @@ export function MessageStep() {
             }
           </div>
           <CardTitle className="text-2xl font-bold text-funval-blue">
-            Confirmación de Solicitud
+            {message_step.confirmation_title}
           </CardTitle>
           <p className="text-base leading-none">
-            Hemos recibido tu información correctamente.
+            {message_step.confirmation_subtitle}
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -62,7 +63,7 @@ export function MessageStep() {
               className="inline-flex items-center px-6 py-3 bg-[rgb(46_131_242_/_1)] text-white rounded-lg hover:bg-[rgb(46_131_242_/_1)]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[rgb(46_131_242_/_1)]"
               onClick={() => sessionStorage.removeItem('successMessage')}
             >
-              Volver al Inicio
+              {message_step.back_to_home}
             </Link>
           </div>
         </CardContent>

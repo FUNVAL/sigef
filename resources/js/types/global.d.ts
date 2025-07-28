@@ -89,6 +89,11 @@ type Translation = {
                 }
             }
         }
+    },
+    message_step: {
+        redirecting: string;
+        confirmation_title: string;
+        confirmation_subtitle: string;
+        back_to_home: string;
     }
-
 }
