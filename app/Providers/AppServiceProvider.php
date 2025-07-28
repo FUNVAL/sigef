@@ -65,6 +65,9 @@ class AppServiceProvider extends ServiceProvider
             },
             'welcome_disclaimer' => function () {
                 return __('common.welcome_disclaimer');
+            },
+            'action_selection' => function () {
+                return __('common.action_selection');
             }
         ]);
     }

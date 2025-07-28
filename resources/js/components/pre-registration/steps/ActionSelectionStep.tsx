@@ -5,7 +5,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Users, UserPlus, ArrowLeft } from "lucide-react"
 import { StepperContext } from "@/pages/forms/stepper-provider"
-import { Link } from "@inertiajs/react"
+import { Link, usePage } from "@inertiajs/react"
+import { Translation } from "@/types/global"
 
 interface ActionSelectionStepProps {
   onAction: (action: 'reference-form' | 'preinscription-form') => void;
@@ -15,16 +16,17 @@ interface ActionSelectionStepProps {
 export function ActionSelectionStep() {
   const { nextStep, previousStep } = useContext(StepperContext);
   const [action, setAction] = useState<ActionSelectionStepProps['action']>('');
+  const { ui, action_selection } = usePage<Translation>().props;
 
   return (
     <div className="max-w-2xl mx-auto">
       <Card className="border-2">
         <CardHeader className="text-center pb-4">
           <CardTitle className="text-2xl font-bold text-[rgb(46_131_242_/_1)]">
-            ¿Qué acción deseas realizar?
+            {action_selection.title}
           </CardTitle>
           <p className="text-muted-foreground mt-2">
-            Selecciona una de las siguientes opciones para continuar
+            {action_selection.subtitle}
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -41,9 +43,9 @@ export function ActionSelectionStep() {
                     <Users className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
                   </div>
                   <div className="flex-1">
-                    Referir a un amigo
+                    {action_selection.referral.title}
                     <p className="text-sm text-muted-foreground mt-1">
-                      Recomienda a alguien que conozcas para que participe de nuestros programas de capacitación para el empleo.
+                      {action_selection.referral.description}
                     </p>
                   </div>
                 </div>
@@ -58,9 +60,9 @@ export function ActionSelectionStep() {
                     <UserPlus className="h-6 w-6 text-[rgb(46_131_242_/_1)]" />
                   </div>
                   <div className="flex-1">
-                    Preinscribirme al curso
+                    {action_selection.pre_inscription.title}
                     <p className="text-sm text-muted-foreground mt-1">
-                      Completa tu preinscripción para participar en nuestros programas de capacitación para el empleo.
+                      {action_selection.pre_inscription.description}
                     </p>
                   </div>
                 </div>
@@ -76,7 +78,7 @@ export function ActionSelectionStep() {
               className="min-w-[120px]"
             >
               <ArrowLeft className="h-4 w-4 mr-2 hover:text-[rgb(46_131_242_/_1)]" />
-              Anterior
+              {ui.buttons.previous}
             </Button>
 
             <Button
@@ -91,7 +93,7 @@ export function ActionSelectionStep() {
                 tabIndex={!action ? -1 : 0}
                 aria-disabled={!action}
               >
-                Continuar
+                {ui.buttons.continue}
               </Link>
             </Button>
           </div>
