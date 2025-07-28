@@ -119,6 +119,24 @@ return [
                 'referrer_phone' => 'Telefòn Ou',
                 'relationship' => 'Relasyon ak Moun nan',
             ],
+            'overview' => [
+                'title' => 'Revize done referans yo',
+                'fields' => [
+                    'full_name' => 'Non konplè:',
+                    'gender' => 'Sèks:',
+                    'age' => 'Laj:',
+                    'country' => 'Peyi:',
+                    'phone' => 'Telefòn:',
+                    'stake' => 'Poto/Distri/Misyon:',
+                    'referrer_name' => 'Non ou:',
+                    'referrer_phone' => 'Telefòn ou:',
+                    'relationship' => 'Relasyon ak moun ki refere a:',
+                ],
+                'buttons' => [
+                    'sending' => 'Voye...',
+                    'submit' => 'Voye referans',
+                ],
+            ],
         ],
     ],
 

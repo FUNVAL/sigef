@@ -119,7 +119,26 @@ return [
                 'referrer_phone' => 'Your Phone',
                 'relationship' => 'Relationship with Referred Person',
             ],
+            'overview' => [
+                'title' => 'Review reference data',
+                'fields' => [
+                    'full_name' => 'Full name:',
+                    'gender' => 'Gender:',
+                    'age' => 'Age:',
+                    'country' => 'Country:',
+                    'phone' => 'Phone:',
+                    'stake' => 'Stake/District/Mission:',
+                    'referrer_name' => 'Your name:',
+                    'referrer_phone' => 'Your phone:',
+                    'relationship' => 'Relationship with referred person:',
+                ],
+                'buttons' => [
+                    'sending' => 'Sending...',
+                    'submit' => 'Submit reference',
+                ],
+            ],
         ],
+
     ],
 
     // Messages

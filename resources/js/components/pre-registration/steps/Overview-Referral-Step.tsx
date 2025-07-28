@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader, Users } from "lucide-react";
 import { Country } from "@/types/country";
 import { Stake } from "@/types/stake";
-import { Enums } from "@/types/global";
+import { Enums, Translation } from "@/types/global";
 import { usePage } from "@inertiajs/react";
 import { ReferenceFormData } from "@/types/reference";
 import { StepperContext } from "@/pages/forms/stepper-provider";
@@ -23,7 +23,7 @@ interface OverviewReferralStepProps {
 
 export function OverviewReferralStep({ request, countries, stakes }: OverviewReferralStepProps) {
     const { nextStep, previousStep } = useContext(StepperContext);
-
+    const { ui, forms } = usePage<Translation>().props;
     const { data, post, processing } = request;
     const { enums } = usePage<{ enums: Enums }>().props;
 
@@ -57,45 +57,45 @@ export function OverviewReferralStep({ request, countries, stakes }: OverviewRef
                         <Users className="h-12 w-12 text-[rgb(46_131_242_/_1)]" />
                     </div>
                     <CardTitle className="text-2xl font-bold text-funval-blue">
-                        Revisa los datos de la referencia
+                        {forms.referral.overview.title}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center space-y-6">
                     <div className="prose prose-sm max-w-none dark:prose-invert">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                             <div>
-                                <strong>Nombre completo:</strong> <span>{data.name || "-"}</span>
+                                <strong>{forms.referral.overview.fields.full_name}</strong> <span>{data.name || "-"}</span>
                             </div>
                             <div>
-                                <strong>Género:</strong> <span>{getGenderName()}</span>
+                                <strong>{forms.referral.overview.fields.gender}</strong> <span>{getGenderName()}</span>
                             </div>
                             <div>
-                                <strong>Edad:</strong> <span>{data.age || "-"}</span>
+                                <strong>{forms.referral.overview.fields.age}</strong> <span>{data.age || "-"}</span>
                             </div>
                             <div>
-                                <strong>País:</strong> <span>{getCountryName()}</span>
+                                <strong>{forms.referral.overview.fields.country}</strong> <span>{getCountryName()}</span>
                             </div>
                             <div>
-                                <strong>Teléfono:</strong> <span>{data.phone || "-"}</span>
+                                <strong>{forms.referral.overview.fields.phone}</strong> <span>{data.phone || "-"}</span>
                             </div>
                             <div>
-                                <strong>Estaca/Distrito/Misión:</strong> <span>{getStakeName()}</span>
+                                <strong>{forms.referral.overview.fields.stake}</strong> <span>{getStakeName()}</span>
                             </div>
                             <div>
-                                <strong>Tu nombre:</strong> <span>{data.referrer_name || "-"}</span>
+                                <strong>{forms.referral.overview.fields.referrer_name}</strong> <span>{data.referrer_name || "-"}</span>
                             </div>
                             <div>
-                                <strong>Tu teléfono:</strong> <span>{data.referrer_phone || "-"}</span>
+                                <strong>{forms.referral.overview.fields.referrer_phone}</strong> <span>{data.referrer_phone || "-"}</span>
                             </div>
                             <div>
-                                <strong>Relación con la persona referida:</strong> <span>{getRelationshipName()}</span>
+                                <strong>{forms.referral.overview.fields.relationship}</strong> <span>{getRelationshipName()}</span>
                             </div>
                         </div>
                     </div>
                     <form className="flex justify-between pt-4" onSubmit={handleSubmit} >
                         <Button type="button" onClick={previousStep} variant="outline" size="lg" className="min-w-[120px]">
                             <ArrowLeft className="mr-2 h-4 w-4" />
-                            Anterior
+                            {ui.buttons.previous}
                         </Button>
 
                         <Button
@@ -104,7 +104,7 @@ export function OverviewReferralStep({ request, countries, stakes }: OverviewRef
                             className="min-w-[200px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90 disabled:bg-gray-300 disabled:text-gray-500"
                         >
                             {processing && <Loader className={`mr-2 h-4 w-4 ${processing ? "animate-spin" : ""}`} />}
-                            {processing ? "Enviando..." : "Enviar referencia"}
+                            {processing ? forms.referral.overview.buttons.sending : forms.referral.overview.buttons.submit}
                         </Button>
                     </form>
                 </CardContent>

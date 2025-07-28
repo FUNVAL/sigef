@@ -119,6 +119,24 @@ return [
                 'referrer_phone' => 'Seu Telefone',
                 'relationship' => 'Relacionamento com a Pessoa Indicada',
             ],
+            'overview' => [
+                'title' => 'Revise os dados da referência',
+                'fields' => [
+                    'full_name' => 'Nome completo:',
+                    'gender' => 'Gênero:',
+                    'age' => 'Idade:',
+                    'country' => 'País:',
+                    'phone' => 'Telefone:',
+                    'stake' => 'Estaca/Distrito/Missão:',
+                    'referrer_name' => 'Seu nome:',
+                    'referrer_phone' => 'Seu telefone:',
+                    'relationship' => 'Relacionamento com a pessoa indicada:',
+                ],
+                'buttons' => [
+                    'sending' => 'Enviando...',
+                    'submit' => 'Enviar referência',
+                ],
+            ],
         ],
     ],
 

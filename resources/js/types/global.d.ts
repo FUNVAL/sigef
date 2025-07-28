@@ -69,6 +69,24 @@ type Translation = {
                 referrer_name: string;
                 referrer_phone: string;
                 relationship: string;
+            },
+            overview: {
+                title: string;
+                fields: {
+                    full_name: string;
+                    gender: string;
+                    age: string;
+                    country: string;
+                    phone: string;
+                    stake: string;
+                    referrer_name: string;
+                    referrer_phone: string;
+                    relationship: string;
+                },
+                buttons: {
+                    sending: string;
+                    submit: string;
+                }
             }
         }
     }
