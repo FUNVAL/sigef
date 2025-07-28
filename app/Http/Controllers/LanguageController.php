@@ -10,7 +10,7 @@ class LanguageController extends Controller
     public function switchLang(Request $request, $locale)
     {
         // Validar que sea un idioma soportado
-        if (!in_array($locale, ['en', 'es', 'pt', 'ht'])) {
+        if (!in_array($locale, ['es', 'en', 'pt', 'ht'])) {
             return back();
         }
 

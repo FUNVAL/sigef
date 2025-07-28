@@ -19,8 +19,8 @@ export default function LanguageSwitcher() {
 
     // Mapeo de idiomas a emojis/banderas (opcional)
     const languageFlags: Record<string, string> = {
-        en: '🇺🇸',
         es: '🇪🇸',
+        en: '🇺🇸',
         pt: '🇵🇹',
         ht: '🇭🇹'
     };

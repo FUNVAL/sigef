@@ -54,8 +54,8 @@ class AppServiceProvider extends ServiceProvider
             },
             'languages' => function () {
                 return [
-                    'en' => 'English',
                     'es' => 'Español',
+                    'en' => 'English',
                     'pt' => 'Português',
                     'ht' => 'Kreyòl'
                 ];

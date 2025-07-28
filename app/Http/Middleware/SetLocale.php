@@ -13,7 +13,7 @@ class SetLocale
             $request->cookie('locale') ??
             config('app.locale');
 
-        if (in_array($locale, ['en', 'es', 'pt', 'ht'])) {
+        if (in_array($locale, ['es', 'en', 'pt', 'ht'])) {
             App::setLocale($locale);
         }
 
