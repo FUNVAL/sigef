@@ -189,6 +189,7 @@ return [
     'messages' => [
         'success' => [
             'pre_inscription_created' => 'Mèsi pou aplikasyon ou! Youn nan reprezantan nou yo ap kontakte ou nan 72 è k ap vini yo.',
+            'pre_inscription_success' => '<strong>Mèsi pou aplikasyon ou!</strong><br/>Youn nan reprezantan nou yo ap kontakte ou nan 72 èdtan k ap vini yo pou bay ou tout enfòmasyon sou pwogram nan epi rezoud nenpòt kesyon ou ka gen.<br/><br/>Nou apresye enterè ou epi nou kontan pou akonpanye ou nan pwosesis sa a.',
             'reference_created' => '<strong>Mèsi pou referans ou!</strong><br/>Nou apresye anpil ke ou te panse nan yon moun pou pataje opòtinite sa a. Nou vle ou konnen ke youn nan reprezantan nou yo pral kontakte moun ou refere a direkteman nan pwochen 72 èdtan yo pou bay yo tout enfòmasyon sou pwogram nan epi gide yo nan pwosesis sa a.',
             'updated' => 'Mete ajou ak siksè',
             'deleted' => 'Efase ak siksè',
@@ -199,12 +200,14 @@ return [
             'update_failed' => 'Erè nan mete ajou',
             'delete_failed' => 'Erè nan efase',
             'email_exists' => 'Gen yon demann ki deja egziste ak imel sa a',
+            'email_exists_pending' => '<strong>Gen yon demann k ap tann ki gen rapò ak adrès imel sa a.</strong><br/>Tanpri tann youn nan reprezantan nou yo kontakte ou. Tan estime pou kontak la se jiska 72 èdtan.<br/><br/>Si tan sa a fin pase epi ou poko resevwa yon repons, ou ka ekri nou nan nimewo sa a: {phone}.<br/><br/>Nou apresye pasyans ou ak enterè ou nan pwogram nan.',
+            'email_exists_previous' => '<strong>Imel sa a te deja anrejistre yo anvan.</strong><br/>Nou idantifye ke gen yon demann ki deja gen rapò ak adrès imel sa a, ki te evalye anvan an ak rezilta sa a:<br/><br/>{message}',
         ],
         'rejection' => [
-            'working' => 'Akòz pwogram entansif Funval yo, pwogram nan vize moun ki pa gen travay.',
-            'entrepreneur' => 'Ekselan, ou ap resevwa plis enfòmasyon nan òganizasyon ki alye ak FUNVAL yo ki ekspè nan antreprenè.',
-            'online_part_time' => 'FUNVAL gen patnèrya ak konpayi ki mande moun yo travay nan pèsòn.',
-            'part_time' => 'FUNVAL mande disponibilite tout tan pou pwogram li yo.',
+            'working' => '<strong>Mèsi pou enterè ou nan pwogram FUNVAL la.</strong><br/>Akòz nati entansif fòmasyon nou yo, pwogram sa a vize moun ki kounye a pa gen travay.<br/><br/>Si nan lavni ou jwenn tèt ou ap chèche travay, pa ezite kontakte nou ankò.<br/><br/>Anplis, nou pataje lyen sa yo sou òganizasyon ki alye ak Funval ki ka enterese ou: <a href="https://www.the-academy.org/contact/" target="_blank" class="text-blue-600 underline">Akademi an</a> ak <a href="https://mentorseducation.org/" target="_blank" class="text-blue-600 underline">Mentors</a>.',
+            'entrepreneur' => '<strong>Ekselan!</strong><br/>Ou pral resevwa enfòmasyon nan òganizasyon alye nou yo ki espesyalis nan antreprenè yo, ki pataje ak FUNVAL angajman nan pwomote nouvo opòtinite pou moun tankou ou.<br/><br/>Vizite lyen sa yo pou jwenn plis enfòmasyon sou òganizasyon sa yo: <a href="https://www.the-academy.org/contact/" target="_blank" class="text-blue-600 underline">Akademi an</a> ak <a href="https://mentorseducation.org/" target="_blank" class="text-blue-600 underline">Mentors</a>.',
+            'online_part_time' => '<strong>FUNVAL gen patnèrya ak konpayi ki egzije modalite travay nan pèsòn.</strong><br/>Si nan lavni opsyon sa a adapte ak sitiyasyon ou, pa ezite kontakte nou ankò. Nou pral kontan ede ou nan pwosesis rechèch travay ou.<br/><br/>Anplis, nou pataje lyen sa yo sou òganizasyon ki alye ak Funval ki ka enterese ou: <a href="https://www.the-academy.org/contact/" target="_blank" class="text-blue-600 underline">Akademi an</a> ak <a href="https://mentorseducation.org/" target="_blank" class="text-blue-600 underline">Mentors</a>.',
+            'part_time' => '<strong>Akòz entansite pwogram FUNVAL yo</strong>, patisipan yo oblije gen yon koneksyon kontinyèl epi yo dispo san yo pa fè lòt aktivite nan menm tan an pandan èdtan fòmasyon an.<br/><br/>Si nan lavni opsyon sa a adapte ak sitiyasyon ou, pa ezite kontakte nou ankò. Nou pral kontan ede ou nan pwosesis rechèch travay ou.<br/><br/>Anplis, nou pataje enfòmasyon sa a sou òganizasyon ki alye ak FUNVAL ki ka enterese ou: <a href="https://www.the-academy.org/contact/" target="_blank" class="text-blue-600 underline">Akademi an</a> ak <a href="https://mentorseducation.org/" target="_blank" class="text-blue-600 underline">Mentors</a>.',
         ],
     ],
 

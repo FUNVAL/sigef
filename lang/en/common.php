@@ -190,6 +190,7 @@ return [
     'messages' => [
         'success' => [
             'pre_inscription_created' => 'Thank you for your application! One of our representatives will contact you within 72 hours.',
+            'pre_inscription_success' => '<strong>Thank you for your application!</strong><br/>One of our representatives will contact you within the next 72 hours to provide you with all the information about the program and resolve any questions you may have.<br/><br/>We appreciate your interest and are excited to accompany you in this process.',
             'reference_created' => '<strong>Thank you for your reference!</strong><br/>We really appreciate you thinking of someone to share this opportunity. We want you to know that one of our representatives will contact your referred person directly within the next 72 hours to provide them with all the information about the program and guide them through this process.',
             'updated' => 'Successfully updated',
             'deleted' => 'Successfully deleted',
@@ -200,12 +201,14 @@ return [
             'update_failed' => 'Error updating',
             'delete_failed' => 'Error deleting',
             'email_exists' => 'A request with this email already exists',
+            'email_exists_pending' => '<strong>There is already a pending request associated with this email address.</strong><br/>Please wait for one of our representatives to contact you. The estimated contact time is up to 72 hours.<br/><br/>If that time has already passed and you still haven\'t received a response, you can write to us at the following number: {phone}.<br/><br/>We appreciate your patience and your interest in the program.',
+            'email_exists_previous' => '<strong>This email has been previously registered.</strong><br/>We have identified that there is already a request associated with this email address, which was previously evaluated with the following result:<br/><br/>{message}',
         ],
         'rejection' => [
-            'working' => 'Due to Funval\'s intensive training programs, the program is aimed at unemployed people.',
-            'entrepreneur' => 'Excellent, you will soon receive more information from organizations allied with FUNVAL that are experts in entrepreneurship.',
-            'online_part_time' => 'FUNVAL has partnerships with companies that require people to work in person.',
-            'part_time' => 'FUNVAL requires full-time availability for its programs.',
+            'working' => '<strong>Thank you for your interest in the FUNVAL program.</strong><br/>Due to the intensive nature of our training, this program is aimed at people who are currently unemployed.<br/><br/>If in the future you find yourself looking for employment, please don\'t hesitate to contact us again.<br/><br/>Additionally, we share the following links about organizations allied with Funval that might be of interest to you: <a href="https://www.the-academy.org/contact/" target="_blank" class="text-blue-600 underline">The Academy</a> and <a href="https://mentorseducation.org/" target="_blank" class="text-blue-600 underline">Mentors</a>.',
+            'entrepreneur' => '<strong>Excellent!</strong><br/>You will soon receive information from our allied organizations specialized in entrepreneurship, who share with FUNVAL the commitment to promote new opportunities for people like you.<br/><br/>Visit the following links to get more information about these organizations: <a href="https://www.the-academy.org/contact/" target="_blank" class="text-blue-600 underline">The Academy</a> and <a href="https://mentorseducation.org/" target="_blank" class="text-blue-600 underline">Mentors</a>.',
+            'online_part_time' => '<strong>FUNVAL maintains partnerships with companies that require in-person work modality.</strong><br/>If in the future this option fits your situation, please don\'t hesitate to contact us again. We will be delighted to support you in your job search process.<br/><br/>Additionally, we share the following links about organizations allied with Funval that might be of interest to you: <a href="https://www.the-academy.org/contact/" target="_blank" class="text-blue-600 underline">The Academy</a> and <a href="https://mentorseducation.org/" target="_blank" class="text-blue-600 underline">Mentors</a>.',
+            'part_time' => '<strong>Due to the intensity of FUNVAL programs</strong>, participants are required to have a continuous connection and be available without performing other activities in parallel during training hours.<br/><br/>If in the future this option fits your situation, please don\'t hesitate to contact us again. We will be delighted to support you in your job search process.<br/><br/>Additionally, we share the following information about organizations allied with FUNVAL that may be of interest to you: <a href="https://www.the-academy.org/contact/" target="_blank" class="text-blue-600 underline">The Academy</a> and <a href="https://mentorseducation.org/" target="_blank" class="text-blue-600 underline">Mentors</a>.',
         ],
     ],
 
