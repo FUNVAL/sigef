@@ -75,6 +75,19 @@ return [
         'pre_inscription' => [
             'title' => 'Formulário de Pré-inscrição',
             'description' => 'Complete suas informações pessoais para prosseguir com sua pré-inscrição',
+            'female_filter' => [
+                'title' => 'Questões de Avaliação',
+                'description' => 'Essas perguntas nos ajudam a determinar se nossos programas são adequados para você',
+                'currently_working' => 'Você está trabalhando atualmente?',
+                'job_type_preference' => 'Que tipo de emprego você está procurando?',
+                'available_full_time' => 'Você tem disponibilidade para estudar em um horário de aulas estendido de 10-12 horas diárias de segunda a sexta-feira?',
+                'answers' => [
+                    'working_yes' => 'Sim, estou trabalhando atualmente',
+                    'working_no' => 'Não, não estou trabalhando',
+                    'availability_yes' => 'Sim, tenho disponibilidade completa',
+                    'availability_no' => 'Não, não tenho essa disponibilidade',
+                ],
+            ],
             'fields' => [
                 'first_name' => 'Primeiro Nome',
                 'middle_name' => 'Segundo Nome',

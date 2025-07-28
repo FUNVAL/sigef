@@ -75,6 +75,19 @@ return [
         'pre_inscription' => [
             'title' => 'Pre-registration Form',
             'description' => 'Complete your personal information to proceed with your pre-registration',
+            'female_filter' => [
+                'title' => 'Evaluation Questions',
+                'description' => 'These questions help us determine if our programs are suitable for you',
+                'currently_working' => 'Are you currently working?',
+                'job_type_preference' => 'What type of employment are you looking for?',
+                'available_full_time' => 'Do you have availability to study in an extended class schedule of 10-12 hours daily from Monday to Friday?',
+                'answers' => [
+                    'working_yes' => 'Yes, I am currently working',
+                    'working_no' => 'No, I am not working',
+                    'availability_yes' => 'Yes, I have full availability',
+                    'availability_no' => 'No, I do not have that availability',
+                ],
+            ],
             'fields' => [
                 'first_name' => 'First Name',
                 'middle_name' => 'Middle Name',

@@ -75,6 +75,19 @@ return [
         'pre_inscription' => [
             'title' => 'Fòm Pré-enskripsyon',
             'description' => 'Ranpli enfòmasyon pèsonèl ou yo pou w kontinye ak pré-enskripsyon ou an',
+            'female_filter' => [
+                'title' => 'Kesyon Evalyasyon',
+                'description' => 'Kesyon sa yo ede nou detèmine si pwogram nou yo bon pou ou',
+                'currently_working' => 'Èske w ap travay kounye a?',
+                'job_type_preference' => 'Ki kalite travay w ap chèche?',
+                'available_full_time' => 'Èske ou gen disponibilite pou w etidye nan yon orè klas ki long 10-12 èdtan chak jou soti lendi rive vandredi?',
+                'answers' => [
+                    'working_yes' => 'Wi, m ap travay kounye a',
+                    'working_no' => 'Non, m pa ap travay',
+                    'availability_yes' => 'Wi, mwen gen disponibilite konplè',
+                    'availability_no' => 'Non, mwen pa gen disponibilite sa a',
+                ],
+            ],
             'fields' => [
                 'first_name' => 'Premye Non',
                 'middle_name' => 'Dezyèm Non',

@@ -64,6 +64,19 @@ type Translation = {
         pre_inscription: {
             title: string;
             description: string;
+            female_filter: {
+                title: string;
+                description: string;
+                currently_working: string;
+                job_type_preference: string;
+                available_full_time: string;
+                answers: {
+                    working_yes: string;
+                    working_no: string;
+                    availability_yes: string;
+                    availability_no: string;
+                };
+            };
             fields: {
                 first_name: string;
                 middle_name: string;

@@ -1,11 +1,10 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Users2, ArrowLeft } from "lucide-react"
 import { usePage } from "@inertiajs/react"
-import { Enums } from "@/types/global"
+import { Enums, Translation } from "@/types/global"
 import validateForm from "@/lib/schemas/validate-schemas"
 import { PreRegistrationRequest, PreRegistrationFormData } from "@/types/pre-inscription"
 import { femaleValidationSchema } from "@/lib/schemas/pre-registration"
@@ -20,7 +19,11 @@ export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
 
   const { nextStep, previousStep } = useContext(StepperContext);
   const { data, setData } = request;
-  const { enums } = usePage<{ enums: Enums }>().props;
+  const { enums, forms, ui } = usePage<{
+    enums: Enums;
+    forms: Translation['forms'];
+    ui: Translation['ui'];
+  }>().props;
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = () => {
@@ -43,17 +46,17 @@ export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
             <Users2 className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
           </div>
           <CardTitle className="text-2xl font-bold text-[rgb(46_131_242_/_1)]">
-            Preguntas de Evaluación
+            {forms.pre_inscription.female_filter.title}
           </CardTitle>
           <p className="text-muted-foreground mt-2">
-            Estas preguntas nos ayudan a determinar si nuestros programas son adecuados para ti
+            {forms.pre_inscription.female_filter.description}
           </p>
         </CardHeader>
         <CardContent className="space-y-8">
           {/* Primera pregunta: ¿Estás trabajando? */}
           <div className="space-y-4">
             <Label className="text-lg font-semibold text-funval-darkBlue">
-              ¿Estás trabajando actualmente? *
+              {forms.pre_inscription.female_filter.currently_working} *
             </Label>
             <RadioGroup
               value={isWorking}
@@ -62,11 +65,15 @@ export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
             >
               <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
                 <RadioGroupItem value="si" id="trabajando-si" />
-                <Label htmlFor="trabajando-si" className="cursor-pointer">Sí, actualmente trabajo</Label>
+                <Label htmlFor="trabajando-si" className="cursor-pointer">
+                  {forms.pre_inscription.female_filter.answers.working_yes}
+                </Label>
               </div>
               <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
                 <RadioGroupItem value="no" id="trabajando-no" />
-                <Label htmlFor="trabajando-no" className="cursor-pointer">No, no estoy trabajando</Label>
+                <Label htmlFor="trabajando-no" className="cursor-pointer">
+                  {forms.pre_inscription.female_filter.answers.working_no}
+                </Label>
               </div>
             </RadioGroup>
             {errors.currently_working && (
@@ -78,7 +85,7 @@ export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
           {data.currently_working === false && (
             <div className="space-y-4 animate-in slide-in-from-bottom-2">
               <Label className="text-lg font-semibold text-funval-darkBlue">
-                ¿Qué tipo de empleo buscas? *
+                {forms.pre_inscription.female_filter.job_type_preference} *
               </Label>
               <RadioGroup
                 value={data.job_type_preference?.toString() || ''}
@@ -106,7 +113,7 @@ export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
           {data.job_type_preference === 2 && (
             <div className="space-y-4 animate-in slide-in-from-bottom-2">
               <Label className="text-lg font-semibold text-funval-darkBlue">
-                ¿Tienes disponibilidad para estudiar en un horario de clases extendido de 10-12 horas diarias de lunes a viernes? *
+                {forms.pre_inscription.female_filter.available_full_time} *
               </Label>
               <RadioGroup
                 value={isAvailableFullTime}
@@ -116,13 +123,13 @@ export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
                 <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
                   <RadioGroupItem value="si" id="disponibilidad-si" />
                   <Label htmlFor="disponibilidad-si" className="cursor-pointer">
-                    Sí, tengo disponibilidad completa
+                    {forms.pre_inscription.female_filter.answers.availability_yes}
                   </Label>
                 </div>
                 <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
                   <RadioGroupItem value="no" id="disponibilidad-no" />
                   <Label htmlFor="disponibilidad-no" className="cursor-pointer">
-                    No, no tengo esa disponibilidad
+                    {forms.pre_inscription.female_filter.answers.availability_no}
                   </Label>
                 </div>
               </RadioGroup>
@@ -140,7 +147,7 @@ export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
               className="min-w-[120px]"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Anterior
+              {ui.buttons.previous}
             </Button>
 
             <Button
@@ -148,7 +155,7 @@ export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
               size="lg"
               className="min-w-[140px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Continuar
+              {ui.buttons.continue}
             </Button>
           </div>
         </CardContent>
