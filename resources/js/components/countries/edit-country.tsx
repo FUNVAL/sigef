@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +8,6 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import { useForm, usePage } from "@inertiajs/react";
 import { Country, UpdateCountryForm } from "@/types/country";
@@ -18,20 +16,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { LoaderCircle } from "lucide-react";
 import { Enums } from "@/types/global";
 
+interface EditCountryProps {
+    country: Country;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+}
 
-
-export function EditCountry({ country }: { country: Country }) {
-    const [open, setOpen] = useState(false);
+export function EditCountry({ country, open = false, onOpenChange }: EditCountryProps) {
     const { enums } = usePage<{ enums: Enums }>().props;
 
-   const initialData: UpdateCountryForm = {
+    const initialData: UpdateCountryForm = {
         ...country,
         status: country.status ? country.status.id : 0,
     }
 
-    const { data, setData, put, errors, processing } = useForm<UpdateCountryForm>(initialData) 
-
-
+    const { data, setData, put, errors, processing } = useForm<UpdateCountryForm>(initialData);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -42,17 +41,13 @@ export function EditCountry({ country }: { country: Country }) {
         e.preventDefault();
         put(route('countries.update', data.id), {
             onSuccess: () => {
-                setOpen(false);
+                onOpenChange?.(false);
             },
         });
     };
+
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="link" className='p-2 '>
-                    Editar
-                </Button>
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[525px]">
                 <DialogHeader>
                     <DialogTitle>Editar Pais</DialogTitle>
@@ -132,11 +127,9 @@ export function EditCountry({ country }: { country: Country }) {
                             </Select>
                             <InputError message={errors.status} />
                         </div>
-
-
                     </div>
                     <DialogFooter className="mt-6 gap-4 flex">
-                        <Button type="button" variant="outline" disabled={processing} onClick={() => setOpen(false)}>
+                        <Button type="button" variant="outline" disabled={processing} onClick={() => onOpenChange?.(false)}>
                             Cancelar
                         </Button>
                         <Button type="submit" disabled={processing}>
@@ -148,4 +141,4 @@ export function EditCountry({ country }: { country: Country }) {
             </DialogContent>
         </Dialog>
     )
-} 
+}
