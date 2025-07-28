@@ -202,4 +202,18 @@ return [
         'privacy' => 'We want to assure you that all personal information will be treated with strict confidentiality and will not be shared with third parties without prior consent.',
         'accept_terms' => 'I have read and accept the terms and conditions mentioned above. I confirm that the information I will provide is truthful and complete.',
     ],
+
+    // Action Selection
+    'action_selection' => [
+        'title' => 'What action would you like to perform?',
+        'subtitle' => 'Select one of the following options to continue',
+        'referral' => [
+            'title' => 'Refer a friend',
+            'description' => 'Recommend someone you know to participate in our job training programs.',
+        ],
+        'pre_inscription' => [
+            'title' => 'Pre-register for the course',
+            'description' => 'Complete your pre-registration to participate in our job training programs.',
+        ],
+    ],
 ];

@@ -202,4 +202,18 @@ return [
         'privacy' => 'Queremos asegurarte de que toda la información personal será tratada con estricta confidencialidad y no será compartida con terceros sin consentimiento previo.',
         'accept_terms' => 'He leído y acepto los términos y condiciones mencionados anteriormente. Confirmo que la información que proporcionaré es verídica y completa.',
     ],
+
+    // Action Selection
+    'action_selection' => [
+        'title' => '¿Qué acción deseas realizar?',
+        'subtitle' => 'Selecciona una de las siguientes opciones para continuar',
+        'referral' => [
+            'title' => 'Referir a un amigo',
+            'description' => 'Recomienda a alguien que conozcas para que participe de nuestros programas de capacitación para el empleo.',
+        ],
+        'pre_inscription' => [
+            'title' => 'Preinscribirme al curso',
+            'description' => 'Completa tu preinscripción para participar en nuestros programas de capacitación para el empleo.',
+        ],
+    ],
 ];

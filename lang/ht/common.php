@@ -197,9 +197,23 @@ return [
     'welcome_disclaimer' => [
         'title' => 'Byenveni nan FUNVAL Entènasyonal!',
         'subtitle' => 'Nou kontan resevwa aplikasyon oswa referans ou.',
-        'program_description' => 'Pwogram sa a vize moun k ap chèche travay epi ki vle angaje yo nan yon pwosesis fòmasyon entansif, ki dedye ant 10 ak 12 èdtan pa jou soti lendi rive vandredi.',
+        'program_description' => 'Pwogram sa a vize moun k ap chèche travay epi ki vle angaje yo nan yon pwosesis fòmasyon entansif, ki dedike ant 10 ak 12 èdtan pa jou soti lendi rive vandredi.',
         'motivation' => 'Si ou menm oswa moun ou rekòmande a gen motivasyon ak angajman pou atenn objektif sa a, ale devan! Nou kontan akonpanye nou nan rechèch travay la.',
         'privacy' => 'Nou vle asire ou ke tout enfòmasyon pèsonèl yo ap trete ak konfidansyalite estrikt epi yo p ap pataje yo ak tyès pati san konsantman anvan.',
         'accept_terms' => 'Mwen li epi aksepte tèm ak kondisyon yo mansyone anwo a. Mwen konfime ke enfòmasyon mwen pral bay yo se verite epi konplè.',
+    ],
+
+    // Action Selection
+    'action_selection' => [
+        'title' => 'Ki aksyon ou ta renmen fè?',
+        'subtitle' => 'Chwazi youn nan opsyon sa yo pou kontinye',
+        'referral' => [
+            'title' => 'Refere yon zanmi',
+            'description' => 'Rekòmande yon moun ou konnen pou patisipe nan pwogram fòmasyon travay nou yo.',
+        ],
+        'pre_inscription' => [
+            'title' => 'Pre-enskri pou kou a',
+            'description' => 'Konplete pre-enskripsyon ou pou patisipe nan pwogram fòmasyon travay nou yo.',
+        ],
     ],
 ];
