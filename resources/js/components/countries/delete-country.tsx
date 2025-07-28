@@ -17,9 +17,18 @@ export function DeleteCountry({ country }: { country: Country }) {
     const [open, setOpen] = useState(false);
     const { data, delete: destroy, processing } = useForm<UpdateCountryForm>();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    /* const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         destroy(route('countries.destroy', data.id), {
+            onSuccess: () => {
+                setOpen(false);
+            },
+        });
+    }; */
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        destroy(route('countries.destroy', country.id), {
             onSuccess: () => {
                 setOpen(false);
             },
@@ -46,7 +55,7 @@ export function DeleteCountry({ country }: { country: Country }) {
                             Cancelar
                         </Button>
                         <Button type="submit" disabled={processing}>
-                            Guardar
+                            Eliminar
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         </Button>
                     </DialogFooter>

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,18 +27,26 @@ export function CreateCountry() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('courses.store'), {
+        post(route('countries.store'), {
             onSuccess: () => {
                 setOpen(false);
                 setData(initialData);
             },
         });
+    }
+
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setData(name as keyof CountryForm, value);
     };
 
-     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            const { name, value } = e.target;
-            setData(name as keyof CountryForm, value);
-        };
+
+    const getCountryCode = useCallback((field: keyof CountryForm, value: string) => {
+        if (value.length >= 1) {
+            setData(field, value);
+        }
+    }, [setData]);
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -69,7 +77,7 @@ export function CreateCountry() {
                             <InputError message={errors.name} />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="duration">Código del Pais</Label>
+                            <Label htmlFor="code">Abreviación del Pais</Label>
                             <Input
                                 id="code"
                                 name="code"
@@ -81,17 +89,18 @@ export function CreateCountry() {
                             <InputError message={errors.code} />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="modality">Codigo de area</Label>
-                            <Select
-                                name="modality"
-                                value={String(data.phone_code)}
+                            <Label htmlFor="phone_code">Código de area</Label>
+
+                            <Input
+                                id="phone_code"
+                                name="phone_code"
+                                value={data.phone_code}
+                                onChange={(e)=>getCountryCode ('phone_code', e.target.value)}
                                 required
-                                onValueChange={(value) => setData('phone_code', value)}
-                            >
-                                <SelectTrigger id="modality">
-                                    <SelectValue placeholder="Seleccione tipo" />
-                                </SelectTrigger>
-                            </Select>
+                                placeholder="Código de área"
+                            />
+
+
                             <InputError message={errors.phone_code} />
                         </div>
 
@@ -102,7 +111,7 @@ export function CreateCountry() {
                                 name="flag"
                                 value={data.flag}
                                 onChange={handleChange}
-                                required
+                                /* required */
                                 placeholder="URL de la bandera"
                             />
                             <InputError message={errors.flag} />
@@ -150,7 +159,7 @@ export function CreateCountry() {
 const initialData: CountryForm = {
     name: '',
     code: '',
-    phone_code: '',
+    phone_code:'+',
     flag: '',
     status: 0,
 }
