@@ -14,7 +14,7 @@ enum RelatedReferenceEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::FAMILY_MEMBER => __('common.related_reference.family_member'),
+            self::FAMILY_MEMBER => __('common.related_reference.family'),
             self::FRIEND => __('common.related_reference.friend'),
             self::CHURCH_MEMBER => __('common.related_reference.church_member'),
         };
