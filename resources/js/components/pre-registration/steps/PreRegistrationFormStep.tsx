@@ -10,7 +10,7 @@ import { Enums } from '@/types/global';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { Country } from '@/types/country';
 import { Stake } from '@/types/stake';
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import validateForm from '@/lib/schemas/validate-schemas';
 import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
 import { StepperContext } from '@/pages/forms/stepper-provider';
@@ -55,6 +55,11 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
         }
     }
 
+    const cleanSpaces = useCallback((field: keyof PreRegistrationFormData, value: string) => {
+        const cleanedValue = value.replace(/\s+/g, ' ').trim();
+        setData(field, cleanedValue);
+    }, [setData]);
+
     return (
         <div className="mx-auto max-w-3xl">
             <Card className="border-2">
@@ -63,7 +68,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                         <UserPlus className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
                     </div>
                     <CardTitle className="text-funval-blue text-2xl font-bold text-[rgb(46_131_242_/_1)]">
-                        Formulario de Pre-inscripción
+                        Formulario de preinscripción
                     </CardTitle>
                     <p className="text-muted-foreground mt-2">
                         Completa tus datos personales para el proceso de inscripción
@@ -79,7 +84,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     id="first_name"
                                     name="first_name"
                                     value={data.first_name}
-                                    onChange={(e) => setData('first_name', e.target.value)}
+                                    onChange={(e) => cleanSpaces('first_name', e.target.value)}
                                     placeholder="Nombre completo"
                                     autoComplete='given-name'
                                     required
@@ -94,7 +99,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     name="middle_name"
                                     autoComplete='additional-name'
                                     value={data.middle_name}
-                                    onChange={(e) => setData('middle_name', e.target.value)}
+                                    onChange={(e) => cleanSpaces('middle_name', e.target.value)}
                                     placeholder="Segundo nombre"
                                 />
                                 {errors.middle_name && <p className="text-red-500 text-sm">{errors.middle_name}</p>}
@@ -107,7 +112,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     name="last_name"
                                     autoComplete='family-name'
                                     value={data.last_name}
-                                    onChange={(e) => setData('last_name', e.target.value)}
+                                    onChange={(e) => cleanSpaces('last_name', e.target.value)}
                                     placeholder="Apellido"
                                     required
                                 />
@@ -121,7 +126,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                     name="second_last_name"
                                     autoComplete='family-name'
                                     value={data.second_last_name}
-                                    onChange={(e) => setData('second_last_name', e.target.value)}
+                                    onChange={(e) => cleanSpaces('second_last_name', e.target.value)}
                                     placeholder="Segundo apellido"
                                 />
                                 {errors.second_last_name && <p className="text-red-500 text-sm">{errors.second_last_name}</p>}
@@ -195,6 +200,8 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                         countries={countries}
                                         selectedCountryId={data.country_id}
                                         required
+                                        minLength={3}
+                                        maxLength={18}
                                     />
                                 </div>
                                 {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
