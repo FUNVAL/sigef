@@ -14,6 +14,7 @@ use App\Enums\RequestStatusEnum;
 use App\Enums\StatusEnum;
 use App\Enums\UserStatusEnum;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
@@ -46,5 +47,25 @@ class AppServiceProvider extends ServiceProvider
                 'jobType' =>  JobTypeEnum::toArray(),
             ];
         });
+
+        Inertia::share([
+            'locale' => function () {
+                return App::getLocale();
+            },
+            'languages' => function () {
+                return [
+                    'en' => 'English',
+                    'es' => 'Español',
+                    'pt' => 'Português',
+                    'ht' => 'Kreyòl'
+                ];
+            },
+            'ui' =>  function () {
+                return __('common.ui');
+            },
+            'welcome_disclaimer' => function () {
+                return __('common.welcome_disclaimer');
+            }
+        ]);
     }
 }
