@@ -1,6 +1,7 @@
 import { Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react";
+import LanguageSwitcher from "../globals/lang-switcher";
 
 
 export function Header() {
@@ -44,6 +45,7 @@ export function Header() {
           )}
           <span className="sr-only">Toggle theme</span>
         </Button>
+        <LanguageSwitcher />
       </div>
     </header>
   )
