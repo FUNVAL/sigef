@@ -50,6 +50,27 @@ type Translation = {
             title: string;
             description: string;
         }
+    };
+    forms: {
+        referral: {
+            title: string;
+            description: string;
+            referrer_info: string;
+            fields: {
+                name: string;
+                name_placeholder: string;
+                gender: string;
+                gender_placeholder: string;
+                gender_select: string;
+                age: string;
+                country: string;
+                phone: string;
+                stake: string;
+                referrer_name: string;
+                referrer_phone: string;
+                relationship: string;
+            }
+        }
     }
 
 }

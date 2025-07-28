@@ -68,6 +68,9 @@ class AppServiceProvider extends ServiceProvider
             },
             'action_selection' => function () {
                 return __('common.action_selection');
+            },
+            'forms' => function () {
+                return __('common.forms');
             }
         ]);
     }

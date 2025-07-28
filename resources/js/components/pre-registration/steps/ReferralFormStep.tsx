@@ -14,7 +14,7 @@ import { Users, ArrowLeft } from "lucide-react"
 import { usePage } from "@inertiajs/react"
 import SearchableSelect from "@/components/ui/searchable-select"
 import { ReferenceFormData } from "@/types/reference"
-import { Enums } from "@/types/global"
+import { Enums, Translation } from "@/types/global"
 import { Stake } from "@/types/stake"
 import { Country } from "@/types/country"
 import { referralFormSchema } from "@/lib/schemas/referral"
@@ -38,6 +38,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
 
   const { setData, data, errors: back_errors } = request;
   const { enums } = usePage<{ enums: Enums }>().props;
+  const { ui, forms } = usePage<Translation>().props;
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -80,23 +81,23 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
             <Users className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
           </div>
           <CardTitle className="text-2xl font-bold text-[rgb(46_131_242_/_1)]">
-            Formulario de Referencia
+            {forms.referral.title}
           </CardTitle>
           <p className="text-muted-foreground mt-2">
-            Comparte los datos de la persona que deseas referir
+            {forms.referral.description}
           </p>
         </CardHeader>
         <CardContent>
           <form className="space-y-6" onSubmit={handleSubmit} noValidate>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Nombre completo de la persona referida </Label>
+                <Label htmlFor="name">{forms.referral.fields.name}</Label>
                 <Input
                   id="name"
                   name="name"
                   value={data.name}
                   onChange={(e) => setData('name', e.target.value)}
-                  placeholder="Nombre completo"
+                  placeholder={forms.referral.fields.name_placeholder}
                   autoComplete="name"
                   required
                 />
@@ -104,17 +105,17 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
               </div>
 
               <div>
-                <Label htmlFor="gender">Género</Label>
+                <Label htmlFor="gender">{forms.referral.fields.gender}</Label>
                 <Select value={data.gender.toString()}
                   onValueChange={(value) => setData('gender', Number(value))}
                   name="gender"
                   required
                 >
                   <SelectTrigger id='gender'>
-                    <SelectValue placeholder="Seleccionar género" />
+                    <SelectValue placeholder={forms.referral.fields.gender_placeholder} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0" disabled>Selecciona un género</SelectItem>
+                    <SelectItem value="0" disabled>{forms.referral.fields.gender_select}</SelectItem>
                     {enums.gender.map(gender => (
                       <SelectItem key={gender.id} value={gender.id.toString()}>
                         {gender.name}
@@ -126,7 +127,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
               </div>
 
               <div>
-                <Label htmlFor="age">Edad</Label>
+                <Label htmlFor="age">{forms.referral.fields.age}</Label>
                 <Input
                   id="age"
                   name="age"
@@ -142,7 +143,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
               </div>
 
               <div>
-                <Label htmlFor="country_id">País</Label>
+                <Label htmlFor="country_id">{forms.referral.fields.country}</Label>
                 <SearchableSelect
                   data={countries}
                   id="country_id"
@@ -150,14 +151,14 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                   value={data.country_id.toString()}
                   searchField="name"
                   onChange={(value) => setData('country_id', Number(value))}
-                  placeholder="Selecciona un país"
+                  placeholder={`Selecciona un ${forms.referral.fields.country.toLowerCase()}`}
                   required
                 />
                 {errors.country_id && <p className="text-red-500 text-sm">{errors.country_id}</p>}
               </div>
 
               <div>
-                <Label htmlFor="phone">Teléfono </Label>
+                <Label htmlFor="phone">{forms.referral.fields.phone}</Label>
                 <PhoneInput
                   id="phone"
                   name="phone"
@@ -165,7 +166,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                   type='tel'
                   value={data.phone}
                   onInputChange={(value: string) => setData('phone', value)}
-                  placeholder="Número de teléfono"
+                  placeholder={`Número de ${forms.referral.fields.phone.toLowerCase()}`}
                   className="rounded-l-none"
                   countries={countries}
                   selectedCountryId={data.country_id}
@@ -177,7 +178,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
               </div>
 
               <div>
-                <Label htmlFor="stake_id">Estaca/Distrito/Misión</Label>
+                <Label htmlFor="stake_id">{forms.referral.fields.stake}</Label>
                 <SearchableSelect
                   data={filteredStakes}
                   id="stake_id"
@@ -193,25 +194,25 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
 
             <div className="border-t pt-6">
               <h3 className="text-lg font-semibold text-funval-darkBlue mb-4">
-                Información de quien refiere
+                {forms.referral.referrer_info}
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="referrer_name">Tu nombre completo </Label>
+                  <Label htmlFor="referrer_name">{forms.referral.fields.referrer_name}</Label>
                   <Input
                     id="referrer_name"
                     name="referrer_name"
                     value={data.referrer_name}
                     onChange={(e) => setData('referrer_name', e.target.value)}
-                    placeholder="Tu nombre completo"
+                    placeholder={`Tu nombre completo`}
                     required
                   />
                   {errors.referrer_name && <p className="text-red-500 text-sm">{errors.referrer_name}</p>}
                 </div>
 
                 <div>
-                  <Label htmlFor="referrer_phone">Tu teléfono </Label>
+                  <Label htmlFor="referrer_phone">{forms.referral.fields.referrer_phone}</Label>
                   <PhoneInput
                     id="referrer_phone"
                     name="referrer_phone"
@@ -219,7 +220,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                     type='tel'
                     value={data.referrer_phone}
                     onInputChange={(value: string) => setData('referrer_phone', value)}
-                    placeholder="Tu número de teléfono"
+                    placeholder={`Tu número de teléfono`}
                     className="rounded-l-none"
                     countries={countries}
                     selectedCountryId={data.country_id}
@@ -232,7 +233,7 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                 </div>
 
                 <div className="md:col-span-2">
-                  <Label htmlFor="relationship_with_referred">Relación con la persona referida *</Label>
+                  <Label htmlFor="relationship_with_referred">{forms.referral.fields.relationship} *</Label>
                   <Select
                     value={data.relationship_with_referred?.toString()}
                     onValueChange={(value) => setData('relationship_with_referred', Number(value))}
@@ -268,14 +269,14 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
                 className="min-w-[120px]"
               >
                 <ArrowLeft className="h-4 w-4 mr-2 hover:text-[rgb(46_131_242_/_1)]" />
-                Anterior
+                {ui.buttons.previous}
               </Button>
 
               <Button
                 size="lg"
                 className="min-w-[130px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Continuar
+                {ui.buttons.continue}
               </Button>
             </div>
           </form>
