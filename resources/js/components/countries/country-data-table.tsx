@@ -13,10 +13,13 @@ import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
 import TextLink from "../text-link";
 import { Country } from "@/types/country";
-import { EditCountry } from "./edit-country";
-import { DeleteCountry } from "./delete-country";
 
-export const columns: ColumnDef<Country>[] = [
+interface CountryDataTableProps {
+    onEditCountry?: (country: Country) => void;
+    onDeleteCountry?: (country: Country) => void;
+}
+
+export const createColumns = ({ onEditCountry, onDeleteCountry }: CountryDataTableProps): ColumnDef<Country>[] => [
     {
         id: "select",
         header: ({ table }) => (
@@ -114,16 +117,15 @@ export const columns: ColumnDef<Country>[] = [
                             Copy ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                            <EditCountry country={country} />
+                        <DropdownMenuItem onClick={() => onEditCountry?.(country)}>
+                            Editar
                         </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <DeleteCountry country={country} />
+                        <DropdownMenuItem onClick={() => onDeleteCountry?.(country)}>
+                            Eliminar
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
         },
     },
-
-] 
+]
