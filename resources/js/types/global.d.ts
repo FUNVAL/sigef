@@ -36,7 +36,16 @@ type Translation = {
         accept_terms: string;
     };
     ui: {
-        buttons: Record<string, string>
+        buttons: Record<string, string>;
+        labels: {
+            yes: string;
+            no: string;
+            not_specified: string;
+            full_time: string;
+            part_time: string;
+            years: string;
+        };
+        titles: Record<string, string>;
     };
 
     action_selection: {
@@ -52,6 +61,35 @@ type Translation = {
         }
     };
     forms: {
+        pre_inscription: {
+            title: string;
+            description: string;
+            fields: {
+                first_name: string;
+                middle_name: string;
+                last_name: string;
+                second_last_name: string;
+                gender: string;
+                age: string;
+                phone: string;
+                email: string;
+                marital_status: string;
+                served_mission: string;
+                country: string;
+                stake: string;
+                currently_working: string;
+                job_type_preference: string;
+                available_full_time: string;
+                course: string;
+            },
+            validation: {
+                required: string;
+                email: string;
+                min_age: string;
+                max_age: string;
+                unique: string;
+            }
+        },
         referral: {
             title: string;
             description: string;
