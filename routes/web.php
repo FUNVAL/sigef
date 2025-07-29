@@ -37,7 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('create', 'create')->name('create');
             Route::post('create', 'store')->name('store');
             Route::get('{id}', 'edit')->name('edit');
-            Route::put('{id}', 'update')->name('update');
+            Route::put('{country}', 'update')->name('update');
             Route::delete('{country}','destroy')->name('destroy');
         });
 

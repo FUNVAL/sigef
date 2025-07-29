@@ -6,7 +6,6 @@ use App\Models\Country;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Enums\StatusEnum;
-use Illuminate\Support\Facades\Log;
 
 class CountryController extends Controller
 {
@@ -15,17 +14,17 @@ class CountryController extends Controller
      */
     public function index()
     {
-       /*  try */ /* { */
+       try { 
             return Inertia::render('countries/index', [
-                /* 'countries' => Country::where('status', '!=', StatusEnum::DELETED->value) */
-                  /*   ->orderBy('status', 'asc')
-                    ->get(), */
-                'countries' => Country::all(),
+                'countries' => Country::where('status', '!=', StatusEnum::DELETED->value) 
+                  ->orderBy('status', 'asc')
+                    ->get(),
+                
             ]);
-       /*  } catch (\Exception $e) {
+        } catch (\Exception $e) {
             return back()
                 ->withErrors(['error' => 'Failed to load users: ' . $e->getMessage()]);
-        } */
+        }
     }
     /**
      * Show the form for creating a new resource.

@@ -25,10 +25,20 @@ interface EditCountryProps {
 export function EditCountry({ country, open = false, onOpenChange }: EditCountryProps) {
     const { enums } = usePage<{ enums: Enums }>().props;
 
-    const initialData: UpdateCountryForm = {
+    /* const initialData: UpdateCountryForm = {
         ...country,
         status: country.status ? country.status.id : 0,
-    }
+    } */
+
+
+    const initialData: UpdateCountryForm = {
+        id: country.id,
+        name: country.name ?? '',
+        code: country.code ?? '',
+        phone_code: country.phone_code ?? '',
+        flag: country.flag ?? '',
+        status: country.status?.id ?? 0,
+    };
 
     const { data, setData, put, errors, processing } = useForm<UpdateCountryForm>(initialData);
 
@@ -62,7 +72,7 @@ export function EditCountry({ country, open = false, onOpenChange }: EditCountry
                             <Input
                                 id="name"
                                 name="name"
-                                value={data.name}
+                                value={data.name ?? ''}
                                 onChange={handleChange}
                                 required
                                 placeholder="Nombre"
@@ -74,7 +84,7 @@ export function EditCountry({ country, open = false, onOpenChange }: EditCountry
                             <Input
                                 id="code"
                                 name="code"
-                                value={data.code}
+                                value={data.code ?? ''}
                                 onChange={handleChange}
                                 required
                                 placeholder="Código del pais"
@@ -86,7 +96,7 @@ export function EditCountry({ country, open = false, onOpenChange }: EditCountry
                             <Input
                                 id="phone_code"
                                 name="phone_code"
-                                value={String(data.phone_code)}
+                                value={String(data.phone_code ?? '')}
                                 required
                                 onChange={(e) => setData('phone_code', e.target.value)}
                                 placeholder="Código de área"
@@ -99,7 +109,7 @@ export function EditCountry({ country, open = false, onOpenChange }: EditCountry
                             <Input
                                 id="flag"
                                 name="flag"
-                                value={data.flag}
+                                value={data.flag ?? ''}
                                 onChange={handleChange}
                                 placeholder="URL de la bandera"
                             />
@@ -110,7 +120,7 @@ export function EditCountry({ country, open = false, onOpenChange }: EditCountry
                             <Label htmlFor="status">Estado</Label>
                             <Select
                                 name="status"
-                                value={String(data.status)}
+                                value={String(data.status ?? '')}
                                 required
                                 onValueChange={(value) => setData('status', Number(value))}
                             >

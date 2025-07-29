@@ -38,13 +38,31 @@ export function CreateCountry() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+        /*setData(name as keyof CountryForm, value); */
+
+        if (name === "code") {
+            // Solo letras (sin números ni caracteres especiales)
+            const regex = /^[A-Za-z]*$/;
+            if (!regex.test(value)) return; // Ignorar caracteres inválidos
+        }
+
+        if (name === "name") {
+            // Letras, espacios, acentos y ñ
+            const regex = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]*$/;
+            if (!regex.test(value)) return;
+        }
+
         setData(name as keyof CountryForm, value);
     };
 
 
     const getCountryCode = useCallback((field: keyof CountryForm, value: string) => {
-        if (value.length >= 1) {
+
+        const isValid = /^(\+)?\d*$/.test(value);
+        if (isValid) {
             setData(field, value);
+            /* if (value.length >= 1) {
+                setData(field, value); */
         }
     }, [setData]);
 
@@ -95,7 +113,7 @@ export function CreateCountry() {
                                 id="phone_code"
                                 name="phone_code"
                                 value={data.phone_code}
-                                onChange={(e)=>getCountryCode ('phone_code', e.target.value)}
+                                onChange={(e) => getCountryCode('phone_code', e.target.value)}
                                 required
                                 placeholder="Código de área"
                             />
@@ -159,7 +177,7 @@ export function CreateCountry() {
 const initialData: CountryForm = {
     name: '',
     code: '',
-    phone_code:'+',
+    phone_code: '+',
     flag: '',
     status: 0,
 }
