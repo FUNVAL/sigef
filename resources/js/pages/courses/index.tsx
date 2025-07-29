@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Course } from '@/types/course';
 import { CreateCourse } from '@/components/courses/create-course';
 import { useState } from 'react';
-import { Edit } from 'lucide-react';
 import { EditCourse } from '@/components/courses/edit-course';
 import { DeleteCourse } from '@/components/courses/delete-course';
 
