@@ -8,12 +8,14 @@ use App\Enums\DocumentTypeEnum;
 use App\Enums\GenderEnum;
 use App\Enums\JobTypeEnum;
 use App\Enums\MaritalStatusEnum;
+use App\Enums\MissionStatusEnum;
 use App\Enums\ReferenceStatusEnum;
 use App\Enums\RelatedReferenceEnum;
 use App\Enums\RequestStatusEnum;
 use App\Enums\StatusEnum;
 use App\Enums\UserStatusEnum;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Schema::defaultStringLength(191);
+        
         Inertia::share('enums', function () {
             return [
                 'userStatus' => UserStatusEnum::toArray(),
@@ -39,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
                 'documentType' => DocumentTypeEnum::toArray(),
                 'gender' => GenderEnum::toArray(),
                 'maritalStatus' => MaritalStatusEnum::toArray(),
+                'missionStatus' => MissionStatusEnum::toArray(),
                 'courseModality' => CourseModalityEnum::toArray(),
                 'statusEnum' => StatusEnum::toArray(),
                 'referenceStatus' =>  ReferenceStatusEnum::toArray(),

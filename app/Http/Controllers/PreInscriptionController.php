@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\Stake;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
+use App\Enums\MissionStatusEnum;
 use App\Enums\RequestStatusEnum;
 use App\Enums\JobTypeEnum;
 use App\Enums\ReferenceStatusEnum;
@@ -95,7 +96,7 @@ class PreInscriptionController extends Controller
                 'phone' => 'required|string|max:20',
                 'email' => 'required|email|max:100|unique:pre_inscriptions',
                 'marital_status' => 'required|numeric|in:' . implode(',', MaritalStatusEnum::values()),
-                'served_mission' => 'required|boolean',
+                'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
                 'status' => 'nullable|numeric|in:' . implode(',', RequestStatusEnum::values()),
                 'comments' => 'nullable|string',
                 'declined_reason' => 'nullable|numeric|in:' . implode(',', ReferenceStatusEnum::values()),

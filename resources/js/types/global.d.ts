@@ -14,6 +14,7 @@ type Enums = {
     documentType: EnumItem[];
     gender: EnumItem[];
     maritalStatus: EnumItem[];
+    missionStatus: EnumItem[];
     courseModality: EnumItem[];
     statusEnum: EnumItem[];
     referenceStatus: EnumItem[];

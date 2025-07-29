@@ -96,7 +96,7 @@ const initialData: PreRegistrationFormData = {
     phone: '',
     email: '',
     marital_status: 0,
-    served_mission: null,
+    served_mission: 0,
     country_id: 0,
     stake_id: 0,
     course_id: 0,

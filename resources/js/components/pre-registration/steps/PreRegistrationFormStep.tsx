@@ -266,22 +266,22 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                         {/* Misión */}
                         <div>
                             <p className="text-base font-medium">¿Has servido una misión?</p>
-                            <RadioGroup
-                                value={data.served_mission !== null ? data.served_mission ? 'yes' : 'no' : ''}
-                                onValueChange={(value) => setData('served_mission', value === 'yes')}
-                                className="mt-2 flex flex-row space-x-6"
-                                name='served_mission'
+                            <Select
+                                value={data.served_mission ? data.served_mission.toString() : ''}
+                                onValueChange={(value) => setData('served_mission', parseInt(value))}
                                 required
                             >
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="yes" id="mission-yes" required />
-                                    <Label htmlFor="mission-yes">Si</Label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="no" id="mission-no" required />
-                                    <Label htmlFor="mission-no">No</Label>
-                                </div>
-                            </RadioGroup>
+                                <SelectTrigger className="mt-2">
+                                    <SelectValue placeholder="Selecciona una opción" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {enums.missionStatus?.map(mission => (
+                                        <SelectItem key={mission.id} value={mission.id.toString()}>
+                                            {mission.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                             {errors.served_mission && <p className="text-red-500 text-sm">{errors.served_mission}</p>}
                         </div>
 
