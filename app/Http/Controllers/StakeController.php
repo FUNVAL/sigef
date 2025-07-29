@@ -3,55 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Stake;
+use App\Models\Country;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class StakeController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * Allows filtering by name, id, country code and user_id
      */
     public function index(Request $request)
     {
-        $query = Stake::query();
+        $query = Stake::query()->with(['country', 'user']);
 
-        // Filter by id if provided
-        if ($request->has('id')) {
-            $query->where('id', $request->id);
+        // Búsqueda simple para el frontend
+        if ($request->has('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Filter by name if provided
-        if ($request->has('name')) {
-            $query->where('name', 'like', '%' . $request->name . '%');
+        // Filtro por estado (si se necesita)
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        } else {
+            // Por defecto mostrar solo activos
+            $query->active();
         }
 
-        // Filter by country code if provided
-        if ($request->has('code')) {
-            $query->whereHas('country', function ($q) use ($request) {
-                $q->where('code', strtoupper($request->code));
-            });
-        }
-
-        // Filter by user_id if provided
-        if ($request->has('user_id')) {
-            $query->where('user_id', $request->user_id);
-        }
-
-        $stakes = $query->with(['country', 'user'])->get();
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $stakes
+        return Inertia::render('Stakes/Index', [
+            'stakes' => $query->get(),
+            'countries' => Country::all(),
+            'users' => User::all(),
+            'filters' => $request->only(['search', 'status'])
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        // Not needed for API
-        return abort(404);
     }
 
     /**
@@ -65,35 +49,11 @@ class StakeController extends Controller
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        $stake = Stake::create($validated);
+        // Crear con estado activo por defecto
+        Stake::create($validated + ['status' => 'active']);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Stake created successfully',
-            'data' => $stake
-        ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Stake $stake)
-    {
-        $stake->load(['country', 'user']);
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $stake
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Stake $stake)
-    {
-        // Not needed for API
-        return abort(404);
+        return redirect()->route('stakes.index')
+               ->with('success', 'Stake creado exitosamente');
     }
 
     /**
@@ -102,30 +62,51 @@ class StakeController extends Controller
     public function update(Request $request, Stake $stake)
     {
         $validated = $request->validate([
-            'name' => 'sometimes|string|max:255|unique:stakes,name,' . $stake->id,
-            'country_id' => 'sometimes|exists:countries,id',
+            'name' => 'required|string|max:255|unique:stakes,name,' . $stake->id,
+            'country_id' => 'required|exists:countries,id',
             'user_id' => 'nullable|exists:users,id',
+            'status' => 'sometimes|in:active,inactive' // Validación opcional para el estado
         ]);
 
         $stake->update($validated);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Stake updated successfully',
-            'data' => $stake
-        ]);
+        return redirect()->back()
+               ->with('success', 'Stake actualizado exitosamente');
+    }
+
+    /**
+     * Desactivar (soft delete) el recurso especificado.
+     */
+    public function deactivate(Stake $stake)
+    {
+        $stake->deactivate();
+
+        return redirect()->back()
+               ->with('success', 'Stake desactivado correctamente');
+    }
+
+    /**
+     * Activar el recurso especificado.
+     */
+    public function activate(Stake $stake)
+    {
+        $stake->activate();
+
+        return redirect()->back()
+               ->with('success', 'Stake activado correctamente');
     }
 
     /**
      * Remove the specified resource from storage.
+     * (Eliminación física - mantener solo si es realmente necesaria)
      */
     public function destroy(Stake $stake)
     {
-        $stake->delete();
+        // Verificar si realmente necesitas este método
+        // Lo ideal sería usar solo activate/deactivate
+        $stake->forceDelete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Stake deleted successfully'
-        ]);
+        return redirect()->back()
+               ->with('success', 'Stake eliminado permanentemente');
     }
 }

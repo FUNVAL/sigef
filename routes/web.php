@@ -7,6 +7,7 @@ use App\Http\Controllers\ReferenceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StakeController;
 use App\Http\Controllers\UserController;
+use App\Models\Stake;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -41,13 +42,39 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
     Route::prefix('stakes')->name('stakes.')
-        ->controller(StakeController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('create', 'create')->name('create');
-            Route::post('create', 'store')->name('store');
-            Route::get('{id}', 'edit')->name('edit');
-            Route::put('{id}', 'update')->name('update');
-        });
+    ->controller(StakeController::class)->group(function () {
+        // Listado y creación
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        
+        // Edición
+        Route::put('/{stake}', 'update')->name('update');
+        
+        // Manejo de estado (quitamos los middlewares de permisos)
+        Route::patch('/{stake}/deactivate', 'deactivate')
+            ->name('deactivate');
+            //->middleware('can:desactivar stakes'); // Eliminado
+            
+        Route::patch('/{stake}/activate', 'activate')
+            ->name('activate');
+            //->middleware('can:activar stakes'); // Eliminado
+        
+        // Rutas para formularios
+        Route::get('create', function () {
+            return Inertia::render('Stakes/Create', [
+                'countries' => \App\Models\Country::all(),
+                'users' => \App\Models\User::all()
+            ]);
+        })->name('create');
+        
+        Route::get('{stake}/edit', function (Stake $stake) {
+            return Inertia::render('Stakes/Edit', [
+                'stake' => $stake->load(['country', 'user']),
+                'countries' => \App\Models\Country::all(),
+                'users' => \App\Models\User::all()
+            ]);
+        })->name('edit');
+    });
 
     Route::prefix('courses')->name('courses.')
         ->controller(CourseController::class)->group(function () {
