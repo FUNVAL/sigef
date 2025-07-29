@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -7,32 +6,31 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import { useForm } from "@inertiajs/react";
-import { Course, UpdateCourseForm } from "@/types/course";
+import { Course } from "@/types/course";
 import { LoaderCircle } from "lucide-react";
 
-export function DeleteCourse({ course }: { course: Course }) {
-    const [open, setOpen] = useState(false);
-    const { data, delete: destroy, processing } = useForm<UpdateCourseForm>();
+interface DeleteCourseProps {
+    course: Course;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+}
+
+export function DeleteCourse({ course, open = false, onOpenChange }: DeleteCourseProps) {
+    const { delete: destroy, processing } = useForm();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        destroy(route('courses.destroy', data.id), {
+        destroy(route('courses.destroy', course.id), {
             onSuccess: () => {
-                setOpen(false);
+                onOpenChange?.(false);
             },
         });
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="link" className='p-2 text-destructive-foreground hover:text-destructive-foreground'>
-                    Eliminar
-                </Button>
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[525px]">
                 <DialogHeader>
                     <DialogTitle>Eliminar Curso</DialogTitle>
@@ -42,11 +40,11 @@ export function DeleteCourse({ course }: { course: Course }) {
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
                     <DialogFooter className="mt-6 gap-4 flex">
-                        <Button type="button" variant="outline" disabled={processing} onClick={() => setOpen(false)}>
+                        <Button type="button" variant="outline" disabled={processing} onClick={() => onOpenChange?.(false)}>
                             Cancelar
                         </Button>
-                        <Button type="submit" disabled={processing}>
-                            Guardar
+                        <Button type="submit" variant="destructive" disabled={processing}>
+                            Eliminar
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         </Button>
                     </DialogFooter>
@@ -54,4 +52,4 @@ export function DeleteCourse({ course }: { course: Course }) {
             </DialogContent>
         </Dialog>
     )
-} 
+}

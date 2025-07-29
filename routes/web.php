@@ -53,7 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->controller(CourseController::class)->group(function () {
             Route::get('/', 'index')->name('index')->middleware('can:ver cursos');
             Route::post('create', 'store')->name('store')->middleware('can:crear cursos');
-            Route::put('{id}', 'update')->name('update')->middleware('can:actualizar cursos');
+            Route::put('{id}', 'update')->name('update')->middleware('can:editar cursos');
             Route::delete('{id}', 'destroy')->name('destroy')->middleware('can:eliminar cursos');
         });
 
