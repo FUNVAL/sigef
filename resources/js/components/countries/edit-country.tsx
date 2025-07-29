@@ -25,11 +25,13 @@ interface EditCountryProps {
 export function EditCountry({ country, open = false, onOpenChange }: EditCountryProps) {
     const { enums } = usePage<{ enums: Enums }>().props;
 
-    /* const initialData: UpdateCountryForm = {
-        ...country,
-        status: country.status ? country.status.id : 0,
-    } */
 
+    const handlePhoneCodeChange = (value: string) => {
+        const isValid = /^(\+)?\d*$/.test(value);
+        if (isValid) {
+            setData('phone_code', value);
+        }
+    };
 
     const initialData: UpdateCountryForm = {
         id: country.id,
@@ -44,6 +46,20 @@ export function EditCountry({ country, open = false, onOpenChange }: EditCountry
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+
+        if (name === "code") {
+        // Solo letras
+        const regex = /^[A-Za-z]*$/;
+        if (!regex.test(value)) return;
+    }
+
+    if (name === "name") {
+        // Letras, espacios, acentos y ñ
+        const regex = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]*$/;
+        if (!regex.test(value)) return;
+    }
+
+
         setData(name as keyof UpdateCountryForm, value);
     };
 
@@ -93,12 +109,13 @@ export function EditCountry({ country, open = false, onOpenChange }: EditCountry
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="phone_code">Codigo de area</Label>
+
                             <Input
                                 id="phone_code"
                                 name="phone_code"
                                 value={String(data.phone_code ?? '')}
                                 required
-                                onChange={(e) => setData('phone_code', e.target.value)}
+                                onChange={(e) => handlePhoneCodeChange(e.target.value)}
                                 placeholder="Código de área"
                             />
                             <InputError message={errors.phone_code} />

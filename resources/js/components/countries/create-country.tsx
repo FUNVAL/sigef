@@ -38,12 +38,11 @@ export function CreateCountry() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        /*setData(name as keyof CountryForm, value); */
 
         if (name === "code") {
             // Solo letras (sin números ni caracteres especiales)
             const regex = /^[A-Za-z]*$/;
-            if (!regex.test(value)) return; // Ignorar caracteres inválidos
+            if (!regex.test(value)) return; 
         }
 
         if (name === "name") {
@@ -61,8 +60,7 @@ export function CreateCountry() {
         const isValid = /^(\+)?\d*$/.test(value);
         if (isValid) {
             setData(field, value);
-            /* if (value.length >= 1) {
-                setData(field, value); */
+
         }
     }, [setData]);
 
@@ -129,7 +127,6 @@ export function CreateCountry() {
                                 name="flag"
                                 value={data.flag}
                                 onChange={handleChange}
-                                /* required */
                                 placeholder="URL de la bandera"
                             />
                             <InputError message={errors.flag} />
