@@ -123,4 +123,15 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /* 
+    |--------------------------------------------------------------------------
+    | Public Form Token
+    |--------------------------------------------------------------------------
+    | This token is used to validate public forms submitted to the application.
+    | It should be a secure, random string to prevent CSRF attacks.
+    | Make sure to set this in your .env file.
+    |--------------------------------------------------------------------------
+    */
+    'public_form_token' => env('PUBLIC_FORM_TOKEN')
+
 ];
