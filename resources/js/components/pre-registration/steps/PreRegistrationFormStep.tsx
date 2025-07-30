@@ -16,10 +16,10 @@ import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { PreRegistrationFormData } from '@/types/pre-inscription';
 import { PhoneInput } from '@/components/ui/phone-input';
+import useFilteredStakes from '@/hooks/use-filtered-stakes';
 
 interface PreRegistrationFormStepProps {
     countries: Country[];
-    stakes: Stake[];
     request: {
         data: PreRegistrationFormData;
         setData: (field: keyof PreRegistrationFormData, value: any) => void;
@@ -27,13 +27,12 @@ interface PreRegistrationFormStepProps {
     };
 }
 
-export function PreRegistrationFormStep({ countries = [], stakes = [], request }: PreRegistrationFormStepProps) {
+export function PreRegistrationFormStep({ countries, request }: PreRegistrationFormStepProps) {
     const { nextStep, previousStep } = useContext(StepperContext)
     const { data, setData } = request;
     const { enums } = usePage<{ enums: Enums }>().props;
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const filteredStakes = data.country_id ? stakes.filter(stake => stake.country_id === Number(data.country_id)) : [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
-
+    const { stakes } = useFilteredStakes(data.country_id);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const validationErrors = validateForm(data, preRegistrationSchema);
@@ -211,7 +210,7 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
                                 <Label htmlFor="stake_id">Estaca/Distrito/Misión</Label>
 
                                 <SearchableSelect
-                                    data={filteredStakes}
+                                    data={stakes}
                                     id="stake_id"
                                     name="stake_id"
                                     value={data.stake_id.toString()}
