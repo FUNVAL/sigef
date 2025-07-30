@@ -170,16 +170,15 @@ export function PreRegistrationFormStep({ countries, request }: PreRegistrationF
                             </div>
                             {/* País */}
                             <div>
-                                <Label htmlFor="country_id">País</Label>
                                 <SearchableSelect
                                     data={countries}
-                                    id="country_id"
                                     name="country_id"
+                                    id="country_id"
                                     value={data.country_id.toString()}
-                                    searchField="name"
-                                    onChange={(value) => setData('country_id', Number(value))}
-                                    placeholder="Selecciona un país"
+                                    onValueChange={(value) => setData('country_id', Number(value))}
+                                    label="País"
                                     required
+                                    placeholder="Selecciona un país"
                                 />
                                 {errors.country_id && <p className="text-red-500 text-sm">{errors.country_id}</p>}
                             </div>
@@ -207,15 +206,15 @@ export function PreRegistrationFormStep({ countries, request }: PreRegistrationF
                             </div>
                             {/* Estaca */}
                             <div>
-                                <Label htmlFor="stake_id">Estaca/Distrito/Misión</Label>
-
                                 <SearchableSelect
                                     data={stakes}
-                                    id="stake_id"
                                     name="stake_id"
+                                    id="stake_id"
                                     value={data.stake_id.toString()}
-                                    searchField="name"
-                                    onChange={(value) => setData('stake_id', Number(value))}
+                                    onValueChange={(value) => setData('stake_id', Number(value))}
+                                    label={"Estaca/Distrito/Misión"}
+                                    disabled={!data.country_id}
+                                    placeholder={data.country_id ? "Selecciona una estaca/distrito/misión" : "Primero selecciona un país"}
                                 />
 
                                 {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
