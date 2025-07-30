@@ -6,76 +6,152 @@ import { CompleteDialog } from '../ui/complete-dialog';
 import { type PreInscription } from '../../types/pre-inscription';
 
 const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscription }) => {
-    const fullName = `${preInscription.first_name} ${preInscription.middle_name || ''} ${preInscription.last_name} ${preInscription.second_last_name || ''}`.trim();
+    // Destructuración mejorada
+    const {
+        first_name,
+        middle_name,
+        last_name,
+        second_last_name,
+        age,
+        email,
+        phone,
+        served_mission,
+        currently_working,
+        available_full_time,
+        created_at,
+        comments,
+        declined_description,
+        gender,
+        marital_status,
+        country,
+        stake,
+        job_type_preference,
+        status,
+        declined_reason
+    } = preInscription;
+
+    // Funciones auxiliares para evaluación de datos
+    const getFullName = () => `${first_name} ${middle_name || ''} ${last_name} ${second_last_name || ''}`.trim();
+
+    const getGenderDisplay = () => gender?.name || 'No especificado';
+
+    const getMaritalStatusDisplay = () => marital_status?.name || 'No especificado';
+
+    const getCountryDisplay = () => country?.name || 'No especificado';
+
+    const getStakeDisplay = () => stake?.name || 'No especificado';
+
+    const getJobTypePreferenceDisplay = () => job_type_preference?.name || 'No especificado';
+
+    const getStatusDisplay = () => status?.name || 'Sin estado';
+
+    const getDeclinedReasonDisplay = () => declined_reason?.name || '';
+
+    const getWorkingStatusDisplay = () => {
+        if (currently_working === null) return 'No especificado';
+        return currently_working ? 'Sí' : 'No';
+    };
+
+    const getAvailabilityDisplay = () => {
+        if (available_full_time === null) return 'No especificado';
+        return available_full_time ? 'Tiempo completo' : 'No disponible';
+    };
+
+
+
+    const getVariant = (value: boolean | null | undefined | string) => value ? 'default' : 'outline';
+
+    const getStatusVariant = () => {
+        if (!status) return 'outline';
+        const statusName = status.name.toLowerCase();
+        if (statusName === 'aprobado') return 'default';
+        if (statusName === 'rechazado') return 'destructive';
+        return 'secondary';
+    };
+
+    const getStatusClassName = () => {
+        if (!status) return 'bg-gray-100 text-gray-800';
+        const statusName = status.name.toLowerCase();
+        if (statusName === 'aprobado') {
+            return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+        }
+        if (statusName === 'rechazado') {
+            return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+        }
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+    };
+
+    const getFormattedDate = () => created_at ? new Date(created_at).toLocaleDateString() : 'N/A';
 
     return (
         <CompleteDialog
             btnLabel="Ver Detalles"
-            dialogTitle="Detalles de la Pre-inscripción"
+            dialogTitle="Detalles de la preinscripción"
             dialogDescription="Aquí puedes ver los detalles completos de la pre-inscripción seleccionada."
             icon={<Eye className="w-4 h-4" />}
+            contentClassName='md:max-w-3xl'
         >
-            <div className="grid gap-6 py-4 max-h-[80vh] overflow-y-auto">
+            <div className="grid gap-6 p-4 max-h-[80vh] overflow-y-auto">
 
                 {/* Información Personal */}
                 <Card className="border-blue-200">
                     <CardHeader className="bg-transparent">
-                        <CardTitle className="text-lg text-blue-700 dark:text-blue-300">
+                        <CardTitle className="text-lg text-blue-800 dark:text-blue-500">
                             Información Personal
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Nombre Completo
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Nombre Completo:
                                 </Label>
-                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    {fullName}
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {getFullName()}
                                 </p>
                             </div>
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Género
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Género:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
-                                    {preInscription.gender?.name || 'No especificado'}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Edad
-                                </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
-                                    {preInscription.age} años
-                                </p>
-                            </div>
-                            <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Estado Civil
-                                </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
-                                    {preInscription.marital_status?.name || 'No especificado'}
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {getGenderDisplay()}
                                 </p>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Email
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Edad:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
-                                    {preInscription.email}
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {age} años
                                 </p>
                             </div>
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Teléfono
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Estado Civil:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
-                                    {preInscription.phone}
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {getMaritalStatusDisplay()}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Email:
+                                </Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {email}
+                                </p>
+                            </div>
+                            <div>
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Teléfono:
+                                </Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {phone}
                                 </p>
                             </div>
                         </div>
@@ -85,27 +161,28 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                 {/* Ubicación */}
                 <Card className="border-blue-200">
                     <CardHeader className="bg-transparent">
-                        <CardTitle className="text-lg text-blue-700 dark:text-blue-300">
+                        <CardTitle className="text-lg text-blue-800 dark:text-blue-500">
                             Ubicación
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    País
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    País:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
-                                    {preInscription.country?.name || 'No especificado'}
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {getCountryDisplay()}
                                 </p>
                             </div>
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Estaca
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Estaca:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
-                                    {preInscription.stake?.name || 'No especificado'}
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {getStakeDisplay()}
                                 </p>
+
                             </div>
                         </div>
                     </CardContent>
@@ -114,53 +191,45 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                 {/* Información Laboral y Misión */}
                 <Card className="border-blue-200">
                     <CardHeader className="bg-transparent">
-                        <CardTitle className="text-lg text-blue-700 dark:text-blue-300">
+                        <CardTitle className="text-lg text-blue-800 dark:text-blue-500">
                             Información Laboral y de Servicio
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
                                     ¿Sirvió misión?
                                 </Label>
-                                <Badge variant={preInscription.served_mission ? "default" : "secondary"}>
-                                    {preInscription.served_mission ? "Sí" : "No"}
+                                <Badge variant="default" className='block'>
+                                    {served_mission ? "Sí" : "No"}
                                 </Badge>
                             </div>
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
                                     ¿Trabajando actualmente?
                                 </Label>
-                                <Badge variant={
-                                    preInscription.currently_working === null ? "outline" :
-                                    preInscription.currently_working ? "default" : "secondary"
-                                }>
-                                    {preInscription.currently_working === null ? "No especificado" :
-                                     preInscription.currently_working ? "Sí" : "No"}
+                                <Badge variant={getVariant(currently_working)}>
+                                    {getWorkingStatusDisplay()}
                                 </Badge>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
                                     Disponibilidad
                                 </Label>
-                                <Badge variant={
-                                    preInscription.available_full_time === null ? "outline" :
-                                    preInscription.available_full_time ? "default" : "secondary"
-                                }>
-                                    {preInscription.available_full_time === null ? "No especificado" :
-                                     preInscription.available_full_time ? "Tiempo completo" : "Tiempo parcial"}
+                                <Badge variant={getVariant(available_full_time)} className='block'>
+                                    {getAvailabilityDisplay()}
                                 </Badge>
                             </div>
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
                                     Preferencia Laboral
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
-                                    {preInscription.job_type_preference?.name || 'No especificado'}
-                                </p>
+                                <Badge variant={getVariant(job_type_preference?.name)} className='block'>
+                                    {getJobTypePreferenceDisplay()}
+                                </Badge>
                             </div>
                         </div>
                     </CardContent>
@@ -169,73 +238,56 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                 {/* Estado y Seguimiento */}
                 <Card className="border-blue-200">
                     <CardHeader className="bg-transparent">
-                        <CardTitle className="text-lg text-blue-700 dark:text-blue-300">
+                        <CardTitle className="text-lg text-blue-800 dark:text-blue-500">
                             Estado y Seguimiento
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Fecha de Solicitud
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Fecha de Solicitud:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
-                                    {preInscription.created_at ? new Date(preInscription.created_at).toLocaleDateString() : 'N/A'}
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {getFormattedDate()}
                                 </p>
                             </div>
                             <div className="flex flex-col">
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-gray-300">
                                     Estado Actual
                                 </Label>
-                                <Badge
-                                    variant={
-                                        !preInscription.status ? "outline" :
-                                        preInscription.status.name.toLowerCase() === "aprobado"
-                                            ? "default"
-                                            : preInscription.status.name.toLowerCase() === "rechazado"
-                                                ? "destructive"
-                                                : "secondary"
-                                    }
-                                    className={
-                                        !preInscription.status ? "bg-gray-100 text-gray-600" :
-                                        preInscription.status.name.toLowerCase() === "aprobado"
-                                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                            : preInscription.status.name.toLowerCase() === "rechazado"
-                                                ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                                                : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                                    }
-                                >
-                                    {preInscription.status?.name || 'Sin estado'}
+                                <Badge variant={getStatusVariant()} className={getStatusClassName()}>
+                                    {getStatusDisplay()}
                                 </Badge>
                             </div>
                         </div>
-                        {preInscription.declined_reason && (
+                        {declined_reason && (
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
                                     Razón del Rechazo
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
-                                    {preInscription.declined_reason.name}
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {getDeclinedReasonDisplay()}
                                 </p>
                             </div>
                         )}
-                        {preInscription.comments && (
+                        {comments && (
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
                                     Comentarios
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap">
-                                    {preInscription.comments}
+                                <p className="block text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap">
+                                    {comments}
                                 </p>
                             </div>
                         )}
-                        {preInscription.declined_description && (
+                        {declined_description && (
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
                                     Descripción del Rechazo
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap">
-                                    {preInscription.declined_description}
+                                <p className="block text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap">
+                                    {declined_description}
                                 </p>
                             </div>
                         )}
