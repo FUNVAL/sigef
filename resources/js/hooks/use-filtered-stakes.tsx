@@ -87,9 +87,10 @@ const useFilteredStakes = (country_id: number) => {
                 dispatch({ type: 'FETCH_ERROR', payload: errorMessage });
             }
         };
-
-        fetchStakes();
-    }, [country_id, token]);
+        if (country_id) {
+            fetchStakes();
+        }
+    }, [country_id]);
 
     return {
         stakes: state.stakes,
