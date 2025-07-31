@@ -132,6 +132,6 @@ return [
     | Make sure to set this in your .env file.
     |--------------------------------------------------------------------------
     */
-    'public_form_token' => env('PUBLIC_FORM_TOKEN')
+    'public_form_token' => env('PUBLIC_FORM_TOKEN', 'secure_random_token'),
 
 ];
