@@ -46,5 +46,8 @@ class AppServiceProvider extends ServiceProvider
                 'jobType' =>  JobTypeEnum::toArray(),
             ];
         });
+        Inertia::share('token', function () {
+            return config('app.public_form_token');
+        });
     }
 }
