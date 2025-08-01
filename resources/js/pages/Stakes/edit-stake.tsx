@@ -1,6 +1,6 @@
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,27 +9,28 @@ import { Stake } from '@/types/stake';
 import { User } from '@/types/users';
 import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
 
 interface EditStakeProps {
     stake: Stake;
     countries: Country[];
     users: User[];
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
 }
 
-export function EditStake({ stake, countries, users }: EditStakeProps) {
-    const [open, setOpen] = useState(false);
+export function EditStake({ stake, countries, users, open, onOpenChange }: EditStakeProps) {
     const { data, setData, put, processing, reset, errors } = useForm({
         name: stake.name,
         country_id: String(stake.country_id),
         user_id: stake.user_id ? String(stake.user_id) : '',
+        status: stake.status,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         put(route('stakes.update', stake.id), {
             onSuccess: () => {
-                setOpen(false);
+                onOpenChange(false);
                 reset();
             },
             preserveScroll: true,
@@ -37,12 +38,7 @@ export function EditStake({ stake, countries, users }: EditStakeProps) {
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="link" className="hover:text-primary p-2">
-                    Editar
-                </Button>
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[525px]">
                 <DialogHeader>
                     <DialogTitle>Editar Stake</DialogTitle>
@@ -99,10 +95,25 @@ export function EditStake({ stake, countries, users }: EditStakeProps) {
                             </Select>
                             <InputError message={errors.user_id} />
                         </div>
+
+                        {/* Estado - Solo permitir cambio entre active/inactive */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="status">Estado</Label>
+                            <Select value={data.status} onValueChange={(value) => setData('status', value as 'active' | 'inactive' | 'deleted')}>
+                                <SelectTrigger id="status">
+                                    <SelectValue placeholder="Seleccione un estado" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="active">Activo</SelectItem>
+                                    <SelectItem value="inactive">Inactivo</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError message={errors.status} />
+                        </div>
                     </div>
 
                     <DialogFooter className="mt-6 flex gap-4">
-                        <Button type="button" variant="outline" disabled={processing} onClick={() => setOpen(false)}>
+                        <Button type="button" variant="outline" disabled={processing} onClick={() => onOpenChange(false)}>
                             Cancelar
                         </Button>
                         <Button type="submit" disabled={processing}>

@@ -4,8 +4,11 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Stake } from '@/types/stake';
 import { Head } from '@inertiajs/react';
+import { useState } from 'react';
 import { getColumns } from './columns';
 import { CreateStake } from './create-stake';
+import { DeleteStake } from './DeleteStake';
+import { EditStake } from './edit-stake';
 
 interface Props {
     stakes: Stake[];
@@ -21,7 +24,23 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function StakesIndex({ stakes, countries, users }: Props) {
-    const columns = getColumns({ countries, users });
+    const [editingStake, setEditingStake] = useState<Stake | null>(null);
+    const [deletingStake, setDeletingStake] = useState<Stake | null>(null);
+
+    const handleEdit = (stake: Stake) => {
+        setEditingStake(stake);
+    };
+
+    const handleDelete = (stake: Stake) => {
+        setDeletingStake(stake);
+    };
+
+    const columns = getColumns({
+        countries,
+        users,
+        onEdit: handleEdit,
+        onDelete: handleDelete,
+    });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -38,6 +57,29 @@ export default function StakesIndex({ stakes, countries, users }: Props) {
                     </div>
                     <DataTable data={stakes} columns={columns} filterKey="name" />
                 </div>
+
+                {/* Diálogos de edición y eliminación */}
+                {editingStake && (
+                    <EditStake
+                        stake={editingStake}
+                        countries={countries}
+                        users={users}
+                        open={!!editingStake}
+                        onOpenChange={(open) => {
+                            if (!open) setEditingStake(null);
+                        }}
+                    />
+                )}
+
+                {deletingStake && (
+                    <DeleteStake
+                        stake={deletingStake}
+                        open={!!deletingStake}
+                        onOpenChange={(open) => {
+                            if (!open) setDeletingStake(null);
+                        }}
+                    />
+                )}
             </AccessControlLayout>
         </AppLayout>
     );

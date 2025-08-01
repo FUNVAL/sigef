@@ -50,14 +50,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Edición
         Route::put('/{stake}', 'update')->name('update');
         
-        // Manejo de estado (quitamos los middlewares de permisos)
-        Route::patch('/{stake}/deactivate', 'deactivate')
-            ->name('deactivate');
-            //->middleware('can:desactivar stakes'); // Eliminado
-            
-        Route::patch('/{stake}/activate', 'activate')
-            ->name('activate');
-            //->middleware('can:activar stakes'); // Eliminado
+        // Eliminación (soft delete)
+        Route::delete('/{stake}', 'destroy')->name('destroy');
         
         // Rutas para formularios
         Route::get('create', function () {

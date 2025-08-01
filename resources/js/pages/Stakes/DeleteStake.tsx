@@ -1,64 +1,37 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Stake } from '@/types/stake';
 import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
 
-// Añade esta interfaz para el tipo de route
-declare module '@inertiajs/react' {
-    interface PageProps {
-        route: (name: string, params?: any) => string;
-    }
-}
+export function DeleteStake({ stake, open, onOpenChange }: { stake: Stake; open: boolean; onOpenChange: (open: boolean) => void }) {
+    const { delete: destroy, processing } = useForm();
 
-export function ToggleStakeStatus({ stake }: { stake: Stake }) {
-    const [open, setOpen] = useState(false);
-    const { patch, processing } = useForm();
-
-    const handleToggleStatus = () => {
-        const routeName = stake.status === 'active' ? 'stakes.deactivate' : 'stakes.activate';
-
-        const routeParams = { stake: stake.id };
-
-        patch(route(routeName, routeParams), {
-            onSuccess: () => setOpen(false),
+    const handleDelete = () => {
+        destroy(route('stakes.destroy', stake.id), {
+            onSuccess: () => onOpenChange(false),
             preserveScroll: true,
         });
     };
 
+    // No mostrar botón si ya está eliminado
+    if (stake.status === 'deleted') {
+        return null;
+    }
+
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button
-                    variant="link"
-                    className={`p-2 ${
-                        stake.status === 'active' ? 'text-destructive-foreground hover:text-destructive' : 'text-green-600 hover:text-green-700'
-                    }`}
-                >
-                    {stake.status === 'active' ? 'Desactivar' : 'Activar'}
-                </Button>
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[525px]">
                 <DialogHeader>
-                    <DialogTitle>{stake.status === 'active' ? 'Desactivar Stake' : 'Activar Stake'}</DialogTitle>
-                    <DialogDescription>
-                        {stake.status === 'active'
-                            ? `¿Estás seguro de desactivar "${stake.name}"? No será visible en las listas.`
-                            : `¿Estás seguro de activar "${stake.name}"? Volverá a ser visible.`}
-                    </DialogDescription>
+                    <DialogTitle>Eliminar Stake</DialogTitle>
+                    <DialogDescription>¿Estás seguro de eliminar "{stake.name}"? Esta acción marcará el stake como eliminado.</DialogDescription>
                 </DialogHeader>
                 <div className="mt-6 flex justify-end gap-4">
-                    <Button type="button" variant="outline" disabled={processing} onClick={() => setOpen(false)}>
+                    <Button type="button" variant="outline" disabled={processing} onClick={() => onOpenChange(false)}>
                         Cancelar
                     </Button>
-                    <Button
-                        type="button"
-                        variant={stake.status === 'active' ? 'destructive' : 'default'}
-                        disabled={processing}
-                        onClick={handleToggleStatus}
-                    >
-                        {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : stake.status === 'active' ? 'Desactivar' : 'Activar'}
+                    <Button type="button" variant="destructive" disabled={processing} onClick={handleDelete}>
+                        {processing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : 'Eliminar'}
                     </Button>
                 </div>
             </DialogContent>

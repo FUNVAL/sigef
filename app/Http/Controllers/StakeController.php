@@ -22,19 +22,14 @@ class StakeController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Filtro por estado (si se necesita)
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        } else {
-            // Por defecto mostrar solo activos
-            $query->active();
-        }
+        // Mostrar solo activos e inactivos (no eliminados)
+        $query->notDeleted();
 
         return Inertia::render('Stakes/Index', [
             'stakes' => $query->get(),
             'countries' => Country::all(),
             'users' => User::all(),
-            'filters' => $request->only(['search', 'status'])
+            'filters' => $request->only(['search'])
         ]);
     }
 
@@ -47,10 +42,10 @@ class StakeController extends Controller
             'name' => 'required|string|max:255|unique:stakes',
             'country_id' => 'required|exists:countries,id',
             'user_id' => 'nullable|exists:users,id',
+            'status' => 'required|in:active,inactive', // Solo permitir active/inactive en creación
         ]);
 
-        // Crear con estado activo por defecto
-        Stake::create($validated + ['status' => 'active']);
+        Stake::create($validated);
 
         return redirect()->route('stakes.index')
                ->with('success', 'Stake creado exitosamente');
@@ -65,7 +60,7 @@ class StakeController extends Controller
             'name' => 'required|string|max:255|unique:stakes,name,' . $stake->id,
             'country_id' => 'required|exists:countries,id',
             'user_id' => 'nullable|exists:users,id',
-            'status' => 'sometimes|in:active,inactive' // Validación opcional para el estado
+            'status' => 'required|in:active,inactive' // Solo permitir cambios entre active/inactive
         ]);
 
         $stake->update($validated);
@@ -75,38 +70,14 @@ class StakeController extends Controller
     }
 
     /**
-     * Desactivar (soft delete) el recurso especificado.
-     */
-    public function deactivate(Stake $stake)
-    {
-        $stake->deactivate();
-
-        return redirect()->back()
-               ->with('success', 'Stake desactivado correctamente');
-    }
-
-    /**
-     * Activar el recurso especificado.
-     */
-    public function activate(Stake $stake)
-    {
-        $stake->activate();
-
-        return redirect()->back()
-               ->with('success', 'Stake activado correctamente');
-    }
-
-    /**
      * Remove the specified resource from storage.
-     * (Eliminación física - mantener solo si es realmente necesaria)
+     * (Método para marcar como eliminado)
      */
     public function destroy(Stake $stake)
     {
-        // Verificar si realmente necesitas este método
-        // Lo ideal sería usar solo activate/deactivate
-        $stake->forceDelete();
-
-        return redirect()->back()
-               ->with('success', 'Stake eliminado permanentemente');
+        // Marcar como eliminado en lugar de eliminar físicamente
+        $stake->markAsDeleted();
+        
+        return redirect()->back()->with('success', 'Stake eliminado correctamente');
     }
 }

@@ -3,7 +3,7 @@ export type Stake = {
     name: string;
     country_id: number;
     user_id?: number;
-    status: 'active' | 'inactive'; // Nuevo campo añadido
+    status: 'active' | 'inactive' | 'deleted';
     country?: {
         id: number;
         name: string;

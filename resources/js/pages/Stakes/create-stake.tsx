@@ -21,6 +21,7 @@ export function CreateStake({ countries, users }: CreateStakeProps) {
         name: '',
         country_id: '',
         user_id: '',
+        status: 'active', // Valor por defecto
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -97,6 +98,21 @@ export function CreateStake({ countries, users }: CreateStakeProps) {
                                 </SelectContent>
                             </Select>
                             <InputError message={errors.user_id} />
+                        </div>
+
+                        {/* Estado */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="status">Estado</Label>
+                            <Select value={data.status} onValueChange={(value) => setData('status', value)}>
+                                <SelectTrigger id="status">
+                                    <SelectValue placeholder="Seleccione un estado" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="active">Activo</SelectItem>
+                                    <SelectItem value="inactive">Inactivo</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError message={errors.status} />
                         </div>
                     </div>
 
