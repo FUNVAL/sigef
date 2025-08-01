@@ -15,9 +15,9 @@ enum CourseModalityEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::ONLINE => __('common.course_modality.online'),
-            self::IN_PERSON =>  __('common.course_modality.in_person'),
-            self::HYBRID => __('common.course_modality.hybrid'),
+            self::ONLINE => __('common.enums.course_modality.online'),
+            self::IN_PERSON => __('common.enums.course_modality.in_person'),
+            self::HYBRID => __('common.enums.course_modality.hybrid'),
         };
     }
 }

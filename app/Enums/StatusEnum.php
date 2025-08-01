@@ -15,9 +15,9 @@ enum StatusEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::ACTIVE => __('common.status.active'),
-            self::INACTIVE => __('common.status.inactive'),
-            self::DELETED => __('common.status.deleted'),
+            self::ACTIVE => __('common.enums.status.active'),
+            self::INACTIVE => __('common.enums.status.inactive'),
+            self::DELETED => __('common.enums.status.deleted'),
         };
     }
 }

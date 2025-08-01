@@ -15,9 +15,9 @@ enum JobTypeEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::ONLINE => __('common.job_type.online'),
-            self::IN_PERSON => __('common.job_type.in_person'),
-            self::OWN_BOSS => __('common.job_type.own_boss'),
+            self::ONLINE => __('common.enums.job_type.online'),
+            self::IN_PERSON => __('common.enums.job_type.in_person'),
+            self::OWN_BOSS => __('common.enums.job_type.own_boss'),
         };
     }
 }

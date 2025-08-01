@@ -14,8 +14,8 @@ enum GenderEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::MALE => __('common.gender.male'),
-            self::FEMALE => __('common.gender.female'),
+            self::MALE => __('common.enums.gender.male'),
+            self::FEMALE => __('common.enums.gender.female'),
         };
     }
 }

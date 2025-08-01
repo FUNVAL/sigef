@@ -15,9 +15,9 @@ enum DocumentTypeEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::IDENTITY_CARD => __('common.document_type.identity_card'),
-            self::PASSPORT => __('common.document_type.passport'),
-            self::DRIVER_LICENSE => __('common.document_type.driver_license'),
+            self::IDENTITY_CARD => __('common.enums.document_type.identity_card'),
+            self::PASSPORT => __('common.enums.document_type.passport'),
+            self::DRIVER_LICENSE => __('common.enums.document_type.driver_license'),
         };
     }
 }

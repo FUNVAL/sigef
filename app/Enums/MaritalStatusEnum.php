@@ -17,11 +17,11 @@ enum MaritalStatusEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::SINGLE => __('common.marital_status.single'),
-            self::MARRIED => __('common.marital_status.married'),
-            self::DIVORCED => __('common.marital_status.divorced'),
-            self::WIDOWED => __('common.marital_status.widowed'),
-            self::SEPARATED => __('common.marital_status.separated'),
+            self::SINGLE => __('common.enums.marital_status.single'),
+            self::MARRIED => __('common.enums.marital_status.married'),
+            self::DIVORCED => __('common.enums.marital_status.divorced'),
+            self::WIDOWED => __('common.enums.marital_status.widowed'),
+            self::SEPARATED => __('common.enums.marital_status.separated'),
         };
     }
 }
