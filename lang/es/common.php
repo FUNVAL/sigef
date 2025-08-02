@@ -57,10 +57,22 @@ return [
     // Welcome Disclaimer
     'welcome_disclaimer' => [
         'title' => '¡Bienvenido a FUNVAL Internacional!',
+
         'subtitle' => 'Nos complace recibir tu aplicación o referencia.',
-        'program_description' => 'Este programa está dirigido a personas que buscan empleo y están dispuestas a comprometerse con un proceso intensivo de formación, dedicando entre 10 y 12 horas diarias de lunes a viernes.',
+
+        'program_description' => [
+            'title' => '¿Estas buscando empleo?&nbsp;&nbsp;¡Este Programa es para Ti! ',
+
+            'description' => 'Este programa está dirigido a personas que buscan empleo y están dispuestas a comprometerse con un proceso intensivo de formación, dedicando entre <span class="font-bold text-blue-700">10 y 12 horas diarias de lunes a viernes.<span>'
+        ],
+
         'motivation' => 'Si tú o la persona referida tienen la motivación y el compromiso para alcanzar este objetivo, ¡adelante! Estamos entusiasmados por acompañarlos en la búsqueda de empleo.',
-        'privacy' => 'Queremos asegurarte de que toda la información personal será tratada con estricta confidencialidad y no será compartida con terceros sin consentimiento previo.',
+
+        'privacy' => [
+            'title' => 'Privacidad y Confidencialidad',
+            'description' => 'Queremos asegurarte que toda la información personal será tratada con estricta confidencialidad y <span class="font-bold text-red-500">no será compartida con terceros sin consentimiento previo.</span>',
+        ],
+
         'accept_terms' => 'He leído y acepto los términos y condiciones mencionados anteriormente. Confirmo que la información que proporcionaré es verídica y completa.',
     ],
 

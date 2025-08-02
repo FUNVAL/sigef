@@ -58,10 +58,23 @@ return [
     // Welcome Disclaimer
     'welcome_disclaimer' => [
         'title' => 'Byenveni nan FUNVAL Entènasyonal!',
+
         'subtitle' => 'Nou kontan resevwa aplikasyon ou an oswa rekòmandasyon zanmi ou a.',
-        'program_description' => 'Pwogram sa a vize a moun ki ap chèche travay epi ki pare pou angaje yo nan yon pwosesis fòmasyon entansif, ki dedye ant <span class="font-bold text-blue-700">10 ak 12 èdtan pa jou soti nan Lendi rive Vandredi.</span>',
+
+        'program_description' => [
+            'title' => 'Èske w ap chèche travay?&nbsp;&nbsp;Pwogram sa a se pou ou! ',
+
+            'description' => 'Pwogram sa a vize a moun ki ap chèche travay epi ki pare pou angaje yo nan yon pwosesis fòmasyon entansif, ki dedye ant <span class="font-bold text-blue-700">10 ak 12 èdtan pa jou soti nan Lendi rive Vandredi.</span>'
+        ],
+
         'motivation' => 'Si oumenm oswa moun nan refere a gen motivasyon ak angajman pou reyalize objektif sa a, eben vanse! Nou kontan sipòte yo nan rechèch travay yo. ',
-        'privacy' => 'Nou vle asire ou ke tout enfòmasyon pèsonèl yo ap trete ak konfidansyalite estrikt epi <span class="font-bold text-red-500">yo p ap pataje yo ak tyès pati san konsantman anvan.</span>',
+        #'title' => 'Privacidad y Confidencialidad',
+        'privacy' => [
+            'title' => 'Privacy and Confidentiality',
+
+            'description' => 'Nou vle asire ou ke tout enfòmasyon pèsonèl yo ap trete ak konfidansyalite estrikt epi <span class="font-bold text-red-500">yo p ap pataje yo ak tyès pati san konsantman anvan.</span>'
+        ],
+
         'accept_terms' => 'Nou vle asire ou ke tout enfòmasyon pèsonèl yo pral trete ak konfidansyalite estrik epi yo pa pral pataje ak okenn pati san konsantman ou anvan.',
     ],
 

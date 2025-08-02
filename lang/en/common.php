@@ -58,9 +58,20 @@ return [
     'welcome_disclaimer' => [
         'title' => 'Welcome to FUNVAL International!',
         'subtitle' => 'We\'re pleased to receive your application or your friend\'s referral.',
-        'program_description' => 'This program is designed for individuals who are seeking employment and are willing to commit to an intensive learning process, dedicating <span class="font-bold text-blue-700">10 to 12 hours a day, Monday through Friday.</span>',
+
+        'program_description' => [
+            'title' => 'Are you looking for a job?&nbsp;&nbsp;This Program is for You!',
+            'description' => 'This program is designed for individuals who are seeking employment and are willing to commit to an intensive learning process, dedicating <span class="font-bold text-blue-700">10 to 12 hours a day, Monday through Friday.</span>'
+        ],
+
         'motivation' => 'If you or the person referred have the motivation and commitment to reach this goal, let\'s get started! We are excited to guide you through your job search journey.',
-        'privacy' => 'Rest assured that all of your personal information will be handled with strict confidentiality and <span class="font-bold text-red-500">will not be shared with third parties without your prior consent.</span>',
+
+        'privacy' => [
+            'title' => 'Privacy and Confidentiality',
+
+            'description' => 'Rest assured that all of your personal information will be handled with strict confidentiality and <span class="font-bold text-red-500">will not be shared with third parties without your prior consent.</span>'
+        ],
+
         'accept_terms' => 'I have read and accept the terms and conditions mentioned above. I confirm that the information I will provide is truthful and complete.',
     ],
 
