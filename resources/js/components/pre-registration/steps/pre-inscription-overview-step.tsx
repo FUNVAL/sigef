@@ -8,6 +8,7 @@ import { PreRegistrationRequest } from "@/types/pre-inscription"
 import { usePage } from "@inertiajs/react"
 import { useContext } from "react"
 import { StepperContext } from "@/pages/forms/stepper-provider"
+import { StepsHeader } from "../steps-header"
 
 interface OverviewStepProps {
     request: PreRegistrationRequest;
@@ -53,20 +54,14 @@ export function PreInscriptionOverviewStep({ request, countries, stakes }: Overv
         data.served_mission ? ui.labels.yes : ui.labels.no
 
     return (
-        <div className="max-w-2xl mx-auto">
-            <Card className="border-2 border-blue-100 bg-blue-50 dark:border-gray-900 dark:bg-gray-900">
-                <CardHeader className="text-center pb-4">
-                    <div className="mx-auto w-20 h-20 rounded-full bg-background flex items-center justify-center mb-4 shadow-sm">
-                        <UserCheck className="h-12 w-12 text-[rgb(46_131_242_/_1)]" />
-                    </div>
-                    <CardTitle className="text-2xl font-bold text-funval-blue">
-                        {forms.pre_inscription.overview.title}
-                    </CardTitle>
-                    <p className="text-muted-foreground mt-2">
-                        {forms.pre_inscription.overview.subtitle}
-                    </p>
-                </CardHeader>
-                <CardContent className="text-center space-y-6">
+        <div className="max-w-4xl mx-auto">
+            <Card className="shadow-2xl border-0 overflow-hidden pt-0">
+                <StepsHeader
+                    title={forms.pre_inscription.overview.title}
+                    subtitle={forms.pre_inscription.overview.subtitle}
+                />
+
+                <CardContent className="p-8 space-y-8">
                     <div className="prose prose-sm max-w-none dark:prose-invert">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                             <div>
@@ -155,7 +150,7 @@ export function PreInscriptionOverviewStep({ request, countries, stakes }: Overv
                         <Button
                             size="lg"
                             disabled={processing}
-                            className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90 disabled:bg-gray-300 disabled:text-gray-500"
+                            className="min-w-[140px] bg-blue-600 text-white transition-colors hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500"
                         >
                             {processing && <Loader className="mr-2 h-4 w-4 animate-spin" />}
                             {processing ? forms.pre_inscription.overview.buttons.sending : forms.pre_inscription.overview.buttons.submit}
