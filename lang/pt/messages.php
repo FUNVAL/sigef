@@ -2,9 +2,9 @@
 
 return [
     'success' => [
-        'pre_inscription_success' => '<strong>Obrigado por sua candidatura!</strong><br/><span class="text-blue-600 font-bold">Um de nossos representantes entrará em contato com você nas próximas 72 horas</span> para fornecer todas as informações sobre o programa e resolver qualquer dúvida que possa ter.<br/>Apreciamos seu interesse e estamos animados para acompanhá-lo neste processo.',
+        'preinscription_success' => '<strong>Obrigado por sua candidatura!</strong><br/><span class="text-blue-600 font-bold">Um de nossos representantes entrará em contato com você nas próximas 72 horas</span> para fornecer todas as informações sobre o programa e resolver qualquer dúvida que possa ter.<br/>Apreciamos seu interesse e estamos animados para acompanhá-lo neste processo.',
 
-        'reference_created' => '<strong>Obrigado por sua indicação!</strong><br/>Agradecemos por ter pensado em alguém com quem compartilhar esta oportunidade. Queremos que saiba que <span class="text-blue-600 font-bold">um de nossos representantes entrará em contato diretamente com a pessoa indicada nas próximas 72 horas</span> para fornecer a ela todas as informações sobre o programa e orientá-la neste processo.',
+        'reference_success' => '<strong>Obrigado por sua indicação!</strong><br/>Agradecemos por ter pensado em alguém com quem compartilhar esta oportunidade. Queremos que saiba que <span class="text-blue-600 font-bold">um de nossos representantes entrará em contato diretamente com a pessoa indicada nas próximas 72 horas</span> para fornecer a ela todas as informações sobre o programa e orientá-la neste processo.',
     ],
 
     'rejections' => [

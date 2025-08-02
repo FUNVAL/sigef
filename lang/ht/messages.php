@@ -2,9 +2,9 @@
 
 return [
     'success' => [
-        'pre_inscription_success' => '<strong>Mèsi pou aplikasyon ou an!</strong><br><span class="text-blue-600 font-bold">Youn nan reprezantan nou yo ap kontakte ou nan lespas 72 èdtan</span> kap vini yo pou ba ou tout enfòmasyon sou pwogram nan epi reponn ak nenpòt kesyon ou ka genyen.<br/>Nou apresye enterè ou epi nou kontan sipòte ou nan pwosesis sa a.',
+        'preinscription_success' => '<strong>Mèsi pou aplikasyon ou an!</strong><br><span class="text-blue-600 font-bold">Youn nan reprezantan nou yo ap kontakte ou nan lespas 72 èdtan</span> kap vini yo pou ba ou tout enfòmasyon sou pwogram nan epi reponn ak nenpòt kesyon ou ka genyen.<br/>Nou apresye enterè ou epi nou kontan sipòte ou nan pwosesis sa a.',
 
-        'reference_created' => '<strong>Mèsi pou rekòmandasyon ou an!</strong><br/>Nou vrèman apresye ke ou te panse ak yon moun pou pataje opòtinite sa a. Nou vle ou konnen ke <span class="text-blue-600 font-bold">youn nan reprezantan nou yo pral kontakte referans ou an dirèkteman nan pwochen 72 èdtan</span> yo bay li  tout enfòmasyon sou pwogram nan epi akonpaye li nan pwosesis la.',
+        'reference_success' => '<strong>Mèsi pou rekòmandasyon ou an!</strong><br/>Nou vrèman apresye ke ou te panse ak yon moun pou pataje opòtinite sa a. Nou vle ou konnen ke <span class="text-blue-600 font-bold">youn nan reprezantan nou yo pral kontakte referans ou an dirèkteman nan pwochen 72 èdtan</span> yo bay li  tout enfòmasyon sou pwogram nan epi akonpaye li nan pwosesis la.',
     ],
 
     'rejections' => [

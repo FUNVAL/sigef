@@ -2,9 +2,9 @@
 
 return [
     'success' => [
-        'pre_inscription_success' => '<strong>Thank you for applying!</strong><br/><span class="text-blue-600 font-bold">One of our representatives will contact you within the next 72 hours</span> to provide all of the necessary information about the program and answer any question you may have.<br/>We appreciate your interest and we are excited to guide you through this process.',
+        'preinscription_success' => '<strong>Thank you for applying!</strong><br/><span class="text-blue-600 font-bold">One of our representatives will contact you within the next 72 hours</span> to provide all of the necessary information about the program and answer any question you may have.<br/>We appreciate your interest and we are excited to guide you through this process.',
 
-        'reference_created' => '<strong>Thank you for referring!</strong><br/>We truly appreciate that you thought of someone to share this opportunity with. We would like to let you know that <span class="text-blue-600 font-bold">one of our representatives will contact your referral directly within the next 72 hours</span> to provide them with the necessary information about this program and to guide them through this process.',
+        'reference_success' => '<strong>Thank you for referring!</strong><br/>We truly appreciate that you thought of someone to share this opportunity with. We would like to let you know that <span class="text-blue-600 font-bold">one of our representatives will contact your referral directly within the next 72 hours</span> to provide them with the necessary information about this program and to guide them through this process.',
     ],
 
     'rejections' => [
