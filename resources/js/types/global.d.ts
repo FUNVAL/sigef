@@ -30,9 +30,15 @@ type Translation = {
     welcome_disclaimer: {
         title: string;
         subtitle: string;
-        program_description: string;
+        program_description: {
+            title: string;
+            description: string;
+        };
         motivation: string;
-        privacy: string;
+        privacy: {
+            title: string;
+            description: string;
+        };
         accept_terms: string;
     };
     ui: {

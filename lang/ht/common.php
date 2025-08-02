@@ -68,7 +68,7 @@ return [
         ],
 
         'motivation' => 'Si oumenm oswa moun nan refere a gen motivasyon ak angajman pou reyalize objektif sa a, eben vanse! Nou kontan sipòte yo nan rechèch travay yo. ',
-        #'title' => 'Privacidad y Confidencialidad',
+
         'privacy' => [
             'title' => 'Privacy and Confidentiality',
 
