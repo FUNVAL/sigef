@@ -240,7 +240,7 @@ class PreInscriptionController extends Controller
     private function generateMessage($currentlyWorking, $jobTypePreference, $availableFullTime, $gender): array
     {
         $response = [
-            'message' => __('common.messages.success.pre_inscription_success'),
+            'message' => __('common.messages.success.preinscription_success'),
             'type' => 'success'
         ];
 

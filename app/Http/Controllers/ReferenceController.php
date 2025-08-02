@@ -72,7 +72,7 @@ class ReferenceController extends Controller
 
             $message =  [
                 'type' => 'success',
-                'message' =>  __('common.messages.success.reference_created'),
+                'message' =>  __('common.messages.success.reference_success'),
             ];
 
             return  back()->with('success', $message);
