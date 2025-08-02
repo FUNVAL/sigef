@@ -22,6 +22,7 @@ import validateForm from "@/lib/schemas/validate-schemas"
 import { useContext, useEffect, useState } from "react"
 import { StepperContext } from "@/pages/forms/stepper-provider";
 import { PhoneInput } from "@/components/ui/phone-input";
+import { StepsHeader } from "../steps-header";
 
 interface ReferralFormStepProps {
   request: {
@@ -74,214 +75,206 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
   }, [back_errors]);
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <Card className="border-2">
-        <CardHeader className="text-center pb-4">
-          <div className="mx-auto w-16 h-16 rounded-full bg-[rgb(46_131_242_/_1)]/8 flex items-center justify-center mb-4">
-            <Users className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
+    <Card className="w-full max-w-4xl shadow-2xl border-0 overflow-hidden pt-0 mx-auto">
+      <StepsHeader
+        title={forms.referral.title}
+        subtitle={forms.referral.description}
+      />
+
+      <CardContent className="p-8 space-y-8">
+        <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="name">{forms.referral.fields.name}</Label>
+              <Input
+                id="name"
+                name="name"
+                value={data.name}
+                onChange={(e) => setData('name', e.target.value)}
+                placeholder={forms.referral.fields.name_placeholder}
+                autoComplete="name"
+                required
+              />
+              {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+            </div>
+
+            <div>
+              <Label htmlFor="gender">{forms.referral.fields.gender}</Label>
+              <Select value={data.gender.toString()}
+                onValueChange={(value) => setData('gender', Number(value))}
+                name="gender"
+                required
+              >
+                <SelectTrigger id='gender'>
+                  <SelectValue placeholder={forms.referral.fields.gender_placeholder} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0" disabled>{forms.referral.fields.gender_select}</SelectItem>
+                  {enums.gender.map(gender => (
+                    <SelectItem key={gender.id} value={gender.id.toString()}>
+                      {gender.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
+            </div>
+
+            <div>
+              <Label htmlFor="age">{forms.referral.fields.age}</Label>
+              <Input
+                id="age"
+                name="age"
+                autoComplete='age'
+                type="number"
+                value={data.age}
+                onChange={(e) => setData('age', e.target.value)}
+                min="18"
+                max="100"
+                required
+              />
+              {errors.age && <p className="text-red-500 text-sm">{errors.age}</p>}
+            </div>
+
+            <div>
+              <Label htmlFor="country_id">{forms.referral.fields.country}</Label>
+              <SearchableSelect
+                data={countries}
+                id="country_id"
+                name="country_id"
+                value={data.country_id.toString()}
+                searchField="name"
+                onChange={(value) => setData('country_id', Number(value))}
+                placeholder={`Selecciona un ${forms.referral.fields.country.toLowerCase()}`}
+                required
+              />
+              {errors.country_id && <p className="text-red-500 text-sm">{errors.country_id}</p>}
+            </div>
+
+            <div>
+              <Label htmlFor="phone">{forms.referral.fields.phone}</Label>
+              <PhoneInput
+                id="phone"
+                name="phone"
+                autoComplete='tel'
+                type='tel'
+                value={data.phone}
+                onInputChange={(value: string) => setData('phone', value)}
+                placeholder={`Número de ${forms.referral.fields.phone.toLowerCase()}`}
+                className="rounded-l-none"
+                countries={countries}
+                selectedCountryId={data.country_id}
+                required
+                minLength={3}
+                maxLength={18}
+              />
+              {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+            </div>
+
+            <div>
+              <Label htmlFor="stake_id">{forms.referral.fields.stake}</Label>
+              <SearchableSelect
+                data={filteredStakes}
+                id="stake_id"
+                name="stake_id"
+                value={data.stake_id.toString()}
+                searchField="name"
+                onChange={(value) => setData('stake_id', Number(value))}
+              />
+              {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
+            </div>
+
           </div>
-          <CardTitle className="text-2xl font-bold text-[rgb(46_131_242_/_1)]">
-            {forms.referral.title}
-          </CardTitle>
-          <p className="text-muted-foreground mt-2">
-            {forms.referral.description}
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+
+          <div className="border-t pt-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              {forms.referral.referrer_info}
+            </h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">{forms.referral.fields.name}</Label>
+                <Label htmlFor="referrer_name">{forms.referral.fields.referrer_name}</Label>
                 <Input
-                  id="name"
-                  name="name"
-                  value={data.name}
-                  onChange={(e) => setData('name', e.target.value)}
-                  placeholder={forms.referral.fields.name_placeholder}
-                  autoComplete="name"
+                  id="referrer_name"
+                  name="referrer_name"
+                  value={data.referrer_name}
+                  onChange={(e) => setData('referrer_name', e.target.value)}
+                  placeholder={`Tu nombre completo`}
                   required
                 />
-                {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+                {errors.referrer_name && <p className="text-red-500 text-sm">{errors.referrer_name}</p>}
               </div>
 
               <div>
-                <Label htmlFor="gender">{forms.referral.fields.gender}</Label>
-                <Select value={data.gender.toString()}
-                  onValueChange={(value) => setData('gender', Number(value))}
-                  name="gender"
-                  required
-                >
-                  <SelectTrigger id='gender'>
-                    <SelectValue placeholder={forms.referral.fields.gender_placeholder} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0" disabled>{forms.referral.fields.gender_select}</SelectItem>
-                    {enums.gender.map(gender => (
-                      <SelectItem key={gender.id} value={gender.id.toString()}>
-                        {gender.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="age">{forms.referral.fields.age}</Label>
-                <Input
-                  id="age"
-                  name="age"
-                  autoComplete='age'
-                  type="number"
-                  value={data.age}
-                  onChange={(e) => setData('age', e.target.value)}
-                  min="18"
-                  max="100"
-                  required
-                />
-                {errors.age && <p className="text-red-500 text-sm">{errors.age}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="country_id">{forms.referral.fields.country}</Label>
-                <SearchableSelect
-                  data={countries}
-                  id="country_id"
-                  name="country_id"
-                  value={data.country_id.toString()}
-                  searchField="name"
-                  onChange={(value) => setData('country_id', Number(value))}
-                  placeholder={`Selecciona un ${forms.referral.fields.country.toLowerCase()}`}
-                  required
-                />
-                {errors.country_id && <p className="text-red-500 text-sm">{errors.country_id}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="phone">{forms.referral.fields.phone}</Label>
+                <Label htmlFor="referrer_phone">{forms.referral.fields.referrer_phone}</Label>
                 <PhoneInput
-                  id="phone"
-                  name="phone"
-                  autoComplete='tel'
+                  id="referrer_phone"
+                  name="referrer_phone"
+                  autoComplete='tel-referrer'
                   type='tel'
-                  value={data.phone}
-                  onInputChange={(value: string) => setData('phone', value)}
-                  placeholder={`Número de ${forms.referral.fields.phone.toLowerCase()}`}
+                  value={data.referrer_phone}
+                  onInputChange={(value: string) => setData('referrer_phone', value)}
+                  placeholder={`Tu número de teléfono`}
                   className="rounded-l-none"
                   countries={countries}
                   selectedCountryId={data.country_id}
                   required
+                  enableDropdown={true}
                   minLength={3}
                   maxLength={18}
                 />
-                {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+                {errors.referrer_phone && <p className="text-red-500 text-sm">{errors.referrer_phone}</p>}
               </div>
 
-              <div>
-                <Label htmlFor="stake_id">{forms.referral.fields.stake}</Label>
-                <SearchableSelect
-                  data={filteredStakes}
-                  id="stake_id"
-                  name="stake_id"
-                  value={data.stake_id.toString()}
-                  searchField="name"
-                  onChange={(value) => setData('stake_id', Number(value))}
-                />
-                {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
-              </div>
-
-            </div>
-
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-funval-darkBlue mb-4">
-                {forms.referral.referrer_info}
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="referrer_name">{forms.referral.fields.referrer_name}</Label>
-                  <Input
-                    id="referrer_name"
-                    name="referrer_name"
-                    value={data.referrer_name}
-                    onChange={(e) => setData('referrer_name', e.target.value)}
-                    placeholder={`Tu nombre completo`}
-                    required
-                  />
-                  {errors.referrer_name && <p className="text-red-500 text-sm">{errors.referrer_name}</p>}
-                </div>
-
-                <div>
-                  <Label htmlFor="referrer_phone">{forms.referral.fields.referrer_phone}</Label>
-                  <PhoneInput
-                    id="referrer_phone"
-                    name="referrer_phone"
-                    autoComplete='tel-referrer'
-                    type='tel'
-                    value={data.referrer_phone}
-                    onInputChange={(value: string) => setData('referrer_phone', value)}
-                    placeholder={`Tu número de teléfono`}
-                    className="rounded-l-none"
-                    countries={countries}
-                    selectedCountryId={data.country_id}
-                    required
-                    enableDropdown={true}
-                    minLength={3}
-                    maxLength={18}
-                  />
-                  {errors.referrer_phone && <p className="text-red-500 text-sm">{errors.referrer_phone}</p>}
-                </div>
-
-                <div className="md:col-span-2">
-                  <Label htmlFor="relationship_with_referred">{forms.referral.fields.relationship} *</Label>
-                  <Select
-                    value={data.relationship_with_referred?.toString()}
-                    onValueChange={(value) => setData('relationship_with_referred', Number(value))}
-                    name="relationship_with_referred"
-                    required
-                  >
-                    <SelectTrigger name="relationship_with_referred" id="relationship_with_referred">
-                      <SelectValue placeholder="Selecciona la relación" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0" disabled>Selecciona tu relación con el referido</SelectItem>
-                      {
-                        enums.relatedReference.map((relation) => (
-                          <SelectItem key={relation.id} value={relation.id?.toString()}>
-                            {relation.name}
-                          </SelectItem>
-                        ))
-                      }
-                    </SelectContent>
-                  </Select>
-                  {errors.relationship_with_referred &&
-                    <p className="text-red-500 text-sm">{errors.relationship_with_referred}</p>}
-                </div>
+              <div className="md:col-span-2">
+                <Label htmlFor="relationship_with_referred">{forms.referral.fields.relationship} *</Label>
+                <Select
+                  value={data.relationship_with_referred?.toString()}
+                  onValueChange={(value) => setData('relationship_with_referred', Number(value))}
+                  name="relationship_with_referred"
+                  required
+                >
+                  <SelectTrigger name="relationship_with_referred" id="relationship_with_referred">
+                    <SelectValue placeholder="Selecciona la relación" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0" disabled>Selecciona tu relación con el referido</SelectItem>
+                    {
+                      enums.relatedReference.map((relation) => (
+                        <SelectItem key={relation.id} value={relation.id?.toString()}>
+                          {relation.name}
+                        </SelectItem>
+                      ))
+                    }
+                  </SelectContent>
+                </Select>
+                {errors.relationship_with_referred &&
+                  <p className="text-red-500 text-sm">{errors.relationship_with_referred}</p>}
               </div>
             </div>
+          </div>
 
-            <div className="flex justify-between pt-4">
-              <Button
-                type="button"
-                onClick={handleBack}
-                variant="outline"
-                size="lg"
-                className="min-w-[120px]"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2 hover:text-[rgb(46_131_242_/_1)]" />
-                {ui.buttons.previous}
-              </Button>
+          <div className="flex justify-between pt-4">
+            <Button
+              type="button"
+              onClick={handleBack}
+              variant="outline"
+              size="lg"
+              className="min-w-[120px]"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2 hover:text-blue-600" />
+              {ui.buttons.previous}
+            </Button>
 
-              <Button
-                size="lg"
-                className="min-w-[130px] bg-[rgb(46_131_242_/_1)] text-white hover:shadow-lg hover:bg-[rgb(46_131_242_/_1)]/90 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {ui.buttons.continue}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div >
+            <Button
+              size="lg"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {ui.buttons.continue}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   )
 }
