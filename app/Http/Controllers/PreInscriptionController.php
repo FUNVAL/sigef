@@ -246,16 +246,16 @@ class PreInscriptionController extends Controller
 
         if ($gender === GenderEnum::FEMALE->value) {
             if ($currentlyWorking) {
-                $response['message'] = __('common.messages.rejection.working');
+                $response['message'] = __('common.messages.rejections.working');
                 $response['type'] = 'rejected';
             } elseif ($jobTypePreference === JobTypeEnum::OWN_BOSS->value) {
-                $response['message'] = __('common.messages.rejection.entrepreneur');
+                $response['message'] = __('common.messages.rejections.entrepreneur');
                 $response['type'] = 'rejected';
             } elseif ($jobTypePreference === JobTypeEnum::ONLINE->value && !$availableFullTime) {
-                $response['message'] = __('common.messages.rejection.online_part_time');
+                $response['message'] = __('common.messages.rejections.online_part_time');
                 $response['type'] = 'rejected';
             } elseif (!$availableFullTime) {
-                $response['message'] = __('common.messages.rejection.part_time');
+                $response['message'] = __('common.messages.rejections.part_time');
                 $response['type'] = 'rejected';
             }
         }

@@ -30,7 +30,7 @@ return [
         ],
         'titles' => [
             'dashboard' => 'Tablo Kòmand',
-            'pre_inscriptions' => 'Pré-enskripsyon',
+            'pre_inscriptions' => 'Enskripsyon davans',
             'references' => 'Referans',
             'personal_info' => 'Enfòmasyon Pèsonèl',
             'location' => 'Kote ou ye',
@@ -48,7 +48,7 @@ return [
         'access_control' => 'Kontwòl Aksè',
         'courses' => 'Kou',
         'references' => 'Referans',
-        'pre_inscriptions' => 'Pré-enskripsyon',
+        'pre_inscriptions' => 'Enskripsyon davans',
         'settings' => 'Paramèt',
         'profile' => 'Profil',
         'password' => 'Modpas',

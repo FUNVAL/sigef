@@ -3,8 +3,8 @@
 
 return [
     'pre_inscription' => [
-        'title' => 'Fòm Pré-enskripsyon',
-        'description' => 'Ranpli enfòmasyon pèsonèl ou yo pou w kontinye ak pré-enskripsyon ou an',
+        'title' => 'Fòm Enskripsyon davans',
+        'description' => 'Ranpli enfòmasyon pèsonèl ou yo pou w kontinye ak Enskripsyon davans ou an',
         'overview' => [
             'title' => 'Revize done ou yo',
             'subtitle' => 'Verifye ke tout enfòmasyon yo kòrèk anvan ou voye yo',
@@ -34,7 +34,7 @@ return [
             'title' => 'Chwazi Kou Ou',
             'description' => 'Chwazi pwogram fòmasyon ki pi bon pou enterè ak objektif pwofesyonèl ou yo',
             'selected_course' => 'Kou ki chwazi:',
-            'selection_confirmation' => 'Ou chwazi kou sa a pou pwosesis pré-enskripsyon ou. Lè w kontinye, w konfime enterè w nan patisipe nan pwogram sa a.',
+            'selection_confirmation' => 'Ou chwazi kou sa a pou pwosesis Enskripsyon davans ou. Lè w kontinye, w konfime enterè w nan patisipe nan pwogram sa a.',
             'duration' => 'semèn',
         ],
         'female_filter' => [
