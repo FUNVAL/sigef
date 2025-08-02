@@ -2,8 +2,8 @@
 
 return [
     'pre_inscription' => [
-        'title' => 'Formulario de Pre-inscripción',
-        'description' => 'Complete su información personal para proceder con su pre-inscripción',
+        'title' => 'Formulario de Preinscripción',
+        'description' => 'Complete su información personal para proceder con su preinscripción',
         'overview' => [
             'title' => 'Revise sus datos',
             'subtitle' => 'Verifique que toda la información sea correcta antes de enviar',
@@ -33,7 +33,7 @@ return [
             'title' => 'Seleccione su Curso',
             'description' => 'Elija el programa de capacitación que mejor se adapte a sus intereses y objetivos profesionales',
             'selected_course' => 'Curso seleccionado:',
-            'selection_confirmation' => 'Ha seleccionado este curso para su proceso de pre-inscripción. Al continuar, confirma su interés en participar en este programa.',
+            'selection_confirmation' => 'Ha seleccionado este curso para su proceso de preinscripción. Al continuar, confirma su interés en participar en este programa.',
             'duration' => 'semanas',
         ],
         'female_filter' => [

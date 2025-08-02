@@ -16,6 +16,7 @@ import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { PreRegistrationFormData } from '@/types/pre-inscription';
 import { PhoneInput } from '@/components/ui/phone-input';
+import { StepsHeader } from "../steps-header";
 
 interface PreRegistrationFormStepProps {
     countries: Country[];
@@ -63,19 +64,13 @@ export function PreRegistrationFormStep({ countries = [], stakes = [], request }
 
     return (
         <div className="mx-auto max-w-3xl">
-            <Card className="border-2">
-                <CardHeader className="pb-4 text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[rgb(46_131_242_/_1)]/10">
-                        <UserPlus className="h-8 w-8 text-[rgb(46_131_242_/_1)]" />
-                    </div>
-                    <CardTitle className="text-funval-blue text-2xl font-bold text-[rgb(46_131_242_/_1)]">
-                        {forms.pre_inscription.title}
-                    </CardTitle>
-                    <p className="text-muted-foreground mt-2">
-                        {forms.pre_inscription.description}
-                    </p>
-                </CardHeader>
-                <CardContent>
+            <Card className="w-full max-w-4xl shadow-2xl border-0 overflow-hidden pt-0 mx-auto">
+                <StepsHeader
+                    title={forms.pre_inscription.title}
+                    subtitle={forms.pre_inscription.description}
+                />
+
+                <CardContent className="p-8 space-y-8">
                     <form className="space-y-6" onSubmit={handleSubmit} noValidate>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Primer Nombre */}
