@@ -58,35 +58,35 @@ export function OverviewReferralStep({ request, countries, stakes }: OverviewRef
 
             <CardContent className="p-8 space-y-8">
                 <div className="prose prose-sm max-w-none dark:prose-invert">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                        <div>
-                            <strong>{forms.referral.overview.fields.full_name}</strong> <span>{data.name || "-"}</span>
-                        </div>
-                        <div>
-                            <strong>{forms.referral.overview.fields.gender}</strong> <span>{getGenderName()}</span>
-                        </div>
-                        <div>
-                            <strong>{forms.referral.overview.fields.age}</strong> <span>{data.age || "-"}</span>
-                        </div>
-                        <div>
-                            <strong>{forms.referral.overview.fields.country}</strong> <span>{getCountryName()}</span>
-                        </div>
-                        <div>
-                            <strong>{forms.referral.overview.fields.phone}</strong> <span>{data.phone || "-"}</span>
-                        </div>
-                        <div>
-                            <strong>{forms.referral.overview.fields.stake}</strong> <span>{getStakeName()}</span>
-                        </div>
-                        <div>
-                            <strong>{forms.referral.overview.fields.referrer_name}</strong> <span>{data.referrer_name || "-"}</span>
-                        </div>
-                        <div>
-                            <strong>{forms.referral.overview.fields.referrer_phone}</strong> <span>{data.referrer_phone || "-"}</span>
-                        </div>
-                        <div>
-                            <strong>{forms.referral.overview.fields.relationship}</strong> <span>{getRelationshipName()}</span>
-                        </div>
-                    </div>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                        <li>
+                            <strong>{forms.referral.overview.fields.full_name}</strong>&nbsp;<span>{data.name || "-"}</span>
+                        </li>
+                        <li>
+                            <strong>{forms.referral.overview.fields.gender}</strong>&nbsp;<span>{getGenderName()}</span>
+                        </li>
+                        <li>
+                            <strong>{forms.referral.overview.fields.age}</strong>&nbsp;<span>{data.age || "-"}</span>
+                        </li>
+                        <li>
+                            <strong>{forms.referral.overview.fields.country}</strong>&nbsp;<span>{getCountryName()}</span>
+                        </li>
+                        <li>
+                            <strong>{forms.referral.overview.fields.phone}</strong>&nbsp;<span>{data.phone || "-"}</span>
+                        </li>
+                        <li>
+                            <strong>{forms.referral.overview.fields.stake}</strong>&nbsp;<span>{getStakeName()}</span>
+                        </li>
+                        <li>
+                            <strong>{forms.referral.overview.fields.referrer_name}</strong>&nbsp;<span>{data.referrer_name || "-"}</span>
+                        </li>
+                        <li>
+                            <strong>{forms.referral.overview.fields.referrer_phone}</strong>&nbsp;<span>{data.referrer_phone || "-"}</span>
+                        </li>
+                        <li>
+                            <strong>{forms.referral.overview.fields.relationship}</strong>&nbsp;<span>{getRelationshipName()}</span>
+                        </li>
+                    </ul>
                 </div>
                 <form className="flex justify-between pt-4" onSubmit={handleSubmit}>
                     <Button type="button" onClick={previousStep} variant="outline" size="lg" className="min-w-[120px]">

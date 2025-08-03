@@ -63,76 +63,74 @@ export function PreInscriptionOverviewStep({ request, countries, stakes }: Overv
 
                 <CardContent className="p-8 space-y-8">
                     <div className="prose prose-sm max-w-none dark:prose-invert">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.first_name}</strong>
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.first_name}</strong>&nbsp;
                                 <span>{data.first_name || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.middle_name}</strong>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.middle_name}</strong>&nbsp;
                                 <span>{data.middle_name || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.last_name}</strong>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.last_name}</strong>&nbsp;
                                 <span>{data.last_name || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.second_last_name}</strong>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.second_last_name}</strong>&nbsp;
                                 <span>{data.second_last_name || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.gender}</strong>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.gender}</strong>&nbsp;
                                 <span>{getGenderName()}</span>
-                            </div>
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.age}</strong>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.age}</strong>&nbsp;
                                 <span>{data.age || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.country}</strong>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.country}</strong>&nbsp;
                                 <span>{getCountryName()}</span>
-                            </div>
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.phone}</strong>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.phone}</strong>&nbsp;
                                 <span>{data.phone || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.stake}</strong>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.stake}</strong>&nbsp;
                                 <span>{getStakeName()}</span>
-                            </div>
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.email}</strong>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.email}</strong>&nbsp;
                                 <span>{data.email || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.marital_status}</strong>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.marital_status}</strong>&nbsp;
                                 <span>{getMaritalStatusName()}</span>
-                            </div>
-                            <div>
-                                <strong>{forms.pre_inscription.overview.fields.served_mission}</strong>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.served_mission}</strong>&nbsp;
                                 <span>{getMission()}</span>
-                            </div>
-                            {
-                                data.gender === 2 && (
-                                    <>
-                                        <div>
-                                            <strong>{forms.pre_inscription.overview.fields.currently_working}</strong>
-                                            <span>{data.currently_working ? ui.labels.yes : ui.labels.no}</span>
-                                        </div>
-                                        {!data.currently_working && (
-                                            <div>
-                                                <strong>{forms.pre_inscription.overview.fields.job_type_preference}</strong>
-                                                <span>{enums?.jobType?.find((j) => j.id === data.job_type_preference)?.name || "-"}</span>
-                                            </div>
-                                        )}
-                                        <div>
-                                            <strong>{forms.pre_inscription.overview.fields.available_full_time}</strong>
-                                            <span>{data.available_full_time ? ui.labels.yes : ui.labels.no}</span>
-                                        </div>
-                                    </>
-                                )
-                            }
-                        </div>
+                            </li>
+                            {data.gender === 2 && (
+                                <>
+                                    <li>
+                                        <strong>{forms.pre_inscription.overview.fields.currently_working}</strong>&nbsp;
+                                        <span>{data.currently_working ? ui.labels.yes : ui.labels.no}</span>
+                                    </li>
+                                    {!data.currently_working && (
+                                        <li>
+                                            <strong>{forms.pre_inscription.overview.fields.job_type_preference}</strong>&nbsp;
+                                            <span>{enums?.jobType?.find((j) => j.id === data.job_type_preference)?.name || "-"}</span>
+                                        </li>
+                                    )}
+                                    <li>
+                                        <strong>{forms.pre_inscription.overview.fields.available_full_time}</strong>&nbsp;
+                                        <span>{data.available_full_time ? ui.labels.yes : ui.labels.no}</span>
+                                    </li>
+                                </>
+                            )}
+                        </ul>
                     </div>
                     <form className="flex justify-between pt-4" onSubmit={handleSubmit}>
                         <Button
