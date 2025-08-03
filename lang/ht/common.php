@@ -1,10 +1,10 @@
 <?php
 
 return [
-
     'enums' => require_once __DIR__ . '/enums.php',
     'forms' => require_once __DIR__ . '/forms.php',
     'messages' => require_once __DIR__ . '/messages.php',
+    'stepper' => require_once __DIR__ . '/stepper.php',
 
     // UI Elements
     'ui' => [
@@ -64,7 +64,7 @@ return [
         'program_description' => [
             'title' => 'Èske w ap chèche travay?&nbsp;&nbsp;Pwogram sa a se pou ou! ',
 
-            'description' => 'Pwogram sa a vize a moun ki ap chèche travay epi ki pare pou angaje yo nan yon pwosesis fòmasyon entansif, ki dedye ant <span class="font-bold text-blue-700">10 ak 12 èdtan pa jou soti nan Lendi rive Vandredi.</span>'
+            'description' => 'Pwogram sa a vize a moun ki ap chèche travay epi ki pare pou angaje yo nan yon pwosesis fòmasyon entansif, ki dedike ant <span class="font-bold text-blue-700">10 ak 12 èdtan pa jou soti nan Lendi rive Vandredi.</span>'
         ],
 
         'motivation' => 'Si oumenm oswa moun nan refere a gen motivasyon ak angajman pou reyalize objektif sa a, eben vanse! Nou kontan sipòte yo nan rechèch travay yo. ',

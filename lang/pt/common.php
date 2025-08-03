@@ -4,6 +4,7 @@ return [
     'enums' => require_once __DIR__ . '/enums.php',
     'forms' => require_once __DIR__ . '/forms.php',
     'messages' => require_once __DIR__ . '/messages.php',
+    'stepper' => require_once __DIR__ . '/stepper.php',
 
     // UI Elements
     'ui' => [

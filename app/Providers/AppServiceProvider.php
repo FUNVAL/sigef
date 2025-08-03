@@ -74,7 +74,10 @@ class AppServiceProvider extends ServiceProvider
             },
             'message_step' => function () {
                 return __('common.message_step');
-            }
+            },
+            'stepper' => function () {
+                return __('common.stepper');
+            },
         ]);
     }
 }
