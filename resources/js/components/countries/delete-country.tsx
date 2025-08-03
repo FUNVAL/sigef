@@ -8,21 +8,21 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { useForm } from "@inertiajs/react";
-import { Course } from "@/types/course";
+import { Country } from "@/types/country";
 import { LoaderCircle } from "lucide-react";
 
-interface DeleteCourseProps {
-    course: Course;
+interface DeleteCountryProps {
+    country: Country;
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
 }
 
-export function DeleteCourse({ course, open = false, onOpenChange }: DeleteCourseProps) {
+export function DeleteCountry({ country, open = false, onOpenChange }: DeleteCountryProps) {
     const { delete: destroy, processing } = useForm();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        destroy(route('courses.destroy', course.id), {
+        destroy(route('countries.destroy', country.id), {
             onSuccess: () => {
                 onOpenChange?.(false);
             },
@@ -33,9 +33,9 @@ export function DeleteCourse({ course, open = false, onOpenChange }: DeleteCours
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[525px]">
                 <DialogHeader>
-                    <DialogTitle>Eliminar Curso</DialogTitle>
+                    <DialogTitle>Eliminar Pais</DialogTitle>
                     <DialogDescription>
-                        ¿Estás seguro de que deseas eliminar el curso <strong>{course.name}</strong>? Esta acción no se puede deshacer.
+                        ¿Estás seguro de que deseas eliminar el pais <strong>{country.name}</strong>? Esta acción no se puede deshacer.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>

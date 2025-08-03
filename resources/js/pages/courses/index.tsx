@@ -4,11 +4,13 @@ import { Head, Link, } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import { DataTable } from '@/components/data-table/data-table';
-import { columns } from '@/components/courses/course-data-table';
+import { createColumns } from '@/components/courses/course-data-table';
 import { Button } from '@/components/ui/button';
 import { Course } from '@/types/course';
 import { CreateCourse } from '@/components/courses/create-course';
 import { useState } from 'react';
+import { EditCourse } from '@/components/courses/edit-course';
+import { DeleteCourse } from '@/components/courses/delete-course';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,6 +20,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Courses({ courses }: { courses: [Course] }) {
+    const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+    const [deletingCourse, setDeletingCourse] = useState<Course | null>(null);
+
+    const columns = createColumns({
+        onEditCourse: (course) => setEditingCourse(course),
+        onDeleteCourse: (course) => setDeletingCourse(course),
+    });
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Cursos" />
@@ -34,8 +44,23 @@ export default function Courses({ courses }: { courses: [Course] }) {
                         columns={columns}
                         filterKey="name"
                     />
-
                 </div>
+
+                {editingCourse && (
+                    <EditCourse
+                        course={editingCourse}
+                        open={!!editingCourse}
+                        onOpenChange={(open) => !open && setEditingCourse(null)}
+                    />
+                )}
+
+                {deletingCourse && (
+                    <DeleteCourse
+                        course={deletingCourse}
+                        open={!!deletingCourse}
+                        onOpenChange={(open) => !open && setDeletingCourse(null)}
+                    />
+                )}
             </AccessControlLayout>
         </AppLayout>
     );

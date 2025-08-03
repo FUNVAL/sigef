@@ -45,8 +45,7 @@ class ReferenceController extends Controller
     {
         return  Inertia::render('forms/reference-form', [
             'step' => request()->input('step', 0),
-            'countries' => Country::all(),
-            'stakes' => Stake::all(),
+            'countries' => Country::all()
         ]);
     }
 

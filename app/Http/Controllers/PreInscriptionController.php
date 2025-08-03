@@ -55,7 +55,6 @@ class PreInscriptionController extends Controller
             return inertia('forms/pre-inscription-form', [
                 'step' => request()->input('step', 0),
                 'countries' => Country::all(),
-                'stakes' => Stake::all(),
                 'courses' => Course::all()
             ]);
         } catch (\Throwable $th) {

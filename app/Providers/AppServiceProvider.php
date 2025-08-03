@@ -48,6 +48,10 @@ class AppServiceProvider extends ServiceProvider
             ];
         });
 
+        Inertia::share('token', function () {
+            return config('app.public_form_token');
+        });
+
         Inertia::share([
             'locale' => function () {
                 return App::getLocale();

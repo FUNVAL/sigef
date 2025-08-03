@@ -3,6 +3,7 @@
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PreInscriptionController;
 use App\Http\Controllers\ReferenceController;
+use App\Http\Controllers\StakeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -27,3 +28,7 @@ Route::get('preinscription-reference', fn() => Inertia::render('forms/pre-regist
     ->name('preinscription-reference');
 
 Route::get('language/{locale}', [LanguageController::class, 'switchLang'])->name('language.switch');
+
+Route::get('api/stakes/{country_id}', [StakeController::class, 'filterByCountryId'])
+    ->middleware(['validate.public.form', 'throttle:60,1'])
+    ->name('api.stakes.by-country');

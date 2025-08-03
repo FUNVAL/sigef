@@ -1,90 +1,132 @@
-import { useEffect, useRef, useState } from "react"
+import * as React from 'react';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { Input } from "./input";
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Label } from '@/components/ui/label';
 
-interface SearchableSelectProps {
+interface SearchableSelectProps extends React.ComponentPropsWithoutRef<'div'> {
     data: { id: number; name: string; }[];
-    value: string;
-    onChange: (value: string) => void;
-    searchField: string;
-    id: string;
+    value?: string;
+    onValueChange: (value: string) => void;
+    placeholder?: string;
+    searchPlaceholder?: string;
+    emptyMessage?: string;
+    className?: string;
+    disabled?: boolean;
     name?: string;
     required?: boolean;
-    placeholder?: string;
+    id?: string;
+    label?: string;
 }
 
-export function SearchableSelect({ data, value, onChange, searchField, id, name, placeholder, ...rest }: SearchableSelectProps) {
-    const [search, setSearch] = useState("")
+const SearchableSelect = React.forwardRef<HTMLDivElement, SearchableSelectProps>(({
+    data,
+    value,
+    onValueChange,
+    placeholder = "Seleccionar opción...",
+    searchPlaceholder = "Buscar...",
+    emptyMessage = "No se encontraron resultados.",
+    className,
+    disabled = false,
+    name,
+    required = false,
+    id,
+    label,
+    ...props
+}, ref) => {
+    const [open, setOpen] = React.useState(false);
+    const inputRef = React.useRef<HTMLInputElement>(null);
 
-    const filteredData = data.filter((item) =>
-        String(item[searchField as keyof typeof item]).toLowerCase().includes(search.toLowerCase())
-    )
+    const selectedItem = data.find(item => item.id.toString() === value);
 
-    const selectRef = useRef<HTMLDivElement>(null)
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
-                setSearch("")
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside)
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside)
-        }
-    }, [])
+    const handleSelect = (selectedValue: string) => {
+        onValueChange(selectedValue === value ? "" : selectedValue);
+        setOpen(false);
+    };
 
     return (
-        <Select
-            value={value}
-            onValueChange={(val) => { onChange(val); setSearch(""); }}
-            name={name}
-            {...rest}
-        >
-            <SelectTrigger id={id} name={name || ''} className="w-full">
-                <SelectValue placeholder={`Selecciona un ${searchField}`} />
-            </SelectTrigger>
-            <SelectContent
-                ref={selectRef}
-                className="pt-2 max-h-60 overflow-auto bg-background dark:bg-gray-900"
-            >
-                <div className="px-3 p-2 sticky -top-1 bg-background dark:bg-gray-900 z-10 border-b border-muted dark:border-gray-700">
-                    <Input
-                        autoFocus
-                        placeholder="Buscar..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-full bg-background dark:bg-gray-900 text-foreground"
-                    />
-                </div>
+        <div className="relative space-y-2" ref={ref} {...props}>
+            {label && (
+                <Label htmlFor={id}>{label}</Label>
+            )}
 
-                {filteredData.length > 0 ? (
-                    <>
-                        {placeholder &&
-                            <SelectItem value={"0"} disabled>
-                                {placeholder}
-                            </SelectItem>
-                        }
-                        {filteredData.map((item) => (
-                            <SelectItem key={item.id} value={item.id.toString()}>
-                                {item.name}
-                            </SelectItem>
-                        ))}
-                    </>
-                ) : (
-                    <div className="p-4 text-center text-muted-foreground select-none">
-                        No se encontraron {searchField}s que coincidan con "{search}"
-                    </div>
-                )}
-            </SelectContent>
-        </Select>
-    )
-}
+            <div>
+                <input
+                    ref={inputRef}
+                    type="hidden"
+                    name={name}
+                    id={id}
+                    value={value || ''}
+                    required={required}
+                />
 
-export default SearchableSelect
+                <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            aria-controls={id ? `${id}-dropdown` : undefined}
+                            className={cn(
+                                "w-full justify-between",
+                                !selectedItem && 'text-muted-foreground',
+                                className
+                            )}
+                            disabled={disabled}
+                            id={id}
+                            onClick={() => document.getElementById(id || '')?.focus()}
+                        >
+                            {selectedItem ? selectedItem.name : placeholder}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                        className="w-full p-0"
+                        align="start"
+                        style={{ width: 'var(--radix-popover-trigger-width)' }}
+                        id={id ? `${id}-dropdown` : undefined}
+                    >
+                        <Command>
+                            <CommandInput placeholder={searchPlaceholder} />
+                            <CommandList>
+                                <CommandEmpty>{emptyMessage}</CommandEmpty>
+                                <CommandGroup>
+                                    {data.map((item) => (
+                                        <CommandItem
+                                            key={item.id}
+                                            value={`${item.name} ${item.id}`}
+                                            onSelect={() => handleSelect(item.id.toString())}
+                                        >
+                                            <Check
+                                                className={cn(
+                                                    'mr-2 h-4 w-4',
+                                                    value === item.id.toString() ? 'opacity-100' : 'opacity-0'
+                                                )}
+                                            />
+                                            {item.name}
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            </CommandList>
+                        </Command>
+                    </PopoverContent>
+                </Popover>
+            </div>
+        </div>
+    );
+});
+
+SearchableSelect.displayName = 'SearchableSelect';
+
+export { SearchableSelect };
+export default SearchableSelect;

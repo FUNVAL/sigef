@@ -19,7 +19,7 @@ type PreInscriptionFormProps = {
     courses: Course[];
 }
 
-const PreInscriptionForm = ({ countries, stakes, courses }: PreInscriptionFormProps) => {
+const PreInscriptionForm = ({ countries, courses }: PreInscriptionFormProps) => {
     const request = useForm<PreRegistrationFormData>(initialData);
     const { stepper } = usePage<Translation>().props;
 
@@ -52,7 +52,6 @@ const PreInscriptionForm = ({ countries, stakes, courses }: PreInscriptionFormPr
             case 'form':
                 component = <PreRegistrationFormStep
                     countries={countries}
-                    stakes={stakes}
                     request={request}
                 />;
                 break;
@@ -68,7 +67,6 @@ const PreInscriptionForm = ({ countries, stakes, courses }: PreInscriptionFormPr
             case 'resumen':
                 component = <PreInscriptionOverviewStep
                     countries={countries}
-                    stakes={stakes}
                     request={request}
                 />;
                 break;

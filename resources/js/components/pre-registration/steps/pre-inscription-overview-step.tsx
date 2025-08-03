@@ -9,14 +9,14 @@ import { usePage } from "@inertiajs/react"
 import { useContext } from "react"
 import { StepperContext } from "@/pages/forms/stepper-provider"
 import { StepsHeader } from "../steps-header"
+import useFilteredStakes from "@/hooks/use-filtered-stakes"
 
 interface OverviewStepProps {
     request: PreRegistrationRequest;
     countries: Country[];
-    stakes: Stake[];
 }
 
-export function PreInscriptionOverviewStep({ request, countries, stakes }: OverviewStepProps) {
+export function PreInscriptionOverviewStep({ request, countries }: OverviewStepProps) {
     const { data, post, processing } = request;
     const { enums, forms, ui } = usePage<{
         enums: Enums;
@@ -25,6 +25,7 @@ export function PreInscriptionOverviewStep({ request, countries, stakes }: Overv
     }>().props;
     const { nextStep, previousStep } = useContext(StepperContext);
 
+    const { stakes } = useFilteredStakes(data.country_id);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 

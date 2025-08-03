@@ -9,7 +9,7 @@ import { ReferenceFormData } from '@/types/reference';
 import { DisclaimerStep } from '@/components/pre-registration/steps/DisclaimerStep';
 import { MessageStep } from '@/components/pre-registration/steps/MessageStep';
 
-const ReferenceForm = ({ countries, stakes }: { countries: Country[], stakes: Stake[] }) => {
+const ReferenceForm = ({ countries }: { countries: Country[] }) => {
     const request = useForm<ReferenceFormData>(initialData);
     const { stepper } = usePage<Translation>().props;
 
@@ -22,7 +22,6 @@ const ReferenceForm = ({ countries, stakes }: { countries: Country[], stakes: St
             title: stepper.form,
             component: <ReferralFormStep
                 countries={countries}
-                stakes={stakes}
                 request={request}
             />
         },
@@ -30,7 +29,6 @@ const ReferenceForm = ({ countries, stakes }: { countries: Country[], stakes: St
             title: stepper.overview,
             component: <OverviewReferralStep
                 countries={countries}
-                stakes={stakes}
                 request={request}
             />
         },

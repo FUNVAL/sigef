@@ -1,5 +1,5 @@
 import { NavItem } from '@/types';
-import { BookOpen, LayoutGrid, ListPlus, Notebook, Shield } from 'lucide-react';
+import { BookOpen, LayoutGrid, ListPlus, Notebook, Shield, Globe } from 'lucide-react';
 
 export const mainNavItems: NavItem[] = [
     {
@@ -30,6 +30,12 @@ export const mainNavItems: NavItem[] = [
         href: '/pre-inscription',
         icon: ListPlus,
         permissions: ['pre-inscription:update', 'pre-inscription:edit', 'pre-inscription:view'],
+    },
+    {
+        title: 'Paises',
+        href: '/countries',
+        icon: Globe,
+        permissions: ['country:view', 'country:create', 'country:edit', 'country:delete'],
     }
 ];
 
