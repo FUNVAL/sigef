@@ -22,7 +22,7 @@ export default function References({ references }: { references: Reference[] }) 
     console.log('References Page', auth);
     return (
         <AppLayout breadcrumbs={breadcrumbs} menuOptions={referencesNavItems}>
-            <Head title="Cursos" />
+            <Head title="Referencias" />
             <AccessControlLayout headings={{
                 title: 'Lista de Referencias',
                 description: 'Aquí puedes ver todos las referencias que has recibido.',
@@ -38,4 +38,4 @@ export default function References({ references }: { references: Reference[] }) 
             </AccessControlLayout>
         </AppLayout>
     );
-}
+} 
