@@ -1,19 +1,22 @@
 import { ActionSelectionStep } from '@/components/pre-registration/steps/ActionSelectionStep';
 import { DisclaimerStep } from '@/components/pre-registration/steps/DisclaimerStep';
-import { Stepper } from '@/types/global';
+import { Stepper, Translation } from '@/types/global';
 import StepperProvider from './stepper-provider';
 import { useContext } from 'react';
+import { usePage } from '@inertiajs/react';
 
 
 const PreRegistration = () => {
 
+    const { stepper } = usePage<Translation>().props;
+
     const steps: Stepper[] =
         [
             {
-                title: 'Términos', component: <DisclaimerStep />
+                title: stepper.conditions, component: <DisclaimerStep />
             },
             {
-                title: 'Acción', component: <ActionSelectionStep />
+                title: stepper.options, component: <ActionSelectionStep />
             },
         ];
 

@@ -27,6 +27,7 @@ type Stepper = {
 }
 
 type Translation = {
+
     welcome_disclaimer: {
         title: string;
         subtitle: string;
@@ -41,6 +42,7 @@ type Translation = {
         };
         accept_terms: string;
     };
+
     ui: {
         buttons: Record<string, string>;
         labels: {
@@ -66,6 +68,7 @@ type Translation = {
             description: string;
         }
     };
+
     forms: {
         pre_inscription: {
             title: string;
@@ -178,11 +181,22 @@ type Translation = {
                 }
             }
         }
-    },
+    };
+
+    stepper: {
+        conditions: string;
+        options: string;
+        form: string;
+        overview: string;
+        confirmation: string;
+        requirements: string;
+        courses: string;
+    };
+
     message_step: {
         redirecting: string;
         confirmation_title: string;
         confirmation_subtitle: string;
         back_to_home: string;
-    }
+    };
 }
