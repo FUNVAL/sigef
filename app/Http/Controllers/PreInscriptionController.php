@@ -279,7 +279,7 @@ class PreInscriptionController extends Controller
         $responsablePhone = optional(optional($preInscription->stake)->user)->contact_phone_1;
 
         if ($statusId == RequestStatusEnum::PENDING->value) {
-            $message = str_replace('{phone}', $responsablePhone, __('common.messages.error.email_exists_pending'));
+            $message = str_replace('[**]', $responsablePhone, __('common.messages.duplicates.pending'));
 
             return [
                 'exists' => true,
@@ -301,7 +301,7 @@ class PreInscriptionController extends Controller
                 $genderId
             );
 
-            $message = str_replace('{message}', $msg['message'], __('common.messages.error.email_exists_previous'));
+            $message = str_replace('[**]', $msg['message'], __('common.messages.duplicates.rejected'));
 
             return [
                 'exists' => true,

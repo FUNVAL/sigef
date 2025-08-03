@@ -59,7 +59,7 @@ return [
     'welcome_disclaimer' => [
         'title' => 'Bem-vindo à FUNVAL Internacional!',
         'subtitle' => 'Ficamos felizes em receber sua inscrição ou a referência de seu amigo.',
-        #'title' => '¿Estas buscando empleo? ¡Este Programa es para Ti! ',
+
         'program_description' => [
             'title' => 'Você está procurando emprego?&nbsp;&nbsp;Este Programa é para Você!',
 

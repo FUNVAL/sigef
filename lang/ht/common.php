@@ -70,7 +70,7 @@ return [
         'motivation' => 'Si oumenm oswa moun nan refere a gen motivasyon ak angajman pou reyalize objektif sa a, eben vanse! Nou kontan sipòte yo nan rechèch travay yo. ',
 
         'privacy' => [
-            'title' => 'Privacy and Confidentiality',
+            'title' => 'Konfidansyalite ak Konfidansyalite',
 
             'description' => 'Nou vle asire ou ke tout enfòmasyon pèsonèl yo ap trete ak konfidansyalite estrikt epi <span class="font-bold text-red-500">yo p ap pataje yo ak tyès pati san konsantman anvan.</span>'
         ],
