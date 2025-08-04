@@ -44,30 +44,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('stakes')->name('stakes.')
     ->controller(StakeController::class)->group(function () {
         // Listado y creación
-        Route::get('/', 'index')->name('index');
-        Route::post('/', 'store')->name('store');
-        
+        Route::get('/', 'index')->name('index')->middleware('can:ver estacas');
+        Route::post('/', 'store')->name('store')->middleware('can:crear estacas');
+
         // Edición
-        Route::put('/{stake}', 'update')->name('update');
-        
+        Route::put('/{stake}', 'update')->name('update')->middleware('can:editar estacas');
+
         // Eliminación (soft delete)
-        Route::delete('/{stake}', 'destroy')->name('destroy');
-        
-        // Rutas para formularios
-        Route::get('create', function () {
-            return Inertia::render('Stakes/Create', [
-                'countries' => \App\Models\Country::all(),
-                'users' => \App\Models\User::all()
-            ]);
-        })->name('create');
-        
-        Route::get('{stake}/edit', function (Stake $stake) {
-            return Inertia::render('Stakes/Edit', [
-                'stake' => $stake->load(['country', 'user']),
-                'countries' => \App\Models\Country::all(),
-                'users' => \App\Models\User::all()
-            ]);
-        })->name('edit');
+        Route::delete('/{stake}', 'destroy')->name('destroy')->middleware('can:eliminar estacas');
+
     });
 
     Route::prefix('courses')->name('courses.')

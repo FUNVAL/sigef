@@ -67,7 +67,7 @@ export function CreateStake({ countries, users }: CreateStakeProps) {
                         {/* País */}
                         <div className="grid gap-2">
                             <Label htmlFor="country_id">País</Label>
-                            <Select value={data.country_id} onValueChange={(value) => setData('country_id', value)}>
+                            <Select value={data.country_id} required onValueChange={(value) => setData('country_id', value)}>
                                 <SelectTrigger id="country_id">
                                     <SelectValue placeholder="Seleccione un país" />
                                 </SelectTrigger>

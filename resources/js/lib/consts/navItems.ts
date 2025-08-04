@@ -1,5 +1,5 @@
 import { NavItem } from '@/types';
-import { BookOpen, LayoutGrid, ListPlus, Notebook, Shield } from 'lucide-react';
+import { BookOpen, Church, LayoutGrid, ListPlus, Notebook, Shield } from 'lucide-react';
 
 export const mainNavItems: NavItem[] = [
     {
@@ -23,14 +23,20 @@ export const mainNavItems: NavItem[] = [
         title: 'Referencias',
         href: '/references',
         icon: Notebook,
-        permissions: ['reference:view', 'reference:edit', 'reference:update']
+        permissions: ['reference:view', 'reference:edit', 'reference:update'],
     },
     {
         title: 'Pre-Inscripciones',
         href: '/pre-inscription',
         icon: ListPlus,
         permissions: ['pre-inscription:update', 'pre-inscription:edit', 'pre-inscription:view'],
-    }
+    },
+    {
+        title: 'Stakes',
+        href: '/stakes',
+        icon: Church,
+        permissions: ['stake:view', 'stake:create', 'stake:edit', 'stake:delete'],
+    },
 ];
 
 export const getNavItems = (userPermissions: string[]): NavItem[] => {

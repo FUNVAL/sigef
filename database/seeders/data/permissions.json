@@ -112,5 +112,29 @@
         "description": "Permite actualizar los datos de una pre-inscripción sin cambiar su estado",
         "category": "Gestión de Pre-Inscripciones",
         "key": "pre-inscription:update"
+    },
+    {
+        "name": "crear estacas",
+        "description": "Permite crear nuevas estacas",
+        "category": "Gestión de Estacas",
+        "key": "stake:create"
+    },
+    {
+        "name": "ver estacas",
+        "description": "Permite ver la lista de estacas",
+        "category": "Gestión de Estacas",
+        "key": "stake:view"
+    },
+    {
+        "name": "editar estacas",
+        "description": "Permite editar estacas existentes",
+        "category": "Gestión de Estacas",
+        "key": "stake:edit"
+    },
+    {
+        "name": "eliminar estacas",
+        "description": "Permite eliminar estacas",
+        "category": "Gestión de Estacas",
+        "key": "stake:delete"
     }
 ]
