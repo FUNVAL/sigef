@@ -45,8 +45,9 @@ export function PreInscriptionOverviewStep({ request, countries }: OverviewStepP
     const getMaritalStatusName = () =>
         enums.maritalStatus.find((m) => m.id.toString() === data.marital_status?.toString())?.name || "-"
 
-    const getMission = () =>
-        data.served_mission ? "Sí" : "No"
+    const getMission = () => {
+        return enums.missionStatus?.find(m => m.id === data.served_mission)?.name || "-";
+    }
 
     return (
         <div className="max-w-2xl mx-auto">
