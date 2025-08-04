@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Country;
 use App\Models\Stake;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -78,5 +79,39 @@ class StakeController extends Controller
         $stake->markAsDeleted();
 
         return redirect()->back()->with('success', 'Stake eliminado correctamente');
+    }
+
+    /**
+     * Filter stakes by country id for public forms.
+     * Protected with API token validation.
+     */
+    public function filterByCountryId(Request $request, $country_id): JsonResponse
+    {
+        try {
+            // Opción 1: exists() - Más eficiente, solo verifica existencia
+            if (!Country::where('id', $country_id)->exists()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Country not found.'
+                ], 404);
+            }
+
+            // Obtener stakes ordenados alfabéticamente
+            $stakes = Stake::where('country_id', $country_id)
+                ->select('id', 'name')
+                ->orderBy('name', 'asc')
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $stakes
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
