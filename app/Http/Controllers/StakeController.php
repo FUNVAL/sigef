@@ -4,46 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use App\Models\Stake;
+
+use App\Models\Country;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class StakeController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * Allows filtering by name, id, country code and user_id
      */
     public function index(Request $request)
     {
-        $query = Stake::query();
+        $query = Stake::query()->with(['country', 'user']);
 
-        // Filter by id if provided
-        if ($request->has('id')) {
-            $query->where('id', $request->id);
+        // Búsqueda simple para el frontend
+        if ($request->has('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Filter by name if provided
-        if ($request->has('name')) {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
+        // Mostrar solo activos e inactivos (no eliminados)
+        $query->notDeleted();
 
-        // Filter by country code if provided
-        if ($request->has('code')) {
-            $query->whereHas('country', function ($q) use ($request) {
-                $q->where('code', strtoupper($request->code));
-            });
-        }
-
-        // Filter by user_id if provided
-        if ($request->has('user_id')) {
-            $query->where('user_id', $request->user_id);
-        }
-
-        $stakes = $query->with(['country', 'user'])->get();
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $stakes
+        return Inertia::render('Stakes/Index', [
+            'stakes' => $query->get(),
+            'countries' => Country::all(),
+            'users' => User::all(),
+            'filters' => $request->only(['search'])
         ]);
     }
 
@@ -56,28 +45,12 @@ class StakeController extends Controller
             'name' => 'required|string|max:255|unique:stakes',
             'country_id' => 'required|exists:countries,id',
             'user_id' => 'nullable|exists:users,id',
+            'status' => 'required|in:active,inactive', // Solo permitir active/inactive en creación
         ]);
 
-        $stake = Stake::create($validated);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Stake created successfully',
-            'data' => $stake
-        ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Stake $stake)
-    {
-        $stake->load(['country', 'user']);
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $stake
-        ]);
+        Stake::create($validated);
+        return redirect()->route('stakes.index')
+               ->with('success', 'Stake creado exitosamente');
     }
 
     /**
@@ -86,64 +59,28 @@ class StakeController extends Controller
     public function update(Request $request, Stake $stake)
     {
         $validated = $request->validate([
-            'name' => 'sometimes|string|max:255|unique:stakes,name,' . $stake->id,
-            'country_id' => 'sometimes|exists:countries,id',
+            'name' => 'required|string|max:255|unique:stakes,name,' . $stake->id,
+            'country_id' => 'required|exists:countries,id',
             'user_id' => 'nullable|exists:users,id',
+            'status' => 'required|in:active,inactive' // Solo permitir cambios entre active/inactive
         ]);
 
         $stake->update($validated);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Stake updated successfully',
-            'data' => $stake
-        ]);
+        return redirect()->back()
+               ->with('success', 'Stake actualizado exitosamente');
     }
 
     /**
      * Remove the specified resource from storage.
+     * (Método para marcar como eliminado)
      */
     public function destroy(Stake $stake)
     {
-        $stake->delete();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Stake deleted successfully'
-        ]);
-    }
-
-    /**
-     * Filter stakes by country id for public forms.
-     * Protected with API token validation.
-     */
-    public function filterByCountryId(Request $request, $country_id): JsonResponse
-    {
-        try {
-            // Opción 1: exists() - Más eficiente, solo verifica existencia
-            if (!Country::where('id', $country_id)->exists()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Country not found.'
-                ], 404);
-            }
-
-            // Obtener stakes ordenados alfabéticamente
-            $stakes = Stake::where('country_id', $country_id)
-                ->select('id', 'name')
-                ->orderBy('name', 'asc')
-                ->get();
-
-            return response()->json([
-                'status' => 'success',
-                'data' => $stakes
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'An unexpected error occurred.',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        // Marcar como eliminado en lugar de eliminar físicamente
+        $stake->markAsDeleted();
+        
+        return redirect()->back()->with('success', 'Stake eliminado correctamente');
     }
 }
+
