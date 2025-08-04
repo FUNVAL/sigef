@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use App\Models\Stake;
-
-use App\Models\Country;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -50,7 +48,7 @@ class StakeController extends Controller
 
         Stake::create($validated);
         return redirect()->route('stakes.index')
-               ->with('success', 'Stake creado exitosamente');
+            ->with('success', 'Stake creado exitosamente');
     }
 
     /**
@@ -68,7 +66,7 @@ class StakeController extends Controller
         $stake->update($validated);
 
         return redirect()->back()
-               ->with('success', 'Stake actualizado exitosamente');
+            ->with('success', 'Stake actualizado exitosamente');
     }
 
     /**
@@ -79,8 +77,41 @@ class StakeController extends Controller
     {
         // Marcar como eliminado en lugar de eliminar físicamente
         $stake->markAsDeleted();
-        
+
         return redirect()->back()->with('success', 'Stake eliminado correctamente');
     }
-}
 
+    /**
+     * Filter stakes by country id for public forms.
+     * Protected with API token validation.
+     */
+    public function filterByCountryId(Request $request, $country_id): JsonResponse
+    {
+        try {
+            // Opción 1: exists() - Más eficiente, solo verifica existencia
+            if (!Country::where('id', $country_id)->exists()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Country not found.'
+                ], 404);
+            }
+
+            // Obtener stakes ordenados alfabéticamente
+            $stakes = Stake::where('country_id', $country_id)
+                ->select('id', 'name')
+                ->orderBy('name', 'asc')
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $stakes
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+}

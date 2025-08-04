@@ -15,9 +15,9 @@ enum RequestStatusEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::PENDING => 'Pendiente',
-            self::APPROVED => 'Aprobado',
-            self::REJECTED => 'Rechazado',
+            self::PENDING => __('common.enums.request_status.pending'),
+            self::APPROVED => __('common.enums.request_status.approved'),
+            self::REJECTED => __('common.enums.request_status.rejected'),
         };
     }
 }

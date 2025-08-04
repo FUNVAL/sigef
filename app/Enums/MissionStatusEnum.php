@@ -15,9 +15,9 @@ enum MissionStatusEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::NO => 'No',
-            self::YES => 'Sí',
-            self::CURRENTLY_SERVING => 'Aún sirviendo',
+            self::NO => __('common.enums.mission_status.no'),
+            self::YES => __('common.enums.mission_status.yes'),
+            self::CURRENTLY_SERVING => __('common.enums.mission_status.currently_serving'),
         };
     }
 }

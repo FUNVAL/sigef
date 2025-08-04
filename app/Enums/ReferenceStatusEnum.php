@@ -6,9 +6,7 @@ use App\Traits\EnumMethods;
 
 enum ReferenceStatusEnum: int
 {
-
     use EnumMethods;
-
 
     case INCORRECT_NUMBER = 1;
     case WORK = 2;
@@ -22,17 +20,16 @@ enum ReferenceStatusEnum: int
 
     public function name(): string
     {
-
         return match ($this) {
-            self::INCORRECT_NUMBER => 'Número incorrecto',
-            self::WORK => 'Trabajo',
-            self::STUDIES => 'Estudios',
-            self::NOT_CHURCH_MEMBER => 'No es miembro de la iglesia',
-            self::FUTURE_MISSIONARY => 'Futuro misionero',
-            self::HEALTH => 'Salud',
-            self::GRADUATE => 'Es egresado',
-            self::DUPLICATE => 'Duplicado',
-            self::FEMALE => 'FILTRADA'
+            self::INCORRECT_NUMBER => __('common.enums.reference_status.incorrect_number'),
+            self::WORK => __('common.enums.reference_status.work'),
+            self::STUDIES => __('common.enums.reference_status.studies'),
+            self::NOT_CHURCH_MEMBER => __('common.enums.reference_status.not_church_member'),
+            self::FUTURE_MISSIONARY => __('common.enums.reference_status.future_missionary'),
+            self::HEALTH => __('common.enums.reference_status.health'),
+            self::GRADUATE => __('common.enums.reference_status.graduate'),
+            self::DUPLICATE => __('common.enums.reference_status.duplicate'),
+            self::FEMALE => __('common.enums.reference_status.filtered'),
         };
     }
 }

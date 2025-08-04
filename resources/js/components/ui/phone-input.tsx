@@ -14,6 +14,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Country } from '@/types/country';
+import { usePage } from '@inertiajs/react';
+import { Translation } from '@/types/global';
 
 const Prefix = React.memo(({ code }: { code: string }) => (
     <span className="flex h-10 w-auto items-center justify-center rounded-md rounded-r-none border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">
@@ -30,7 +32,7 @@ interface DropdownProps {
 
 const CountryDropdown = React.memo(({ countries, selectedCountry, onCountrySelect }: DropdownProps) => {
     const [open, setOpen] = React.useState(false);
-
+    const { forms } = usePage<Translation>().props;
     const handleSelect = (country: Country) => {
         onCountrySelect(country);
         setOpen(false);
@@ -45,7 +47,7 @@ const CountryDropdown = React.memo(({ countries, selectedCountry, onCountrySelec
                     aria-expanded={open}
                     className="w-22 justify-between rounded-r-none"
                 >
-                    {selectedCountry ? `${selectedCountry.code}` : 'País'}
+                    {selectedCountry ? `${selectedCountry.code}` : forms.pre_inscription.fields.country}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>

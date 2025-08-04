@@ -136,8 +136,8 @@
         "description": "Permite eliminar estacas",
         "category": "Gestión de Estacas",
         "key": "stake:delete"
-    }
-]
+    },
+    {
         "name": "ver países",
         "description": "Permite ver la lista de países",
         "category": "Gestión de Países",
@@ -161,5 +161,4 @@
         "category": "Gestión de Países",
         "key": "country:delete"
     }
-
 ]
