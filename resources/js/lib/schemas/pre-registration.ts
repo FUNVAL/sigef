@@ -21,9 +21,7 @@ export const preRegistrationSchema = z.object({
     stake_id: z.number().min(1, "La estaca es obligatoria."),
     email: z.string().email("Correo inválido."),
     marital_status: z.number().min(1, "El estado civil es obligatorio."),
-    served_mission: z.boolean().nullable(),
-}).superRefine((data, ctx) => {
-    requiredField(ctx, data.served_mission, ["served_mission"], "Este campo es obligatorio.");
+    served_mission: z.number().min(1, "Este campo es obligatorio."),
 });
 
 export const femaleValidationSchema = z.object({

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\CourseModalityEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
+use App\Enums\MissionStatusEnum;
 use App\Enums\RequestStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -70,6 +71,11 @@ class PreInscription extends Model
     public function getStatusAttribute(): ?array
     {
         return RequestStatusEnum::fromId($this->attributes['status'] ?? null);
+    }
+
+    public function getServedMissionAttribute(): ?array
+    {
+        return MissionStatusEnum::fromId($this->attributes['served_mission'] ?? null);
     }
 
     public function getModifiedByAttribute(): ?string

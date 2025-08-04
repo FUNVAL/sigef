@@ -201,8 +201,11 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                                 <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
                                     ¿Sirvió misión?
                                 </Label>
-                                <Badge variant="default" className='block'>
-                                    {served_mission ? "Sí" : "No"}
+                                <Badge variant={
+                                    preInscription.served_mission?.id === 2 ? "default" :
+                                    preInscription.served_mission?.id === 3 ? "outline" : "secondary"
+                                }>
+                                    {preInscription.served_mission?.name || "No especificado"}
                                 </Badge>
                             </div>
                             <div>
