@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Country;
 use App\Models\Stake;
+
 use App\Models\Country;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -46,7 +49,6 @@ class StakeController extends Controller
         ]);
 
         Stake::create($validated);
-
         return redirect()->route('stakes.index')
                ->with('success', 'Stake creado exitosamente');
     }
@@ -81,3 +83,4 @@ class StakeController extends Controller
         return redirect()->back()->with('success', 'Stake eliminado correctamente');
     }
 }
+

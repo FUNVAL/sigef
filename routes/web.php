@@ -38,7 +38,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('create', 'create')->name('create');
             Route::post('create', 'store')->name('store');
             Route::get('{id}', 'edit')->name('edit');
-            Route::put('{id}', 'update')->name('update');
+            Route::put('{country}', 'update')->name('update');
+            Route::delete('{country}','destroy')->name('destroy');
         });
 
     Route::prefix('stakes')->name('stakes.')
@@ -59,7 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->controller(CourseController::class)->group(function () {
             Route::get('/', 'index')->name('index')->middleware('can:ver cursos');
             Route::post('create', 'store')->name('store')->middleware('can:crear cursos');
-            Route::put('{id}', 'update')->name('update')->middleware('can:actualizar cursos');
+            Route::put('{id}', 'update')->name('update')->middleware('can:editar cursos');
             Route::delete('{id}', 'destroy')->name('destroy')->middleware('can:eliminar cursos');
         });
 

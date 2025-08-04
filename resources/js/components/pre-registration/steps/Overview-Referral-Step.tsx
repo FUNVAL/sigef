@@ -8,6 +8,7 @@ import { usePage } from "@inertiajs/react";
 import { ReferenceFormData } from "@/types/reference";
 import { StepperContext } from "@/pages/forms/stepper-provider";
 import { useContext } from "react";
+import useFilteredStakes from "@/hooks/use-filtered-stakes";
 
 interface OverviewReferralStepProps {
     request: {
@@ -18,14 +19,13 @@ interface OverviewReferralStepProps {
         errors: Record<string, string>;
     };
     countries: Country[];
-    stakes: Stake[];
 }
 
-export function OverviewReferralStep({ request, countries, stakes }: OverviewReferralStepProps) {
+export function OverviewReferralStep({ request, countries }: OverviewReferralStepProps) {
     const { nextStep, previousStep } = useContext(StepperContext);
-
     const { data, post, processing } = request;
     const { enums } = usePage<{ enums: Enums }>().props;
+    const { stakes } = useFilteredStakes(data.country_id);
 
     const getGenderName = () =>
         enums.gender.find((g) => g.id.toString() === data.gender?.toString())?.name || "-";

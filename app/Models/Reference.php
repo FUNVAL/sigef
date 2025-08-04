@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\GenderEnum;
 use App\Enums\ReferenceStatusEnum;
+use App\Enums\RelatedReferenceEnum;
 use App\Enums\RequestStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -68,6 +69,10 @@ class Reference extends Model
             return null;
         }
         return ReferenceStatusEnum::fromId($this->attributes['declined_reason']);
+    }
+    public function getRelationshipWithReferredAttribute(): ?array
+    {
+        return RelatedReferenceEnum::fromId($this->attributes['gender']);
     }
 
     public function getCountryAttribute()

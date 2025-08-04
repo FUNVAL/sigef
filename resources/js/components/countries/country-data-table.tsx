@@ -12,14 +12,14 @@ import {
 import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
 import TextLink from "../text-link";
-import { Course } from "@/types/course";
+import { Country } from "@/types/country";
 
-interface CourseDataTableProps {
-    onEditCourse?: (course: Course) => void;
-    onDeleteCourse?: (course: Course) => void;
+interface CountryDataTableProps {
+    onEditCountry?: (country: Country) => void;
+    onDeleteCountry?: (country: Country) => void;
 }
 
-export const createColumns = ({ onEditCourse, onDeleteCourse }: CourseDataTableProps): ColumnDef<Course>[] => [
+export const createColumns = ({ onEditCountry, onDeleteCountry }: CountryDataTableProps): ColumnDef<Country>[] => [
     {
         id: "select",
         header: ({ table }) => (
@@ -44,39 +44,39 @@ export const createColumns = ({ onEditCourse, onDeleteCourse }: CourseDataTableP
     },
     {
         accessorKey: "name",
-        header: "Nombre del referido",
+        header: "Nombre del Pais",
         cell: ({ row }) => {
-            const course = row.original;
+            const country = row.original;
             return (
                 <div className="flex items-center space-x-2">
-                    <div className="font-medium">{course.name}</div>
+                    <div className="font-medium">{country.name}</div>
                 </div>
             );
         },
     },
     {
-        accessorKey: "duration",
-        header: "Duración",
+        accessorKey: "code",
+        header: "Código",
         cell: ({ row }) => {
-            const course = row.original;
+            const country = row.original;
             return (
                 <div className="flex items-center space-x-2">
                     <div className="font-medium">
-                        {course.duration} {course.duration > 1 ? 'Semanas' : 'Semana'}
+                        {country.code}
                     </div>
                 </div>
             );
         },
     },
     {
-        accessorKey: "modality.name",
-        header: "Modalidad",
+        accessorKey: "phone_code",
+        header: "Código de Teléfono",
         cell: ({ row }) => {
-            const course = row.original;
+            const country = row.original;
             return (
                 <div className="flex items-center space-x-2">
                     <div className="font-medium">
-                        {course.modality.name}
+                        {country.phone_code}
                     </div>
                 </div>
             );
@@ -86,11 +86,11 @@ export const createColumns = ({ onEditCourse, onDeleteCourse }: CourseDataTableP
         accessorKey: "status",
         header: "Estado",
         cell: ({ row }) => {
-            const course = row.original;
+            const country = row.original;
             return (
                 <div className="flex items-center space-x-2">
-                    <div className={`font-medium ${course.status.name === 'Activo' ? 'text-green-600' : 'text-red-600'}`}>
-                        {course.status.name}
+                    <div className={`font-medium ${country?.status?.name === 'Activo' ? 'text-green-600' : 'text-red-600'}`}>
+                        {country?.status?.name}
                     </div>
                 </div>
             );
@@ -100,7 +100,7 @@ export const createColumns = ({ onEditCourse, onDeleteCourse }: CourseDataTableP
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-            const course = row.original
+            const country = row.original
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -112,15 +112,15 @@ export const createColumns = ({ onEditCourse, onDeleteCourse }: CourseDataTableP
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(course.id.toString())}
+                            onClick={() => navigator.clipboard.writeText(country.id.toString())}
                         >
                             Copy ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onEditCourse?.(course)}>
+                        <DropdownMenuItem onClick={() => onEditCountry?.(country)}>
                             Editar
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onDeleteCourse?.(course)}>
+                        <DropdownMenuItem onClick={() => onDeleteCountry?.(country)}>
                             Eliminar
                         </DropdownMenuItem>
                     </DropdownMenuContent>

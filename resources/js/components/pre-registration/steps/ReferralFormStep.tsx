@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Users, ArrowLeft } from "lucide-react"
-import { usePage } from "@inertiajs/react"
+import { router, usePage } from "@inertiajs/react"
 import SearchableSelect from "@/components/ui/searchable-select"
 import { ReferenceFormData } from "@/types/reference"
 import { Enums } from "@/types/global"
@@ -22,6 +22,7 @@ import validateForm from "@/lib/schemas/validate-schemas"
 import { useContext, useEffect, useState } from "react"
 import { StepperContext } from "@/pages/forms/stepper-provider";
 import { PhoneInput } from "@/components/ui/phone-input";
+import useFilteredStakes from "@/hooks/use-filtered-stakes";
 
 interface ReferralFormStepProps {
   request: {
@@ -29,15 +30,14 @@ interface ReferralFormStepProps {
     setData: (field: keyof ReferenceFormData, value: any) => void;
     errors: Record<string, string>;
   };
-  stakes: Stake[],
   countries: Country[],
 }
 
-export function ReferralFormStep({ stakes, countries, request, }: ReferralFormStepProps) {
+export function ReferralFormStep({ countries, request, }: ReferralFormStepProps) {
   const { nextStep, previousStep } = useContext(StepperContext);
-
   const { setData, data, errors: back_errors } = request;
   const { enums } = usePage<{ enums: Enums }>().props;
+  const { stakes } = useFilteredStakes(data.country_id);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -50,10 +50,6 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
       previousStep();
     }
   }
-
-  const filteredStakes = data.country_id ?
-    stakes.filter(stake => stake.country_id === data.country_id) :
-    [{ id: 0, name: 'Selecciona un país primero', country_id: 0 }];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,17 +138,17 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
               </div>
 
               <div>
-                <Label htmlFor="country_id">País</Label>
                 <SearchableSelect
                   data={countries}
-                  id="country_id"
                   name="country_id"
+                  id="country_id"
                   value={data.country_id.toString()}
-                  searchField="name"
-                  onChange={(value) => setData('country_id', Number(value))}
-                  placeholder="Selecciona un país"
+                  onValueChange={(value) => setData('country_id', Number(value))}
+                  label="País"
                   required
+                  placeholder="Selecciona un país"
                 />
+
                 {errors.country_id && <p className="text-red-500 text-sm">{errors.country_id}</p>}
               </div>
 
@@ -177,14 +173,15 @@ export function ReferralFormStep({ stakes, countries, request, }: ReferralFormSt
               </div>
 
               <div>
-                <Label htmlFor="stake_id">Estaca/Distrito/Misión</Label>
                 <SearchableSelect
-                  data={filteredStakes}
-                  id="stake_id"
+                  data={stakes}
                   name="stake_id"
+                  id="stake_id"
                   value={data.stake_id.toString()}
-                  searchField="name"
-                  onChange={(value) => setData('stake_id', Number(value))}
+                  onValueChange={(value) => setData('stake_id', Number(value))}
+                  label={"Estaca/Distrito/Misión"}
+                  disabled={!data.country_id}
+                  placeholder={data.country_id ? "Selecciona una estaca/distrito/misión" : "Primero selecciona un país"}
                 />
                 {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
               </div>

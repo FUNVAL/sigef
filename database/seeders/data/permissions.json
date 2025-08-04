@@ -138,3 +138,28 @@
         "key": "stake:delete"
     }
 ]
+        "name": "ver países",
+        "description": "Permite ver la lista de países",
+        "category": "Gestión de Países",
+        "key": "country:view"
+    },
+    {
+        "name": "crear países",
+        "description": "Permite crear nuevos países",
+        "category": "Gestión de Países",
+        "key": "country:create"
+    },
+    {
+        "name": "editar países",
+        "description": "Permite editar países existentes",
+        "category": "Gestión de Países",
+        "key": "country:edit"
+    },
+    {
+        "name": "eliminar países",
+        "description": "Permite eliminar países",
+        "category": "Gestión de Países",
+        "key": "country:delete"
+    }
+
+]
