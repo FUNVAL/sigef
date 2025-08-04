@@ -2,6 +2,7 @@
 
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
+use App\Enums\MissionStatusEnum;
 use App\Enums\RequestStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->string('phone', 20);
             $table->string('email', 100)->unique();
             $table->integer('marital_status')->default(MaritalStatusEnum::SINGLE->value);
-            $table->boolean('served_mission');
+            $table->integer('served_mission')->default(MissionStatusEnum::NO->value);
             $table->boolean('currently_working')->nullable();
             $table->integer('job_type_preference')->nullable();
             $table->boolean('available_full_time')->nullable();

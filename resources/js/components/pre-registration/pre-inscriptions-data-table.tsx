@@ -91,7 +91,10 @@ export const columns: ColumnDef<PreInscription>[] = [
         header: 'Misión',
         cell: ({ row }) => {
             const preInscription = row.original;
-            return <Badge variant={preInscription.served_mission ? 'default' : 'secondary'}>{preInscription.served_mission ? 'Sí' : 'No'}</Badge>;
+            const missionStatus = preInscription.served_mission?.name || 'No especificado';
+            const variant = preInscription.served_mission?.id === 2 ? 'default' : 
+                           preInscription.served_mission?.id === 3 ? 'outline' : 'secondary';
+            return <Badge variant={variant}>{missionStatus}</Badge>;
         },
     },
 

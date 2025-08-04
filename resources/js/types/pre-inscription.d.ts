@@ -11,7 +11,10 @@ type PreInscription = {
     age: number;
     phone: string;
     email: string;
-    served_mission: boolean;
+    served_mission: {
+        id: number;
+        name: string;
+    };
     currently_working?: boolean;
     available_full_time?: boolean;
     comments?: string;
@@ -64,12 +67,13 @@ type PreInscriptionFormData = Omit<
     | 'job_type_preference'
     | 'status'
     | 'declined_reason'
-    | 'declined_description'
+    | 'served_mission'
 > & {
     country_id: number;
     stake_id: number;
     gender: number;
     marital_status: number;
+    served_mission: number;
     job_type_preference?: number;
     status?: number;
 };
@@ -100,7 +104,10 @@ type PreInscriptionFilters = {
     stake?: number;
     age_min?: number;
     age_max?: number;
-    served_mission?: boolean;
+    served_mission?: {
+        id: number;
+        name: string;
+    };
     currently_working?: boolean;
     available_full_time?: boolean;
     job_type_preference?: number;
@@ -149,7 +156,7 @@ export type PreRegistrationFormData = {
     phone: string;
     email: string;
     marital_status: number;
-    served_mission: boolean | null;
+    served_mission: number | null;
     country_id: number;
     stake_id: number;
     course_id?: number;

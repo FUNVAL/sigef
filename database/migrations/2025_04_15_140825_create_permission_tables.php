@@ -27,11 +27,11 @@ return new class extends Migration
         Schema::create($tableNames['permissions'], static function (Blueprint $table) {
             // $table->engine('InnoDB');
             $table->bigIncrements('id'); // permission id
-            $table->string('name');       // For MyISAM use string('name', 225); // (or 166 for InnoDB with Redundant/Compact row format)
-            $table->string('guard_name')->default('web'); // For MyISAM use string('guard_name', 25);
-            $table->string('key'); // Tipo de modelo al que se le asigna el permiso
+            $table->string('name', 125);       // For MyISAM use string('name', 225); // (or 166 for InnoDB with Redundant/Compact row format)
+            $table->string('guard_name', 125)->default('web'); // For MyISAM use string('guard_name', 25);
+            $table->string('key', 125); // Tipo de modelo al que se le asigna el permiso
             $table->text('description'); // Descripción del permiso
-            $table->string('category'); // Categoría/tipo para agrupar permisos
+            $table->string('category', 125); // Categoría/tipo para agrupar permisos
             $table->timestamps();
 
             $table->unique(['name', 'guard_name']);
@@ -44,8 +44,8 @@ return new class extends Migration
                 $table->unsignedBigInteger($columnNames['team_foreign_key'])->nullable();
                 $table->index($columnNames['team_foreign_key'], 'roles_team_foreign_key_index');
             }
-            $table->string('name');       // For MyISAM use string('name', 225); // (or 166 for InnoDB with Redundant/Compact row format)
-            $table->string('guard_name')->default('web'); // For MyISAM use string('guard_name', 25);
+            $table->string('name', 125);       // For MyISAM use string('name', 225); // (or 166 for InnoDB with Redundant/Compact row format)
+            $table->string('guard_name', 125)->default('web'); // For MyISAM use string('guard_name', 25);
             $table->text('description')->nullable(); // Descripción del rol
             $table->timestamps();
             if ($teams || config('permission.testing')) {

@@ -7,6 +7,7 @@ use App\Http\Controllers\ReferenceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StakeController;
 use App\Http\Controllers\UserController;
+use App\Models\Stake;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -42,13 +43,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
     Route::prefix('stakes')->name('stakes.')
-        ->controller(StakeController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('create', 'create')->name('create');
-            Route::post('create', 'store')->name('store');
-            Route::get('{id}', 'edit')->name('edit');
-            Route::put('{id}', 'update')->name('update');
-        });
+    ->controller(StakeController::class)->group(function () {
+        // Listado y creación
+        Route::get('/', 'index')->name('index')->middleware('can:ver estacas');
+        Route::post('/', 'store')->name('store')->middleware('can:crear estacas');
+
+        // Edición
+        Route::put('/{stake}', 'update')->name('update')->middleware('can:editar estacas');
+
+        // Eliminación (soft delete)
+        Route::delete('/{stake}', 'destroy')->name('destroy')->middleware('can:eliminar estacas');
+
+    });
 
     Route::prefix('courses')->name('courses.')
         ->controller(CourseController::class)->group(function () {
