@@ -68,4 +68,9 @@ return [
         'work_colleague' => 'Kòlèg Travay',
         'other' => 'Lòt',
     ],
+    'mission_status' => [
+        'no' => 'Non',
+        'yes' => 'Wi',
+        'currently_serving' => 'K ap sèvi kounye a',
+    ],
 ];

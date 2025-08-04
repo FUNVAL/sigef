@@ -68,4 +68,9 @@ return [
         'work_colleague' => 'Colega de Trabalho',
         'other' => 'Outro',
     ],
+    'mission_status' => [
+        'no' => 'Não',
+        'yes' => 'Sim',
+        'currently_serving' => 'Servindo atualmente',
+    ],
 ];

@@ -68,4 +68,9 @@ return [
         'work_colleague' => 'Work Colleague',
         'other' => 'Other',
     ],
+    'mission_status' => [
+        'no' => 'No',
+        'yes' => 'Yes',
+        'currently_serving' => 'Currently serving',
+    ],
 ];
