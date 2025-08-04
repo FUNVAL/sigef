@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use App\Models\Stake;
-
-use App\Models\Country;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -50,7 +47,7 @@ class StakeController extends Controller
 
         Stake::create($validated);
         return redirect()->route('stakes.index')
-               ->with('success', 'Stake creado exitosamente');
+            ->with('success', 'Stake creado exitosamente');
     }
 
     /**
@@ -68,7 +65,7 @@ class StakeController extends Controller
         $stake->update($validated);
 
         return redirect()->back()
-               ->with('success', 'Stake actualizado exitosamente');
+            ->with('success', 'Stake actualizado exitosamente');
     }
 
     /**
@@ -79,8 +76,7 @@ class StakeController extends Controller
     {
         // Marcar como eliminado en lugar de eliminar físicamente
         $stake->markAsDeleted();
-        
+
         return redirect()->back()->with('success', 'Stake eliminado correctamente');
     }
 }
-
