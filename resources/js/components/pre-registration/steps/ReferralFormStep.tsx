@@ -224,7 +224,7 @@ export function ReferralFormStep({ countries, request, }: ReferralFormStepProps)
               </div>
 
               <div className="md:col-span-2">
-                <Label htmlFor="relationship_with_referred">{forms.referral.fields.relationship} *</Label>
+                <Label htmlFor="relationship_with_referred">{forms.referral.fields.relationship}</Label>
                 <Select
                   value={data.relationship_with_referred?.toString()}
                   onValueChange={(value) => setData('relationship_with_referred', Number(value))}
