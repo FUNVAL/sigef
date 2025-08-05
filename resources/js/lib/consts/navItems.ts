@@ -37,7 +37,7 @@ export const mainNavItems: NavItem[] = [
         href: '/stakes',
         icon: Church,
         permissions: ['stake:view', 'stake:create', 'stake:edit', 'stake:delete'],
-    },
+    },{
         title: 'Paises',
         href: '/countries',
         icon: Globe,

@@ -136,10 +136,21 @@ export const columns: ColumnDef<User>[] = [
                                 Editar
                             </TextLink>
                         </DropdownMenuItem>
+                        {user.roles.some(role => role.name === "Responsable") && (
+                            <DropdownMenuItem>
+                                <TextLink
+                                    href={route('users.assign-stakes', user.id)}
+                                    className="flex items-center space-x-2"
+                                    onClick={() => console.log('Navigating to:', route('users.assign-stakes', user.id))}
+                                >
+                                    Asignar Estacas
+                                </TextLink>
+                            </DropdownMenuItem>
+                        )}
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
         },
     },
 
-] 
+]

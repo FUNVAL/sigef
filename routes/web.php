@@ -20,10 +20,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->controller(UserController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('create', 'create')->name('create');
+            Route::get('{id}/assign-stakes', 'assignStakes')->name('assign-stakes');
             Route::get('{id}', 'edit')->name('edit');
             Route::post('create', 'store')->name('store');
             Route::put('{id}', 'update')->name('update');
         });
+
+    // Ruta para obtener stakes por país (para panel administrativo)
+    Route::get('api/admin/stakes/{country_id}', [StakeController::class, 'filterByCountryId'])
+        ->name('api.admin.stakes.by-country');
 
     Route::prefix('access-control')->name('access.')
         ->controller(RoleController::class)->group(function () {

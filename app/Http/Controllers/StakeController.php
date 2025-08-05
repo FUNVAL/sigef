@@ -88,25 +88,34 @@ class StakeController extends Controller
     public function filterByCountryId(Request $request, $country_id): JsonResponse
     {
         try {
+            \Log::info('Filter stakes called with country_id: ' . $country_id);
+
             // Opción 1: exists() - Más eficiente, solo verifica existencia
             if (!Country::where('id', $country_id)->exists()) {
+                \Log::warning('Country not found: ' . $country_id);
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Country not found.'
                 ], 404);
             }
 
-            // Obtener stakes ordenados alfabéticamente
+            // Obtener stakes ordenados alfabéticamente con más información para el frontend
+            // Temporalmente sin filtros de status para debuggear
             $stakes = Stake::where('country_id', $country_id)
-                ->select('id', 'name')
+                ->with(['user', 'country'])
                 ->orderBy('name', 'asc')
                 ->get();
 
+            \Log::info('Stakes found: ' . $stakes->count() . ' for country_id: ' . $country_id);
+            \Log::info('Stakes data: ' . $stakes->toJson());
+
             return response()->json([
                 'status' => 'success',
-                'data' => $stakes
+                'stakes' => $stakes, // Cambiado de 'data' a 'stakes'
+                'count' => $stakes->count()
             ]);
         } catch (\Exception $e) {
+            \Log::error('Error in filterByCountryId: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'An unexpected error occurred.',
