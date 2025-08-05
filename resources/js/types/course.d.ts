@@ -1,15 +1,11 @@
+import { type IdNameEntity } from "./common";
+
 type Course = {
     id: number;
     name: string;
     duration: number;
-    modality: {
-        id: number;
-        name: string;
-    };
-    status: {
-        id: number;
-        name: string;
-    };
+    modality: IdNameEntity;
+    status: IdNameEntity;
 }
 
 type CreateCourseForm = Omit<Course, 'id' | 'modality' | 'status'> & {

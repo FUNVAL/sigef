@@ -21,13 +21,13 @@ export const mainNavItems: NavItem[] = [
     },
     {
         title: 'Referencias',
-        href: '/references',
+        href: '/references/dashboard',
         icon: Notebook,
         permissions: ['reference:view', 'reference:edit', 'reference:update'],
     },
     {
-        title: 'Pre-Inscripciones',
-        href: '/pre-inscription',
+        title: 'Preinscripciones',
+        href: '/pre-inscription/dashboard',
         icon: ListPlus,
         permissions: ['pre-inscription:update', 'pre-inscription:edit', 'pre-inscription:view'],
     },
@@ -37,7 +37,7 @@ export const mainNavItems: NavItem[] = [
         icon: Church,
         permissions: ['stake:view', 'stake:create', 'stake:edit', 'stake:delete'],
     },
-    { 
+    {
         title: 'Paises',
         href: '/countries',
         icon: Globe,
