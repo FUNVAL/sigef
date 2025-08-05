@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Country;
+use App\Models\Stake;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role as ModelsRole;
 
@@ -148,22 +149,25 @@ class UserController extends Controller
     /**
      * Show the form for assigning stakes to a user.
      */
-    public function assignStakes(string $id)
+    public function assignStakes(int $id)
     {
         try {
             $user = User::findOrFail($id);
             $countries = Country::all();
+            $stakesByCountry = Stake::with('country')
+                ->get()
+                ->groupBy('country.name');
 
-            // Debugging - vamos a agregar un log temporal
-            \Log::info('Assign stakes accessed for user: ' . $id);
+            $userStakes = $user->stakes;
 
             return Inertia::render('access-control/users/asign-stakes', [
                 'countries' => $countries,
-                'userId' => (int) $id,
+                'userId' => $id,
                 'userName' => $user->fullname,
+                'stakesByCountry' => $stakesByCountry,
+                'userStakes' => $userStakes,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Error in assignStakes: ' . $e->getMessage());
             return redirect()->back()
                 ->withErrors(['error' => 'Failed to load assign stakes page: ' . $e->getMessage()]);
         }

@@ -44,22 +44,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('create', 'store')->name('store');
             Route::get('{id}', 'edit')->name('edit');
             Route::put('{country}', 'update')->name('update');
-            Route::delete('{country}','destroy')->name('destroy');
+            Route::delete('{country}', 'destroy')->name('destroy');
         });
 
     Route::prefix('stakes')->name('stakes.')
-    ->controller(StakeController::class)->group(function () {
-        // Listado y creación
-        Route::get('/', 'index')->name('index')->middleware('can:ver estacas');
-        Route::post('/', 'store')->name('store')->middleware('can:crear estacas');
+        ->controller(StakeController::class)->group(function () {
+            // Listado y creación
+            Route::get('/', 'index')->name('index')->middleware('can:ver estacas');
+            Route::post('/', 'store')->name('store')->middleware('can:crear estacas');
 
-        // Edición
-        Route::put('/{stake}', 'update')->name('update')->middleware('can:editar estacas');
+            // Edición
+            Route::put('/{stake}', 'update')->name('update')->middleware('can:editar estacas');
 
-        // Eliminación (soft delete)
-        Route::delete('/{stake}', 'destroy')->name('destroy')->middleware('can:eliminar estacas');
+            // Eliminación (soft delete)
+            Route::delete('/{stake}', 'destroy')->name('destroy')->middleware('can:eliminar estacas');
 
-    });
+            Route::patch('/{id}/assign-user', 'assignUser')->name('assign-user');
+        });
 
     Route::prefix('courses')->name('courses.')
         ->controller(CourseController::class)->group(function () {

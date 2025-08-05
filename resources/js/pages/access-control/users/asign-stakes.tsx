@@ -10,8 +10,8 @@ import { Label } from '@/components/ui/label';
 import { type BreadcrumbItem } from '@/types';
 import { Country } from '@/types/country';
 import { Stake } from '@/types/stake';
-import { Head } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { Head, useForm } from '@inertiajs/react';
+import { useState, useEffect, use } from 'react';
 import axios from 'axios';
 import { MapPin, Trash2, Users } from 'lucide-react';
 
@@ -19,6 +19,8 @@ interface Props {
     countries: Country[];
     userId: number;
     userName: string;
+    stakesByCountry?: Stake[];
+    userStakes?: number[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -31,13 +33,21 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/access-control/users/assign-stakes',
     },
 ];
+type AssignStakesFormData = {
+    stakes: number[];
+}
 
-export default function AssignStakes({ countries, userId, userName }: Props) {
+export default function AssignStakes({ countries, userId, userName, stakesByCountry, userStakes }: Props) {
+    const initialData: AssignStakesFormData = {
+        stakes: userStakes || [],
+    }
     const [selectedCountry, setSelectedCountry] = useState<string>('');
     const [stakes, setStakes] = useState<Stake[]>([]);
     const [loading, setLoading] = useState(false);
     const [selectedStakes, setSelectedStakes] = useState<Stake[]>([]);
     const [submitting, setSubmitting] = useState(false);
+
+    const { data, setData, patch, errors, processing } = useForm<AssignStakesFormData>(initialData);
 
     // Función para obtener las estacas por país
     const fetchStakesByCountry = async (countryId: string) => {
@@ -114,6 +124,18 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
     // Verificar si una estaca está seleccionada
     const isStakeSelected = (stakeId: number) => {
         return selectedStakes.some(s => s.id === stakeId);
+    };
+
+    const handleSumit = (e: React.FormEvent) => {
+        e.preventDefault();
+        patch(route('stakes.assign-user', userId), {
+            onSuccess: () => {
+                setSelectedStakes([]);
+            },
+            onError: () => {
+                alert('Error al asignar las estacas');
+            },
+        });
     };
 
     return (
@@ -270,10 +292,10 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
 
                                             <Button
                                                 onClick={handleAssignStakes}
-                                                disabled={submitting}
+                                                disabled={processing}
                                                 className="w-full"
                                             >
-                                                {submitting ? 'Asignando...' : 'Asignar Estacas'}
+                                                {processing ? 'Asignando...' : 'Asignar Estacas'}
                                             </Button>
                                         </>
                                     ) : (
