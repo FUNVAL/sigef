@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { STAKE_STATUS } from '@/lib/consts/stakeStatus';
 import { Stake } from '@/types/stake';
 import { useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
@@ -15,7 +16,7 @@ export function DeleteStake({ stake, open, onOpenChange }: { stake: Stake; open:
     };
 
     // No mostrar botón si ya está eliminado
-    if (stake.status === 'deleted') {
+    if (stake.status === STAKE_STATUS.DELETED) {
         return null;
     }
 

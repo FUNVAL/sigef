@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StatusEnum;
 use App\Models\Country;
 use App\Models\Stake;
 use App\Models\User;
@@ -43,7 +44,7 @@ class StakeController extends Controller
             'name' => 'required|string|max:255|unique:stakes',
             'country_id' => 'required|exists:countries,id',
             'user_id' => 'nullable|exists:users,id',
-            'status' => 'required|in:active,inactive', // Solo permitir active/inactive en creación
+            'status' => 'required|integer|in:' . StatusEnum::ACTIVE->value . ',' . StatusEnum::INACTIVE->value, // Solo permitir active/inactive en creación
         ]);
 
         Stake::create($validated);
@@ -60,7 +61,7 @@ class StakeController extends Controller
             'name' => 'required|string|max:255|unique:stakes,name,' . $stake->id,
             'country_id' => 'required|exists:countries,id',
             'user_id' => 'nullable|exists:users,id',
-            'status' => 'required|in:active,inactive' // Solo permitir cambios entre active/inactive
+            'status' => 'required|integer|in:' . StatusEnum::ACTIVE->value . ',' . StatusEnum::INACTIVE->value // Solo permitir cambios entre active/inactive
         ]);
 
         $stake->update($validated);

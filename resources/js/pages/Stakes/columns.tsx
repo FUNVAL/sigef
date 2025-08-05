@@ -8,6 +8,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { STAKE_STATUS } from '@/lib/consts/stakeStatus';
 import { Stake } from '@/types/stake';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
@@ -61,28 +62,19 @@ export const getColumns = ({ countries, users, onEdit, onDelete }: ColumnsProps)
             const status = row.original.status;
             let variant: 'default' | 'secondary' | 'destructive' = 'secondary';
             let text = 'Inactivo';
+            let className = 'bg-gray-100 text-gray-800';
 
-            if (status === 'active') {
+            if (status === STAKE_STATUS.ACTIVE) {
                 variant = 'default';
                 text = 'Activo';
-            } else if (status === 'deleted') {
+                className = 'bg-green-100 text-green-800';
+            } else if (status === STAKE_STATUS.DELETED) {
                 variant = 'destructive';
                 text = 'Eliminado';
+                className = 'bg-red-100 text-red-800';
             }
 
-            return (
-                <span
-                    className={`rounded-full px-2 py-1 text-xs ${
-                        status === 'active'
-                            ? 'bg-green-100 text-green-800'
-                            : status === 'inactive'
-                              ? 'bg-gray-100 text-gray-800'
-                              : 'bg-red-100 text-red-800'
-                    }`}
-                >
-                    {text}
-                </span>
-            );
+            return <span className={`rounded-full px-2 py-1 text-xs ${className}`}>{text}</span>;
         },
     },
     {
@@ -105,7 +97,7 @@ export const getColumns = ({ countries, users, onEdit, onDelete }: ColumnsProps)
                         <DropdownMenuItem onClick={() => navigator.clipboard.writeText(stake.id.toString())}>Copiar ID</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => onEdit(stake)}>Editar</DropdownMenuItem>
-                        {stake.status !== 'deleted' && (
+                        {stake.status !== STAKE_STATUS.DELETED && (
                             <DropdownMenuItem onClick={() => onDelete(stake)} className="text-red-600">
                                 Eliminar
                             </DropdownMenuItem>

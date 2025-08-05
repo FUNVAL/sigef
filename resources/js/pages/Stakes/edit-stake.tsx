@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { STAKE_STATUS } from '@/lib/consts/stakeStatus';
 import { Country } from '@/types/country';
 import { Stake } from '@/types/stake';
 import { User } from '@/types/users';
@@ -99,13 +100,13 @@ export function EditStake({ stake, countries, users, open, onOpenChange }: EditS
                         {/* Estado - Solo permitir cambio entre active/inactive */}
                         <div className="grid gap-2">
                             <Label htmlFor="status">Estado</Label>
-                            <Select value={data.status} onValueChange={(value) => setData('status', value as 'active' | 'inactive' | 'deleted')}>
+                            <Select value={String(data.status)} onValueChange={(value) => setData('status', parseInt(value) as any)}>
                                 <SelectTrigger id="status">
                                     <SelectValue placeholder="Seleccione un estado" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="active">Activo</SelectItem>
-                                    <SelectItem value="inactive">Inactivo</SelectItem>
+                                    <SelectItem value={String(STAKE_STATUS.ACTIVE)}>Activo</SelectItem>
+                                    <SelectItem value={String(STAKE_STATUS.INACTIVE)}>Inactivo</SelectItem>
                                 </SelectContent>
                             </Select>
                             <InputError message={errors.status} />

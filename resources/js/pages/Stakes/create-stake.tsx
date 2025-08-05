@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { STAKE_STATUS } from '@/lib/consts/stakeStatus';
 import { Country } from '@/types/country';
 import { User } from '@/types/users';
 import { useForm } from '@inertiajs/react';
@@ -21,7 +22,7 @@ export function CreateStake({ countries, users }: CreateStakeProps) {
         name: '',
         country_id: '',
         user_id: '',
-        status: 'active', // Valor por defecto
+        status: STAKE_STATUS.ACTIVE, // Usar valor numérico del enum
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -103,13 +104,13 @@ export function CreateStake({ countries, users }: CreateStakeProps) {
                         {/* Estado */}
                         <div className="grid gap-2">
                             <Label htmlFor="status">Estado</Label>
-                            <Select value={data.status} onValueChange={(value) => setData('status', value)}>
+                            <Select value={String(data.status)} onValueChange={(value) => setData('status', parseInt(value) as any)}>
                                 <SelectTrigger id="status">
                                     <SelectValue placeholder="Seleccione un estado" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="active">Activo</SelectItem>
-                                    <SelectItem value="inactive">Inactivo</SelectItem>
+                                    <SelectItem value={String(STAKE_STATUS.ACTIVE)}>Activo</SelectItem>
+                                    <SelectItem value={String(STAKE_STATUS.INACTIVE)}>Inactivo</SelectItem>
                                 </SelectContent>
                             </Select>
                             <InputError message={errors.status} />
