@@ -5,62 +5,10 @@ import AccessControlLayout from '@/layouts/access-control/layout';
 import AppLayout from '@/layouts/app-layout';
 import preinscriptionsNavItems from '@/lib/consts/preinscriptionNavItems';
 import { type BreadcrumbItem } from '@/types';
+import { type PreInscription } from '@/types/pre-inscription';
+import { type PreInscriptionStats, type PreInscriptionByCountry, type PreInscriptionByStake } from '@/types/dashboard';
 import { Head } from '@inertiajs/react';
 import { Briefcase, CheckCircle, Clock, MapPin, TrendingUp, Users, XCircle } from 'lucide-react';
-
-interface PreInscriptionStats {
-    total: number;
-    pending: number;
-    accepted: number;
-    rejected: number;
-    acceptancePercentage: number;
-    newThisWeek: number;
-}
-
-interface PreInscriptionByCountry {
-    country: string;
-    quantity: number;
-    percentage: number;
-}
-
-interface PreInscriptionByStake {
-    stake: string;
-    quantity: number;
-    percentage: number;
-}
-
-interface PreInscription {
-    id: number;
-    first_name: string;
-    middle_name: string | null;
-    last_name: string;
-    second_last_name: string | null;
-    gender: number;
-    age: number;
-    phone: string;
-    email: string;
-    marital_status: number;
-    served_mission: number;
-    status: number;
-    comments: string | null;
-    declined_reason: number | null;
-    country_id: number;
-    stake_id: number;
-    currently_working: boolean | null;
-    job_type_preference: number | null;
-    available_full_time: boolean | null;
-    modified_by: number | null;
-    created_at: string;
-    updated_at: string;
-    country: {
-        id: number;
-        name: string;
-    };
-    stake: {
-        id: number;
-        name: string;
-    };
-}
 
 interface DashboardData {
     stats: PreInscriptionStats;

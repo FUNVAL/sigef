@@ -5,63 +5,10 @@ import AccessControlLayout from '@/layouts/access-control/layout';
 import AppLayout from '@/layouts/app-layout';
 import referencesNavItems from '@/lib/consts/referencesNavItems';
 import { type BreadcrumbItem } from '@/types';
+import { type Reference } from '@/types/reference';
+import { type ReferenceStats, type ReferenceByCountry, type ReferenceByStake } from '@/types/dashboard';
 import { Head } from '@inertiajs/react';
 import { Briefcase, CheckCircle, Clock, MapPin, TrendingUp, Users, XCircle } from 'lucide-react';
-
-interface ReferenceStats {
-    total: number;
-    pending: number;
-    accepted: number;
-    rejected: number;
-    acceptancePercentage: number;
-    newThisWeek: number;
-}
-
-interface ReferenceByCountry {
-    country: string;
-    quantity: number;
-    percentage: number;
-}
-
-interface ReferenceByStake {
-    stake: string;
-    quantity: number;
-    percentage: number;
-}
-
-interface Reference {
-    id: number;
-    name: string;
-    gender: number;
-    age: number;
-    country_id: number;
-    phone: string | null;
-    stake_id: number;
-    referrer_name: string | null;
-    referrer_phone: string | null;
-    relationship_with_referred: number | null;
-    status: {
-        id: number;
-        name: string;
-    };
-    declined_reason: number | null;
-    declined_description: string | null;
-    modifier_id: number | null;
-    created_at: string;
-    updated_at: string;
-    country: {
-        id: number;
-        name: string;
-    };
-    stake: {
-        id: number;
-        name: string;
-    };
-    modifier: {
-        id: number;
-        name: string;
-    } | null;
-}
 
 interface DashboardData {
     stats: ReferenceStats;
