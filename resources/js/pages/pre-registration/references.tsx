@@ -16,7 +16,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function References({ references }: { references: Reference[] }) {
-    const { auth } = usePage().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs} menuOptions={referencesNavItems}>
