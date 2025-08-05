@@ -255,7 +255,7 @@ class ReferenceController extends Controller
                 ->values()
                 ->toArray();
 
-            return Inertia::render('dashboard', [
+            return Inertia::render('pre-registration/references-dashboard', [
                 'data' => [
                     'stats' => $stats,
                     'referencesByCountry' => $referencesByCountry,
