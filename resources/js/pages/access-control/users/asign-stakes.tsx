@@ -46,24 +46,18 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
             return;
         }
 
-        console.log('Fetching stakes for country:', countryId);
         setLoading(true);
         try {
             const response = await axios.get(`/api/admin/stakes/${countryId}`);
-            console.log('Response received:', response.data);
-            
+
             if (response.data.status === 'success') {
                 setStakes(response.data.stakes || []);
-                console.log('Stakes set:', response.data.stakes);
             } else {
                 console.error('API returned error:', response.data.message);
                 setStakes([]);
             }
         } catch (error) {
             console.error('Error fetching stakes:', error);
-            if (axios.isAxiosError(error) && error.response) {
-                console.error('Error response:', error.response.data);
-            }
             setStakes([]);
         } finally {
             setLoading(false);
