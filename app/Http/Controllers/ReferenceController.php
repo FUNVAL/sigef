@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RequestStatusEnum;
 use App\Enums\StatusEnum;
 use App\Models\Country;
 use App\Models\Reference;
@@ -210,9 +211,9 @@ class ReferenceController extends Controller
             $total = $references->count();
 
             // General statistics
-            $pending = $references->where('status.id', 1)->count();
-            $accepted = $references->where('status.id', 2)->count();
-            $rejected = $references->where('status.id', 3)->count();
+            $pending = $references->where('status.id', RequestStatusEnum::PENDING->value)->count();
+            $accepted = $references->where('status.id', RequestStatusEnum::APPROVED->value)->count();
+            $rejected = $references->where('status.id', RequestStatusEnum::REJECTED->value)->count();
             $acceptancePercentage = $total > 0 ? round(($accepted / $total) * 100, 1) : 0;
 
             // References this week

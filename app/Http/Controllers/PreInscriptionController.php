@@ -255,11 +255,10 @@ class PreInscriptionController extends Controller
             $total = $preInscriptions->count();
 
             // General statistics
-            $pending = $preInscriptions->where('status', RequestStatusEnum::PENDING->value)->count();
-            $accepted = $preInscriptions->where('status', RequestStatusEnum::APPROVED->value)->count();
-            $rejected = $preInscriptions->where('status', RequestStatusEnum::REJECTED->value)->count();
+            $pending = $preInscriptions->where('status.id', RequestStatusEnum::PENDING->value)->count();
+            $accepted = $preInscriptions->where('status.id', RequestStatusEnum::APPROVED->value)->count();
+            $rejected = $preInscriptions->where('status.id', RequestStatusEnum::REJECTED->value)->count();
             $acceptancePercentage = $total > 0 ? round(($accepted / $total) * 100, 1) : 0;
-
             // Pre-inscriptions this week
             $newThisWeek = $preInscriptions->where('created_at', '>=', now()->startOfWeek())->count();
 
@@ -304,8 +303,7 @@ class PreInscriptionController extends Controller
                 'data' => [
                     'stats' => $stats,
                     'preInscriptionsByCountry' => $preInscriptionsByCountry,
-                    'preInscriptionsByStake' => $preInscriptionsByStake,
-                    'preInscriptions' => $preInscriptions
+                    'preInscriptionsByStake' => $preInscriptionsByStake
                 ]
             ]);
         } catch (\Exception $e) {
