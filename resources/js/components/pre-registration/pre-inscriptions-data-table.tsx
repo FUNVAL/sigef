@@ -15,7 +15,11 @@ import { Checkbox } from '../ui/checkbox';
 import PreInscriptionOverview from './pre-inscription-overview';
 import PreInscriptionReview from './pre-inscription-review';
 
-export const columns: ColumnDef<PreInscription>[] = [
+export const createColumns = ({
+    onEditPreInscription,
+}: {
+    onEditPreInscription: (preInscription: PreInscription) => void;
+}): ColumnDef<PreInscription>[] => [
     {
         id: 'select',
         header: ({ table }) => (
@@ -132,21 +136,19 @@ export const columns: ColumnDef<PreInscription>[] = [
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-blue-50">
+                        <Button variant="ghost" className="h-8 w-8 p-0">
                             <span className="sr-only">Abrir menú</span>
                             <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(preInscription.email)}>
+                            Copiar email
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        {isPending && (
-                            <DropdownMenuItem className="text-blue-600 focus:bg-blue-50 focus:text-blue-700" asChild>
-                                <PreInscriptionReview preInscription={preInscription} />
-                            </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem className="focus:bg-blue-50" asChild>
-                            <PreInscriptionOverview preInscription={preInscription} />
+                        <DropdownMenuItem onClick={() => onEditPreInscription(preInscription)}>
+                            {isPending ? 'Revisar solicitud' : 'Ver detalles'}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

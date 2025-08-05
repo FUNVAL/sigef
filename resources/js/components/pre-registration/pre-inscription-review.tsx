@@ -6,10 +6,19 @@ import { useForm, usePage } from '@inertiajs/react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Enums } from '@/types/global';
 import { Textarea } from '@headlessui/react';
-import { Edit } from 'lucide-react';
+import { Edit, LoaderCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Button } from '../ui/button';
 
-const PreInscriptionReview = ({ preInscription }: { preInscription: PreInscription }) => {
+interface PreInscriptionReviewProps {
+    preInscription: PreInscription;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+}
+
+const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: PreInscriptionReviewProps) => {
+
     const { enums } = usePage<{ enums: Enums }>().props;
     const initialPreInscriptionUpdateData: Required<PreInscriptionUpdateFormData> = {
         id: preInscription.id,
@@ -21,18 +30,12 @@ const PreInscriptionReview = ({ preInscription }: { preInscription: PreInscripti
 
     const { data, setData, put, processing, errors, reset } = useForm<Required<PreInscriptionUpdateFormData>>(initialPreInscriptionUpdateData);
 
-    const handleSubmit = async () => {
-        return new Promise<void>((resolve, reject) => {
-            put(route('pre-inscription.update', preInscription.id), {
-                onSuccess: () => {
-                    reset();
-                    resolve();
-                },
-                onError: (errors) => {
-                    console.error('Error updating pre-inscription:', errors);
-                    reject(new Error('Error al actualizar la pre-inscripción'));
-                },
-            });
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        put(route('pre-inscription.update', preInscription.id), {
+            onSuccess: () => {
+                onOpenChange?.(false);
+            },
         });
     };
 
@@ -42,26 +45,25 @@ const PreInscriptionReview = ({ preInscription }: { preInscription: PreInscripti
     };
 
     const fullName = `${preInscription.first_name} ${preInscription.middle_name || ''} ${preInscription.last_name} ${preInscription.second_last_name || ''}`.trim();
-
+    /* 
+            <Dialog open={open} onOpenChange={onOpenChange}>
+    
+    
+    */
     return (
-        <CompleteDialog
-            btnLabel="Actualizar Estado"
-            dialogTitle="Revisar Pre-inscripción"
-            dialogDescription={`Revisa y actualiza el estado de la pre-inscripción de ${fullName}.`}
-            icon={<Edit className="h-4 w-4" />}
-            onSubmit={handleSubmit}
-            isSubmitting={processing}
-            onSuccess={handleSuccess}
-            contentClassName="md:max-w-3xl"
-        >
-            <div className="grid gap-6 p-4 max-h-[80vh] overflow-y-auto">
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            
+
+            <DialogContent className="grid gap-6 p-6 max-h-[85vh] overflow-y-auto sm:max-w-148">
                 {/* Información del Candidato (solo lectura) */}
+                <DialogHeader>
+                    <DialogTitle>Editar Pais</DialogTitle>
+                    <DialogDescription>
+                        Aquí puedes editar los detalles del pais. Asegúrate de completar todos los campos requeridos.
+                    </DialogDescription>
+                </DialogHeader>
                 <Card className="border-blue-200">
-                    <CardHeader className="bg-transparent">
-                        <CardTitle className="text-lg text-blue-800 dark:text-blue-500">
-                            Información del Candidato
-                        </CardTitle>
-                    </CardHeader>
+                    
                     <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
@@ -150,7 +152,7 @@ const PreInscriptionReview = ({ preInscription }: { preInscription: PreInscripti
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="comments" className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                            <Label htmlFor="comments" className={`font-bold font-mono text-lg ${data.status !== 3 ? ' text-gray-800/50 dark:text-blue-100/50': ' text-gray-800 dark:text-blue-100'  }`  }>
                                 Comentarios generales
                             </Label>
                             <Textarea
@@ -158,44 +160,31 @@ const PreInscriptionReview = ({ preInscription }: { preInscription: PreInscripti
                                 name="comments"
                                 placeholder="Agrega comentarios sobre la evaluación, próximos pasos, observaciones, etc."
                                 value={data.comments}
+                                required={data.status === 3}
+                                disabled={data.status !== 3}
                                 onChange={(e) => setData('comments', e.target.value)}
-                                className="min-h-32 w-full outline-none border resize-none p-2 rounded-md"
+                                className="min-h-32 w-full outline-none border resize-none p-2 rounded-md disabled:opacity-50"
                             />
                             {errors.comments && (
                                 <p className="text-red-500 text-sm">{errors.comments}</p>
                             )}
                         </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="declined_description" className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                {data.status === 3 ? "Descripción del rechazo (requerido)" : "Descripción adicional (opcional)"}
-                            </Label>
-                            <Textarea
-                                id="declined_description"
-                                name="declined_description"
-                                placeholder={
-                                    data.status === 1
-                                        ? "Describe el proceso de evaluación, documentos recibidos, etc."
-                                        : data.status === 2
-                                            ? "Describe los próximos pasos, fecha de inicio, documentos requeridos, etc."
-                                            : data.status === 3
-                                                ? "Proporciona detalles específicos sobre el motivo del rechazo..."
-                                                : "Agrega cualquier descripción relevante..."
-                                }
-                                value={data.declined_description}
-                                onChange={(e) => setData('declined_description', e.target.value)}
-                                className="min-h-40 w-full outline-none border resize-none p-2 rounded-md"
-                                required={data.status === 3}
-                            />
-                            {errors.declined_description && (
-                                <p className="text-red-500 text-sm">{errors.declined_description}</p>
-                            )}
-                        </div>
                     </CardContent>
                 </Card>
-            </div>
-        </CompleteDialog>
+                <DialogFooter className="mt-6 gap-4 flex">
+                        <Button type="button" variant="outline" disabled={processing} onClick={() => onOpenChange?.(false)}>
+                            Cancelar
+                        </Button>
+                        <Button  disabled={processing} onClick={handleSubmit} >
+                            Actualizar
+                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                        </Button>
+                    </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 };
+
+
 
 export default PreInscriptionReview;
