@@ -75,6 +75,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('pre-inscription')->name('pre-inscription.')
         ->controller(PreInscriptionController::class)->group(function () {
             Route::get('/', 'index')->name('index');
+            Route::get('/dashboard', 'dashboard')->name('dashboard');
             Route::get('{id}', 'show')->name('show');
             Route::put('{id}', 'update')->name('update');
             Route::delete('{id}', 'destroy')->name('destroy');

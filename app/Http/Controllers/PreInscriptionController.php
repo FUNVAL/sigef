@@ -237,6 +237,86 @@ class PreInscriptionController extends Controller
         }
     }
 
+    /**
+     * Get the pre-inscription dashboard data.
+     */
+    public function dashboard()
+    {
+        try {
+            $user = Auth::user();
+            $query = PreInscription::query()->with(['country', 'stake']);
+
+            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $preInscriptions = $query->get();
+            $total = $preInscriptions->count();
+
+            // General statistics
+            $pending = $preInscriptions->where('status', RequestStatusEnum::PENDING->value)->count();
+            $accepted = $preInscriptions->where('status', RequestStatusEnum::APPROVED->value)->count();
+            $rejected = $preInscriptions->where('status', RequestStatusEnum::REJECTED->value)->count();
+            $acceptancePercentage = $total > 0 ? round(($accepted / $total) * 100, 1) : 0;
+
+            // Pre-inscriptions this week
+            $newThisWeek = $preInscriptions->where('created_at', '>=', now()->startOfWeek())->count();
+
+            $stats = [
+                'total' => $total,
+                'pending' => $pending,
+                'accepted' => $accepted,
+                'rejected' => $rejected,
+                'acceptancePercentage' => $acceptancePercentage,
+                'newThisWeek' => $newThisWeek,
+            ];
+
+            // Pre-inscriptions by country
+            $preInscriptionsByCountry = $preInscriptions->groupBy('country.name')
+                ->map(function ($group, $country) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'country' => $country ?? 'No Country',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
+            // Pre-inscriptions by stake
+            $preInscriptionsByStake = $preInscriptions->groupBy('stake.name')
+                ->map(function ($group, $stake) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'stake' => $stake ?? 'No Stake',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
+            return Inertia::render('pre-registration/pre-inscriptions-dashboard', [
+                'data' => [
+                    'stats' => $stats,
+                    'preInscriptionsByCountry' => $preInscriptionsByCountry,
+                    'preInscriptionsByStake' => $preInscriptionsByStake,
+                    'preInscriptions' => $preInscriptions
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener el dashboard de pre-inscripciones',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     private function generateMessage($currentlyWorking, $jobTypePreference, $availableFullTime, $gender): array
     {
         $response = [

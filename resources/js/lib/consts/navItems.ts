@@ -26,8 +26,8 @@ export const mainNavItems: NavItem[] = [
         permissions: ['reference:view', 'reference:edit', 'reference:update'],
     },
     {
-        title: 'Pre-Inscripciones',
-        href: '/pre-inscription',
+        title: 'Preinscripciones',
+        href: '/pre-inscription/dashboard',
         icon: ListPlus,
         permissions: ['pre-inscription:update', 'pre-inscription:edit', 'pre-inscription:view'],
     },
