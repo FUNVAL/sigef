@@ -1,6 +1,5 @@
 import { NavItem } from '@/types';
-import { BookOpen, Church, LayoutGrid, ListPlus, Notebook, Shield } from 'lucide-react';
-import { BookOpen, LayoutGrid, ListPlus, Notebook, Shield, Globe } from 'lucide-react';
+import { BookOpen, LayoutGrid, ListPlus, Notebook, Shield, Globe, Church } from 'lucide-react';
 
 export const mainNavItems: NavItem[] = [
     {
@@ -22,13 +21,13 @@ export const mainNavItems: NavItem[] = [
     },
     {
         title: 'Referencias',
-        href: '/references',
+        href: '/references/dashboard',
         icon: Notebook,
         permissions: ['reference:view', 'reference:edit', 'reference:update'],
     },
     {
-        title: 'Pre-Inscripciones',
-        href: '/pre-inscription',
+        title: 'Preinscripciones',
+        href: '/pre-inscription/dashboard',
         icon: ListPlus,
         permissions: ['pre-inscription:update', 'pre-inscription:edit', 'pre-inscription:view'],
     },
@@ -37,7 +36,12 @@ export const mainNavItems: NavItem[] = [
         href: '/stakes',
         icon: Church,
         permissions: ['stake:view', 'stake:create', 'stake:edit', 'stake:delete'],
+<<<<<<< HEAD
     },{
+=======
+    },
+    {
+>>>>>>> 534aaf58bb875b7df3840550a04846f1b29b41f3
         title: 'Paises',
         href: '/countries',
         icon: Globe,

@@ -38,7 +38,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
             <form onSubmit={submit} className="mx-auto w-full max-w-sm px-5 pt-2 pb-4">
                 <div className="mb-4">
-                    <Label htmlFor="email">Usuario</Label>
+                    <Label htmlFor="email" className='text-[17px]'>Usuario</Label>
                     <Input
                         id="email"
                         type="email"
@@ -47,14 +47,14 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         required
                         autoFocus
                         autoComplete="email"
-                        className="mt-1"
+                        className="mt-1 h-10"
                         placeholder="correo@ejemplo.com"
                     />
                     <InputError message={errors.email} />
                 </div>
 
                 <div className="mb-4">
-                    <Label htmlFor="password">Contraseña</Label>
+                    <Label htmlFor="password" className='text-[17px]'>Contraseña</Label>
                     <Input
                         id="password"
                         type="password"
@@ -62,8 +62,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         onChange={(e) => setData('password', e.target.value)}
                         required
                         autoComplete="current-password"
-                        className="mt-1"
-                        placeholder="••••••••"
+                        className="mt-1 h-10"
+                        placeholder="•••••••••••••"
                     />
                     <InputError message={errors.password} />
                 </div>
@@ -77,14 +77,14 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         onChange={() => setData('remember', !data.remember)}
                         className="mr-2"
                     />
-                    <Label htmlFor="remember">Recuérdame</Label>
+                    <Label htmlFor="remember" className='text-[16px]'>Recuérdame</Label>
                 </div>
 
                 <div className="flex justify-end">
                     <Button
                         type="submit"
                         disabled={processing}
-                        className="mx-auto flex w-4/5 items-center justify-center gap-2 rounded bg-blue-600 px-5 py-2 text-white hover:bg-blue-700 disabled:opacity-70"
+                        className="mx-auto flex min-w-4/5 items-center justify-center gap-2 rounded bg-blue-600 px-5 py-2 text-white hover:bg-blue-700 disabled:opacity-70"
                     >
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Log In
