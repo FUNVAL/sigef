@@ -238,9 +238,9 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                     description: `Asignar estacas a ${userName}`,
                 }}
             >
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {/* Panel principal de selección */}
-                    <div className="lg:col-span-2">
+                    <div className="md:col-span-2 lg:col-span-1">
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
@@ -335,15 +335,14 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                         </Card>
                     </div>
 
-                    {/* Panel lateral de cambios */}
+                    {/* Panel de Estacas Asignadas Actualmente */}
                     <div className="lg:col-span-1">
-                        <div className="space-y-4 sticky top-4">
-                            {/* Lista de Estacas Actualmente Asignadas */}
+                        <div className="sticky top-4">
                             <Card>
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2 text-green-600">
                                         <Users className="h-5 w-5" />
-                                        Estacas Asignadas Actualmente
+                                        Estacas Asignadas
                                     </CardTitle>
                                     <CardDescription>
                                         {currentlyAssignedStakes.length} estaca(s) asignada(s)
@@ -351,7 +350,7 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                                 </CardHeader>
                                 <CardContent>
                                     {currentlyAssignedStakes.length > 0 ? (
-                                        <div className="h-[150px] pr-4 overflow-y-auto">
+                                        <div className="h-[400px] pr-4 overflow-y-auto">
                                             <div className="space-y-2">
                                                 {currentlyAssignedStakes.map((stake) => (
                                                     <div
@@ -380,16 +379,20 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="text-center py-6 text-muted-foreground">
+                                        <div className="text-center py-8 text-muted-foreground">
                                             <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
                                             <p className="text-sm">No hay estacas asignadas</p>
                                         </div>
                                     )}
                                 </CardContent>
                             </Card>
+                        </div>
+                    </div>
 
-                            {/* Lista de Cambios Pendientes */}
-                            {hasChanges && (
+                    {/* Panel de Cambios Pendientes */}
+                    <div className="lg:col-span-1">
+                        <div className="sticky top-4">
+                            {hasChanges ? (
                                 <Card>
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2 text-blue-600">
@@ -409,7 +412,7 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                                                         <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                                                         Asignar ({toAssign.length})
                                                     </h4>
-                                                    <div className="space-y-1 max-h-[100px] overflow-y-auto">
+                                                    <div className="space-y-1 max-h-[150px] overflow-y-auto">
                                                         {toAssign.map((stake) => (
                                                             <div
                                                                 key={`assign-${stake.id}`}
@@ -429,7 +432,7 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                                                         <span className="w-2 h-2 bg-red-500 rounded-full"></span>
                                                         Desasignar ({toUnassign.length})
                                                     </h4>
-                                                    <div className="space-y-1 max-h-[100px] overflow-y-auto">
+                                                    <div className="space-y-1 max-h-[150px] overflow-y-auto">
                                                         {toUnassign.map((stake) => (
                                                             <div
                                                                 key={`unassign-${stake.id}`}
@@ -442,7 +445,7 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                                                 </div>
                                             )}
 
-                                            <div className="mt-4">
+                                            <div className="mt-6">
                                                 <Button
                                                     onClick={handleSaveChanges}
                                                     disabled={submitting || !hasChanges}
@@ -454,13 +457,16 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                                         </div>
                                     </CardContent>
                                 </Card>
-                            )}
-
-                            {/* Mensaje cuando no hay cambios */}
-                            {!hasChanges && (
+                            ) : (
                                 <Card>
-                                    <CardContent className="pt-6">
-                                        <div className="text-center py-6 text-muted-foreground">
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2 text-gray-600">
+                                            <Users className="h-5 w-5" />
+                                            Cambios
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="text-center py-8 text-muted-foreground">
                                             <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
                                             <p className="text-sm">No hay cambios pendientes</p>
                                             <p className="text-xs mt-1">
