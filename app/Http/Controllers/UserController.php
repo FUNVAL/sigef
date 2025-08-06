@@ -154,17 +154,13 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($id);
             $countries = Country::all();
-            $stakesByCountry = Stake::with('country')
-                ->get()
-                ->groupBy('country.name');
 
-            $userStakes = $user->stakes;
+            $userStakes = $user->stakes->pluck('id')->toArray();
 
             return Inertia::render('access-control/users/asign-stakes', [
                 'countries' => $countries,
                 'userId' => $id,
                 'userName' => $user->fullname,
-                'stakesByCountry' => $stakesByCountry,
                 'userStakes' => $userStakes,
             ]);
         } catch (\Exception $e) {

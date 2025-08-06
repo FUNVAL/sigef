@@ -11,7 +11,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Country } from '@/types/country';
 import { Stake } from '@/types/stake';
 import { Head, useForm } from '@inertiajs/react';
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { MapPin, Trash2, Users } from 'lucide-react';
 
@@ -19,7 +19,6 @@ interface Props {
     countries: Country[];
     userId: number;
     userName: string;
-    stakesByCountry?: Stake[];
     userStakes?: number[];
 }
 
@@ -37,7 +36,7 @@ type AssignStakesFormData = {
     stakes: number[];
 }
 
-export default function AssignStakes({ countries, userId, userName, stakesByCountry, userStakes }: Props) {
+export default function AssignStakes({ countries, userId, userName, userStakes }: Props) {
     const initialData: AssignStakesFormData = {
         stakes: userStakes || [],
     }
@@ -46,8 +45,33 @@ export default function AssignStakes({ countries, userId, userName, stakesByCoun
     const [loading, setLoading] = useState(false);
     const [selectedStakes, setSelectedStakes] = useState<Stake[]>([]);
     const [submitting, setSubmitting] = useState(false);
+    const [currentUserStakes, setCurrentUserStakes] = useState<number[]>(userStakes || []);
 
-    const { data, setData, patch, errors, processing } = useForm<AssignStakesFormData>(initialData);
+    const { processing } = useForm<AssignStakesFormData>(initialData);
+
+    // Función para cargar las estacas asignadas al usuario
+    const loadAssignedStakes = useCallback(async () => {
+        try {
+            // Usar el nuevo endpoint que devuelve directamente las estacas del usuario
+            const response = await axios.get(`/api/admin/user-stakes/${userId}`);
+
+            if (response.data.status === 'success') {
+                const assignedStakeObjects = response.data.stakes || [];
+                setSelectedStakes(assignedStakeObjects);
+                // Actualizar los IDs de estacas actualmente asignadas
+                setCurrentUserStakes(assignedStakeObjects.map((stake: Stake) => stake.id));
+            } else {
+                console.error('API returned error:', response.data.message);
+            }
+        } catch (error) {
+            console.error('Error loading assigned stakes:', error);
+        }
+    }, [userId]);
+
+    // Cargar estacas asignadas al montar el componente
+    useEffect(() => {
+        loadAssignedStakes();
+    }, [loadAssignedStakes]);
 
     // Función para obtener las estacas por país
     const fetchStakesByCountry = async (countryId: string) => {
@@ -88,30 +112,49 @@ export default function AssignStakes({ countries, userId, userName, stakesByCoun
         }
     };
 
-    // Remover estaca seleccionada
+    // Remover estaca seleccionada (solo si no es una ya asignada)
     const removeSelectedStake = (stakeId: number) => {
+        // No permitir eliminar estacas ya asignadas
+        if (isAssignedStake(stakeId)) {
+            return;
+        }
         setSelectedStakes(prev => prev.filter(s => s.id !== stakeId));
     };
 
     // Manejar asignación de estacas
     const handleAssignStakes = async () => {
-        if (selectedStakes.length === 0) return;
+        if (newlySelectedStakes.length === 0) return;
 
         setSubmitting(true);
         try {
-            // Aquí irá la llamada POST para asignar las estacas
-            // Por ahora solo simularemos el proceso
-            console.log('Asignando estacas:', {
-                userId,
-                stakeIds: selectedStakes.map(s => s.id)
+            // Obtener todas las estacas actuales (asignadas + nuevas)
+            const allStakeIds = selectedStakes.map(s => s.id);
+
+            console.log('=== FRONTEND ASSIGNMENT TEST ===');
+            console.log('User ID:', userId);
+            console.log('All selected stakes:', selectedStakes);
+            console.log('Assigned stakes IDs:', assignedStakes.map(s => s.id));
+            console.log('New stakes IDs:', newlySelectedStakes.map(s => s.id));
+            console.log('All stake IDs to send:', allStakeIds);
+
+            // Hacer la llamada real al backend para asignar estacas
+            const response = await axios.patch(`/stakes/${userId}/assign-user`, {
+                stakes: allStakeIds
+            }, {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
             });
 
-            // Simular delay de la llamada API
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.log('Backend response:', response.data);
+            console.log('=== END FRONTEND ASSIGNMENT TEST ===');
 
-            // Aquí podrías redirigir o mostrar un mensaje de éxito
-            alert('Estacas asignadas exitosamente!');
-            setSelectedStakes([]);
+            // Mostrar mensaje de éxito
+            alert(`${newlySelectedStakes.length} nueva(s) estaca(s) asignadas exitosamente!`);
+
+            // Recargar las estacas asignadas para reflejar los cambios
+            await loadAssignedStakes();
 
         } catch (error) {
             console.error('Error assigning stakes:', error);
@@ -119,24 +162,24 @@ export default function AssignStakes({ countries, userId, userName, stakesByCoun
         } finally {
             setSubmitting(false);
         }
-    };
-
-    // Verificar si una estaca está seleccionada
+    };    // Verificar si una estaca está seleccionada
     const isStakeSelected = (stakeId: number) => {
         return selectedStakes.some(s => s.id === stakeId);
     };
 
-    const handleSumit = (e: React.FormEvent) => {
-        e.preventDefault();
-        patch(route('stakes.assign-user', userId), {
-            onSuccess: () => {
-                setSelectedStakes([]);
-            },
-            onError: () => {
-                alert('Error al asignar las estacas');
-            },
-        });
+    // Verificar si una estaca es una ya asignada (no nueva)
+    const isAssignedStake = (stakeId: number) => {
+        return currentUserStakes.includes(stakeId);
     };
+
+    // Separar estacas ya asignadas de las nuevas seleccionadas
+    const assignedStakes = selectedStakes
+        .filter(stake => isAssignedStake(stake.id))
+        .sort((a, b) => a.name.localeCompare(b.name)); // Ordenar alfabéticamente
+
+    const newlySelectedStakes = selectedStakes
+        .filter(stake => !isAssignedStake(stake.id))
+        .sort((a, b) => a.name.localeCompare(b.name)); // Ordenar alfabéticamente
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -244,34 +287,79 @@ export default function AssignStakes({ countries, userId, userName, stakesByCoun
                         </Card>
                     </div>
 
-                    {/* Panel lateral de estacas seleccionadas */}
+                    {/* Panel lateral de estacas */}
                     <div className="lg:col-span-1">
-                        <Card className="sticky top-4">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Users className="h-5 w-5" />
-                                    Estacas Seleccionadas
-                                </CardTitle>
-                                <CardDescription>
-                                    {selectedStakes.length} estaca(s) seleccionada(s)
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-4">
-                                    {selectedStakes.length > 0 ? (
+                        <div className="space-y-4 sticky top-4">
+                            {/* Lista de Estacas Actualmente Asignadas */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2 text-green-600">
+                                        <Users className="h-5 w-5" />
+                                        Estacas Actualmente Asignadas
+                                    </CardTitle>
+                                    <CardDescription>
+                                        {assignedStakes.length} estaca(s) asignada(s)
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    {assignedStakes.length > 0 ? (
+                                        <div className="h-[200px] pr-4 overflow-y-auto">
+                                            <div className="space-y-2">
+                                                {assignedStakes.map((stake) => (
+                                                    <div
+                                                        key={`assigned-${stake.id}`}
+                                                        className="flex items-center justify-between p-3 border border-green-200 bg-green-50 rounded-lg"
+                                                    >
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="font-medium text-sm truncate text-green-800">
+                                                                {stake.name}
+                                                            </div>
+                                                            <div className="text-xs text-green-600 truncate">
+                                                                {stake.country?.name}
+                                                            </div>
+                                                        </div>
+                                                        <Badge variant="outline" className="text-green-700 border-green-300">
+                                                            Asignada
+                                                        </Badge>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-6 text-muted-foreground">
+                                            <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                                            <p className="text-sm">No hay estacas asignadas</p>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+
+                            {/* Lista de Nuevas Estacas Seleccionadas */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2 text-blue-600">
+                                        <Users className="h-5 w-5" />
+                                        Nuevas Estacas Seleccionadas
+                                    </CardTitle>
+                                    <CardDescription>
+                                        {newlySelectedStakes.length} estaca(s) seleccionada(s)
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    {newlySelectedStakes.length > 0 ? (
                                         <>
-                                            <div className="h-[300px] pr-4 overflow-y-auto">
+                                            <div className="h-[200px] pr-4 overflow-y-auto">
                                                 <div className="space-y-2">
-                                                    {selectedStakes.map((stake) => (
+                                                    {newlySelectedStakes.map((stake) => (
                                                         <div
-                                                            key={stake.id}
-                                                            className="flex items-center justify-between p-2 border rounded-lg"
+                                                            key={`new-${stake.id}`}
+                                                            className="flex items-center justify-between p-3 border border-blue-200 bg-blue-50 rounded-lg"
                                                         >
                                                             <div className="flex-1 min-w-0">
-                                                                <div className="font-medium text-sm truncate">
+                                                                <div className="font-medium text-sm truncate text-blue-800">
                                                                     {stake.name}
                                                                 </div>
-                                                                <div className="text-xs text-muted-foreground truncate">
+                                                                <div className="text-xs text-blue-600 truncate">
                                                                     {stake.country?.name}
                                                                 </div>
                                                             </div>
@@ -288,28 +376,28 @@ export default function AssignStakes({ countries, userId, userName, stakesByCoun
                                                 </div>
                                             </div>
 
-                                            <Separator />
-
-                                            <Button
-                                                onClick={handleAssignStakes}
-                                                disabled={processing}
-                                                className="w-full"
-                                            >
-                                                {processing ? 'Asignando...' : 'Asignar Estacas'}
-                                            </Button>
+                                            <div className="mt-4">
+                                                <Button
+                                                    onClick={handleAssignStakes}
+                                                    disabled={processing || newlySelectedStakes.length === 0}
+                                                    className="w-full"
+                                                >
+                                                    {processing ? 'Asignando...' : `Asignar ${newlySelectedStakes.length} Nueva(s) Estaca(s)`}
+                                                </Button>
+                                            </div>
                                         </>
                                     ) : (
-                                        <div className="text-center py-8 text-muted-foreground">
-                                            <Users className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                                            <p>No hay estacas seleccionadas</p>
+                                        <div className="text-center py-6 text-muted-foreground">
+                                            <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                                            <p className="text-sm">No hay estacas seleccionadas</p>
                                             <p className="text-xs mt-1">
                                                 Selecciona estacas del panel izquierdo
                                             </p>
                                         </div>
                                     )}
-                                </div>
-                            </CardContent>
-                        </Card>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </div>
                 </div>
             </AccessControlLayout>

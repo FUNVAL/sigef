@@ -30,6 +30,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/admin/stakes/{country_id}', [StakeController::class, 'filterByCountryId'])
         ->name('api.admin.stakes.by-country');
 
+    // Ruta para obtener stakes asignadas a un usuario específico
+    Route::get('api/admin/user-stakes/{user_id}', [StakeController::class, 'getUserStakes'])
+        ->name('api.admin.user-stakes');
+
     Route::prefix('access-control')->name('access.')
         ->controller(RoleController::class)->group(function () {
             Route::get('/', 'index')->name('index')->middleware('can:ver roles');
