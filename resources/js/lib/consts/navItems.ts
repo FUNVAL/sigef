@@ -36,12 +36,8 @@ export const mainNavItems: NavItem[] = [
         href: '/stakes',
         icon: Church,
         permissions: ['stake:view', 'stake:create', 'stake:edit', 'stake:delete'],
-<<<<<<< HEAD
-    },{
-=======
     },
     {
->>>>>>> 534aaf58bb875b7df3840550a04846f1b29b41f3
         title: 'Paises',
         href: '/countries',
         icon: Globe,

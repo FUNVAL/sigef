@@ -58,6 +58,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             // Eliminación (soft delete)
             Route::delete('/{stake}', 'destroy')->name('destroy')->middleware('can:eliminar estacas');
+
+            Route::patch('/{id}/assign-user', 'assignUser')->name('assign-user');
         });
 
     Route::prefix('courses')->name('courses.')

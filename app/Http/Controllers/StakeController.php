@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use PhpParser\Node\Stmt\TryCatch;
 
 class StakeController extends Controller
 {
@@ -88,7 +89,7 @@ class StakeController extends Controller
     public function filterByCountryId(Request $request, $country_id): JsonResponse
     {
         try {
-            // Verificar que el país existe
+            // Opción 1: exists() - Más eficiente, solo verifica existencia
             if (!Country::where('id', $country_id)->exists()) {
                 return response()->json([
                     'status' => 'error',
@@ -96,24 +97,47 @@ class StakeController extends Controller
                 ], 404);
             }
 
-            // Obtener stakes ordenados alfabéticamente con más información para el frontend
+            // Obtener stakes ordenados alfabéticamente
             $stakes = Stake::where('country_id', $country_id)
-                ->with(['user', 'country'])
+                ->select('id', 'name')
                 ->orderBy('name', 'asc')
                 ->get();
 
             return response()->json([
                 'status' => 'success',
-                'stakes' => $stakes,
-                'count' => $stakes->count()
+                'data' => $stakes
             ]);
         } catch (\Exception $e) {
-            \Log::error('Error in filterByCountryId: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'An unexpected error occurred.',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function assignUser(Request $request, int $id)
+    {
+        $validated = $request->validate([
+            'stakes' => 'required|array',
+            'stakes.*' => 'exists:stakes,id'
+        ]);
+
+        try {
+            $user = User::findOrFail($id);
+
+            Stake::where('user_id', $id)->update(['user_id' => null]);
+
+            if (!empty($validated['stakes'])) {
+                Stake::whereIn('id', $validated['stakes'])
+                    ->update(['user_id' => $id]);
+            }
+
+            return redirect()->back()->with('success', 'Stakes assigned successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => 'Failed to assign stakes: ' . $e->getMessage()])
+                ->withInput();
         }
     }
 }
