@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Enums\DocumentTypeEnum;
+use App\Enums\GenderEnum;
+use App\Enums\MaritalStatusEnum;
+use App\Enums\UserStatusEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,9 +22,18 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $user = $request->user();
+        
         return Inertia::render('settings/profile', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'user' => $user,
+            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'enums' => [
+                'gender' => GenderEnum::getAllForSelect(),
+                'documentType' => DocumentTypeEnum::getAllForSelect(),
+                'maritalStatus' => MaritalStatusEnum::getAllForSelect(),
+                'userStatus' => UserStatusEnum::getAllForSelect(),
+            ],
         ]);
     }
 
@@ -29,15 +42,20 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+        $user = $request->user();
+        
+        // Fill user with validated data
+        $user->fill($validated);
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Check if email was changed to reset verification
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
 
-        return to_route('profile.edit');
+        return to_route('profile.edit')->with('success', 'Perfil actualizado correctamente.');
     }
 
     /**
