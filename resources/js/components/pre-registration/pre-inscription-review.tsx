@@ -1,6 +1,5 @@
 import React from 'react';
 import { Label } from '../ui/label';
-import { CompleteDialog } from '../ui/complete-dialog';
 import { type PreInscription, type PreInscriptionUpdateFormData } from '../../types/pre-inscription';
 import { useForm, usePage } from '@inertiajs/react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';

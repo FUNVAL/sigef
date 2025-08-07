@@ -13,7 +13,6 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import PreInscriptionOverview from './pre-inscription-overview';
-import PreInscriptionReview from './pre-inscription-review';
 
 export const createColumns = ({
     onEditPreInscription,
@@ -147,8 +146,11 @@ export const createColumns = ({
                             Copiar email
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                            <PreInscriptionOverview preInscription={preInscription} />
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onEditPreInscription(preInscription)}>
-                            {isPending ? 'Revisar solicitud' : 'Ver detalles'}
+                            {isPending ? 'Revisar solicitud' : 'Editar estado'}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
