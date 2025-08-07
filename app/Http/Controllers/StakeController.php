@@ -47,6 +47,9 @@ class StakeController extends Controller
             'status' => 'required|integer|in:' . StatusEnum::ACTIVE->value . ',' . StatusEnum::INACTIVE->value, // Solo permitir active/inactive en creación
         ]);
 
+        // Asegurar que el status sea entero
+        $validated['status'] = (int) $validated['status'];
+
         Stake::create($validated);
         return redirect()->route('stakes.index')
             ->with('success', 'Stake creado exitosamente');
@@ -63,6 +66,9 @@ class StakeController extends Controller
             'user_id' => 'nullable|exists:users,id',
             'status' => 'required|integer|in:' . StatusEnum::ACTIVE->value . ',' . StatusEnum::INACTIVE->value // Solo permitir cambios entre active/inactive
         ]);
+
+        // Asegurar que el status sea entero
+        $validated['status'] = (int) $validated['status'];
 
         $stake->update($validated);
 

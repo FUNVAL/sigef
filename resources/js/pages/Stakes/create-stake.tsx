@@ -4,10 +4,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { STAKE_STATUS } from '@/lib/consts/stakeStatus';
 import { Country } from '@/types/country';
+import { Enums } from '@/types/global';
 import { User } from '@/types/users';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
 
@@ -17,14 +17,18 @@ interface CreateStakeProps {
 }
 
 export function CreateStake({ countries, users }: CreateStakeProps) {
+    const { enums } = usePage<{ enums: Enums }>().props;
     const [open, setOpen] = useState(false);
+
+    // Encontrar el estado activo por defecto (normalmente id: 1)
+    const activeStatus = enums.statusEnum.find((status) => status.id === 1)?.id || 1;
+
     const { data, setData, post, processing, reset, errors } = useForm({
         name: '',
         country_id: '',
         user_id: '',
-        status: STAKE_STATUS.ACTIVE, // Usar valor numérico del enum
+        status: activeStatus,
     });
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post(route('stakes.store'), {
@@ -104,13 +108,18 @@ export function CreateStake({ countries, users }: CreateStakeProps) {
                         {/* Estado */}
                         <div className="grid gap-2">
                             <Label htmlFor="status">Estado</Label>
-                            <Select value={String(data.status)} onValueChange={(value) => setData('status', parseInt(value) as any)}>
+                            <Select value={String(data.status)} onValueChange={(value) => setData('status', parseInt(value, 10))}>
                                 <SelectTrigger id="status">
                                     <SelectValue placeholder="Seleccione un estado" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value={String(STAKE_STATUS.ACTIVE)}>Activo</SelectItem>
-                                    <SelectItem value={String(STAKE_STATUS.INACTIVE)}>Inactivo</SelectItem>
+                                    {enums.statusEnum
+                                        .filter((status) => status.id !== 3) // Excluir "Eliminado" (id: 3) en creación
+                                        .map((status) => (
+                                            <SelectItem key={status.id} value={String(status.id)}>
+                                                {status.name}
+                                            </SelectItem>
+                                        ))}
                                 </SelectContent>
                             </Select>
                             <InputError message={errors.status} />
