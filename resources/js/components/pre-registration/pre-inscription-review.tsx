@@ -38,31 +38,20 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
         });
     };
 
-    const handleSuccess = () => {
-        // Opcional: agregar cualquier lógica adicional después del éxito
-        console.log('Pre-inscripción actualizada exitosamente');
-    };
-
     const fullName = `${preInscription.first_name} ${preInscription.middle_name || ''} ${preInscription.last_name} ${preInscription.second_last_name || ''}`.trim();
-    /* 
-            <Dialog open={open} onOpenChange={onOpenChange}>
-    
-    
-    */
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            
 
-            <DialogContent className="grid gap-6 p-6 max-h-[85vh] overflow-y-auto sm:max-w-148">
-                {/* Información del Candidato (solo lectura) */}
+
+            <DialogContent className="grid gap-6 p-6 max-h-[88vh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
-                    <DialogTitle>Editar Pais</DialogTitle>
+                    <DialogTitle>Actualizar estado de preinscripción</DialogTitle>
                     <DialogDescription>
-                        Aquí puedes editar los detalles del pais. Asegúrate de completar todos los campos requeridos.
+                        Aquí puedes actualizar el estado de la preinscripción y agregar comentarios adicionales.
                     </DialogDescription>
                 </DialogHeader>
                 <Card className="border-blue-200">
-                    
+
                     <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
@@ -104,7 +93,7 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                     <CardContent className="space-y-4">
                         <div>
                             <Label htmlFor="status" className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                Estado de la pre-inscripción
+                                Estado de la preinscripción
                             </Label>
                             <Select
                                 value={data.status.toString()}
@@ -151,7 +140,7 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="comments" className={`font-bold font-mono text-lg ${data.status !== 3 ? ' text-gray-800/50 dark:text-blue-100/50': ' text-gray-800 dark:text-blue-100'  }`  }>
+                            <Label htmlFor="comments" className={`font-bold font-mono text-lg ${data.status !== 3 ? ' text-gray-800/50 dark:text-blue-100/50' : ' text-gray-800 dark:text-blue-100'}`}>
                                 Comentarios generales
                             </Label>
                             <Textarea
@@ -171,14 +160,14 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                     </CardContent>
                 </Card>
                 <DialogFooter className="mt-6 gap-4 flex">
-                        <Button type="button" variant="outline" disabled={processing} onClick={() => onOpenChange?.(false)}>
-                            Cancelar
-                        </Button>
-                        <Button  disabled={processing} onClick={handleSubmit} >
-                            Actualizar
-                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        </Button>
-                    </DialogFooter>
+                    <Button type="button" variant="outline" disabled={processing} onClick={() => onOpenChange?.(false)}>
+                        Cancelar
+                    </Button>
+                    <Button disabled={processing} onClick={handleSubmit} >
+                        Actualizar
+                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                    </Button>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     );
