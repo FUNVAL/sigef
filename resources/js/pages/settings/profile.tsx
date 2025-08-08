@@ -12,6 +12,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import { settingsNavItems } from '@/lib/consts/settings-nav-items';
+import AccessControlLayout from '@/layouts/access-control/layout';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -32,10 +34,15 @@ export default function Profile({ user, mustVerifyEmail, status, enums }: Profil
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} menuOptions={settingsNavItems}>
             <Head title="Configuración de perfil" />
 
-            <SettingsLayout>
+            <AccessControlLayout
+                headings={{
+                    title: 'Configuración de perfil',
+                    description: 'Actualiza tu información personal y preferencias de cuenta.',
+                }}
+            >
                 <div className="w-full space-y-8">
                     <form onSubmit={submit} className="space-y-8">
                         {/* Datos personales */}
@@ -242,7 +249,7 @@ export default function Profile({ user, mustVerifyEmail, status, enums }: Profil
                         </div>
                     </form>
                 </div>
-            </SettingsLayout>
+            </AccessControlLayout>
         </AppLayout>
     );
 }
