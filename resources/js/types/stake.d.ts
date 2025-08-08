@@ -1,3 +1,5 @@
+import { type Country } from "./common";
+
 export type Stake = {
     id: number;
     name: string;

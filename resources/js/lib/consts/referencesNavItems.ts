@@ -3,11 +3,11 @@ import { MenuOption } from "@/components/globals/appbar";
 const referencesNavItems: MenuOption[] = [
     {
         label: 'Dashboard',
-        href: '/references',
+        href: '/references/dashboard',
     },
     {
         label: 'References',
-        href: '/references/list',
+        href: '/references',
     },
 ];
 

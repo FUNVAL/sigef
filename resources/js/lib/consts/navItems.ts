@@ -1,6 +1,7 @@
 import { NavItem } from '@/types';
 import { BookOpen, Church, Globe, LayoutGrid, ListPlus, Notebook, Shield } from 'lucide-react';
 
+
 export const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
@@ -11,7 +12,7 @@ export const mainNavItems: NavItem[] = [
         title: 'Access Control',
         href: '/access-control',
         icon: Shield,
-        permissions: ['user:view', 'user:create', 'user:edit', 'user:delete', 'role:view', 'role:create', 'role:edit', 'role:delete'],
+        permissions: ['user:view', 'user:create', 'user:edit', 'user:delete', 'role:view', 'role:create', 'role:edit', 'role:delete' , "stake:view-assigned" , "stake:assign-users"],
     },
     {
         title: 'Cursos',
@@ -21,13 +22,13 @@ export const mainNavItems: NavItem[] = [
     },
     {
         title: 'Referencias',
-        href: '/references',
+        href: '/references/dashboard',
         icon: Notebook,
         permissions: ['reference:view', 'reference:edit', 'reference:update'],
     },
     {
-        title: 'Pre-Inscripciones',
-        href: '/pre-inscription',
+        title: 'Preinscripciones',
+        href: '/pre-inscription/dashboard',
         icon: ListPlus,
         permissions: ['pre-inscription:update', 'pre-inscription:edit', 'pre-inscription:view'],
     },

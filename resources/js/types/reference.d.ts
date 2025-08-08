@@ -1,40 +1,32 @@
+import {
+    type BaseEntity,
+    type Country,
+    type Stake,
+    type GenderInfo,
+    type StatusInfo,
+    type IdNameEntity,
+    type BaseFormData,
+    type BaseUpdateFormData,
+    type BaseFilters,
+    type BasePaginatedResponse
+} from "./common";
+
 /**
  * Tipo base para una referencia con todos sus campos y relaciones
  */
-type Reference = {
-    id: number;
+type Reference = BaseEntity & {
     name: string;
     age: number;
     phone: string;
     referrer_name: string;
     referrer_phone: string;
     declined_description: string;
-    relationship_with_referred: {
-        id: number;
-        name: string;
-    };
-    declined_reason?: {
-        id: number;
-        name: string;
-    };
-    status: {
-        id: number;
-        name: string;
-    };
-    country: {
-        id: number;
-        name: string;
-    };
-    stake: {
-        id: number;
-        name: string;
-    };
-    gender: {
-        id: number;
-        name: string;
-    };
-    created_at?: string;
-    updated_at?: string;
+    relationship_with_referred: IdNameEntity;
+    declined_reason?: IdNameEntity;
+    status: StatusInfo;
+    country: Country;
+    stake: Stake;
+    gender: GenderInfo;
 };
 
 /**
@@ -53,51 +45,31 @@ type ReferenceFormData = Omit<
     | 'declined_reason'
     | 'gender'
     | 'declined_description'
-> & {
-    country_id: number;
-    stake_id: number;
+> & BaseFormData & {
     relationship_with_referred: number;
-    gender: number;
 };
 
 /**
  * Tipo para actualizar el estado de una referencia
  */
-type ReferenceUpdateFormData = {
-    id: number;
+type ReferenceUpdateFormData = BaseUpdateFormData & {
     declined_reason: number;
-    status: number;
     declined_description: string;
 };
 
 /**
  * Tipo para filtros de búsqueda de referencias
  */
-type ReferenceFilters = {
+type ReferenceFilters = BaseFilters & {
     name?: string;
     phone?: string;
-    status?: number;
-    country?: number;
-    stake?: number;
     gender?: number;
-    age_min?: number;
-    age_max?: number;
-    created_from?: string;
-    created_to?: string;
 };
 
 /**
  * Tipo para la respuesta paginada de referencias
  */
-type ReferencesPaginatedResponse = {
-    data: Reference[];
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-    from: number;
-    to: number;
-};
+type ReferencesPaginatedResponse = BasePaginatedResponse<Reference>;
 
 export type {
     Reference,

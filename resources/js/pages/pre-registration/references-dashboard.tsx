@@ -1,5 +1,6 @@
 import GenericDashboard from '@/components/dashboard/generic-dashboard';
 import { useDashboardConfig } from '@/hooks/use-dashboard-config';
+import referencesNavItems from '@/lib/consts/referencesNavItems';
 import { type BreadcrumbItem } from '@/types';
 import { type Reference } from '@/types/reference';
 import { type ReferenceStats, type ReferenceByCountry, type ReferenceByStake } from '@/types/dashboard';
@@ -32,11 +33,10 @@ export default function Dashboard({ data }: DashboardProps) {
         byStake: data.referencesByStake,
     };
 
-    // Configuración específica para el dashboard principal (sin AccessControlLayout)
+    // Configuración específica para referencias usando el hook
     const config = createReferencesConfig({
         breadcrumbs,
-        useAccessControlLayout: false,
-        // No menuOptions para el dashboard principal
+        menuOptions: referencesNavItems,
     });
 
     return <GenericDashboard data={genericData} config={config} />;
