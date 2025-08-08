@@ -1,7 +1,7 @@
 import { type BreadcrumbItem } from '@/types';
 import { type ProfileForm, type ProfileProps } from '@/types/profile';
 import { Transition } from '@headlessui/react';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 import HeadingSmall from '@/components/heading-small';
@@ -36,7 +36,7 @@ export default function Profile({ user, mustVerifyEmail, status, enums }: Profil
             <Head title="Configuración de perfil" />
 
             <SettingsLayout>
-                <div className="space-y-8">
+                <div className="w-full space-y-8">
                     <form onSubmit={submit} className="space-y-8">
                         {/* Datos personales */}
                         <div className="space-y-6 border-b pb-6">
@@ -224,29 +224,6 @@ export default function Profile({ user, mustVerifyEmail, status, enums }: Profil
                                 </div>
                             </div>
                         </div>
-
-                        {/* Email verification notice */}
-                        {mustVerifyEmail && user.email_verified_at === null && (
-                            <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
-                                <p className="text-sm text-yellow-800">
-                                    Tu dirección de correo electrónico no está verificada.{' '}
-                                    <Link
-                                        href={route('verification.send')}
-                                        method="post"
-                                        as="button"
-                                        className="font-medium text-yellow-900 underline decoration-yellow-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current"
-                                    >
-                                        Haz clic aquí para reenviar el email de verificación.
-                                    </Link>
-                                </p>
-
-                                {status === 'verification-link-sent' && (
-                                    <div className="mt-2 text-sm font-medium text-green-600">
-                                        Se ha enviado un nuevo enlace de verificación a tu dirección de correo electrónico.
-                                    </div>
-                                )}
-                            </div>
-                        )}
 
                         <div className="flex items-center gap-4 border-t pt-4">
                             <Button type="submit" disabled={processing} className="cursor-pointer">
