@@ -1,5 +1,6 @@
 import { NavItem } from '@/types';
-import { BookOpen, LayoutGrid, ListPlus, Notebook, Shield, Globe, Church } from 'lucide-react';
+import { BookOpen, Church, Globe, LayoutGrid, ListPlus, Notebook, Shield } from 'lucide-react';
+
 
 export const mainNavItems: NavItem[] = [
     {
@@ -42,8 +43,7 @@ export const mainNavItems: NavItem[] = [
         href: '/countries',
         icon: Globe,
         permissions: ['country:view', 'country:create', 'country:edit', 'country:delete'],
-    }
-
+    },
 ];
 
 export const getNavItems = (userPermissions: string[]): NavItem[] => {

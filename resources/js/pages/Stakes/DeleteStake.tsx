@@ -14,8 +14,8 @@ export function DeleteStake({ stake, open, onOpenChange }: { stake: Stake; open:
         });
     };
 
-    // No mostrar botón si ya está eliminado
-    if (stake.status === 'deleted') {
+    // No mostrar botón si ya está eliminado (status 3 = DELETED)
+    if (stake.status === 3) {
         return null;
     }
 

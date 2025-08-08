@@ -2,8 +2,9 @@ import { DataTable } from '@/components/data-table/data-table';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
+import { Enums } from '@/types/global';
 import { Stake } from '@/types/stake';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { getColumns } from './columns';
 import { CreateStake } from './create-stake';
@@ -24,6 +25,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function StakesIndex({ stakes, countries, users }: Props) {
+    const { enums } = usePage<{ enums: Enums }>().props;
     const [editingStake, setEditingStake] = useState<Stake | null>(null);
     const [deletingStake, setDeletingStake] = useState<Stake | null>(null);
 
@@ -38,6 +40,7 @@ export default function StakesIndex({ stakes, countries, users }: Props) {
     const columns = getColumns({
         countries,
         users,
+        enums,
         onEdit: handleEdit,
         onDelete: handleDelete,
     });

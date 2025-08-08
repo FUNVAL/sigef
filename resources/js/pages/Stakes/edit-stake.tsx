@@ -5,9 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Country } from '@/types/country';
+import { Enums } from '@/types/global';
 import { Stake } from '@/types/stake';
 import { User } from '@/types/users';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
 interface EditStakeProps {
@@ -19,6 +20,7 @@ interface EditStakeProps {
 }
 
 export function EditStake({ stake, countries, users, open, onOpenChange }: EditStakeProps) {
+    const { enums } = usePage<{ enums: Enums }>().props;
     const { data, setData, put, processing, reset, errors } = useForm({
         name: stake.name,
         country_id: String(stake.country_id),
@@ -99,13 +101,18 @@ export function EditStake({ stake, countries, users, open, onOpenChange }: EditS
                         {/* Estado - Solo permitir cambio entre active/inactive */}
                         <div className="grid gap-2">
                             <Label htmlFor="status">Estado</Label>
-                            <Select value={data.status} onValueChange={(value) => setData('status', value as 'active' | 'inactive' | 'deleted')}>
+                            <Select value={String(data.status)} onValueChange={(value) => setData('status', parseInt(value, 10))}>
                                 <SelectTrigger id="status">
                                     <SelectValue placeholder="Seleccione un estado" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="active">Activo</SelectItem>
-                                    <SelectItem value="inactive">Inactivo</SelectItem>
+                                    {enums.statusEnum
+                                        .filter((status) => status.id !== 3) // Excluir "Eliminado" (id: 3) en edición
+                                        .map((status) => (
+                                            <SelectItem key={status.id} value={String(status.id)}>
+                                                {status.name}
+                                            </SelectItem>
+                                        ))}
                                 </SelectContent>
                             </Select>
                             <InputError message={errors.status} />
