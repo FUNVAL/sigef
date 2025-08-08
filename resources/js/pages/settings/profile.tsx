@@ -10,9 +10,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import AccessControlLayout from '@/layouts/access-control/layout';
 import AppLayout from '@/layouts/app-layout';
 import { settingsNavItems } from '@/lib/consts/settings-nav-items';
-import AccessControlLayout from '@/layouts/access-control/layout';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -191,7 +191,7 @@ export default function Profile({ user, mustVerifyEmail, status, enums }: Profil
                         </div>
 
                         {/* Información de contacto */}
-                        <div className="space-y-6 border-b pb-6">
+                        <div className="space-y-6 pb-6">
                             <HeadingSmall title="Información de contacto" description="Datos para contactarte" />
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 <div className="grid gap-2 md:col-span-2">
@@ -231,11 +231,7 @@ export default function Profile({ user, mustVerifyEmail, status, enums }: Profil
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 border-t pt-4">
-                            <Button type="submit" disabled={processing} className="cursor-pointer">
-                                Actualizar Perfil
-                            </Button>
-
+                        <div className="flex items-center justify-end gap-4 border-t pt-6">
                             <Transition
                                 show={recentlySuccessful}
                                 enter="transition ease-in-out"
@@ -245,6 +241,10 @@ export default function Profile({ user, mustVerifyEmail, status, enums }: Profil
                             >
                                 <p className="text-sm font-medium text-green-600">¡Perfil actualizado!</p>
                             </Transition>
+
+                            <Button type="submit" disabled={processing} className="min-w-[140px]">
+                                {processing ? 'Actualizando...' : 'Actualizar Perfil'}
+                            </Button>
                         </div>
                     </form>
                 </div>

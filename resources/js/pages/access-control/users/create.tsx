@@ -1,24 +1,17 @@
-import { type BreadcrumbItem } from '@/types';
-import { Transition } from '@headlessui/react';
-import { Head, useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
-import InputError from '@/components/input-error';
 import HeadingSmall from '@/components/heading-small';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AppLayout from '@/layouts/app-layout';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AccessControlLayout from '@/layouts/access-control/layout';
-import { type CreateUserForm, type CreateUserProps, type EnumsProps } from '@/types/users';
+import AppLayout from '@/layouts/app-layout';
 import navItems from '@/lib/consts/accessControlNavItems';
-
+import { type BreadcrumbItem } from '@/types';
+import { type CreateUserForm, type CreateUserProps, type EnumsProps } from '@/types/users';
+import { Transition } from '@headlessui/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { FormEventHandler } from 'react';
 
 export default function CreateUser({ roles }: CreateUserProps) {
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm<CreateUserForm>(initialData);
@@ -42,18 +35,17 @@ export default function CreateUser({ roles }: CreateUserProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs} menuOptions={navItems}>
             <Head title="Control de accesos" />
-            <AccessControlLayout headings={{
-                title: 'Crear usuario',
-                description: 'Formulario para crear un nuevo usuario',
-            }}>
+            <AccessControlLayout
+                headings={{
+                    title: 'Crear usuario',
+                    description: 'Formulario para crear un nuevo usuario',
+                }}
+            >
                 <div className="space-y-8">
                     <form onSubmit={submit} className="space-y-8">
                         <div className="space-y-6 border-b pb-6">
-                            <HeadingSmall
-                                title="Datos personales"
-                                description="Información básica del usuario"
-                            />
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <HeadingSmall title="Datos personales" description="Información básica del usuario" />
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 <div className="grid gap-2">
                                     <Label htmlFor="firstname">Primer Nombre</Label>
                                     <Input
@@ -120,11 +112,7 @@ export default function CreateUser({ roles }: CreateUserProps) {
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="gender">Género</Label>
-                                    <Select
-                                        name="gender"
-                                        value={String(data.gender)}
-                                        onValueChange={(value) => setData('gender', Number(value))}
-                                    >
+                                    <Select name="gender" value={String(data.gender)} onValueChange={(value) => setData('gender', Number(value))}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Seleccione género" />
                                         </SelectTrigger>
@@ -143,11 +131,8 @@ export default function CreateUser({ roles }: CreateUserProps) {
 
                         {/* Documentos */}
                         <div className="space-y-6 border-b pb-6">
-                            <HeadingSmall
-                                title="Documentos e identificación"
-                                description="Información de documentos oficiales"
-                            />
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <HeadingSmall title="Documentos e identificación" description="Información de documentos oficiales" />
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 <div className="grid gap-2">
                                     <Label htmlFor="document_type">Tipo de Documento</Label>
                                     <Select
@@ -219,11 +204,8 @@ export default function CreateUser({ roles }: CreateUserProps) {
 
                         {/* Contacto */}
                         <div className="space-y-6 border-b pb-6">
-                            <HeadingSmall
-                                title="Información de contacto"
-                                description="Datos para contactar al usuario"
-                            />
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <HeadingSmall title="Información de contacto" description="Datos para contactar al usuario" />
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 <div className="grid gap-2 md:col-span-2">
                                     <Label htmlFor="address">Dirección</Label>
                                     <Input
@@ -264,23 +246,16 @@ export default function CreateUser({ roles }: CreateUserProps) {
 
                         {/* Sistema */}
                         <div className="space-y-6">
-                            <HeadingSmall
-                                title="Datos de acceso al sistema"
-                                description="Configuración de acceso y permisos"
-                            />
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <HeadingSmall title="Datos de acceso al sistema" description="Configuración de acceso y permisos" />
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 <div className="grid gap-2">
                                     <Label htmlFor="role_id">Rol</Label>
-                                    <Select
-                                        name="role_id"
-                                        value={String(data.role_id)}
-                                        onValueChange={(value) => setData('role_id', Number(value))}
-                                    >
+                                    <Select name="role_id" value={String(data.role_id)} onValueChange={(value) => setData('role_id', Number(value))}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Seleccione rol" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {roles.map(role => (
+                                            {roles.map((role) => (
                                                 <SelectItem
                                                     key={role.id}
                                                     value={String(role.id)}
@@ -297,12 +272,7 @@ export default function CreateUser({ roles }: CreateUserProps) {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 pt-4 border-t">
-                            <Button type="submit" disabled={processing}>Crear Usuario</Button>
-                            <Button type="button" variant="outline" onClick={() => window.history.back()}>
-                                Cancelar
-                            </Button>
-
+                        <div className="flex items-center justify-end gap-4 border-t pt-6">
                             <Transition
                                 show={recentlySuccessful}
                                 enter="transition ease-in-out"
@@ -310,8 +280,16 @@ export default function CreateUser({ roles }: CreateUserProps) {
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-green-600">Usuario creado correctamente</p>
+                                <p className="text-sm font-medium text-green-600">Usuario creado correctamente</p>
                             </Transition>
+
+                            <Button type="button" variant="outline" onClick={() => window.history.back()}>
+                                Cancelar
+                            </Button>
+
+                            <Button type="submit" disabled={processing} className="min-w-[120px]">
+                                {processing ? 'Creando...' : 'Crear Usuario'}
+                            </Button>
                         </div>
                     </form>
                 </div>
@@ -336,7 +314,7 @@ const initialData = {
     contact_phone_1: '',
     contact_phone_2: '',
     role_id: 0,
-}
+};
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

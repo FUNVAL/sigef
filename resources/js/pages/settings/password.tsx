@@ -1,14 +1,14 @@
 import InputError from '@/components/input-error';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import AccessControlLayout from '@/layouts/access-control/layout';
 import AppLayout from '@/layouts/app-layout';
+import { settingsNavItems } from '@/lib/consts/settings-nav-items';
 import { type BreadcrumbItem } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { settingsNavItems } from '@/lib/consts/settings-nav-items';
-import AccessControlLayout from '@/layouts/access-control/layout';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -58,8 +58,7 @@ export default function Password() {
                 }}
             >
                 <div className="space-y-6">
-
-                    <form onSubmit={updatePassword} className="space-y-6">
+                    <form onSubmit={updatePassword} className="mx-auto w-full max-w-2xl space-y-6">
                         <div className="grid gap-2">
                             <Label htmlFor="current_password">Contraseña actual</Label>
 
@@ -110,9 +109,7 @@ export default function Password() {
                             <InputError message={errors.password_confirmation} />
                         </div>
 
-                        <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Guardar</Button>
-
+                        <div className="flex items-center justify-end gap-4 border-t pt-6">
                             <Transition
                                 show={recentlySuccessful}
                                 enter="transition ease-in-out"
@@ -120,8 +117,12 @@ export default function Password() {
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-neutral-600">Guardado</p>
+                                <p className="text-sm font-medium text-green-600">¡Contraseña actualizada!</p>
                             </Transition>
+
+                            <Button type="submit" disabled={processing} className="min-w-[140px]">
+                                {processing ? 'Guardando...' : 'Guardar Cambios'}
+                            </Button>
                         </div>
                     </form>
                 </div>
