@@ -11,7 +11,7 @@ export const mainNavItems: NavItem[] = [
         title: 'Access Control',
         href: '/access-control',
         icon: Shield,
-        permissions: ['user:view', 'user:create', 'user:edit', 'user:delete', 'role:view', 'role:create', 'role:edit', 'role:delete'],
+        permissions: ['user:view', 'user:create', 'user:edit', 'user:delete', 'role:view', 'role:create', 'role:edit', 'role:delete' , "stake:view-assigned" , "stake:assign-users"],
     },
     {
         title: 'Cursos',

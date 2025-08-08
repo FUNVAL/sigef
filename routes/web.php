@@ -20,7 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->controller(UserController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('create', 'create')->name('create');
-            Route::get('{id}/assign-stakes', 'assignStakes')->name('assign-stakes');
+            Route::get('{id}/assign-stakes', 'assignStakes')->name('assign-stakes')->middleware('can:ver estacas asignadas');
             Route::get('{id}', 'edit')->name('edit');
             Route::post('create', 'store')->name('store');
             Route::put('{id}', 'update')->name('update');
@@ -63,7 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             // Eliminación (soft delete)
             Route::delete('/{stake}', 'destroy')->name('destroy')->middleware('can:eliminar estacas');
 
-            Route::patch('/{id}/assign-user', 'assignUser')->name('assign-user');
+            Route::patch('/{id}/assign-user', 'assignUser')->name('assign-user')->middleware('can:asignar usuarios a estacas');
         });
 
     Route::prefix('courses')->name('courses.')
