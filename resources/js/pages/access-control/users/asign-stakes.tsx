@@ -238,9 +238,9 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                     description: `Asignar estacas a ${userName}`,
                 }}
             >
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                     {/* Panel principal de selección */}
-                    <div className="md:col-span-1 lg:col-span-1">
+                    <div className="xl:col-span-1">
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
@@ -336,8 +336,8 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                     </div>
 
                     {/* Panel de Estacas Asignadas Actualmente */}
-                    <div className="md:col-span-1 lg:col-span-1">
-                        <div className="space-y-4 sticky top-4">
+                    <div className="xl:col-span-1">
+                        <div className="sticky top-4">
                             <Card>
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2 text-green-600">
@@ -350,7 +350,7 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                                 </CardHeader>
                                 <CardContent>
                                     {currentlyAssignedStakes.length > 0 ? (
-                                        <div className="h-[300px] lg:h-[400px] pr-4 overflow-y-auto">
+                                        <div className="h-[400px] pr-4 overflow-y-auto">
                                             <div className="space-y-2">
                                                 {currentlyAssignedStakes.map((stake) => (
                                                     <div
@@ -379,106 +379,18 @@ export default function AssignStakes({ countries, userId, userName }: Props) {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="text-center py-6 lg:py-8 text-muted-foreground">
+                                        <div className="text-center py-8 text-muted-foreground">
                                             <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
                                             <p className="text-sm">No hay estacas asignadas</p>
                                         </div>
                                     )}
                                 </CardContent>
                             </Card>
-
-                            {/* Panel de Cambios Pendientes - Solo visible en md, en lg será columna separada */}
-                            <div className="lg:hidden">
-                                {hasChanges ? (
-                                    <Card>
-                                        <CardHeader>
-                                            <CardTitle className="flex items-center gap-2 text-blue-600">
-                                                <Users className="h-5 w-5" />
-                                                Cambios Pendientes
-                                            </CardTitle>
-                                            <CardDescription>
-                                                {toAssign.length + toUnassign.length} cambio(s) pendiente(s)
-                                            </CardDescription>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <div className="space-y-4">
-                                                {/* Asignaciones nuevas */}
-                                                {toAssign.length > 0 && (
-                                                    <div>
-                                                        <h4 className="text-sm font-medium text-green-700 mb-2 flex items-center gap-1">
-                                                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                                                            Asignar ({toAssign.length})
-                                                        </h4>
-                                                        <div className="space-y-1 max-h-[120px] overflow-y-auto">
-                                                            {toAssign.map((stake) => (
-                                                                <div
-                                                                    key={`assign-${stake.id}`}
-                                                                    className="text-xs p-2 bg-green-50 border border-green-200 rounded text-green-800"
-                                                                >
-                                                                    + {stake.name}
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {/* Desasignaciones */}
-                                                {toUnassign.length > 0 && (
-                                                    <div>
-                                                        <h4 className="text-sm font-medium text-red-700 mb-2 flex items-center gap-1">
-                                                            <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                                                            Desasignar ({toUnassign.length})
-                                                        </h4>
-                                                        <div className="space-y-1 max-h-[120px] overflow-y-auto">
-                                                            {toUnassign.map((stake) => (
-                                                                <div
-                                                                    key={`unassign-${stake.id}`}
-                                                                    className="text-xs p-2 bg-red-50 border border-red-200 rounded text-red-800"
-                                                                >
-                                                                    - {stake.name}
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                <div className="mt-4">
-                                                    <Button
-                                                        onClick={handleSaveChanges}
-                                                        disabled={submitting || !hasChanges}
-                                                        className="w-full"
-                                                    >
-                                                        {submitting ? 'Guardando...' : `Guardar Cambios (${toAssign.length + toUnassign.length})`}
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                ) : (
-                                    <Card>
-                                        <CardHeader>
-                                            <CardTitle className="flex items-center gap-2 text-gray-600">
-                                                <Users className="h-5 w-5" />
-                                                Cambios
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <div className="text-center py-6 text-muted-foreground">
-                                                <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                                                <p className="text-sm">No hay cambios pendientes</p>
-                                                <p className="text-xs mt-1">
-                                                    Selecciona o deselecciona estacas para ver los cambios
-                                                </p>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                )}
-                            </div>
                         </div>
                     </div>
 
-                    {/* Panel de Cambios Pendientes - Solo visible en lg+ como columna separada */}
-                    <div className="hidden lg:block lg:col-span-1">
+                    {/* Panel de Cambios Pendientes */}
+                    <div className="xl:col-span-1">
                         <div className="sticky top-4">
                             {hasChanges ? (
                                 <Card>
