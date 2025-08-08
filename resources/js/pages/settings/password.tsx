@@ -58,7 +58,7 @@ export default function Password() {
                 }}
             >
                 <div className="space-y-6">
-                    <form onSubmit={updatePassword} className="mx-auto w-full max-w-2xl space-y-6">
+                    <form onSubmit={updatePassword} className="space-y-6">
                         <div className="grid gap-2">
                             <Label htmlFor="current_password">Contraseña actual</Label>
 
