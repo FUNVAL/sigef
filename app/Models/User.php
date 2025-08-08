@@ -135,4 +135,14 @@ class User extends Authenticatable
     {
         return MaritalStatusEnum::fromId($this->attributes['marital_status']);
     }
+
+    /**
+     * Get the user's stakes.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function stakes()
+    {
+        return $this->hasMany('App\Models\Stake', 'user_id');
+    }
 }
