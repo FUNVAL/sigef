@@ -6,8 +6,6 @@ import AppLayout from '@/layouts/app-layout';
 import { DataTable } from '@/components/data-table/data-table';
 import { createColumns } from '@/components/pre-registration/references-data-table';
 import { Reference } from '@/types/reference';
-import ReferencesLayout from '@/layouts/references/layout';
-import { MenuOption } from '@/components/globals/appbar';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import referencesNavItems from '@/lib/consts/referencesNavItems';
 import ReferenceReview from '@/components/pre-registration/reference-review';

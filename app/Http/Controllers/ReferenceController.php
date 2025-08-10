@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RequestStatusEnum;
 use App\Enums\StatusEnum;
 use App\Models\Country;
 use App\Models\Reference;
@@ -71,7 +72,7 @@ class ReferenceController extends Controller
 
             $message =  [
                 'type' => 'success',
-                'message' => "<strong>¡Gracias por tu referencia!</strong><br/>Valoramos mucho que hayas pensado en alguien para compartir esta oportunidad. Queremos que sepas que uno de nuestros representantes se comunicará directamente con tu referido en las próximas 72 horas para brindarle toda la información sobre el programa y acompañarlo en este proceso."
+                'message' =>  __('common.messages.success.reference_success'),
             ];
 
             return  back()->with('success', $message);
@@ -210,9 +211,9 @@ class ReferenceController extends Controller
             $total = $references->count();
 
             // General statistics
-            $pending = $references->where('status.id', 1)->count();
-            $accepted = $references->where('status.id', 2)->count();
-            $rejected = $references->where('status.id', 3)->count();
+            $pending = $references->where('status.id', RequestStatusEnum::PENDING->value)->count();
+            $accepted = $references->where('status.id', RequestStatusEnum::APPROVED->value)->count();
+            $rejected = $references->where('status.id', RequestStatusEnum::REJECTED->value)->count();
             $acceptancePercentage = $total > 0 ? round(($accepted / $total) * 100, 1) : 0;
 
             // References this week
@@ -255,7 +256,7 @@ class ReferenceController extends Controller
                 ->values()
                 ->toArray();
 
-            return Inertia::render('dashboard', [
+            return Inertia::render('pre-registration/references-dashboard', [
                 'data' => [
                     'stats' => $stats,
                     'referencesByCountry' => $referencesByCountry,

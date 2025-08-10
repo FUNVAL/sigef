@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\Stake;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
+use App\Enums\MissionStatusEnum;
 use App\Enums\RequestStatusEnum;
 use App\Enums\JobTypeEnum;
 use App\Enums\ReferenceStatusEnum;
@@ -94,7 +95,7 @@ class PreInscriptionController extends Controller
                 'phone' => 'required|string|max:20',
                 'email' => 'required|email|max:100|unique:pre_inscriptions',
                 'marital_status' => 'required|numeric|in:' . implode(',', MaritalStatusEnum::values()),
-                'served_mission' => 'required|boolean',
+                'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
                 'status' => 'nullable|numeric|in:' . implode(',', RequestStatusEnum::values()),
                 'comments' => 'nullable|string',
                 'declined_reason' => 'nullable|numeric|in:' . implode(',', ReferenceStatusEnum::values()),
@@ -236,32 +237,103 @@ class PreInscriptionController extends Controller
         }
     }
 
+    /**
+     * Get the pre-inscription dashboard data.
+     */
+    public function dashboard()
+    {
+        try {
+            $user = Auth::user();
+            $query = PreInscription::query()->with(['country', 'stake']);
+
+            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $preInscriptions = $query->get();
+            $total = $preInscriptions->count();
+
+            // General statistics
+            $pending = $preInscriptions->where('status.id', RequestStatusEnum::PENDING->value)->count();
+            $accepted = $preInscriptions->where('status.id', RequestStatusEnum::APPROVED->value)->count();
+            $rejected = $preInscriptions->where('status.id', RequestStatusEnum::REJECTED->value)->count();
+            $acceptancePercentage = $total > 0 ? round(($accepted / $total) * 100, 1) : 0;
+            // Pre-inscriptions this week
+            $newThisWeek = $preInscriptions->where('created_at', '>=', now()->startOfWeek())->count();
+
+            $stats = [
+                'total' => $total,
+                'pending' => $pending,
+                'accepted' => $accepted,
+                'rejected' => $rejected,
+                'acceptancePercentage' => $acceptancePercentage,
+                'newThisWeek' => $newThisWeek,
+            ];
+
+            // Pre-inscriptions by country
+            $preInscriptionsByCountry = $preInscriptions->groupBy('country.name')
+                ->map(function ($group, $country) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'country' => $country ?? 'No Country',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
+            // Pre-inscriptions by stake
+            $preInscriptionsByStake = $preInscriptions->groupBy('stake.name')
+                ->map(function ($group, $stake) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'stake' => $stake ?? 'No Stake',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
+            return Inertia::render('pre-registration/pre-inscriptions-dashboard', [
+                'data' => [
+                    'stats' => $stats,
+                    'preInscriptionsByCountry' => $preInscriptionsByCountry,
+                    'preInscriptionsByStake' => $preInscriptionsByStake
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener el dashboard de pre-inscripciones',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     private function generateMessage($currentlyWorking, $jobTypePreference, $availableFullTime, $gender): array
     {
         $response = [
-            'message' => "<strong>¡Gracias por tu aplicación!</strong><br/>Uno de nuestros representantes se pondrá en contacto contigo en las próximas 72 horas para brindarte toda la información sobre el programa y resolver cualquier duda que puedas tener.<br/><br/>Agradecemos tu interés y estamos emocionados de acompañarte en este proceso.",
+            'message' => __('common.messages.success.preinscription_success'),
             'type' => 'success'
         ];
+
         if ($gender === GenderEnum::FEMALE->value) {
             if ($currentlyWorking) {
-
-                $response['message'] = "<strong>Gracias por tu interés en el programa de FUNVAL.</strong><br/> Debido a la naturaleza intensiva de nuestras capacitaciones, este programa está dirigido a personas que actualmente no tienen empleo.<br/><br/> Si en el futuro te encuentras en búsqueda de un empleo, no dudes en contactarnos nuevamente.<br/><br/> Además, te compartimos los siguientes enlaces sobre organizaciones aliadas a Funval que podrían ser de tu interés:
-                <a href=\"https://www.the-academy.org/contact/\" target=\"_blank\" class=\"text-blue-600 underline\">La Academia</a> y 
-                <a href=\"https://mentorseducation.org/\" target=\"_blank\" class=\"text-blue-600 underline\">Mentors</a>.";
-
+                $response['message'] = __('common.messages.rejections.working');
                 $response['type'] = 'rejected';
             } elseif ($jobTypePreference === JobTypeEnum::OWN_BOSS->value) {
-
-                $response['message'] = "<strong>¡Excelente!</strong><br/>Muy pronto recibirás información de nuestras organizaciones aliadas especializadas en emprendimiento, quienes comparten con FUNVAL el compromiso de impulsar nuevas oportunidades para personas como tú.<br/><br/>
-                Visita los siguientes enlaces para obtener más información sobre dichas organizaciones: <a href=\"https://www.the-academy.org/contact/\" target=\"_blank\" class=\"text-blue-600 underline\">La Academia</a> y <a href=\"https://mentorseducation.org/\" target=\"_blank\" class=\"text-blue-600 underline\">Mentors</a>.";
-
+                $response['message'] = __('common.messages.rejections.entrepreneur');
                 $response['type'] = 'rejected';
             } elseif ($jobTypePreference === JobTypeEnum::ONLINE->value && !$availableFullTime) {
-                $response['message'] = "<strong>FUNVAL mantiene alianzas con empresas que requieren modalidad de trabajo presencial.</strong><br/> Si en el futuro esta opción se ajusta a tu situación, no dudes en contactarnos nuevamente. Estaremos encantados de apoyarte en tu proceso de búsqueda laboral.<br/><br/>Además, te compartimos los siguientes enlaces sobre organizaciones aliadas a Funval que podrían ser de tu interés: <a href=\"https://www.the-academy.org/contact/\" target=\"_blank\" class=\"text-blue-600 underline\">La Academia</a> y <a href=\"https://mentorseducation.org/\" target=\"_blank\" class=\"text-blue-600 underline\">Mentors</a>.";
-
+                $response['message'] = __('common.messages.rejections.online_part_time');
                 $response['type'] = 'rejected';
             } elseif (!$availableFullTime) {
-                $response['message'] = "<strong>Debido a la intensidad de los programas de FUNVAL</strong>, se requiere que los participantes cuenten con una conexión continua  y estén disponibles sin realizar otras actividades en paralelo durante el horario de capacitación.<br/><br/>Si en el futuro esta opción se ajusta a tu situación, no dudes en contactarnos nuevamente. Estaremos encantados de apoyarte en tu proceso de búsqueda laboral.<br/><br/>Además, te compartimos la siguiente información sobre organizaciones aliadas a FUNVAL que pueden ser de tu interés:<a href=\"https://www.the-academy.org/contact/\" target=\"_blank\" class=\"text-blue-600 underline\">La Academia</a> y <a href=\"https://mentorseducation.org/\" target=\"_blank\" class=\"text-blue-600 underline\">Mentors</a>.";
+                $response['message'] = __('common.messages.rejections.part_time');
                 $response['type'] = 'rejected';
             }
         }
@@ -283,10 +355,9 @@ class PreInscriptionController extends Controller
         $jobTypePref = is_array($preInscription->job_type_preference ?? null) ? $preInscription->job_type_preference["id"] : ($preInscription->job_type_preference ?? null);
 
         $responsablePhone = optional(optional($preInscription->stake)->user)->contact_phone_1;
-        if ($statusId == RequestStatusEnum::PENDING->value) {
 
-            $message = "<strong>Ya existe una solicitud pendiente asociada a este correo electrónico.</strong><br/> 
-                        Por favor, espera a que uno de nuestros representantes se comunique contigo. El plazo estimado de contacto es de hasta 72 horas.<br/><br/> Si ya ha transcurrido ese tiempo y aún no has recibido respuesta, puedes escribirnos al siguiente número: $responsablePhone.<br/><br/>Agradecemos tu paciencia y tu interés en el programa.";
+        if ($statusId == RequestStatusEnum::PENDING->value) {
+            $message = str_replace('[**]', $responsablePhone, __('common.messages.duplicates.pending'));
 
             return [
                 'exists' => true,
@@ -307,12 +378,14 @@ class PreInscriptionController extends Controller
                 $preInscription->available_full_time,
                 $genderId
             );
+
+            $message = str_replace('[**]', $msg['message'], __('common.messages.duplicates.rejected'));
+
             return [
                 'exists' => true,
                 'message' => [
                     'type' => $msg['type'],
-                    'message' => "<strong>Este correo ya ha sido registrado previamente.</strong><br/> 
-                                Hemos identificado que ya existe una solicitud asociada a este correo electrónico, la cual fue evaluada anteriormente con el siguiente resultado:<br/><br/>" . $msg['message']
+                    'message' => $message
                 ]
             ];
         }
@@ -321,7 +394,7 @@ class PreInscriptionController extends Controller
             'exists' => true,
             'message' => [
                 'type' => 'rejected',
-                'message' => "Ya existe una solicitud con este correo electrónico."
+                'message' => __('common.messages.error.email_exists')
             ]
         ];
     }

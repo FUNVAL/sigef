@@ -3,11 +3,12 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, UserCheck, Loader } from "lucide-react"
 import { Country } from "@/types/country"
 import { Stake } from "@/types/stake"
-import { Enums } from "@/types/global"
+import { Enums, Translation } from "@/types/global"
 import { PreRegistrationRequest } from "@/types/pre-inscription"
 import { usePage } from "@inertiajs/react"
 import { useContext } from "react"
 import { StepperContext } from "@/pages/forms/stepper-provider"
+import { StepsHeader } from "../steps-header"
 import useFilteredStakes from "@/hooks/use-filtered-stakes"
 
 interface OverviewStepProps {
@@ -17,8 +18,13 @@ interface OverviewStepProps {
 
 export function PreInscriptionOverviewStep({ request, countries }: OverviewStepProps) {
     const { data, post, processing } = request;
-    const { enums } = usePage<{ enums: Enums }>().props;
+    const { enums, forms, ui } = usePage<{
+        enums: Enums;
+        forms: Translation['forms'];
+        ui: Translation['ui'];
+    }>().props;
     const { nextStep, previousStep } = useContext(StepperContext);
+
     const { stakes } = useFilteredStakes(data.country_id);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -45,87 +51,88 @@ export function PreInscriptionOverviewStep({ request, countries }: OverviewStepP
     const getMaritalStatusName = () =>
         enums.maritalStatus.find((m) => m.id.toString() === data.marital_status?.toString())?.name || "-"
 
-    const getMission = () =>
-        data.served_mission ? "Sí" : "No"
+    const getMission = () => {
+        return enums.missionStatus?.find(m => m.id === data.served_mission)?.name || "-";
+    }
 
     return (
-        <div className="max-w-2xl mx-auto">
-            <Card className="border-2 border-blue-100 bg-blue-50 dark:border-gray-900 dark:bg-gray-900">
-                <CardHeader className="text-center pb-4">
-                    <div className="mx-auto w-20 h-20 rounded-full bg-background flex items-center justify-center mb-4 shadow-sm">
-                        <UserCheck className="h-12 w-12 text-[rgb(46_131_242_/_1)]" />
-                    </div>
-                    <CardTitle className="text-2xl font-bold text-funval-blue">
-                        Revisa tus datos
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="text-center space-y-6">
-                    <div className="prose prose-sm max-w-none dark:prose-invert">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                            <div>
-                                <strong>Primer Nombre:</strong>
-                                <span>{data.first_name || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>Segundo Nombre:</strong>
-                                <span>{data.middle_name || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>Apellido:</strong>
-                                <span>{data.last_name || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>Segundo Apellido:</strong>
-                                <span>{data.second_last_name || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>Género:</strong>
-                                <span>{getGenderName()}</span>
-                            </div>
-                            <div>
-                                <strong>Edad:</strong>
-                                <span>{data.age || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>País:</strong>
-                                <span>{getCountryName()}</span>
-                            </div>
-                            <div>
-                                <strong>Teléfono:</strong>
-                                <span>{data.phone || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>Estaca/Distrito/Misión:</strong>
-                                <span>{getStakeName()}</span>
-                            </div>
-                            <div>
-                                <strong>Email:</strong> <span>{data.email || "-"}</span>
-                            </div>
-                            <div>
-                                <strong>Estado Civil:</strong> <span>{getMaritalStatusName()}</span>
-                            </div>
-                            <div>
-                                <strong>¿Ha servido una misión?:</strong> <span>{getMission()}</span>
-                            </div>
-                            {
-                                data.gender === 2 && (
-                                    <>
-                                        <div>
-                                            <strong>¿Estás trabajando actualmente?:</strong> <span>{data.currently_working ? "Sí" : "No"}</span>
-                                        </div>
-                                        {!data.currently_working && (
-                                            <div>
-                                                <strong>Tipo de empleo que buscas:</strong> <span>{enums?.jobType?.find((j) => j.id === data.job_type_preference)?.name || "-"}</span>
-                                            </div>
-                                        )}
-                                        <div>
-                                            <strong>Disponibilidad para trabajar a tiempo completo:</strong> <span>{data.available_full_time ? "Sí" : "No"}</span>
-                                        </div>
-                                    </>
-                                )
-                            }
+        <div className="max-w-4xl mx-auto">
+            <Card className="shadow-2xl border-0 overflow-hidden pt-0">
+                <StepsHeader
+                    title={forms.pre_inscription.overview.title}
+                    subtitle={forms.pre_inscription.overview.subtitle}
+                />
 
-                        </div>
+                <CardContent className="p-8 space-y-8">
+                    <div className="prose prose-sm max-w-none dark:prose-invert">
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.first_name}</strong>&nbsp;
+                                <span>{data.first_name || "-"}</span>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.middle_name}</strong>&nbsp;
+                                <span>{data.middle_name || "-"}</span>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.last_name}</strong>&nbsp;
+                                <span>{data.last_name || "-"}</span>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.second_last_name}</strong>&nbsp;
+                                <span>{data.second_last_name || "-"}</span>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.gender}</strong>&nbsp;
+                                <span>{getGenderName()}</span>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.age}</strong>&nbsp;
+                                <span>{data.age || "-"}</span>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.country}</strong>&nbsp;
+                                <span>{getCountryName()}</span>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.phone}</strong>&nbsp;
+                                <span>{data.phone || "-"}</span>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.stake}</strong>&nbsp;
+                                <span>{getStakeName()}</span>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.email}</strong>&nbsp;
+                                <span>{data.email || "-"}</span>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.marital_status}</strong>&nbsp;
+                                <span>{getMaritalStatusName()}</span>
+                            </li>
+                            <li>
+                                <strong>{forms.pre_inscription.overview.fields.served_mission}</strong>&nbsp;
+                                <span>{getMission()}</span>
+                            </li>
+                            {data.gender === 2 && (
+                                <>
+                                    <li>
+                                        <strong>{forms.pre_inscription.overview.fields.currently_working}</strong>&nbsp;
+                                        <span>{data.currently_working ? ui.labels.yes : ui.labels.no}</span>
+                                    </li>
+                                    {!data.currently_working && (
+                                        <li>
+                                            <strong>{forms.pre_inscription.overview.fields.job_type_preference}</strong>&nbsp;
+                                            <span>{enums?.jobType?.find((j) => j.id === data.job_type_preference)?.name || "-"}</span>
+                                        </li>
+                                    )}
+                                    <li>
+                                        <strong>{forms.pre_inscription.overview.fields.available_full_time}</strong>&nbsp;
+                                        <span>{data.available_full_time ? ui.labels.yes : ui.labels.no}</span>
+                                    </li>
+                                </>
+                            )}
+                        </ul>
                     </div>
                     <form className="flex justify-between pt-4" onSubmit={handleSubmit}>
                         <Button
@@ -137,16 +144,16 @@ export function PreInscriptionOverviewStep({ request, countries }: OverviewStepP
                             className="min-w-[120px]"
                         >
                             <ArrowLeft className="mr-2 h-4 w-4" />
-                            Anterior
+                            {ui.buttons.previous}
                         </Button>
 
                         <Button
                             size="lg"
                             disabled={processing}
-                            className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90 disabled:bg-gray-300 disabled:text-gray-500"
+                            className="min-w-[140px] bg-blue-600 text-white transition-colors hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500"
                         >
                             {processing && <Loader className="mr-2 h-4 w-4 animate-spin" />}
-                            {processing ? "Enviando..." : "Enviar"}
+                            {processing ? forms.pre_inscription.overview.buttons.sending : forms.pre_inscription.overview.buttons.submit}
                         </Button>
                     </form>
                 </CardContent>

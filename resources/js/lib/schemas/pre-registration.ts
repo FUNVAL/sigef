@@ -1,5 +1,5 @@
 import { z } from "zod";
-
+import validatePhoneLength from "@/lib/schemas/custom-phone-validation";
 // Función auxiliar para validar campos obligatorios que pueden ser null/undefined
 function requiredField(ctx: z.RefinementCtx, value: unknown, path: string[], message: string) {
     if (value === null || value === undefined) {
@@ -17,13 +17,13 @@ export const preRegistrationSchema = z.object({
     gender: z.number().min(1, "El género es obligatorio."),
     age: z.coerce.number().min(18, "Edad mínima 18").max(100, "Edad máxima 100."),
     country_id: z.number().min(1, "El país es obligatorio."),
-    phone: z.string().min(10, "El teléfono debe tener al menos 10 dígitos."),
+    phone: z.string().min(1, "El teléfono es obligatorio.").refine((val) => validatePhoneLength(val), {
+        message: "El teléfono debe tener entre 7 y 10 dígitos.",
+    }),
     stake_id: z.number().min(1, "La estaca es obligatoria."),
     email: z.string().email("Correo inválido."),
     marital_status: z.number().min(1, "El estado civil es obligatorio."),
-    served_mission: z.boolean().nullable(),
-}).superRefine((data, ctx) => {
-    requiredField(ctx, data.served_mission, ["served_mission"], "Este campo es obligatorio.");
+    served_mission: z.number().min(1, "Este campo es obligatorio."),
 });
 
 export const femaleValidationSchema = z.object({
@@ -47,3 +47,4 @@ export const femaleValidationSchema = z.object({
         });
     }
 });
+

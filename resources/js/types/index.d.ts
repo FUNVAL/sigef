@@ -57,3 +57,12 @@ export interface User {
         name: string;
     };
 }
+
+// Re-exportaciones de tipos centralizados
+export * from './common';
+export * from './dashboard';
+export * from './pre-inscription';
+export * from './reference';
+export * from './course';
+export * from './country';
+export * from './stake';

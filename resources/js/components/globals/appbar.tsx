@@ -12,6 +12,8 @@ import {
     NavigationMenuTrigger,
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import AppearanceTabs from '@/components/appearance-tabs';
+import { Separator } from "@/components/ui/separator";
 
 export interface MenuOption {
     label: string
@@ -76,6 +78,12 @@ export default function Appbar({ menuOptions, className }: NavigationMenuDemoPro
                     );
                 })}
             </NavigationMenuList>
+            {currentPath.includes('/settings') &&
+                <>
+                    <Separator orientation="vertical" className="mx-2 h-full bg-gray-300 dark:bg-gray-700 py-3 px-px" />
+                    <AppearanceTabs />
+                </>
+            }
         </NavigationMenu>
     )
 }

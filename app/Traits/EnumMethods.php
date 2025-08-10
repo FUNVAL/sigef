@@ -72,4 +72,14 @@ trait EnumMethods
         }
         return $result;
     }
+
+    /**
+     * Get all enum cases formatted for select components
+     * 
+     * @return array Array of associative arrays with 'id' and 'name' keys
+     */
+    public static function getAllForSelect(): array
+    {
+        return self::toArray();
+    }
 }

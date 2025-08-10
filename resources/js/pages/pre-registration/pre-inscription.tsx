@@ -11,7 +11,7 @@ import PreInscriptionReview from '@/components/pre-registration/pre-inscription-
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Pre-Inscription',
+        title: 'Preinscripciones',
         href: '/pre-inscription',
     },
 ];
@@ -24,12 +24,13 @@ export default function PreInscription({ preInscriptions }: { preInscriptions: P
     });
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Pre-inscripciones" />
-            <PreInscriptionLayout headings={{
-                title: 'Dashboard de Pre-inscripciones',
-                description: 'Aquí puedes ver y gestionar todas las pre-inscripciones recibidas.',
+        <AppLayout breadcrumbs={breadcrumbs} menuOptions={preinscriptionsNavItems}>
+            <Head title="Preinscripciones" />
+            <AccessControlLayout headings={{
+                title: 'Lista de Preinscripciones',
+                description: 'Aquí puedes ver y gestionar todas las preinscripciones recibidas.',
             }}>
+
                 <div className="space-y-6 w-full flex flex-col">
                     <DataTable<PreInscription>
                         data={preInscriptions || []}

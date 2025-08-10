@@ -2,48 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StatusEnum;
 use App\Models\Country;
 use App\Models\Stake;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use PhpParser\Node\Stmt\TryCatch;
 
 class StakeController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * Allows filtering by name, id, country code and user_id
      */
     public function index(Request $request)
     {
-        $query = Stake::query();
+        $query = Stake::query()->with(['country', 'user']);
 
-        // Filter by id if provided
-        if ($request->has('id')) {
-            $query->where('id', $request->id);
+        // Búsqueda simple para el frontend
+        if ($request->has('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Filter by name if provided
-        if ($request->has('name')) {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
+        // Mostrar solo activos e inactivos (no eliminados)
+        $query->notDeleted();
 
-        // Filter by country code if provided
-        if ($request->has('code')) {
-            $query->whereHas('country', function ($q) use ($request) {
-                $q->where('code', strtoupper($request->code));
-            });
-        }
-
-        // Filter by user_id if provided
-        if ($request->has('user_id')) {
-            $query->where('user_id', $request->user_id);
-        }
-
-        $stakes = $query->with(['country', 'user'])->get();
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $stakes
+        return Inertia::render('Stakes/Index', [
+            'stakes' => $query->get(),
+            'countries' => Country::all(),
+            'users' => User::all(),
+            'filters' => $request->only(['search'])
         ]);
     }
 
@@ -56,28 +45,15 @@ class StakeController extends Controller
             'name' => 'required|string|max:255|unique:stakes',
             'country_id' => 'required|exists:countries,id',
             'user_id' => 'nullable|exists:users,id',
+            'status' => 'required|integer|in:' . StatusEnum::ACTIVE->value . ',' . StatusEnum::INACTIVE->value, // Solo permitir active/inactive en creación
         ]);
 
-        $stake = Stake::create($validated);
+        // Asegurar que el status sea entero
+        $validated['status'] = (int) $validated['status'];
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Stake created successfully',
-            'data' => $stake
-        ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Stake $stake)
-    {
-        $stake->load(['country', 'user']);
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $stake
-        ]);
+        Stake::create($validated);
+        return redirect()->route('stakes.index')
+            ->with('success', 'Stake creado exitosamente');
     }
 
     /**
@@ -86,31 +62,31 @@ class StakeController extends Controller
     public function update(Request $request, Stake $stake)
     {
         $validated = $request->validate([
-            'name' => 'sometimes|string|max:255|unique:stakes,name,' . $stake->id,
-            'country_id' => 'sometimes|exists:countries,id',
+            'name' => 'required|string|max:255|unique:stakes,name,' . $stake->id,
+            'country_id' => 'required|exists:countries,id',
             'user_id' => 'nullable|exists:users,id',
+            'status' => 'required|integer|in:' . StatusEnum::ACTIVE->value . ',' . StatusEnum::INACTIVE->value // Solo permitir cambios entre active/inactive
         ]);
+
+        // Asegurar que el status sea entero
+        $validated['status'] = (int) $validated['status'];
 
         $stake->update($validated);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Stake updated successfully',
-            'data' => $stake
-        ]);
+        return redirect()->back()
+            ->with('success', 'Stake actualizado exitosamente');
     }
 
     /**
      * Remove the specified resource from storage.
+     * (Método para marcar como eliminado)
      */
     public function destroy(Stake $stake)
     {
-        $stake->delete();
+        // Marcar como eliminado en lugar de eliminar físicamente
+        $stake->markAsDeleted();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Stake deleted successfully'
-        ]);
+        return redirect()->back()->with('success', 'Stake eliminado correctamente');
     }
 
     /**
@@ -120,7 +96,7 @@ class StakeController extends Controller
     public function filterByCountryId(Request $request, $country_id): JsonResponse
     {
         try {
-            // Opción 1: exists() - Más eficiente, solo verifica existencia
+            // Verificar que el país existe
             if (!Country::where('id', $country_id)->exists()) {
                 return response()->json([
                     'status' => 'error',
@@ -128,22 +104,94 @@ class StakeController extends Controller
                 ], 404);
             }
 
-            // Obtener stakes ordenados alfabéticamente
+            // Obtener stakes ordenados alfabéticamente con información completa
             $stakes = Stake::where('country_id', $country_id)
-                ->select('id', 'name')
+                ->with(['user', 'country'])
                 ->orderBy('name', 'asc')
                 ->get();
 
             return response()->json([
                 'status' => 'success',
-                'data' => $stakes
+                'stakes' => $stakes, // Cambiado de 'data' a 'stakes'
+                'count' => $stakes->count()
             ]);
         } catch (\Exception $e) {
+            \Log::error('Error in filterByCountryId: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'An unexpected error occurred.',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Get stakes assigned to a specific user
+     */
+    public function getUserStakes(int $userId): JsonResponse
+    {
+        try {
+            $stakes = Stake::where('user_id', $userId)
+                ->with(['country'])
+                ->orderBy('updated_at', 'desc') // Ordenar por fecha de actualización más reciente primero
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'stakes' => $stakes
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch user stakes: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function assignUser(Request $request, int $id)
+    {
+        $validated = $request->validate([
+            'stakes' => 'required|array',
+            'stakes.*' => 'exists:stakes,id'
+        ]);
+
+        try {
+            $user = User::findOrFail($id);
+
+            // Desasignar todas las estacas actuales del usuario
+            Stake::where('user_id', $id)->update(['user_id' => null]);
+
+            // Asignar las nuevas estacas al usuario
+            $assignedCount = 0;
+            if (!empty($validated['stakes'])) {
+                $assignedCount = Stake::whereIn('id', $validated['stakes'])
+                    ->update(['user_id' => $id]);
+            }
+
+            // Si es una petición AJAX, devolver JSON
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Stakes assigned successfully.',
+                    'assigned_count' => count($validated['stakes'])
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Stakes assigned successfully.');
+        } catch (\Exception $e) {
+            \Log::error("Error assigning stakes to user {$id}: " . $e->getMessage());
+            
+            // Si es una petición AJAX, devolver error JSON
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to assign stakes: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->back()
+                ->withErrors(['error' => 'Failed to assign stakes: ' . $e->getMessage()])
+                ->withInput();
         }
     }
 }

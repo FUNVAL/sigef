@@ -16,10 +16,10 @@ enum AttendanceStatusEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::PRESENT => 'Presente',
-            self::ABSENT => 'Ausente',
-            self::EXCUSED => 'Justificado',
-            self::LATE => 'Tarde',
+            self::PRESENT => __('common.enums.attendance_status.present'),
+            self::ABSENT => __('common.enums.attendance_status.absent'),
+            self::EXCUSED => __('common.enums.attendance_status.justified'),
+            self::LATE => __('common.enums.attendance_status.late'),
         };
     }
 }
