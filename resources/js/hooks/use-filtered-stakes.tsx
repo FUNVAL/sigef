@@ -76,8 +76,8 @@ const useFilteredStakes = (country_id: number) => {
                 const data = await response.json();
 
                 // Verificar la estructura de la respuesta
-                if (data.status === 'success' && Array.isArray(data.data)) {
-                    dispatch({ type: 'FETCH_SUCCESS', payload: data.data });
+                if (data.status === 'success' && Array.isArray(data.stakes)) {
+                    dispatch({ type: 'FETCH_SUCCESS', payload: data.stakes });
                 } else {
                     throw new Error('Invalid response format');
                 }
