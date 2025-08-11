@@ -13,7 +13,9 @@ use Inertia\Inertia;
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('dashboard', [ReferenceController::class, 'dashboard'])
+    Route::get('dashboard', function(){
+        return Inertia::render('dashboard');
+    })
         ->name('dashboard');
 
     Route::prefix('access-control/users')->name('users.')
