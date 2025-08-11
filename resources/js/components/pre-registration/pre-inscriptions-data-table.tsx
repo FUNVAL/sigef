@@ -13,6 +13,9 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import PreInscriptionOverview from './pre-inscription-overview';
+import { SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
+import { validateRole } from '@/lib/utils';
 
 export const createColumns = ({
     onEditPreInscription,
@@ -130,7 +133,8 @@ export const createColumns = ({
             enableHiding: false,
             cell: ({ row }) => {
                 const preInscription = row.original;
-                const isPending = preInscription.status?.name.toLowerCase() === 'pendiente';
+                const { auth } = usePage<SharedData>().props;
+                const isPending = preInscription.status.id === 1 || validateRole(auth.user.roles, 'Administrador');
 
                 return (
                     <DropdownMenu>
@@ -149,10 +153,14 @@ export const createColumns = ({
                             <DropdownMenuItem asChild>
                                 <PreInscriptionOverview preInscription={preInscription} />
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => onEditPreInscription(preInscription)}>
-                                <Edit className="h-4 w-4" />
-                                {isPending ? 'Revisar solicitud' : 'Editar estado'}
-                            </DropdownMenuItem>
+                            {isPending && (
+                                <DropdownMenuItem onClick={() => onEditPreInscription(preInscription)}>
+                                    <Edit className="h-4 w-4" />
+                                    Revisar solicitud
+                                </DropdownMenuItem>
+                            )}
+
+
                         </DropdownMenuContent>
                     </DropdownMenu>
                 );

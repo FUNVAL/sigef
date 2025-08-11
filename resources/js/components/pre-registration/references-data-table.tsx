@@ -10,10 +10,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { MoreHorizontal, CheckCircle, User, Edit } from "lucide-react";
+import { MoreHorizontal, Edit } from "lucide-react";
 import { Reference } from "@/types/reference";
 import ReferenceOverview from "./reference-overview";
-import ReferenceReview from "./reference-review";
+import { usePage } from "@inertiajs/react";
+import { SharedData } from "@/types";
+import { validateRole } from "@/lib/utils";
+
 
 export const createColumns = ({
     onEditReference,
@@ -135,8 +138,9 @@ export const createColumns = ({
             enableHiding: false,
             cell: ({ row }) => {
                 const reference = row.original;
-                const isPending = reference.status.name.toLowerCase() === "pendiente";
-
+                const { auth } = usePage<SharedData>().props;
+                const isPending = reference.status.id === 1 || validateRole(auth.user.roles, 'Administrador');
+              
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>

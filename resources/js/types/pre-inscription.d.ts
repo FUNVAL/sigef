@@ -32,7 +32,7 @@ type PreInscription = BaseEntity & {
     gender: GenderInfo;
     marital_status: MaritalStatusInfo;
     job_type_preference?: JobTypeInfo;
-    status?: StatusInfo;
+    status: StatusInfo;
     declined_reason?: StatusInfo;
     country: Country;
     stake: Stake;
