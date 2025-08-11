@@ -1,16 +1,24 @@
 import React from 'react';
 import { Label } from '../ui/label';
-import { CompleteDialog } from '../ui/complete-dialog';
 import { Reference, ReferenceUpdateFormData } from '../../types/reference';
 import { useForm, usePage } from '@inertiajs/react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Enums } from '@/types/global';
 import { Textarea } from '@headlessui/react';
-import { Edit } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Button } from '../ui/button';
 
-const ReferenceReview = ({ reference }: { reference: Reference }) => {
+interface ReferenceReviewProps {
+    reference: Reference;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+}
+
+const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceReviewProps) => {
     const { enums } = usePage<{ enums: Enums }>().props;
-    const initialReferenceUpdateData = {
+    const initialReferenceUpdateData: Required<ReferenceUpdateFormData> = {
         id: reference.id,
         status: reference.status.id,
         declined_reason: reference?.declined_reason?.id || 1,
@@ -19,108 +27,152 @@ const ReferenceReview = ({ reference }: { reference: Reference }) => {
 
     const { data, setData, patch, processing, errors, reset } = useForm<Required<ReferenceUpdateFormData>>(initialReferenceUpdateData);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        return new Promise<void>((resolve, reject) => {
-            patch(route('references.update', reference.id), {
-                onSuccess: () => {
-                    reset();
-                    resolve();
-                },
-                onError: (errors) => {
-                    console.error('Error updating reference:', errors);
-                    reject(new Error('Error al actualizar la referencia'));
-                },
-            });
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        patch(route('references.update', reference.id), {
+            onSuccess: () => {
+                onOpenChange?.(false);
+            },
         });
     };
 
-    const handleSuccess = () => {
-        // Opcional: agregar cualquier lógica adicional después del éxito
-        console.log('Referencia actualizada exitosamente');
-    };
-
     return (
-        <CompleteDialog
-            btnLabel="Actualizar Estado"
-            dialogTitle="Detalles de la Referencia"
-            dialogDescription="Aquí puedes ver los detalles completos de la referencia seleccionada."
-            icon={<Edit className="h-4 w-4" />}
-            onSubmit={handleSubmit}
-            isSubmitting={processing}
-            onSuccess={handleSuccess}
-        >
-            <div className="grid gap-6 py-4 max-h-[80vh] overflow-y-auto">
-                <div className="grid gap-4 py-4">
-                    <div>
-                        <Label htmlFor="status">Estado de la referencia</Label>
-                        <Select
-                            value={data.status.toString()}
-                            onValueChange={(value) => setData('status', Number(value))}
-                        >
-                            <SelectTrigger id="status" name="status">
-                                <SelectValue placeholder="Selecciona un estado" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="0" disabled>Selecciona un status</SelectItem>
-                                {enums.requestStatus.map((status) => (
-                                    <SelectItem key={status.id} value={status.id.toString()}>
-                                        {status.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
-                    </div>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-2xl grid gap-4 max-h-[88vh] overflow-y-auto">
 
-                    <div>
-                        <Label htmlFor="declined_reason">Razón de rechazo</Label>
-                        <Select
-                            value={data.declined_reason.toString()}
-                            onValueChange={(value) => setData('declined_reason', Number(value))}
-                            disabled={data.status !== 3}
-                            required={data.status === 3}
-                        >
-                            <SelectTrigger id="declined_reason" name="declined_reason">
-                                <SelectValue placeholder="Razón de rechazo" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="0" disabled>Selecciona una razón</SelectItem>
-                                {enums.referenceStatus.map((status) => (
-                                    <SelectItem key={status.id} value={status.id.toString()}>
-                                        {status.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        {errors.declined_reason && <p className="text-red-500 text-sm">{errors.declined_reason}</p>}
-                    </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="declined_description" className="text-sm font-medium">
-                            {data.status === 3 ? "Comentarios" : "Comentarios (opcional)"}
-                        </Label>
-                        <Textarea
-                            id="declined_description"
-                            name="declined_description"
-                            placeholder={
-                                data.status === 1
-                                    ? "Describe cómo fue el contacto, el interés mostrado, próximos pasos, etc."
-                                    : data.status === 3
-                                        ? "Proporciona detalles adicionales sobre el rechazo..."
-                                        : "Agrega cualquier comentario relevante..."
-                            }
-                            value={data.declined_description}
-                            onChange={(e) => setData('declined_description', e.target.value)}
-                            className="min-h-40 w-full outline-none border resize-none p-2 rounded-md"
-                            required={data.status === 3}
-                        />
-                        {errors.declined_description && (
-                            <p className="text-red-500 text-sm">{errors.declined_description}</p>
-                        )}
-                    </div>
-                </div>
-            </div>
-        </CompleteDialog>
+                <DialogHeader>
+                    <DialogTitle>Actualizar estado de referencia</DialogTitle>
+                    <DialogDescription>
+                        Aquí puedes actualizar el estado de la referencia y agregar comentarios adicionales.
+                    </DialogDescription>
+                </DialogHeader>
+
+                <Card className="border-blue-200">
+                    <CardContent className="space-y-3">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Nombre del Candidato:
+                                </Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">{reference.name}</p>
+                            </div>
+                            <div>
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Teléfono:
+                                </Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">{reference.phone}</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    País:
+                                </Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">{reference.country?.name || 'No especificado'}</p>
+                            </div>
+                            <div>
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Estaca:
+                                </Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">{reference.stake?.name || 'No especificado'}</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card className="border-blue-200">
+                    <CardHeader className="bg-transparent">
+                        <CardTitle className="text-lg text-blue-800 dark:text-blue-500">
+                            Actualización de Estado
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div>
+                            <Label htmlFor="status" className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                Estado de la referencia
+                            </Label>
+                            <Select
+                                value={data.status.toString()}
+                                onValueChange={(value) => setData('status', Number(value))}
+                            >
+                                <SelectTrigger id="status" name="status">
+                                    <SelectValue placeholder="Selecciona un estado" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="0" disabled>Selecciona un status</SelectItem>
+                                    {enums.requestStatus.map((status) => (
+                                        <SelectItem key={status.id} value={status.id.toString()}>
+                                            {status.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
+                        </div>
+
+                        <div>
+                            <Label htmlFor="declined_reason" className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                Razón de rechazo
+                            </Label>
+                            <Select
+                                value={data.declined_reason.toString()}
+                                onValueChange={(value) => setData('declined_reason', Number(value))}
+                                disabled={data.status !== 3}
+                                required={data.status === 3}
+                            >
+                                <SelectTrigger id="declined_reason" name="declined_reason">
+                                    <SelectValue placeholder="Razón de rechazo" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="0" disabled>Selecciona una razón</SelectItem>
+                                    {enums.referenceStatus.map((status) => (
+                                        <SelectItem key={status.id} value={status.id.toString()}>
+                                            {status.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.declined_reason && <p className="text-red-500 text-sm">{errors.declined_reason}</p>}
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="declined_description" className={`font-bold font-mono text-lg ${data.status !== 3 ? ' text-gray-800/50 dark:text-blue-100/50' : ' text-gray-800 dark:text-blue-100'}`}>
+                                {data.status === 3 ? "Comentarios" : "Comentarios (opcional)"}
+                            </Label>
+                            <Textarea
+                                id="declined_description"
+                                name="declined_description"
+                                placeholder={
+                                    data.status === 1
+                                        ? "Describe cómo fue el contacto, el interés mostrado, próximos pasos, etc."
+                                        : data.status === 3
+                                            ? "Proporciona detalles adicionales sobre el rechazo..."
+                                            : "Agrega cualquier comentario relevante..."
+                                }
+                                value={data.declined_description}
+                                onChange={(e) => setData('declined_description', e.target.value)}
+                                className="min-h-32 w-full outline-none border resize-none p-2 rounded-md disabled:opacity-50"
+                                required={data.status === 3}
+                                disabled={data.status !== 3}
+                            />
+                            {errors.declined_description && (
+                                <p className="text-red-500 text-sm">{errors.declined_description}</p>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <DialogFooter className="mt-2 gap-4 flex">
+                    <Button type="button" variant="outline" disabled={processing} onClick={() => onOpenChange?.(false)}>
+                        Cancelar
+                    </Button>
+                    <Button disabled={processing} onClick={handleSubmit}>
+                        Actualizar
+                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 };
 
