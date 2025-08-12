@@ -1,15 +1,13 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, UserPlus } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { usePage } from '@inertiajs/react';
 import { Enums, Translation } from '@/types/global';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { Country } from '@/types/country';
-import { Stake } from '@/types/stake';
 import { useCallback, useContext, useState } from 'react';
 import validateForm from '@/lib/schemas/validate-schemas';
 import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
