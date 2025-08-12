@@ -33,6 +33,23 @@ export function ActionSelectionStep() {
           onValueChange={(value) => setAction(value as ActionSelectionStepProps['action'])}
         >
           <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+            <Label htmlFor="preregistration" className="text-base font-medium cursor-pointer">
+              <div className="flex items-center space-x-3 flex-1">
+                <RadioGroupItem value="preinscription-form" id="preregistration" />
+                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                  <UserPlus className="h-6 w-6 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  {action_selection.pre_inscription.title}
+                  <p className="text-sm text-gray-600 mt-1">
+                    {action_selection.pre_inscription.description}
+                  </p>
+                </div>
+              </div>
+            </Label>
+          </div>
+
+          <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
             <Label htmlFor="referral" className="text-base font-medium cursor-pointer">
               <div className="flex items-center space-x-3 flex-1">
                 <RadioGroupItem value="reference-form" id="referral" />
@@ -49,22 +66,6 @@ export function ActionSelectionStep() {
             </Label>
           </div>
 
-          <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-            <Label htmlFor="preregistration" className="text-base font-medium cursor-pointer">
-              <div className="flex items-center space-x-3 flex-1">
-                <RadioGroupItem value="preinscription-form" id="preregistration" />
-                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-                  <UserPlus className="h-6 w-6 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  {action_selection.pre_inscription.title}
-                  <p className="text-sm text-gray-600 mt-1">
-                    {action_selection.pre_inscription.description}
-                  </p>
-                </div>
-              </div>
-            </Label>
-          </div>
         </RadioGroup>
 
         <div className="flex justify-between pt-4">
