@@ -33,6 +33,7 @@ return new class extends Migration
             $table->integer('status')->default(RequestStatusEnum::PENDING->value);
             $table->text('comments')->nullable();
             $table->integer('declined_reason')->nullable();
+            $table->text('declined_description')->nullable();
             $table->integer('modified_by')->nullable();
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
             $table->foreignId('stake_id')->constrained()->onDelete('cascade');

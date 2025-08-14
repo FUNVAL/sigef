@@ -18,6 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('gender')->default(GenderEnum::MALE->value);
+            $table->integer('age')->nullable();
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
             $table->string('phone')->nullable();
             $table->foreignId('stake_id')->constrained()->onDelete('cascade');

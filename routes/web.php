@@ -81,7 +81,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
             Route::get('/', 'index')->name('index');
             Route::get('{id}', 'show')->name('show');
+            Route::get('{id}/edit', 'edit')->name('edit');
             Route::patch('{id}', 'update')->name('update');
+            Route::put('{id}', 'updateReference')->name('update-reference');
             Route::delete('{id}', 'destroy')->name('destroy');
         });
 
@@ -90,7 +92,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/dashboard', 'dashboard')->name('dashboard');
             Route::get('{id}', 'show')->name('show');
+            Route::get('{id}/edit', 'edit')->name('edit');
             Route::put('{id}', 'update')->name('update');
+            Route::put('{id}/update-data', 'updatePreInscription')->name('update-data');
             Route::delete('{id}', 'destroy')->name('destroy');
         });
 

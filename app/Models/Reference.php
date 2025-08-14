@@ -23,10 +23,12 @@ class Reference extends Model
         'stake_id',
         'status',
         'declined_reason',
+        'declined_description',
         'referrer_name',
         'referrer_phone',
         'relationship_with_referred',
         'modifier_id',
+        'age',
     ];
 
     protected $hidden = [
@@ -72,7 +74,7 @@ class Reference extends Model
     }
     public function getRelationshipWithReferredAttribute(): ?array
     {
-        return RelatedReferenceEnum::fromId($this->attributes['gender']);
+        return RelatedReferenceEnum::fromId($this->attributes['relationship_with_referred']);
     }
 
     public function getCountryAttribute()
