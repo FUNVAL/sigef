@@ -38,6 +38,7 @@ class PreInscription extends Model
         'status',
         'comments',
         'declined_reason',
+        'declined_description',
         'modified_by',
         'country_id',
         'stake_id',

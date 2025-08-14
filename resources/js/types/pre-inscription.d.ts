@@ -1,17 +1,17 @@
 import {
     type BaseEntity,
+    type BaseFilters,
+    type BaseFormData,
+    type BasePaginatedResponse,
+    type BaseUpdateFormData,
     type Country,
-    type Stake,
     type GenderInfo,
+    type JobTypeInfo,
     type MaritalStatusInfo,
     type MissionStatusInfo,
-    type JobTypeInfo,
+    type Stake,
     type StatusInfo,
-    type BaseFormData,
-    type BaseUpdateFormData,
-    type BaseFilters,
-    type BasePaginatedResponse
-} from "./common";
+} from './common';
 
 /**
  * Tipo base para una pre-inscripción con todos sus campos y relaciones
@@ -56,12 +56,13 @@ type PreInscriptionFormData = Omit<
     | 'status'
     | 'declined_reason'
     | 'served_mission'
-> & BaseFormData & {
-    marital_status: number;
-    served_mission: number;
-    job_type_preference?: number;
-    status?: number;
-};
+> &
+    BaseFormData & {
+        marital_status: number;
+        served_mission: number;
+        job_type_preference?: number;
+        status?: number;
+    };
 
 /**
  * Tipo para actualizar el estado de una pre-inscripción
@@ -70,6 +71,13 @@ type PreInscriptionUpdateFormData = BaseUpdateFormData & {
     declined_reason?: number;
     declined_description?: string;
     comments?: string;
+};
+
+/**
+ * Tipo para editar datos de una pre-inscripción existente
+ */
+type PreInscriptionEditFormData = Omit<PreInscriptionFormData, 'id'> & {
+    id: number;
 };
 
 /**
@@ -95,19 +103,20 @@ type PreInscriptionsPaginatedResponse = BasePaginatedResponse<PreInscription>;
 
 export type {
     PreInscription,
-    PreInscriptionFormData,
-    PreInscriptionUpdateFormData,
+    PreInscriptionEditFormData,
     PreInscriptionFilters,
+    PreInscriptionFormData,
     PreInscriptionsPaginatedResponse,
+    PreInscriptionUpdateFormData,
 };
 
 export type PreRegistrationRequest = {
     data: any;
-    setData: ((field: any, value: any) => void);
+    setData: (field: any, value: any) => void;
     post: (...args: any[]) => void;
     processing: boolean;
     errors: Record<string, string>;
-}
+};
 
 export type PreRegistrationFormData = BaseFormData & {
     first_name: string;
@@ -123,4 +132,4 @@ export type PreRegistrationFormData = BaseFormData & {
     job_type_preference?: number | null;
     currently_working?: boolean | null;
     available_full_time?: boolean | null;
-}
+};

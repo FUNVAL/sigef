@@ -1,15 +1,15 @@
 import {
     type BaseEntity,
-    type Country,
-    type Stake,
-    type GenderInfo,
-    type StatusInfo,
-    type IdNameEntity,
-    type BaseFormData,
-    type BaseUpdateFormData,
     type BaseFilters,
-    type BasePaginatedResponse
-} from "./common";
+    type BaseFormData,
+    type BasePaginatedResponse,
+    type BaseUpdateFormData,
+    type Country,
+    type GenderInfo,
+    type IdNameEntity,
+    type Stake,
+    type StatusInfo,
+} from './common';
 
 /**
  * Tipo base para una referencia con todos sus campos y relaciones
@@ -45,9 +45,10 @@ type ReferenceFormData = Omit<
     | 'declined_reason'
     | 'gender'
     | 'declined_description'
-> & BaseFormData & {
-    relationship_with_referred: number;
-};
+> &
+    BaseFormData & {
+        relationship_with_referred: number;
+    };
 
 /**
  * Tipo para actualizar el estado de una referencia
@@ -55,6 +56,13 @@ type ReferenceFormData = Omit<
 type ReferenceUpdateFormData = BaseUpdateFormData & {
     declined_reason: number;
     declined_description: string;
+};
+
+/**
+ * Tipo para editar datos de una referencia existente
+ */
+type ReferenceEditFormData = Omit<ReferenceFormData, 'id'> & {
+    id: number;
 };
 
 /**
@@ -71,10 +79,4 @@ type ReferenceFilters = BaseFilters & {
  */
 type ReferencesPaginatedResponse = BasePaginatedResponse<Reference>;
 
-export type {
-    Reference,
-    ReferenceFormData,
-    ReferenceUpdateFormData,
-    ReferenceFilters,
-    ReferencesPaginatedResponse,
-};
+export type { Reference, ReferenceEditFormData, ReferenceFilters, ReferenceFormData, ReferencesPaginatedResponse, ReferenceUpdateFormData };

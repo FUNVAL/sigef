@@ -173,6 +173,25 @@ class PreInscriptionController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        try {
+            $preInscription = PreInscription::with(['country', 'stake'])->findOrFail($id);
+            
+            return Inertia::render('forms/pre-inscription-edit-form', [
+                'preInscription' => $preInscription,
+                'countries' => Country::all(),
+                'courses' => Course::all()
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('pre-inscription.index')
+                ->withErrors(['error' => 'Error al obtener la pre-inscripción para editar: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
@@ -210,6 +229,50 @@ class PreInscriptionController extends Controller
             return redirect()->back()
                 ->with('success', 'Pre-inscripción actualizada exitosamente');
         } catch (Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => $e->getMessage()])
+                ->withInput();
+        }
+    }
+
+    /**
+     * Update the pre-inscription data (not status)
+     */
+    public function updatePreInscription(Request $request, $id)
+    {
+        try {
+            $preInscription = PreInscription::findOrFail($id);
+            
+            $rules = [
+                'first_name' => 'required|string|max:50',
+                'middle_name' => 'nullable|string|max:50',
+                'last_name' => 'required|string|max:50',
+                'second_last_name' => 'nullable|string|max:50',
+                'gender' => 'required|numeric|in:' . implode(',', GenderEnum::values()),
+                'age' => 'required|numeric|min:18|max:100',
+                'phone' => 'required|string|max:20',
+                'email' => 'required|email|max:100|unique:pre_inscriptions,email,' . $id,
+                'marital_status' => 'required|numeric|in:' . implode(',', MaritalStatusEnum::values()),
+                'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
+                'country_id' => 'required|exists:countries,id',
+                'stake_id' => 'required|exists:stakes,id',
+                'currently_working' => 'nullable|boolean',
+                'job_type_preference' => 'nullable|numeric|in:' . implode(',', JobTypeEnum::values()),
+                'available_full_time' => 'nullable|boolean',
+            ];
+
+            $validated = $request->validate($rules);
+            $validated['modified_by'] = Auth::id();
+
+            $preInscription->update($validated);
+            
+            return redirect()->route('pre-inscription.index')
+                ->with('success', 'Pre-inscripción actualizada exitosamente');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
                 ->withInput();

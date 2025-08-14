@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Enums\RequestStatusEnum;
-use App\Enums\StatusEnum;
 use App\Models\Country;
 use App\Models\Reference;
 use Illuminate\Http\Request;
@@ -111,19 +110,18 @@ class ReferenceController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Reference $reference): JsonResponse
+    public function edit($id)
     {
         try {
-            return response()->json([
-                'success' => true,
-                'data' => $reference
+            $reference = Reference::with(['country', 'stake'])->findOrFail($id);
+            
+            return Inertia::render('forms/reference-edit-form', [
+                'reference' => $reference,
+                'countries' => Country::all()
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al obtener la referencia para editar',
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('references.index')
+                ->withErrors(['error' => 'Error al obtener la referencia para editar: ' . $e->getMessage()]);
         }
     }
 
@@ -136,7 +134,7 @@ class ReferenceController extends Controller
             $reference = Reference::findOrFail($id);
             $validated = $request->validate(
                 [
-                    'status' => 'required|in:' . implode(',', StatusEnum::values()),
+                    'status' => 'required|in:' . implode(',', RequestStatusEnum::values()),
                     'declined_reason' => [
                         'nullable',
                         'numeric',
@@ -165,6 +163,43 @@ class ReferenceController extends Controller
             $reference->save();
             return redirect()->back()
                 ->with('success', 'Referencia actualizada exitosamente');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => $e->getMessage()])
+                ->withInput();
+        }
+    }
+
+    /**
+     * Update the reference data (not status)
+     */
+    public function updateReference(Request $request, $id)
+    {
+        try {
+            $reference = Reference::findOrFail($id);
+            
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'gender' => 'required|integer',
+                'age' => 'required|integer|min:18|max:120',
+                'country_id' => 'required|exists:countries,id',
+                'phone' => 'nullable|string|max:20',
+                'stake_id' => 'required|exists:stakes,id',
+                'referrer_name' => 'nullable|string|max:255',
+                'referrer_phone' => 'nullable|string|max:20',
+                'relationship_with_referred' => 'nullable|numeric',
+            ]);
+
+            $validated['modifier_id'] = Auth::id();
+
+            $reference->update($validated);
+            
+            return redirect()->route('references.index')
+                ->with('success', 'Referencia actualizada exitosamente');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
