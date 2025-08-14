@@ -45,7 +45,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     </div>
 
                     <div className="my-6 flex items-center justify-center ">
-                        <Button className="w-3/5 text  bg-blue-600 px-5 py-2 text-white hover:bg-blue-800 disabled:opacity-70" disabled={processing}>
+                        <Button className="w-3/5 text  bg-blue-600 px-5 py-2 text-white hover:bg-blue-800 disabled:opacity-70 disabled:cursor-not-allowed" disabled={processing || !!status}>
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                             Restablecer contraseña
                         </Button>
