@@ -51,7 +51,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
         <div className="mx-auto w-full max-w-4xl space-y-6">
             <form onSubmit={handleSubmit} noValidate>
                 {/* Información Personal */}
-                <Card className="border-blue-200">
+                <Card className="border-none">
                     <CardHeader className="bg-transparent">
                         <CardTitle className="text-lg text-blue-800 dark:text-blue-500">Información Personal</CardTitle>
                     </CardHeader>
@@ -168,7 +168,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                 </Card>
 
                 {/* Información de Contacto */}
-                <Card className="border-blue-200">
+                <Card className="border-none">
                     <CardHeader className="bg-transparent">
                         <CardTitle className="text-lg text-blue-800 dark:text-blue-500">Información de Contacto</CardTitle>
                     </CardHeader>
@@ -247,7 +247,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                 </Card>
 
                 {/* Información Adicional */}
-                <Card className="border-blue-200">
+                <Card className="border-none">
                     <CardHeader className="bg-transparent">
                         <CardTitle className="text-lg text-blue-800 dark:text-blue-500">Información Adicional</CardTitle>
                     </CardHeader>

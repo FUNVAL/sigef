@@ -58,7 +58,7 @@ export function ReferenceEditFormStep({ countries, request, onSubmit, onCancel }
         <div className="mx-auto w-full max-w-4xl space-y-6">
             <form onSubmit={handleSubmit} noValidate>
                 {/* Información de la Persona Referida */}
-                <Card className="border-blue-200">
+                <Card className="border-none">
                     <CardHeader className="bg-transparent">
                         <CardTitle className="text-lg text-blue-800 dark:text-blue-500">Información de la Persona Referida</CardTitle>
                     </CardHeader>
@@ -183,7 +183,7 @@ export function ReferenceEditFormStep({ countries, request, onSubmit, onCancel }
                 </Card>
 
                 {/* Información del Referente */}
-                <Card className="border-blue-200">
+                <Card className="border-none">
                     <CardHeader className="bg-transparent">
                         <CardTitle className="text-lg text-blue-800 dark:text-blue-500">Información del Referente</CardTitle>
                     </CardHeader>
