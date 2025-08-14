@@ -117,7 +117,7 @@ export function ReferenceEditFormStep({ countries, request, onSubmit, onCancel }
                                     autoComplete="age"
                                     type="number"
                                     value={data.age}
-                                    onChange={(e) => setData('age', e.target.value)}
+                                    onChange={(e) => setData('age', Number(e.target.value))}
                                     min="18"
                                     max="100"
                                     required
