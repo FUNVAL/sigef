@@ -97,12 +97,14 @@ return [
         'overview' => [
             'title' => 'Revize done referans yo',
             'fields' => [
+                'referral_info' => 'Enfòmasyon sou referans la:',
                 'full_name' => 'Non konplè:',
                 'gender' => 'Sèks:',
                 'age' => 'Laj:',
                 'country' => 'Peyi:',
                 'phone' => 'Telefòn:',
                 'stake' => 'Poto/Distri/Misyon:',
+                'referrer_info' => 'Enfòmasyon moun ki rekòmande a:',
                 'referrer_name' => 'Non ou:',
                 'referrer_phone' => 'Telefòn ou:',
                 'relationship' => 'Relasyon ak moun ki refere a:',

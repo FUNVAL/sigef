@@ -96,12 +96,14 @@ return [
         'overview' => [
             'title' => 'Review reference data',
             'fields' => [
+                'referral_info' => 'Referral Information',
                 'full_name' => 'Full name:',
                 'gender' => 'Gender:',
                 'age' => 'Age:',
                 'country' => 'Country:',
                 'phone' => 'Phone:',
                 'stake' => 'Stake/District/Mission:',
+                'referrer_info' => 'Referrer Information:',
                 'referrer_name' => 'Your name:',
                 'referrer_phone' => 'Your phone:',
                 'relationship' => 'Relationship with referred person:',

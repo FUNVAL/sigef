@@ -96,12 +96,14 @@ return [
         'overview' => [
             'title' => 'Revisar dados da referência',
             'fields' => [
+                'referral_info' => 'Informações da referência:',
                 'full_name' => 'Nome completo:',
                 'gender' => 'Gênero:',
                 'age' => 'Idade:',
                 'country' => 'País:',
                 'phone' => 'Telefone:',
                 'stake' => 'Estaca/Distrito/Missão:',
+                'referrer_info' => 'Informações do referente:',
                 'referrer_name' => 'Seu nome:',
                 'referrer_phone' => 'Seu telefone:',
                 'relationship' => 'Relacionamento com a pessoa indicada:',
