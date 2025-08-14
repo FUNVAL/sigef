@@ -20,6 +20,9 @@ export const preRegistrationSchema = z.object({
     phone: z.string().min(1, "El teléfono es obligatorio.").refine((val) => validatePhoneLength(val), {
         message: "El teléfono debe tener entre 7 y 10 dígitos.",
     }),
+    additional_phone: z.string().optional().refine((val) => !val || validatePhoneLength(val), {
+        message: "El teléfono adicional debe tener entre 7 y 10 dígitos.",
+    }),
     stake_id: z.number().min(1, "La estaca es obligatoria."),
     email: z.string().email("Correo inválido."),
     marital_status: z.number().min(1, "El estado civil es obligatorio."),

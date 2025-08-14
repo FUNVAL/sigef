@@ -34,6 +34,7 @@ export default function PreInscriptionEditForm({ preInscription, countries }: Pr
         gender: preInscription.gender?.id || 0,
         age: preInscription.age || 0,
         phone: preInscription.phone || '',
+        additional_phone: preInscription.additional_phone || '',
         email: preInscription.email || '',
         country_id: preInscription.country?.id || 0,
         stake_id: preInscription.stake?.id || 0,
