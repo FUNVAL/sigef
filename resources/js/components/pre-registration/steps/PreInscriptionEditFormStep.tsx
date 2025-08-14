@@ -156,7 +156,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                                     autoComplete="age"
                                     type="number"
                                     value={data.age}
-                                    onChange={(e) => setData('age', e.target.value)}
+                                    onChange={(e) => setData('age', Number(e.target.value))}
                                     min="18"
                                     max="100"
                                     required
