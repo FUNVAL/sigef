@@ -43,7 +43,7 @@ return [
         'no_apply' => 'No aplica',
         'incorrect_number' => 'Número incorrecto',
         'no_response' => 'Sin respuesta',
-        'no_contact' => 'Sin contacto',
+        'no_contact' => 'Sin contactar',
         'work' => 'Trabajo',
         'studies' => 'Estudios',
         'not_church_member' => 'No es miembro de la iglesia',
