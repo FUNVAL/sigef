@@ -18,6 +18,7 @@ interface ReferenceReviewProps {
 }
 
 const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceReviewProps) => {
+
     const { enums } = usePage<{ enums: Enums }>().props;
     const initialReferenceUpdateData: Required<ReferenceUpdateFormData> = {
         id: reference.id,
@@ -36,7 +37,6 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
             },
         });
     };
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-2xl grid gap-4 max-h-[88vh] overflow-y-auto">
