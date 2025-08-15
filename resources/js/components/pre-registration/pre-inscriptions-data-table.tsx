@@ -63,6 +63,7 @@ export const createColumns = ({
                 <div className="space-y-1">
                     <p className="text-sm font-medium">{preInscription.email}</p>
                     <p className="text-sm text-gray-500">{preInscription.phone}</p>
+                    {preInscription.additional_phone && <p className="text-sm text-gray-400">+{preInscription.additional_phone}</p>}
                 </div>
             );
         },

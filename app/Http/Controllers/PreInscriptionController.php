@@ -93,6 +93,7 @@ class PreInscriptionController extends Controller
                 'gender' => 'required|numeric|in:' . implode(',', GenderEnum::values()),
                 'age' => 'required|numeric|min:18|max:100',
                 'phone' => 'required|string|max:20',
+                'additional_phone' => 'nullable|string|max:20',
                 'email' => 'required|email|max:100|unique:pre_inscriptions',
                 'marital_status' => 'required|numeric|in:' . implode(',', MaritalStatusEnum::values()),
                 'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
@@ -179,7 +180,7 @@ class PreInscriptionController extends Controller
     {
         try {
             $preInscription = PreInscription::with(['country', 'stake'])->findOrFail($id);
-            
+
             return Inertia::render('forms/pre-inscription-edit-form', [
                 'preInscription' => $preInscription,
                 'countries' => Country::all(),
@@ -242,7 +243,7 @@ class PreInscriptionController extends Controller
     {
         try {
             $preInscription = PreInscription::findOrFail($id);
-            
+
             $rules = [
                 'first_name' => 'required|string|max:50',
                 'middle_name' => 'nullable|string|max:50',
@@ -251,6 +252,7 @@ class PreInscriptionController extends Controller
                 'gender' => 'required|numeric|in:' . implode(',', GenderEnum::values()),
                 'age' => 'required|numeric|min:18|max:100',
                 'phone' => 'required|string|max:20',
+                'additional_phone' => 'nullable|string|max:20',
                 'email' => 'required|email|max:100|unique:pre_inscriptions,email,' . $id,
                 'marital_status' => 'required|numeric|in:' . implode(',', MaritalStatusEnum::values()),
                 'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
@@ -265,7 +267,7 @@ class PreInscriptionController extends Controller
             $validated['modified_by'] = Auth::id();
 
             $preInscription->update($validated);
-            
+
             return redirect()->route('pre-inscription.index')
                 ->with('success', 'Pre-inscripción actualizada exitosamente');
         } catch (\Illuminate\Validation\ValidationException $e) {

@@ -29,6 +29,7 @@ class PreInscription extends Model
         'gender',
         'age',
         'phone',
+        'additional_phone',
         'email',
         'marital_status',
         'served_mission',
