@@ -112,7 +112,7 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
 
                         <div>
                             <Label htmlFor="declined_reason" className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                Razon del estado de la referencia
+                                Razón del Estado
                             </Label>
                             <Select
                                 value={data.declined_reason.toString()}

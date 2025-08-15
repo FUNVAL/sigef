@@ -117,7 +117,7 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
 
                         <div>
                             <Label htmlFor="declined_reason" className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                Razón del estado de la preinscripción
+                                Razón del Estado
                             </Label>
                             <Select
                                 value={data.declined_reason.toString()}

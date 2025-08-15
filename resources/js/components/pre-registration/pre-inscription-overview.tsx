@@ -203,7 +203,7 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                                 </Label>
                                 <Badge variant={
                                     preInscription.served_mission?.id === 2 ? "default" :
-                                    preInscription.served_mission?.id === 3 ? "outline" : "secondary"
+                                        preInscription.served_mission?.id === 3 ? "outline" : "secondary"
                                 }>
                                     {preInscription.served_mission?.name || "No especificado"}
                                 </Badge>
@@ -267,7 +267,7 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                         {declined_reason && (
                             <div>
                                 <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                    Razón del Rechazo
+                                    Razón del Estado
                                 </Label>
                                 <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {getDeclinedReasonDisplay()}
