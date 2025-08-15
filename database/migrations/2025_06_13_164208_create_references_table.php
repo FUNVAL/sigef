@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\GenderEnum;
+use App\Enums\ReferenceStatusEnum;
 use App\Enums\RelatedReferenceEnum;
 use App\Enums\RequestStatusEnum;
 use Illuminate\Database\Migrations\Migration;
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->foreignId('stake_id')->constrained()->onDelete('cascade');
             $table->integer('status')->default(RequestStatusEnum::PENDING->value);
-            $table->integer('declined_reason')->nullable();
+            $table->integer('declined_reason')->default(ReferenceStatusEnum::NO_CONTACT->value);
             $table->string('declined_description')->nullable();
             $table->string('referrer_name')->nullable();
             $table->string('referrer_phone')->nullable();

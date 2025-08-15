@@ -99,7 +99,6 @@ class PreInscriptionController extends Controller
                 'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
                 'status' => 'nullable|numeric|in:' . implode(',', RequestStatusEnum::values()),
                 'comments' => 'nullable|string',
-                'declined_reason' => 'nullable|numeric|in:' . implode(',', ReferenceStatusEnum::values()),
                 'country_id' => 'required|exists:countries,id',
                 'stake_id' => 'required|exists:stakes,id'
             ];
@@ -122,9 +121,11 @@ class PreInscriptionController extends Controller
                 $rules = array_merge($rules, $aditionalRules);
             }
 
-
             $validated = $request->validate($rules);
 
+            if ($validated['status'] === RequestStatusEnum::APPROVED->value) {
+                $validated['declined_reason'] = null;
+            }
             $preInscription =  PreInscription::create($validated);
 
             $message =  $this->generateMessage(
@@ -142,8 +143,8 @@ class PreInscriptionController extends Controller
 
                 $preInscription->update([
                     'status' => RequestStatusEnum::REJECTED->value,
-                    'declined_reason' => ReferenceStatusEnum::FEMALE->value,
-                    'comments' => 'Pre-inscripción filtrada automáticamente por criterios de género y disponibilidad laboral.',
+                    'declined_reason' => ReferenceStatusEnum::NO_APPLY->value,
+                    'comments' => 'Preinscripción filtrada automáticamente, no cumple con los requisitos.',
                     'modified_by' => 0
                 ]);
             }

@@ -162,18 +162,15 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">¿Sirvió misión?</Label>
-                                <Badge
-                                    variant={
-                                        preInscription.served_mission?.id === 2
-                                            ? 'default'
-                                            : preInscription.served_mission?.id === 3
-                                              ? 'outline'
-                                              : 'secondary'
-                                    }
-                                >
-                                    {preInscription.served_mission?.name || 'No especificado'}
+                            <div className='flex flex-col'>
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    ¿Sirvió misión?
+                                </Label>
+                                <Badge variant={
+                                    preInscription.served_mission?.id === 2 ? "default" :
+                                        preInscription.served_mission?.id === 3 ? "outline" : "secondary"
+                                }>
+                                    {preInscription.served_mission?.name || "No especificado"}
                                 </Badge>
                             </div>
                             <div>
@@ -218,8 +215,12 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                         </div>
                         {declined_reason && (
                             <div>
-                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Razón del Rechazo</Label>
-                                <p className="block text-sm text-gray-900 dark:text-gray-100">{getDeclinedReasonDisplay()}</p>
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Razón del Estado
+                                </Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {getDeclinedReasonDisplay()}
+                                </p>
                             </div>
                         )}
                         {comments && (

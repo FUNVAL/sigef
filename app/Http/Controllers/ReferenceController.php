@@ -114,7 +114,7 @@ class ReferenceController extends Controller
     {
         try {
             $reference = Reference::with(['country', 'stake'])->findOrFail($id);
-            
+
             return Inertia::render('forms/reference-edit-form', [
                 'reference' => $reference,
                 'countries' => Country::all()
@@ -139,8 +139,8 @@ class ReferenceController extends Controller
                         'nullable',
                         'numeric',
                         function ($attribute, $value, $fail) use ($request) {
-                            if ((int)$request->input('status') === 3 && empty($value)) {
-                                $fail('El campo motivo de rechazo es obligatorio cuando el estatus es 3.');
+                            if (((int)$request->input('status') === 3 || (int)$request->input('status') === 1) && empty($value)) {
+                                $fail('Este campo es obligatorio.');
                             }
                         },
                     ],
@@ -149,13 +149,16 @@ class ReferenceController extends Controller
                         'string',
                         function ($attribute, $value, $fail) use ($request) {
                             if ((int)$request->input('status') === 3 && empty($value)) {
-                                $fail('El campo descripción de rechazo es obligatorio cuando el estatus es 3.');
+                                $fail('Este campo es obligatorio.');
                             }
                         },
                     ],
-
                 ]
             );
+
+            if ($validated['status'] === RequestStatusEnum::APPROVED->value) {
+                $validated['declined_reason'] = null;
+            }
 
             $validated['modifier_id'] = Auth::id();
 
@@ -177,7 +180,7 @@ class ReferenceController extends Controller
     {
         try {
             $reference = Reference::findOrFail($id);
-            
+
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'gender' => 'required|integer',
@@ -193,7 +196,7 @@ class ReferenceController extends Controller
             $validated['modifier_id'] = Auth::id();
 
             $reference->update($validated);
-            
+
             return redirect()->route('references.index')
                 ->with('success', 'Referencia actualizada exitosamente');
         } catch (\Illuminate\Validation\ValidationException $e) {

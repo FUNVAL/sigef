@@ -72,6 +72,7 @@ class Reference extends Model
         }
         return ReferenceStatusEnum::fromId($this->attributes['declined_reason']);
     }
+
     public function getRelationshipWithReferredAttribute(): ?array
     {
         return RelatedReferenceEnum::fromId($this->attributes['relationship_with_referred']);

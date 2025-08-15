@@ -7,7 +7,7 @@ import { Reference } from '../../types/reference';
 
 
 const ReferenceOverview = ({ reference }: { reference: Reference }) => {
-    console.log(reference);
+
     return (
         <CompleteDialog
             btnLabel="Ver Detalles"
@@ -163,7 +163,7 @@ const ReferenceOverview = ({ reference }: { reference: Reference }) => {
                         {reference.declined_reason && (
                             <div>
                                 <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                    Razón del Rechazo
+                                    Razón del Estado
                                 </Label>
                                 <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {reference.declined_reason.name}
