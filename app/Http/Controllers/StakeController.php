@@ -106,6 +106,7 @@ class StakeController extends Controller
 
             // Obtener stakes ordenados alfabéticamente con información completa
             $stakes = Stake::where('country_id', $country_id)
+                ->where('status', StatusEnum::ACTIVE->value)
                 ->with(['user', 'country'])
                 ->orderBy('name', 'asc')
                 ->get();
@@ -116,7 +117,6 @@ class StakeController extends Controller
                 'count' => $stakes->count()
             ]);
         } catch (\Exception $e) {
-            \Log::error('Error in filterByCountryId: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'An unexpected error occurred.',
@@ -133,7 +133,7 @@ class StakeController extends Controller
         try {
             $stakes = Stake::where('user_id', $userId)
                 ->with(['country'])
-                ->orderBy('updated_at', 'desc') // Ordenar por fecha de actualización más reciente primero
+                ->orderBy('updated_at', 'desc')
                 ->get();
 
             return response()->json([
@@ -179,9 +179,7 @@ class StakeController extends Controller
 
             return redirect()->back()->with('success', 'Stakes assigned successfully.');
         } catch (\Exception $e) {
-            \Log::error("Error assigning stakes to user {$id}: " . $e->getMessage());
-            
-            // Si es una petición AJAX, devolver error JSON
+
             if ($request->expectsJson()) {
                 return response()->json([
                     'status' => 'error',
