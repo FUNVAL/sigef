@@ -7,7 +7,7 @@ import { Reference } from '../../types/reference';
 
 
 const ReferenceOverview = ({ reference }: { reference: Reference }) => {
-    console.log(reference);
+
     return (
         <CompleteDialog
             btnLabel="Ver Detalles"
