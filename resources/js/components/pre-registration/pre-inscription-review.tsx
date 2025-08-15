@@ -18,7 +18,7 @@ interface PreInscriptionReviewProps {
 }
 
 const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: PreInscriptionReviewProps) => {
-
+    console.log(preInscription);
     const { enums } = usePage<{ enums: Enums }>().props;
     const initialPreInscriptionUpdateData: Required<PreInscriptionUpdateFormData> = {
         id: preInscription.id,

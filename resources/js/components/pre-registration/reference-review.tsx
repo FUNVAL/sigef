@@ -36,7 +36,7 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
             },
         });
     };
-
+    console.log(reference);
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-2xl grid gap-4 max-h-[88vh] overflow-y-auto">
