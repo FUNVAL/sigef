@@ -67,6 +67,7 @@ class ReferenceController extends Controller
                 'relationship_with_referred' => 'nullable|numeric',
             ]);
 
+            $validated['declined_reason'] = $request->input('declined_reason', 11);
             Reference::create($validated);
 
             $message =  [
@@ -114,7 +115,7 @@ class ReferenceController extends Controller
     {
         try {
             $reference = Reference::with(['country', 'stake'])->findOrFail($id);
-            
+
             return Inertia::render('forms/reference-edit-form', [
                 'reference' => $reference,
                 'countries' => Country::all()
@@ -177,7 +178,7 @@ class ReferenceController extends Controller
     {
         try {
             $reference = Reference::findOrFail($id);
-            
+
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'gender' => 'required|integer',
@@ -193,7 +194,7 @@ class ReferenceController extends Controller
             $validated['modifier_id'] = Auth::id();
 
             $reference->update($validated);
-            
+
             return redirect()->route('references.index')
                 ->with('success', 'Referencia actualizada exitosamente');
         } catch (\Illuminate\Validation\ValidationException $e) {

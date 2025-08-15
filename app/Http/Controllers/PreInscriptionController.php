@@ -124,6 +124,7 @@ class PreInscriptionController extends Controller
 
             $validated = $request->validate($rules);
 
+            $validated['declined_reason'] = $request->input('declined_reason', 11);
             $preInscription =  PreInscription::create($validated);
 
             $message =  $this->generateMessage(
@@ -141,7 +142,7 @@ class PreInscriptionController extends Controller
 
                 $preInscription->update([
                     'status' => RequestStatusEnum::REJECTED->value,
-                    'declined_reason' => ReferenceStatusEnum::FEMALE->value,
+                    'declined_reason' => ReferenceStatusEnum::NO_APPLY->value,
                     'comments' => 'Pre-inscripción filtrada automáticamente por criterios de género y disponibilidad laboral.',
                     'modified_by' => 0
                 ]);
@@ -179,7 +180,7 @@ class PreInscriptionController extends Controller
     {
         try {
             $preInscription = PreInscription::with(['country', 'stake'])->findOrFail($id);
-            
+
             return Inertia::render('forms/pre-inscription-edit-form', [
                 'preInscription' => $preInscription,
                 'countries' => Country::all(),
@@ -242,7 +243,7 @@ class PreInscriptionController extends Controller
     {
         try {
             $preInscription = PreInscription::findOrFail($id);
-            
+
             $rules = [
                 'first_name' => 'required|string|max:50',
                 'middle_name' => 'nullable|string|max:50',
@@ -265,7 +266,7 @@ class PreInscriptionController extends Controller
             $validated['modified_by'] = Auth::id();
 
             $preInscription->update($validated);
-            
+
             return redirect()->route('pre-inscription.index')
                 ->with('success', 'Pre-inscripción actualizada exitosamente');
         } catch (\Illuminate\Validation\ValidationException $e) {
