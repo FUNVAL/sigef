@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('gender')->default(GenderEnum::MALE->value);
             $table->integer('age');
             $table->string('phone', 20);
+            $table->string('additional_phone', 20)->nullable();
             $table->string('email', 100)->unique();
             $table->integer('marital_status')->default(MaritalStatusEnum::SINGLE->value);
             $table->integer('served_mission')->default(MissionStatusEnum::NO->value);
@@ -42,7 +43,7 @@ return new class extends Migration
         });
     }
 
-    /** 
+    /**
      * Reverse the migrations.
      */
     public function down(): void

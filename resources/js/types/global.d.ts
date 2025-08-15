@@ -86,6 +86,7 @@ type Translation = {
                     age: string;
                     country: string;
                     phone: string;
+                    additional_phone: string;
                     stake: string;
                     email: string;
                     marital_status: string;
@@ -127,6 +128,7 @@ type Translation = {
                 gender: string;
                 age: string;
                 phone: string;
+                additional_phone: string;
                 email: string;
                 marital_status: string;
                 served_mission: string;

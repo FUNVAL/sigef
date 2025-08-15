@@ -1,15 +1,15 @@
-import React from 'react';
-import { Label } from '../ui/label';
-import { type PreInscription, type PreInscriptionUpdateFormData } from '../../types/pre-inscription';
-import { useForm, usePage } from '@inertiajs/react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Enums } from '@/types/global';
 import { Textarea } from '@headlessui/react';
 import { LoaderCircle } from 'lucide-react';
+import { useForm, usePage } from '@inertiajs/react';
+import React from 'react';
+import { type PreInscription, type PreInscriptionUpdateFormData } from '../../types/pre-inscription';
+import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
-import { Button } from '../ui/button';
 import { filterReferenceStatus } from '@/lib/utils';
+import { Label } from '../ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface PreInscriptionReviewProps {
     preInscription: PreInscription;
@@ -18,7 +18,6 @@ interface PreInscriptionReviewProps {
 }
 
 const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: PreInscriptionReviewProps) => {
-
     const { enums } = usePage<{ enums: Enums }>().props;
     const initialPreInscriptionUpdateData: Required<PreInscriptionUpdateFormData> = {
         id: preInscription.id,
@@ -39,72 +38,73 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
         });
     };
 
-    const fullName = `${preInscription.first_name} ${preInscription.middle_name || ''} ${preInscription.last_name} ${preInscription.second_last_name || ''}`.trim();
+    const fullName =
+        `${preInscription.first_name} ${preInscription.middle_name || ''} ${preInscription.last_name} ${preInscription.second_last_name || ''}`.trim();
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-
-
-            <DialogContent className="grid gap-6 p-6 max-h-[88vh] overflow-y-auto sm:max-w-2xl">
+            <DialogContent className="grid max-h-[88vh] gap-6 overflow-y-auto p-6 sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle>Actualizar estado de preinscripción</DialogTitle>
-                    <DialogDescription>
-                        Aquí puedes actualizar el estado de la preinscripción y agregar comentarios adicionales.
-                    </DialogDescription>
+                    <DialogDescription>Aquí puedes actualizar el estado de la preinscripción y agregar comentarios adicionales.</DialogDescription>
                 </DialogHeader>
                 <Card className="border-blue-200">
-
                     <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                    Nombre:
-                                </Label>
+                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Nombre:</Label>
                                 <p className="block text-sm text-gray-900 dark:text-gray-100">{fullName}</p>
                             </div>
                             <div>
-                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                    Email:
-                                </Label>
+                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Email:</Label>
                                 <p className="block text-sm text-gray-900 dark:text-gray-100">{preInscription.email}</p>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                    Teléfono:
-                                </Label>
+                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Teléfono:</Label>
                                 <p className="block text-sm text-gray-900 dark:text-gray-100">{preInscription.phone}</p>
                             </div>
-                            <div>
-                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                    Edad:
-                                </Label>
-                                <p className="block text-sm text-gray-900 dark:text-gray-100">{preInscription.age} años</p>
-                            </div>
+                            {preInscription.additional_phone ? (
+                                <div>
+                                    <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Teléfono adicional:</Label>
+                                    <p className="block text-sm text-gray-900 dark:text-gray-100">{preInscription.additional_phone}</p>
+                                </div>
+                            ) : (
+                                <div>
+                                    <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Edad:</Label>
+                                    <p className="block text-sm text-gray-900 dark:text-gray-100">{preInscription.age} años</p>
+                                </div>
+                            )}
                         </div>
+                        {preInscription.additional_phone && (
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Edad:</Label>
+                                    <p className="block text-sm text-gray-900 dark:text-gray-100">{preInscription.age} años</p>
+                                </div>
+                                <div></div>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
 
                 <Card className="border-blue-200">
                     <CardHeader className="bg-transparent">
-                        <CardTitle className="text-lg text-blue-800 dark:text-blue-500">
-                            Actualización de Estado
-                        </CardTitle>
+                        <CardTitle className="text-lg text-blue-800 dark:text-blue-500">Actualización de Estado</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <Label htmlFor="status" className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                            <Label htmlFor="status" className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
                                 Estado de la preinscripción
                             </Label>
-                            <Select
-                                value={data.status.toString()}
-                                onValueChange={(value) => setData('status', Number(value))}
-                            >
+                            <Select value={data.status.toString()} onValueChange={(value) => setData('status', Number(value))}>
                                 <SelectTrigger id="status" name="status">
                                     <SelectValue placeholder="Selecciona un estado" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="0" disabled>Selecciona un status</SelectItem>
+                                    <SelectItem value="0" disabled>
+                                        Selecciona un status
+                                    </SelectItem>
                                     {enums.requestStatus.map((status) => (
                                         <SelectItem key={status.id} value={status.id.toString()}>
                                             {status.name}
@@ -112,7 +112,7 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                                     ))}
                                 </SelectContent>
                             </Select>
-                            {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
+                            {errors.status && <p className="text-sm text-red-500">{errors.status}</p>}
                         </div>
 
                         <div>
@@ -137,7 +137,7 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                                     ))}
                                 </SelectContent>
                             </Select>
-                            {errors.declined_reason && <p className="text-red-500 text-sm">{errors.declined_reason}</p>}
+                            {errors.declined_reason && <p className="text-sm text-red-500">{errors.declined_reason}</p>}
                         </div>
 
                         <div className="space-y-2">
@@ -151,19 +151,17 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                                 value={data.comments}
                                 required={data.status !== 2}
                                 onChange={(e) => setData('comments', e.target.value)}
-                                className="min-h-32 w-full outline-none border resize-none p-2 rounded-md disabled:opacity-50"
+                                className="min-h-32 w-full resize-none rounded-md border p-2 outline-none disabled:opacity-50"
                             />
-                            {errors.comments && (
-                                <p className="text-red-500 text-sm">{errors.comments}</p>
-                            )}
+                            {errors.comments && <p className="text-sm text-red-500">{errors.comments}</p>}
                         </div>
                     </CardContent>
                 </Card>
-                <DialogFooter className="mt-6 gap-4 flex">
+                <DialogFooter className="mt-6 flex gap-4">
                     <Button type="button" variant="outline" disabled={processing} onClick={() => onOpenChange?.(false)}>
                         Cancelar
                     </Button>
-                    <Button disabled={processing} onClick={handleSubmit} >
+                    <Button disabled={processing} onClick={handleSubmit}>
                         Actualizar
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                     </Button>
@@ -172,7 +170,5 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
         </Dialog>
     );
 };
-
-
 
 export default PreInscriptionReview;

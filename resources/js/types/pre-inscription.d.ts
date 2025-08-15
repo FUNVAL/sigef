@@ -23,6 +23,7 @@ type PreInscription = BaseEntity & {
     second_last_name?: string;
     age: number;
     phone: string;
+    additional_phone?: string;
     email: string;
     served_mission: MissionStatusInfo;
     currently_working?: boolean;
@@ -88,6 +89,7 @@ type PreInscriptionFilters = BaseFilters & {
     last_name?: string;
     email?: string;
     phone?: string;
+    additional_phone?: string;
     gender?: number;
     marital_status?: number;
     served_mission?: MissionStatusInfo;
@@ -125,6 +127,7 @@ export type PreRegistrationFormData = BaseFormData & {
     second_last_name?: string;
     age: number;
     phone: string;
+    additional_phone?: string;
     email: string;
     marital_status: number;
     served_mission: number | null;
