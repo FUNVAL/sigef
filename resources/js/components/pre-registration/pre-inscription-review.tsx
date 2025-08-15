@@ -9,6 +9,7 @@ import { Edit, LoaderCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
+import { filterReferenceStatus } from '@/lib/utils';
 
 interface PreInscriptionReviewProps {
     preInscription: PreInscription;
@@ -22,7 +23,7 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
     const initialPreInscriptionUpdateData: Required<PreInscriptionUpdateFormData> = {
         id: preInscription.id,
         status: preInscription.status?.id || 1,
-        declined_reason: preInscription?.declined_reason?.id || 1,
+        declined_reason: preInscription?.declined_reason?.id || 0,
         declined_description: preInscription.declined_description || '',
         comments: preInscription.comments || '',
     };
@@ -116,20 +117,20 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
 
                         <div>
                             <Label htmlFor="declined_reason" className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                Razón de rechazo
+                                Razón del estado de la preinscripción
                             </Label>
                             <Select
                                 value={data.declined_reason.toString()}
                                 onValueChange={(value) => setData('declined_reason', Number(value))}
-                                disabled={data.status !== 3}
-                                required={data.status === 3}
+                                required={data.status !== 2}
+                                disabled={data.status === 2}
                             >
                                 <SelectTrigger id="declined_reason" name="declined_reason">
-                                    <SelectValue placeholder="Razón de rechazo" />
+                                    <SelectValue placeholder="Selecciona un motivo" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="0" disabled>Selecciona una razón</SelectItem>
-                                    {enums.referenceStatus.map((status) => (
+                                    <SelectItem value='0' disabled>Selecciona un motivo</SelectItem>
+                                    {filterReferenceStatus(enums, data.status).map((status) => (
                                         <SelectItem key={status.id} value={status.id.toString()}>
                                             {status.name}
                                         </SelectItem>
@@ -140,16 +141,15 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="comments" className={`font-bold font-mono text-lg ${data.status !== 3 ? ' text-gray-800/50 dark:text-blue-100/50' : ' text-gray-800 dark:text-blue-100'}`}>
-                                Comentarios generales
+                            <Label htmlFor="comments" className={`font-bold font-mono text-lg text-gray-800 dark:text-blue-100`}>
+                                {data.status === 2 ? "Comentarios (opcional)" : "Comentarios"}
                             </Label>
                             <Textarea
                                 id="comments"
                                 name="comments"
-                                placeholder="Agrega comentarios sobre la evaluación, próximos pasos, observaciones, etc."
+                                placeholder="Escribe aquí tu comentario sobre el estado actual de la referencia..."
                                 value={data.comments}
-                                required={data.status === 3}
-                                disabled={data.status !== 3}
+                                required={data.status !== 2}
                                 onChange={(e) => setData('comments', e.target.value)}
                                 className="min-h-32 w-full outline-none border resize-none p-2 rounded-md disabled:opacity-50"
                             />

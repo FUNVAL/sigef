@@ -9,6 +9,7 @@ import { LoaderCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
+import { filterReferenceStatus } from '@/lib/utils';
 
 interface ReferenceReviewProps {
     reference: Reference;
@@ -21,7 +22,7 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
     const initialReferenceUpdateData: Required<ReferenceUpdateFormData> = {
         id: reference.id,
         status: reference.status.id,
-        declined_reason: reference?.declined_reason?.id || 1,
+        declined_reason: reference?.declined_reason?.id || 0,
         declined_description: reference.declined_description || '',
     };
 
@@ -39,7 +40,6 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-2xl grid gap-4 max-h-[88vh] overflow-y-auto">
-
 
                 <DialogHeader>
                     <DialogTitle>Actualizar estado de referencia</DialogTitle>
@@ -99,7 +99,7 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
                                     <SelectValue placeholder="Selecciona un estado" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="0" disabled>Selecciona un status</SelectItem>
+                                    <SelectItem value="0" disabled>Selecciona un estado</SelectItem>
                                     {enums.requestStatus.map((status) => (
                                         <SelectItem key={status.id} value={status.id.toString()}>
                                             {status.name}
@@ -112,20 +112,20 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
 
                         <div>
                             <Label htmlFor="declined_reason" className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                Razón de rechazo
+                                Razon del estado de la referencia
                             </Label>
                             <Select
                                 value={data.declined_reason.toString()}
                                 onValueChange={(value) => setData('declined_reason', Number(value))}
-                                disabled={data.status !== 3}
-                                required={data.status === 3}
+                                disabled={data.status === 2}
+                                required={data.status !== 2}
                             >
                                 <SelectTrigger id="declined_reason" name="declined_reason">
-                                    <SelectValue placeholder="Razón de rechazo" />
+                                    <SelectValue placeholder="Selecciona un motivo" defaultChecked />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="0" disabled>Selecciona una razón</SelectItem>
-                                    {enums.referenceStatus.map((status) => (
+                                    <SelectItem value='0' disabled>Selecciona un motivo</SelectItem>
+                                    {filterReferenceStatus(enums, data.status).map((status) => (
                                         <SelectItem key={status.id} value={status.id.toString()}>
                                             {status.name}
                                         </SelectItem>
@@ -136,24 +136,17 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="declined_description" className={`font-bold font-mono text-lg ${data.status !== 3 ? ' text-gray-800/50 dark:text-blue-100/50' : ' text-gray-800 dark:text-blue-100'}`}>
-                                {data.status === 3 ? "Comentarios" : "Comentarios (opcional)"}
+                            <Label htmlFor="declined_description" className={`font-bold font-mono text-lg text-gray-800 dark:text-blue-100`}>
+                                {data.status === 2 ? "Comentarios (opcional)" : "Comentarios"}
                             </Label>
                             <Textarea
                                 id="declined_description"
                                 name="declined_description"
-                                placeholder={
-                                    data.status === 1
-                                        ? "Describe cómo fue el contacto, el interés mostrado, próximos pasos, etc."
-                                        : data.status === 3
-                                            ? "Proporciona detalles adicionales sobre el rechazo..."
-                                            : "Agrega cualquier comentario relevante..."
-                                }
+                                placeholder="Escribe aquí tu comentario sobre el estado actual de la referencia..."
                                 value={data.declined_description}
                                 onChange={(e) => setData('declined_description', e.target.value)}
                                 className="min-h-32 w-full outline-none border resize-none p-2 rounded-md disabled:opacity-50"
-                                required={data.status === 3}
-                                disabled={data.status !== 3}
+                                required={data.status !== 2}
                             />
                             {errors.declined_description && (
                                 <p className="text-red-500 text-sm">{errors.declined_description}</p>
