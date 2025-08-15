@@ -67,7 +67,6 @@ class ReferenceController extends Controller
                 'relationship_with_referred' => 'nullable|numeric',
             ]);
 
-            $validated['declined_reason'] = $request->input('declined_reason', 11);
             Reference::create($validated);
 
             $message =  [

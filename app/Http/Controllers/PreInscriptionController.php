@@ -98,7 +98,6 @@ class PreInscriptionController extends Controller
                 'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
                 'status' => 'nullable|numeric|in:' . implode(',', RequestStatusEnum::values()),
                 'comments' => 'nullable|string',
-                'declined_reason' => 'nullable|numeric|in:' . implode(',', ReferenceStatusEnum::values()),
                 'country_id' => 'required|exists:countries,id',
                 'stake_id' => 'required|exists:stakes,id'
             ];
@@ -123,8 +122,6 @@ class PreInscriptionController extends Controller
 
 
             $validated = $request->validate($rules);
-
-            $validated['declined_reason'] = $request->input('declined_reason', 11);
             $preInscription =  PreInscription::create($validated);
 
             $message =  $this->generateMessage(
