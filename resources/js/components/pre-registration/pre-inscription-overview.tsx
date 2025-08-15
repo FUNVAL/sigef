@@ -197,7 +197,7 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
-                            <div>
+                            <div className='flex flex-col'>
                                 <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
                                     ¿Sirvió misión?
                                 </Label>
