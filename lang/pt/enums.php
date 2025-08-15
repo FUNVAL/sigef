@@ -48,7 +48,7 @@ return [
         'not_church_member' => 'Não é membro da igreja',
         'future_missionary' => 'Futuro missionário',
         'health' => 'Saúde',
-        'graduate' => 'Graduado',
+        'graduate' => 'Diplomado',
         'duplicate' => 'Duplicado',
     ],
     'document_type' => [

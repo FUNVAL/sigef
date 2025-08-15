@@ -49,7 +49,7 @@ return [
         'not_church_member' => 'No es miembro de la iglesia',
         'future_missionary' => 'Futuro misionero',
         'health' => 'Salud',
-        'graduate' => 'Graduado',
+        'graduate' => 'Egresado',
         'duplicate' => 'Duplicado',
     ],
     'document_type' => [

@@ -48,7 +48,7 @@ return [
         'not_church_member' => 'Se pa manm legliz',
         'future_missionary' => 'Misyonè nan lavni',
         'health' => 'Sante',
-        'graduate' => 'Diplome',
+        'graduate' => 'gradye',
         'duplicate' => 'Doub',
     ],
     'document_type' => [
