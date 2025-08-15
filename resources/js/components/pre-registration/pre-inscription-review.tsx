@@ -5,7 +5,7 @@ import { useForm, usePage } from '@inertiajs/react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Enums } from '@/types/global';
 import { Textarea } from '@headlessui/react';
-import { Edit, LoaderCircle } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
