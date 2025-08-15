@@ -168,12 +168,14 @@ type Translation = {
             overview: {
                 title: string;
                 fields: {
+                    referral_info: string;
                     full_name: string;
                     gender: string;
                     age: string;
                     country: string;
                     phone: string;
                     stake: string;
+                    referrer_info: string;
                     referrer_name: string;
                     referrer_phone: string;
                     relationship: string;

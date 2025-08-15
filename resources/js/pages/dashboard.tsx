@@ -37,7 +37,7 @@ const WelcomeCard = ({ user }: { user: User }) => {
     };
 
     return (
-        <Card className="mb-6">
+        <Card className="m-4">
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">

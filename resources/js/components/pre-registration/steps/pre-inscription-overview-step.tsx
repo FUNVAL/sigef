@@ -1,14 +1,15 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import useFilteredStakes from '@/hooks/use-filtered-stakes';
-import { StepperContext } from '@/pages/forms/stepper-provider';
-import { Country } from '@/types/country';
-import { Enums, Translation } from '@/types/global';
-import { PreRegistrationRequest } from '@/types/pre-inscription';
-import { usePage } from '@inertiajs/react';
-import { ArrowLeft, Loader } from 'lucide-react';
-import { useContext } from 'react';
-import { StepsHeader } from '../steps-header';
+
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft,  Loader } from "lucide-react"
+import { Country } from "@/types/country"
+import { Enums, Translation } from "@/types/global"
+import { PreRegistrationRequest } from "@/types/pre-inscription"
+import { usePage } from "@inertiajs/react"
+import { useContext } from "react"
+import { StepperContext } from "@/pages/forms/stepper-provider"
+import { StepsHeader } from "../steps-header"
+import useFilteredStakes from "@/hooks/use-filtered-stakes"
 
 interface OverviewStepProps {
     request: PreRegistrationRequest;
