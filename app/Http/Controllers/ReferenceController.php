@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 use App\Models\Stake;
+use App\Models\User;
 
 class ReferenceController extends Controller
 {
@@ -19,15 +20,41 @@ class ReferenceController extends Controller
     public function index()
     {
         try {
+
             $user = Auth::user();
+            $isAdmin = $user->hasRole('Administrador');
             $query = Reference::query()->with(['country', 'stake', 'modifier'])->orderBy('created_at', 'desc');
 
-            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+            if ($user->hasRole('Responsable') && !$isAdmin) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
-            return  Inertia::render('pre-registration/references', [
-                'references' => $query->get()
+
+            $status = request()->input('status') ?? 0;
+            if ($status != 0) {
+                $query->where('status', $status);
+            }
+
+            $responsable = request()->input('responsable');
+            if ($responsable && $isAdmin) {
+                $stakesIds = Stake::where('user_id', $responsable)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $responsables = !$isAdmin ? null :
+                User::role('Responsable')
+                ->get()
+                ->map(fn($u) => [
+                    'id' => $u->id,
+                    'name' => $u->full_name,
+                ])
+                ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
+                ->values()
+                ->toArray();
+
+            return Inertia::render('pre-registration/references', [
+                'references' => $query->get(),
+                'responsables' => $responsables,
             ]);
         } catch (\Exception $e) {
             return response()->json([
