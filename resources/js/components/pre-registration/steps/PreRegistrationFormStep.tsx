@@ -13,14 +13,8 @@ import { Country } from '@/types/country';
 import { useCallback, useContext, useState } from 'react';
 import validateForm from '@/lib/schemas/validate-schemas';
 import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
-import validateForm from '@/lib/schemas/validate-schemas';
 import { StepperContext } from '@/pages/forms/stepper-provider';
-import { Country } from '@/types/country';
-import { Enums, Translation } from '@/types/global';
 import { PreRegistrationFormData } from '@/types/pre-inscription';
-import { usePage } from '@inertiajs/react';
-import { ArrowLeft } from 'lucide-react';
-import { useCallback, useContext, useState } from 'react';
 import { StepsHeader } from '../steps-header';
 
 interface PreRegistrationFormStepProps {
