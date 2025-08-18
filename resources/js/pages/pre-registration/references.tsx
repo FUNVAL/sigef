@@ -1,5 +1,5 @@
 import { type BreadcrumbItem, } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 import AppLayout from '@/layouts/app-layout';
@@ -9,6 +9,11 @@ import { Reference } from '@/types/reference';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import referencesNavItems from '@/lib/consts/referencesNavItems';
 import ReferenceReview from '@/components/pre-registration/reference-review';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { EnumItem, Enums } from '@/types/global';
+import { url } from 'inspector';
+import { User } from '@/types/users';
+import FilterBar from '@/components/data-table/filter-bar';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -43,6 +48,7 @@ export default function References({ references }: { references: Reference[] }) 
                         data={references}
                         columns={columns}
                         filterKey="name"
+                        FilterBar={FilterBar}
                     />
 
                     {selectedReference && (
@@ -56,4 +62,4 @@ export default function References({ references }: { references: Reference[] }) 
             </AccessControlLayout>
         </AppLayout>
     );
-} 
+}

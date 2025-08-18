@@ -37,12 +37,14 @@ interface DataTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, any>[];
   filterKey: string;
+  FilterBar: React.FC | React.ComponentType | null;
 }
 
 export function DataTable<TData>({
   data,
   columns,
-  filterKey
+  filterKey,
+  FilterBar
 }: DataTableProps<TData>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -80,6 +82,7 @@ export function DataTable<TData>({
           }
           className="max-w-sm"
         />
+        {FilterBar && <FilterBar />}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
