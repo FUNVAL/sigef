@@ -26,16 +26,39 @@ class PreInscriptionController extends Controller
     {
         try {
             $user = Auth::user();
-
+            $isAdmin = $user->hasRole('Administrador');
             $query = PreInscription::query()->with(['country', 'stake'])->orderBy('created_at', 'desc');
 
-            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+            if ($user->hasRole('Responsable') && !$isAdmin) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
 
+            $status = request()->input('status') ?? 0;
+            if ($status != 0) {
+                $query->where('status', $status);
+            }
+
+            $responsable = request()->input('responsable');
+            if ($responsable && $isAdmin) {
+                $stakesIds = Stake::where('user_id', $responsable)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $responsables = !$isAdmin ? null :
+                \App\Models\User::role('Responsable')
+                ->get()
+                ->map(fn($u) => [
+                    'id' => $u->id,
+                    'name' => $u->full_name,
+                ])
+                ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
+                ->values()
+                ->toArray();
+
             return Inertia::render('pre-registration/pre-inscription', [
-                'preInscriptions' => $query->get()
+                'preInscriptions' => $query->get(),
+                'responsables' => $responsables,
             ]);
         } catch (\Exception $e) {
             return response()->json([
