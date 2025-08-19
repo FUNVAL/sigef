@@ -7,15 +7,21 @@ type FilterDropdownProps = {
     paramKey: string;
     placeholder?: string;
     allowAll?: boolean;
+    className?: string;
 };
 
-export default function DropdownFilter({ data, paramKey, placeholder, allowAll }: FilterDropdownProps) {
+export default function DropdownFilter({
+    data,
+    paramKey,
+    placeholder,
+    allowAll,
+    className = ""
+}: FilterDropdownProps) {
     const url = new URL(window.location.href);
     const paramKeyValue = url.searchParams.get(paramKey);
     const current = paramKeyValue ? paramKeyValue : (allowAll ? "0" : '');
 
     const handleChange = (next: number | null) => {
-
         const url = new URL(window.location.href);
 
         if (next == null || Number.isNaN(next) || next === 0) {
@@ -32,7 +38,7 @@ export default function DropdownFilter({ data, paramKey, placeholder, allowAll }
     };
 
     return (
-        <Label className="flex flex-col">
+        <Label className={`flex flex-col ${className}`}>
             <span className="mb-1 text-sm font-medium">{placeholder}</span>
             <Select
                 defaultValue={String(current)}
@@ -45,20 +51,16 @@ export default function DropdownFilter({ data, paramKey, placeholder, allowAll }
                     <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
                 <SelectContent>
-                    {
-                        allowAll && (
-                            <SelectItem key="0" value="0" defaultChecked>
-                                Todos
-                            </SelectItem>
-                        )
-                    }
-                    {
-                        data.map(opt => (
-                            <SelectItem key={opt.id} value={String(opt.id)}>
-                                {opt.name}
-                            </SelectItem>
-                        ))
-                    }
+                    {allowAll && (
+                        <SelectItem key="0" value="0" defaultChecked>
+                            Todos
+                        </SelectItem>
+                    )}
+                    {data.map(opt => (
+                        <SelectItem key={opt.id} value={String(opt.id)}>
+                            {opt.name}
+                        </SelectItem>
+                    ))}
                 </SelectContent>
             </Select>
         </Label>
