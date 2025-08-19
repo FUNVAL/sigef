@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Exception;
+use Illuminate\Validation\ValidationException;
 
 class PreInscriptionController extends Controller
 {
@@ -145,10 +146,6 @@ class PreInscriptionController extends Controller
             }
 
             $validated = $request->validate($rules);
-
-            if (isset($validated['status']) && $validated['status'] === RequestStatusEnum::APPROVED->value) {
-                $validated['declined_reason'] = null;
-            }
             $preInscription =  PreInscription::create($validated);
 
             $message =  $this->generateMessage(
@@ -223,37 +220,44 @@ class PreInscriptionController extends Controller
     {
         try {
             $preInscription = PreInscription::findOrFail($id);
-            $validated = $request->validate([
+            $status = (int)$request->input('status');
+
+            $rules = [
                 'status' => 'required|in:' . implode(',', RequestStatusEnum::values()),
-                'declined_reason' => [
-                    'nullable',
-                    'numeric',
-                    function ($attribute, $value, $fail) use ($request) {
-                        if ((int)$request->input('status') === 3 && empty($value)) {
-                            $fail('El campo motivo de rechazo es obligatorio cuando el estatus es 3.');
-                        }
-                    },
-                ],
-                'declined_description' => [
-                    'nullable',
-                    'string',
-                    function ($attribute, $value, $fail) use ($request) {
-                        if ((int)$request->input('status') === 3 && empty($value)) {
-                            $fail('El campo descripción de rechazo es obligatorio cuando el estatus es 3.');
-                        }
-                    },
-                ],
-                'comments' => 'nullable|string',
-            ]);
+            ];
+
+            if ($status !== RequestStatusEnum::APPROVED->value) {
+                $rules['declined_reason'] = 'required|numeric|in:' . implode(',', ReferenceStatusEnum::values());
+
+                $rules['declined_description'] = 'required|string';
+            } else {
+                $rules['declined_description'] = 'nullable|string';
+            }
+
+            $messages = [
+                'declined_reason.in' => 'El motivo es obligatorio para este estado.',
+                'declined_description.required' => 'El campo comentarios es obligatorio.',
+            ];
+            $validated = $request->validate($rules, $messages);
 
             $validated['modified_by'] = Auth::id();
+
+
+            if (isset($validated['status']) && $validated['status'] === RequestStatusEnum::APPROVED->value) {
+                $validated['declined_reason'] = null;
+            }
 
             $preInscription->update($validated);
             $preInscription->save();
 
             return redirect()->back()
                 ->with('success', 'Pre-inscripción actualizada exitosamente');
+        } catch (ValidationException $e) {
+            return back()
+                ->withErrors($e->errors())
+                ->withInput();
         } catch (Exception $e) {
+
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
                 ->withInput();
