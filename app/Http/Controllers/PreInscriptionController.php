@@ -123,7 +123,7 @@ class PreInscriptionController extends Controller
 
             $validated = $request->validate($rules);
 
-            if ($validated['status'] === RequestStatusEnum::APPROVED->value) {
+            if (isset($validated['status']) && $validated['status'] === RequestStatusEnum::APPROVED->value) {
                 $validated['declined_reason'] = null;
             }
             $preInscription =  PreInscription::create($validated);
