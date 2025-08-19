@@ -35,8 +35,16 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
             onSuccess: () => {
                 onOpenChange?.(false);
             },
+            onError: (errors) => {
+                console.error('Error updating pre-inscription:', errors);
+            },
         });
     };
+
+    const handleValueChange = (value: string) => {
+        setData('status', Number(value));
+        setData('declined_reason', 0);
+    }
 
     const fullName =
         `${preInscription.first_name} ${preInscription.middle_name || ''} ${preInscription.last_name} ${preInscription.second_last_name || ''}`.trim();
@@ -52,27 +60,38 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Nombre:</Label>
-                                <p className="block text-sm text-gray-900 dark:text-gray-100">{fullName}</p>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {fullName}
+                                </p>
                             </div>
                             <div>
-                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Email:</Label>
-                                <p className="block text-sm text-gray-900 dark:text-gray-100">{preInscription.email}</p>
+                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
+                                    Email:
+                                </Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {preInscription.email}
+                                </p>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Teléfono:</Label>
-                                <p className="block text-sm text-gray-900 dark:text-gray-100">{preInscription.phone}</p>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                    {preInscription.phone}
+                                </p>
                             </div>
                             {preInscription.additional_phone ? (
                                 <div>
                                     <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Teléfono adicional:</Label>
-                                    <p className="block text-sm text-gray-900 dark:text-gray-100">{preInscription.additional_phone}</p>
+                                    <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                        {preInscription.additional_phone}
+                                    </p>
                                 </div>
                             ) : (
                                 <div>
                                     <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Edad:</Label>
-                                    <p className="block text-sm text-gray-900 dark:text-gray-100">{preInscription.age} años</p>
+                                    <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                        {preInscription.age} años</p>
                                 </div>
                             )}
                         </div>
@@ -80,7 +99,8 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Edad:</Label>
-                                    <p className="block text-sm text-gray-900 dark:text-gray-100">{preInscription.age} años</p>
+                                    <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                        {preInscription.age} años</p>
                                 </div>
                                 <div></div>
                             </div>
@@ -97,13 +117,13 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                             <Label htmlFor="status" className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
                                 Estado de la preinscripción
                             </Label>
-                            <Select value={data.status.toString()} onValueChange={(value) => setData('status', Number(value))}>
+                            <Select value={data.status.toString()} onValueChange={handleValueChange}>
                                 <SelectTrigger id="status" name="status">
                                     <SelectValue placeholder="Selecciona un estado" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="0" disabled>
-                                        Selecciona un status
+                                        Selecciona un estado
                                     </SelectItem>
                                     {enums.requestStatus.map((status) => (
                                         <SelectItem key={status.id} value={status.id.toString()}>
@@ -112,7 +132,9 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                                     ))}
                                 </SelectContent>
                             </Select>
-                            {errors.status && <p className="text-sm text-red-500">{errors.status}</p>}
+                            {errors.status && <p className="text-sm text-red-500">
+                                {errors.status}
+                            </p>}
                         </div>
 
                         <div>
@@ -137,23 +159,27 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                                     ))}
                                 </SelectContent>
                             </Select>
-                            {errors.declined_reason && <p className="text-sm text-red-500">{errors.declined_reason}</p>}
+                            {errors.declined_reason && <p className="text-sm text-red-500">
+                                {errors.declined_reason}
+                            </p>}
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="comments" className={`font-bold font-mono text-lg text-gray-800 dark:text-blue-100`}>
+                        <div className="space-y-2 pb-2">
+                            <Label htmlFor="declined_description" className={`font-bold font-mono text-lg text-gray-800 dark:text-blue-100`}>
                                 {data.status === 2 ? "Comentarios (opcional)" : "Comentarios"}
                             </Label>
                             <Textarea
-                                id="comments"
-                                name="comments"
+                                id="declined_description"
+                                name="declined_description"
                                 placeholder="Escribe aquí tu comentario sobre el estado actual de la referencia..."
-                                value={data.comments}
+                                value={data.declined_description}
                                 required={data.status !== 2}
-                                onChange={(e) => setData('comments', e.target.value)}
+                                onChange={(e) => setData('declined_description', e.target.value)}
                                 className="min-h-32 w-full resize-none rounded-md border p-2 outline-none disabled:opacity-50"
                             />
-                            {errors.comments && <p className="text-sm text-red-500">{errors.comments}</p>}
+                            {errors.declined_description && <p className="text-sm text-red-500 leading-0">
+                                {errors.declined_description}
+                            </p>}
                         </div>
                     </CardContent>
                 </Card>

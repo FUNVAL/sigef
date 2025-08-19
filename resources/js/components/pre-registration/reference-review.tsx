@@ -35,9 +35,16 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
             onSuccess: () => {
                 onOpenChange?.(false);
             },
+            onError: (error) => {
+                console.error('Error updating reference:', error);
+            },
         });
     };
 
+    const handleValueChange = (value: string) => {
+        setData('status', Number(value));
+        setData('declined_reason', 0);
+    }
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-2xl grid gap-4 max-h-[88vh] overflow-y-auto">
@@ -94,7 +101,7 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
                             </Label>
                             <Select
                                 value={data.status.toString()}
-                                onValueChange={(value) => setData('status', Number(value))}
+                                onValueChange={handleValueChange}
                             >
                                 <SelectTrigger id="status" name="status">
                                     <SelectValue placeholder="Selecciona un estado" />
@@ -136,7 +143,7 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
                             {errors.declined_reason && <p className="text-red-500 text-sm">{errors.declined_reason}</p>}
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-2 pb-2">
                             <Label htmlFor="declined_description" className={`font-bold font-mono text-lg text-gray-800 dark:text-blue-100`}>
                                 {data.status === 2 ? "Comentarios (opcional)" : "Comentarios"}
                             </Label>
@@ -150,7 +157,7 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
                                 required={data.status !== 2}
                             />
                             {errors.declined_description && (
-                                <p className="text-red-500 text-sm">{errors.declined_description}</p>
+                                <p className="text-red-500 text-sm leading-0">{errors.declined_description}</p>
                             )}
                         </div>
                     </CardContent>
