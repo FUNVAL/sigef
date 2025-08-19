@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { EnumItem, Enums } from '@/types/global';
 import { url } from 'inspector';
 import { User } from '@/types/users';
-import FilterBar from '@/components/data-table/filter-bar';
+import FilterBar from '@/components/data-table/table-filters';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
