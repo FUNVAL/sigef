@@ -39,8 +39,25 @@ class StakeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    
     public function store(Request $request)
     {
+
+        $stake = Stake::where('name', $request->name)->first();
+
+        if ($stake && $stake->status->value == StatusEnum::DELETED->value) {
+            // Si la estaca existe pero está eliminada, restaurarla
+
+            $stake->status = $request->status ?? StatusEnum::ACTIVE->value;
+            $stake->country_id = $request->country_id ?? $stake->country_id;
+            $stake->user_id = $request->user_id ?? null;
+            $stake->save();
+
+            return redirect()->route('stakes.index')
+                ->with('success', 'Stake creado exitosamente');
+        }
+            
+
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:stakes',
             'country_id' => 'required|exists:countries,id',
