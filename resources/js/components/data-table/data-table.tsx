@@ -36,7 +36,7 @@ interface DataTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, any>[];
   filterKey: string;
-  FilterBar: React.FC | React.ComponentType | null;
+  FilterBar?: React.FC | React.ComponentType | null;
   pagination: PaginationData;
 }
 
