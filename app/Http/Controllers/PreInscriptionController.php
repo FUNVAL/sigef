@@ -24,31 +24,41 @@ class PreInscriptionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
             $user = Auth::user();
             $isAdmin = $user->hasRole('Administrador');
             $query = PreInscription::query()->with(['country', 'stake'])->orderBy('created_at', 'desc');
 
+            // Búsqueda simple para el frontend
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('lastname', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%');
+                });
+            }
+
             if ($user->hasRole('Responsable') && !$isAdmin) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
 
-            $status = request()->input('status') ?? 0;
+            $status = $request->input('status') ?? 0;
             if ($status != 0) {
                 $query->where('status', $status);
             }
 
-            $responsable = request()->input('responsable');
+            $responsable = $request->input('responsable');
             if ($responsable && $isAdmin) {
                 $stakesIds = Stake::where('user_id', $responsable)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
 
-            $perPage = request()->input('per_page', 3);
-            $page = request()->input('page', 1);
+            $perPage = $request->input('per_page', 3);
+            $page = $request->input('page', 1);
             $preInscriptions = $query->paginate($perPage, ['*'], 'page', $page);
 
             $responsables = !$isAdmin ? null :
@@ -71,6 +81,7 @@ class PreInscriptionController extends Controller
                     'total' => $preInscriptions->total(),
                     'last_page' => $preInscriptions->lastPage(),
                 ],
+                'filters' => $request->only(['search', 'status', 'responsable']),
             ]);
         } catch (\Exception $e) {
             return response()->json([
