@@ -37,12 +37,14 @@ interface DataTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, any>[];
   filterKey: string;
+  FilterBar: React.FC | React.ComponentType | null;
 }
 
 export function DataTable<TData>({
   data,
   columns,
-  filterKey
+  filterKey,
+  FilterBar
 }: DataTableProps<TData>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -71,18 +73,21 @@ export function DataTable<TData>({
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder={`Filter by ${filterKey}...`}
-          value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(filterKey)?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+      <div className="flex items-center justify-between py-4 gap-4">
+        <div className="flex items-center gap-4 flex-1">
+          <Input
+            placeholder={`Filter by ${filterKey}...`}
+            value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(filterKey)?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          {FilterBar && <FilterBar />}
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button variant="outline">
               Columns <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
@@ -159,8 +164,12 @@ export function DataTable<TData>({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredRowModel().rows.length === 0
+            ? "0 de 0 filas"
+            : `Mostrando ${table.getFilteredRowModel().rows.length} de ${data.length} resultados`}
+          {table.getFilteredSelectedRowModel().rows.length > 0 &&
+            ` (${table.getFilteredSelectedRowModel().rows.length} seleccionadas)`
+          }
         </div>
         <div className="space-x-2">
           <Button

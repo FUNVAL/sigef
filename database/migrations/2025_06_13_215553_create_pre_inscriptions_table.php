@@ -33,8 +33,7 @@ return new class extends Migration
             $table->integer('job_type_preference')->nullable();
             $table->boolean('available_full_time')->nullable();
             $table->integer('status')->default(RequestStatusEnum::PENDING->value);
-            $table->text('comments')->nullable();
-            $table->integer('declined_reason')->default(ReferenceStatusEnum::NO_CONTACT->value);
+            $table->integer('declined_reason')->default(ReferenceStatusEnum::NO_CONTACT->value)->nullable();
             $table->text('declined_description')->nullable();
             $table->integer('modified_by')->nullable();
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
