@@ -32,12 +32,6 @@ class PreInscriptionController extends Controller
             $query = PreInscription::query()->with(['country', 'stake'])->orderBy('created_at', 'desc');
 
             // Búsqueda simple para el frontend
-            /* 
-                first_name
-                middle_name
-                last_name
-                second_last_name
-            */
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($q) use ($search) {
