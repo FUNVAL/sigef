@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 use App\Models\Stake;
+use App\Notifications\RequestNotification;
+
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 
@@ -96,12 +98,16 @@ class ReferenceController extends Controller
                 'relationship_with_referred' => 'nullable|numeric',
             ]);
 
-            Reference::create($validated);
+            $reference = Reference::create($validated);
 
             $message =  [
                 'type' => 'success',
                 'message' =>  __('common.messages.success.reference_success'),
             ];
+
+            $stake = Stake::find($validated['stake_id']);
+            $user = $stake->user;
+            $user->notify(new RequestNotification($this->buildReferenceNotification($user, $reference)));
 
             return  back()->with('success', $message);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -338,5 +344,25 @@ class ReferenceController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Get the attributes for the reference notification.
+     */
+    private function buildReferenceNotification($user, $reference): array
+    {
+        return [
+            'greeting' => 'Estimado ' . $user->full_name,
+            'subject' => 'Nueva Referencia: ' . $reference->name,
+            'mensaje' => <<<'EOT'
+Te informamos que tienes un nuevo referido pendiente de revisión.
+Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.
+EOT,
+            'salutation' =>  'Atentamente: Sistema Integral de Gestión Educativa FUNVAL',
+            'action' => [
+                'text' => '👉 Ver Referencias',
+                'url' => route('references.index'),
+            ],
+        ];
     }
 }
