@@ -354,7 +354,7 @@ class ReferenceController extends Controller
         return [
             'greeting' => 'Estimado ' . $user->full_name,
             'subject' => 'Nueva Referencia: ' . $reference->name,
-            'mensaje' => <<<EOT
+            'mensaje' => <<<'EOT'
 Te informamos que tienes un nuevo referido pendiente de revisión.
 Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.
 EOT,
