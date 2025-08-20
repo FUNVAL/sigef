@@ -10,7 +10,7 @@ class RequestNotification extends Notification
 {
     use Queueable;
 
-    protected  $atributes = [
+    protected  $attributes = [
         'greeting' => null,
         'subject' => null,
         'mensaje' => null,
@@ -24,9 +24,9 @@ class RequestNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(array $atributes)
+    public function __construct(array $attributes)
     {
-        $this->atributes = $atributes;
+        $this->attributes = $attributes;
     }
 
     /**
@@ -45,15 +45,15 @@ class RequestNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $mail = (new MailMessage)
-            ->subject($this->atributes['subject'] ?? 'Notificación del Sistema')
-            ->greeting($this->atributes['greeting'] ?? 'Hola!')
-            ->line($this->atributes['mensaje'] ?? 'Tienes tareas pendientes de revisión.');
+            ->subject($this->attributes['subject'] ?? 'Notificación del Sistema')
+            ->greeting($this->attributes['greeting'] ?? 'Hola!')
+            ->line($this->attributes['mensaje'] ?? 'Tienes tareas pendientes de revisión.');
 
 
-        if (isset($this->atributes['action']['text']) && isset($this->atributes['action']['url'])) {
+        if (isset($this->attributes['action']['text']) && isset($this->attributes['action']['url'])) {
             $mail->action(
-                $this->atributes['action']['text'],
-                $this->atributes['action']['url']
+                $this->attributes['action']['text'],
+                $this->attributes['action']['url']
             );
         }
 
