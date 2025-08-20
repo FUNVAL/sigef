@@ -1,4 +1,4 @@
-import { type BreadcrumbItem, } from '@/types';
+import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
 import AppLayout from '@/layouts/app-layout';
@@ -10,6 +10,8 @@ import { Country } from '@/types/country';
 import { useState } from 'react';
 import { EditCountry } from '@/components/countries/edit-country';
 import { DeleteCountry } from '@/components/countries/delete-country';
+import { PaginationData } from '@/types/global';
+import FilterBar from '@/components/data-table/table-filters';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,7 +20,13 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Countries({ countries }: { countries: [Country] }) {
+interface Props {
+    countries: { data: Country[] };
+    pagination: PaginationData;
+    filters?: { search?: string };
+}
+
+export default function Countries({ countries, pagination, filters }: Props) {
     const [editingCountry, setEditingCountry] = useState<Country | null>(null);
     const [deletingCountry, setDeletingCountry] = useState<Country | null>(null);
 
@@ -39,11 +47,11 @@ export default function Countries({ countries }: { countries: [Country] }) {
                         <CreateCountry />
                     </div>
                     <DataTable<Country>
-                        data={countries}
+                        data={countries.data}
                         columns={columns}
                         filterKey="name"
+                        pagination={pagination}
                     />
-
                 </div>
 
                 {editingCountry && (
