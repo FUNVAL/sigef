@@ -54,7 +54,7 @@ class StakeController extends Controller
             $stake->save();
 
             return redirect()->route('stakes.index')
-                ->with('success', 'Stake creado exitosamente');
+                ->with('success', 'Estaca creado exitosamente');
         }
             
 
