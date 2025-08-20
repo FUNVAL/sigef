@@ -83,7 +83,6 @@ export function DataTable<TData>({
     router.get(url.pathname + url.search, {}, {
       preserveState: true,
       preserveScroll: true,
-      only: ['references', 'pagination']
     });
   }
 
