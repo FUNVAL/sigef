@@ -11,8 +11,12 @@ import { CreateStake } from './create-stake';
 import { DeleteStake } from './DeleteStake';
 import { EditStake } from './edit-stake';
 
+import { PaginationData } from '@/types/global';
+import FilterBar from '@/components/data-table/table-filters';
+
 interface Props {
-    stakes: Stake[];
+    stakes: { data: Stake[] };
+    pagination: PaginationData;
     countries: any[]; // Deberías reemplazar any[] con el tipo correcto (Country[])
     users: any[]; // Deberías reemplazar any[] con el tipo correcto (User[])
 }
@@ -24,7 +28,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function StakesIndex({ stakes, countries, users }: Props) {
+export default function StakesIndex({ stakes, pagination, countries, users }: Props) {
     const { enums } = usePage<{ enums: Enums }>().props;
     const [editingStake, setEditingStake] = useState<Stake | null>(null);
     const [deletingStake, setDeletingStake] = useState<Stake | null>(null);
@@ -58,7 +62,13 @@ export default function StakesIndex({ stakes, countries, users }: Props) {
                     <div className="absolute -top-16 right-0 flex items-center justify-end p-4">
                         <CreateStake countries={countries} users={users} />
                     </div>
-                    <DataTable data={stakes} columns={columns} filterKey="name" />
+                    <DataTable<Stake>
+                        data={stakes.data}
+                        columns={columns}
+                        filterKey="name"
+                        FilterBar={FilterBar}
+                        pagination={pagination}
+                    />
                 </div>
 
                 {/* Diálogos de edición y eliminación */}

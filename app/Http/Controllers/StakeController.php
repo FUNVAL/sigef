@@ -28,8 +28,19 @@ class StakeController extends Controller
         // Mostrar solo activos e inactivos (no eliminados)
         $query->notDeleted();
 
+        // Paginación
+        $perPage = $request->input('per_page', 10);
+        $page = $request->input('page', 1);
+        $stakes = $query->orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
         return Inertia::render('Stakes/Index', [
-            'stakes' => $query->get(),
+            'stakes' => $stakes,
+            'pagination' => [
+                'current_page' => $stakes->currentPage(),
+                'per_page' => $stakes->perPage(),
+                'total' => $stakes->total(),
+                'last_page' => $stakes->lastPage(),
+            ],
             'countries' => Country::all(),
             'users' => User::all(),
             'filters' => $request->only(['search'])
