@@ -10,6 +10,7 @@ import AccessControlLayout from '@/layouts/access-control/layout';
 import preinscriptionsNavItems from '@/lib/consts/preinscriptionNavItems';
 import TableFilters from '@/components/data-table/table-filters';
 import { PaginationData } from '@/types/global';
+import useFilters from '@/hooks/useFilters';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -21,10 +22,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface PreInscriptionsProps {
     preInscriptions: { data: PreInscription[] };
     pagination: PaginationData;
+    filters?: {
+        search?: string;
+    };
 }
 
-export default function PreInscription({ preInscriptions, pagination }: PreInscriptionsProps) {
+export default function PreInscription({ preInscriptions, pagination, filters = {} }: PreInscriptionsProps) {
     const [editingPreInscription, setEditingPreInscription] = useState<PreInscription | null>(null);
+    const { handleSearch } = useFilters();
 
     const columns = createColumns({
         onEditPreInscription: (preInscription) => setEditingPreInscription(preInscription),
@@ -45,6 +50,8 @@ export default function PreInscription({ preInscriptions, pagination }: PreInscr
                         filterKey="first_name"
                         FilterBar={TableFilters}
                         pagination={pagination}
+                        searchValue={filters.search || ''}
+                        onSearch={(value) => handleSearch(value, '/pre-inscription')}
                     />
                 </div>
 

@@ -2,7 +2,7 @@ import { DataTable } from '@/components/data-table/data-table';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Enums } from '@/types/global';
+import { Enums, PaginationData } from '@/types/global';
 import { Stake } from '@/types/stake';
 import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
@@ -10,15 +10,16 @@ import { getColumns } from './columns';
 import { CreateStake } from './create-stake';
 import { DeleteStake } from './DeleteStake';
 import { EditStake } from './edit-stake';
-
-import { PaginationData } from '@/types/global';
-import FilterBar from '@/components/data-table/table-filters';
+import useFilters from '@/hooks/useFilters';
 
 interface Props {
     stakes: { data: Stake[] };
     pagination: PaginationData;
     countries: any[]; // Deberías reemplazar any[] con el tipo correcto (Country[])
     users: any[]; // Deberías reemplazar any[] con el tipo correcto (User[])
+    filters?: {
+        search?: string;
+    };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -28,10 +29,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function StakesIndex({ stakes, pagination, countries, users }: Props) {
+export default function StakesIndex({ stakes, pagination, countries, users, filters = {} }: Props) {
     const { enums } = usePage<{ enums: Enums }>().props;
     const [editingStake, setEditingStake] = useState<Stake | null>(null);
     const [deletingStake, setDeletingStake] = useState<Stake | null>(null);
+    const { handleSearch } = useFilters();
 
     const handleEdit = (stake: Stake) => {
         setEditingStake(stake);
@@ -67,6 +69,8 @@ export default function StakesIndex({ stakes, pagination, countries, users }: Pr
                         columns={columns}
                         filterKey="name"
                         pagination={pagination}
+                        searchValue={filters.search || ''}
+                        onSearch={(value) => handleSearch(value, '/stakes')}
                     />
                 </div>
 

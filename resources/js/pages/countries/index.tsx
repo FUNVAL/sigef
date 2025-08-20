@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { EditCountry } from '@/components/countries/edit-country';
 import { DeleteCountry } from '@/components/countries/delete-country';
 import { PaginationData } from '@/types/global';
-import FilterBar from '@/components/data-table/table-filters';
+import useFilters from '@/hooks/useFilters';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -26,9 +26,10 @@ interface Props {
     filters?: { search?: string };
 }
 
-export default function Countries({ countries, pagination, filters }: Props) {
+export default function Countries({ countries, pagination, filters = {} }: Props) {
     const [editingCountry, setEditingCountry] = useState<Country | null>(null);
     const [deletingCountry, setDeletingCountry] = useState<Country | null>(null);
+    const { handleSearch } = useFilters();
 
     const columns = createColumns({
         onEditCountry: (country) => setEditingCountry(country),
@@ -51,6 +52,8 @@ export default function Countries({ countries, pagination, filters }: Props) {
                         columns={columns}
                         filterKey="name"
                         pagination={pagination}
+                        searchValue={filters?.search || ''}
+                        onSearch={(value) => handleSearch(value, '/countries')}
                     />
                 </div>
 

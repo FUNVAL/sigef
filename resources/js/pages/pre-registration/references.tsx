@@ -10,6 +10,7 @@ import referencesNavItems from '@/lib/consts/referencesNavItems';
 import ReferenceReview from '@/components/pre-registration/reference-review';
 import FilterBar from '@/components/data-table/table-filters';
 import { PaginationData } from '@/types/global';
+import useFilters from '@/hooks/useFilters';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,10 +23,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface ReferencesProps {
     references: { data: Reference[] };
     pagination: PaginationData;
+    filters?: {
+        search?: string;
+    };
 }
 
-export default function References({ references, pagination }: ReferencesProps) {
+export default function References({ references, pagination, filters = {} }: ReferencesProps) {
     const [editingReference, seteditingReference] = useState<Reference | null>(null);
+    const { handleSearch } = useFilters();
+
     const columns = createColumns({
         onEditReference: (reference) => seteditingReference(reference),
     });
@@ -44,6 +50,8 @@ export default function References({ references, pagination }: ReferencesProps) 
                         filterKey="name"
                         FilterBar={FilterBar}
                         pagination={pagination}
+                        searchValue={filters.search || ''}
+                        onSearch={(value) => handleSearch(value, '/references')}
                     />
 
                     {editingReference && (
