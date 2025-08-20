@@ -28,13 +28,10 @@ class ReferenceController extends Controller
             $isAdmin = $user->hasRole('Administrador');
             $query = Reference::query()->with(['country', 'stake', 'modifier'])->orderBy('created_at', 'desc');
 
-            // Búsqueda simple para el frontend
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('lastname', 'like', '%' . $search . '%')
-                        ->orWhere('email', 'like', '%' . $search . '%');
+                    $q->where('name', 'like', '%' . $search . '%');
                 });
             }
 
@@ -54,7 +51,7 @@ class ReferenceController extends Controller
                 $query->whereIn('stake_id', $stakesIds);
             }
 
-            $perPage = $request->input('per_page', 3);
+            $perPage = $request->input('per_page', 10);
             $page = $request->input('page', 1);
             $references = $query->paginate($perPage, ['*'], 'page', $page);
 
