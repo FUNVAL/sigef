@@ -57,7 +57,7 @@ class PreInscriptionController extends Controller
                 $query->whereIn('stake_id', $stakesIds);
             }
 
-            $perPage = $request->input('per_page', 3);
+            $perPage = $request->input('per_page', 10);
             $page = $request->input('page', 1);
             $preInscriptions = $query->paginate($perPage, ['*'], 'page', $page);
 
