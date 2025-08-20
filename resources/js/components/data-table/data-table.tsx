@@ -38,6 +38,8 @@ interface DataTableProps<TData> {
   filterKey: string;
   FilterBar?: React.FC | React.ComponentType | null;
   pagination: PaginationData;
+  searchValue?: string;
+  onSearch?: (value: string) => void;
 }
 
 export function DataTable<TData>({
@@ -45,13 +47,32 @@ export function DataTable<TData>({
   columns,
   filterKey,
   FilterBar,
-  pagination
+  pagination,
+  searchValue = "",
+  onSearch
 }: DataTableProps<TData>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+
+  // Establecer el valor inicial del filtro desde props
+  React.useEffect(() => {
+    if (filterKey && searchValue) {
+      setColumnFilters(prevFilters => {
+        const filterExists = prevFilters.some(filter => filter.id === filterKey);
+
+        if (filterExists) {
+          return prevFilters.map(filter =>
+            filter.id === filterKey ? { ...filter, value: searchValue } : filter
+          );
+        } else {
+          return [...prevFilters, { id: filterKey, value: searchValue }];
+        }
+      });
+    }
+  }, [searchValue, filterKey]);
 
   const table = useReactTable({
     data,
@@ -82,6 +103,21 @@ export function DataTable<TData>({
     });
   }
 
+  // Manejar cambio en la búsqueda
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    table.getColumn(filterKey)?.setFilterValue(value);
+
+    if (onSearch) {
+      // Agregar un pequeño debounce para no hacer demasiadas peticiones
+      const timeoutId = setTimeout(() => {
+        onSearch(value);
+      }, 500);
+
+      return () => clearTimeout(timeoutId);
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4 gap-4">
@@ -89,9 +125,7 @@ export function DataTable<TData>({
           <Input
             placeholder={`Filter by ${filterKey}...`}
             value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn(filterKey)?.setFilterValue(event.target.value)
-            }
+            onChange={handleSearchChange}
             className="max-w-sm"
           />
           {FilterBar && <FilterBar />}
