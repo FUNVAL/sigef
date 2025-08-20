@@ -24,7 +24,6 @@ class ReferenceController extends Controller
     public function index()
     {
         try {
-
             $user = Auth::user();
             $isAdmin = $user->hasRole('Administrador');
             $query = Reference::query()->with(['country', 'stake', 'modifier'])->orderBy('created_at', 'desc');
@@ -45,6 +44,10 @@ class ReferenceController extends Controller
                 $query->whereIn('stake_id', $stakesIds);
             }
 
+            $perPage = request()->input('per_page', 3);
+            $page = request()->input('page', 1);
+            $references = $query->paginate($perPage, ['*'], 'page', $page);
+
             $responsables = !$isAdmin ? null :
                 User::role('Responsable')
                 ->get()
@@ -57,8 +60,14 @@ class ReferenceController extends Controller
                 ->toArray();
 
             return Inertia::render('pre-registration/references', [
-                'references' => $query->get(),
+                'references' => $references,
                 'responsables' => $responsables,
+                'pagination' => [
+                    'current_page' => $references->currentPage(),
+                    'per_page' => $references->perPage(),
+                    'total' => $references->total(),
+                    'last_page' => $references->lastPage(),
+                ],
             ]);
         } catch (\Exception $e) {
             return response()->json([
