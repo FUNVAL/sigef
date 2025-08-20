@@ -32,6 +32,21 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
+        $course = course::where('name', $request->name)->first();
+
+        // dd($course->status);
+        if( $course && $course->status['id'] === StatusEnum::DELETED->value) {
+            // If the course exists but is deleted, restore it
+            $course->status = $request->status ?? StatusEnum::ACTIVE->value;
+            $course->duration = $request->duration ?? $course->duration;
+            $course->modality = $request->modality ?? $course->modality;
+
+            $course->save();
+
+            return redirect()->route('courses.index')
+                ->with('success', 'Curso restaurado exitosamente');
+        }
+
         try {
             $validated =  $request->validate([
                 'name' => 'required|string|max:255|unique:courses,name',
