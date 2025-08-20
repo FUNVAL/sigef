@@ -44,7 +44,7 @@ export const createColumns = ({ onEditCourse, onDeleteCourse }: CourseDataTableP
     },
     {
         accessorKey: "name",
-        header: "Nombre del referido",
+        header: "Nombre del curso",
         cell: ({ row }) => {
             const course = row.original;
             return (

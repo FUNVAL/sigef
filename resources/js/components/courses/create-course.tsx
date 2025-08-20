@@ -62,7 +62,7 @@ export function CreateCourse() {
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
-                                placeholder="Primer nombre"
+                                placeholder="Nombre del curso"
                             />
                             <InputError message={errors.name} />
                         </div>
