@@ -114,7 +114,12 @@ export function DataTable<TData>({
         onSearch(value);
       }, 500);
 
-      return () => clearTimeout(timeoutId);
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+      searchTimeoutRef.current = setTimeout(() => {
+        onSearch(value);
+      }, 500);
     }
   };
 
