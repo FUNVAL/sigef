@@ -44,6 +44,7 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
     const handleValueChange = (value: string) => {
         setData('status', Number(value));
         setData('declined_reason', 0);
+        setData('declined_description', '');
     }
 
     const fullName =

@@ -44,6 +44,7 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
     const handleValueChange = (value: string) => {
         setData('status', Number(value));
         setData('declined_reason', 0);
+        setData('declined_description', '');
     }
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
