@@ -30,18 +30,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { PaginationData } from "@/types/global"
 
 interface DataTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, any>[];
   filterKey: string;
   FilterBar: React.FC | React.ComponentType | null;
-  pagination?: {
-    current_page: number;
-    per_page: number;
-    total: number;
-    last_page: number;
-  };
+  pagination: PaginationData;
 }
 
 export function DataTable<TData>({
