@@ -502,12 +502,14 @@ class PreInscriptionController extends Controller
     {
         return [
             'greeting' => 'Estimado ' . $user->full_name,
-            'subject' => 'Nueva Preinscrición: ' . $reference->name,
-            'mensaje' => 'Te informamos que tienes un nuevo preinscrito pendiente de revisión.
-             Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.',
+            'subject' => 'Nueva Preinscripción: ' . $reference->name,
+            'mensaje' => <<<'EOT'
+Te informamos que tienes un nuevo preinscrito pendiente de revisión.
+Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.
+EOT,
             'salutation' =>  'Atentamente: Sistema Integral de Gestión Educativa FUNVAL',
             'action' => [
-                'text' => '👉 Ver Preinscrición',
+                'text' => '👉 Ver Preinscripción',
                 'url' => route('pre-inscription.index'),
             ],
         ];
