@@ -34,7 +34,6 @@ export default function PreInscription({ preInscriptions, pagination, filters = 
     const columns = createColumns({
         onEditPreInscription: (preInscription) => setEditingPreInscription(preInscription),
     });
-    console.log({ preInscriptions, pagination });
     return (
         <AppLayout breadcrumbs={breadcrumbs} menuOptions={preinscriptionsNavItems}>
             <Head title="Preinscripciones" />
