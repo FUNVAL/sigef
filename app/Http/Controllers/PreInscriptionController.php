@@ -12,6 +12,7 @@ use App\Enums\RequestStatusEnum;
 use App\Enums\JobTypeEnum;
 use App\Enums\ReferenceStatusEnum;
 use App\Models\Course;
+use App\Notifications\RequestNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -168,11 +169,13 @@ class PreInscriptionController extends Controller
                     'modified_by' => 0
                 ]);
             }
+            $stake = Stake::find($validated['stake_id']);
+            $user = $stake->user;
+            $user->notify(new RequestNotification($this->buildReferenceNotification($user, $preInscription)));
 
             return  back()->with('success', $message);
         } catch (Exception $e) {
 
-            // For Inertia requests, return back with error
             return back()->withErrors(['error' => 'Error al crear la pre-inscripción: ' . $e->getMessage()]);
         }
     }
@@ -489,6 +492,24 @@ class PreInscriptionController extends Controller
                 'type' => 'rejected',
                 'message' => __('common.messages.error.email_exists')
             ]
+        ];
+    }
+
+    /**
+     * Get the attributes for the reference notification.
+     */
+    private function buildReferenceNotification($user, $reference): array
+    {
+        return [
+            'greeting' => 'Estimado ' . $user->full_name,
+            'subject' => 'Nueva Preinscrición: ' . $reference->name,
+            'mensaje' => 'Te informamos que tienes un nuevo preinscrito pendiente de revisión.
+             Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.',
+            'salutation' =>  'Atentamente: Sistema Integral de Gestión Educativa FUNVAL',
+            'action' => [
+                'text' => '👉 Ver Preinscrición',
+                'url' => route('pre-inscription.index'),
+            ],
         ];
     }
 }

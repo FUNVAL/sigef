@@ -49,6 +49,7 @@ class RequestNotification extends Notification
             ->greeting($this->atributes['greeting'] ?? 'Hola!')
             ->line($this->atributes['mensaje'] ?? 'Tienes tareas pendientes de revisión.');
 
+
         if (isset($this->atributes['action']['text']) && isset($this->atributes['action']['url'])) {
             $mail->action(
                 $this->atributes['action']['text'],

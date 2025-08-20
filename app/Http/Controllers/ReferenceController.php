@@ -99,20 +99,17 @@ class ReferenceController extends Controller
                 'relationship_with_referred' => 'nullable|numeric',
             ]);
 
-            $resferece = Reference::create($validated);
+            $resference = Reference::create($validated);
 
             $message =  [
                 'type' => 'success',
                 'message' =>  __('common.messages.success.reference_success'),
             ];
-            #obtner el usuario asignado a la referencia a traves del stake
+
             $stake = Stake::find($validated['stake_id']);
             $user = $stake->user;
-            Notification::route('mail', 'josepelico@fundaciondevalores.org')
-                ->notify(new RequestNotification($this->buildReferenceNotification($user, $resferece)));
+            $user->notify(new RequestNotification($this->buildReferenceNotification($user, $resference)));
 
-
-            /* $user->notify(new RequestNotification($this->buildReferenceNotification($user))); */
             return  back()->with('success', $message);
         } catch (\Illuminate\Validation\ValidationException $e) {
             $queryParams = array_merge($request->query(), ['step' => 2]);
@@ -356,12 +353,13 @@ class ReferenceController extends Controller
     private function buildReferenceNotification($user, $reference): array
     {
         return [
-            'greeting' => 'Hola!, ' . $user->full_name,
+            'greeting' => 'Estimado ' . $user->full_name,
             'subject' => 'Nueva Referencia: ' . $reference->name,
-            'mensaje' => 'Tienes una nueva referencia pendiente de revisión. Por favor revisa los detalles de la referencia y toma la acción correspondiente. Haz clic en el botón a continuación para ver todas las referencias asignadas.',
-            'salutation' =>  'Atentamente: \n Sistema Integral de Gestión Educativa FUNVAL',
+            'mensaje' => 'Te informamos que tienes un nuevo referido pendiente de revisión.
+             Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.',
+            'salutation' =>  'Atentamente: Sistema Integral de Gestión Educativa FUNVAL',
             'action' => [
-                'text' => 'Ver Referencias',
+                'text' => '👉 Ver Referencias',
                 'url' => route('references.index'),
             ],
         ];
