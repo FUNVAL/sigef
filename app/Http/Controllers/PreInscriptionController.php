@@ -47,6 +47,10 @@ class PreInscriptionController extends Controller
                 $query->whereIn('stake_id', $stakesIds);
             }
 
+            $perPage = request()->input('per_page', 3);
+            $page = request()->input('page', 1);
+            $preInscriptions = $query->paginate($perPage, ['*'], 'page', $page);
+
             $responsables = !$isAdmin ? null :
                 \App\Models\User::role('Responsable')
                 ->get()
@@ -59,8 +63,14 @@ class PreInscriptionController extends Controller
                 ->toArray();
 
             return Inertia::render('pre-registration/pre-inscription', [
-                'preInscriptions' => $query->get(),
+                'preInscriptions' => $preInscriptions,
                 'responsables' => $responsables,
+                'pagination' => [
+                    'current_page' => $preInscriptions->currentPage(),
+                    'per_page' => $preInscriptions->perPage(),
+                    'total' => $preInscriptions->total(),
+                    'last_page' => $preInscriptions->lastPage(),
+                ],
             ]);
         } catch (\Exception $e) {
             return response()->json([
