@@ -42,6 +42,7 @@ return [
         'rejected' => 'Rejected',
         'filtered' => 'Filtered',
         'incorrect_number' => 'Incorrect number',
+        'no_contact' => 'Not contacted',
         'work' => 'Work',
         'studies' => 'Studies',
         'not_church_member' => 'Not a church member',

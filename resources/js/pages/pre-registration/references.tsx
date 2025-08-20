@@ -1,7 +1,6 @@
 import { type BreadcrumbItem, } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
-
 import AppLayout from '@/layouts/app-layout';
 import { DataTable } from '@/components/data-table/data-table';
 import { createColumns } from '@/components/pre-registration/references-data-table';
@@ -9,6 +8,7 @@ import { Reference } from '@/types/reference';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import referencesNavItems from '@/lib/consts/referencesNavItems';
 import ReferenceReview from '@/components/pre-registration/reference-review';
+import FilterBar from '@/components/data-table/table-filters';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,17 +18,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function References({ references }: { references: Reference[] }) {
-    const { auth } = usePage().props;
-    const [selectedReference, setSelectedReference] = useState<Reference | null>(null);
-    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-
-    const handleEditReference = (reference: Reference) => {
-        setSelectedReference(reference);
-        setIsEditDialogOpen(true);
-    };
-
+    const [editingReference, seteditingReference] = useState<Reference | null>(null);
     const columns = createColumns({
-        onEditReference: handleEditReference,
+        onEditReference: (reference) => seteditingReference(reference),
     });
 
     return (
@@ -43,17 +35,18 @@ export default function References({ references }: { references: Reference[] }) 
                         data={references}
                         columns={columns}
                         filterKey="name"
+                        FilterBar={FilterBar}
                     />
 
-                    {selectedReference && (
+                    {editingReference && (
                         <ReferenceReview
-                            reference={selectedReference}
-                            open={isEditDialogOpen}
-                            onOpenChange={setIsEditDialogOpen}
+                            reference={editingReference}
+                            open={!!editingReference}
+                            onOpenChange={(open) => !open && seteditingReference(null)}
                         />
                     )}
                 </div>
             </AccessControlLayout>
         </AppLayout>
     );
-} 
+}

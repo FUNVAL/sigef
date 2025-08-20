@@ -124,7 +124,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
         const prefix = internalCountry ? `${internalCountry.code}` : 'País';
 
         return (
-            <div className={cn('flex items-center', className)}>
+            <div className={cn('flex items-center w-full', className)}>
                 {enableDropdown ? (
                     <CountryDropdown
                         countries={countries}

@@ -39,6 +39,7 @@ class PreInscriptionFactory extends Factory
             'gender' => $this->faker->randomElement(GenderEnum::cases())->value,
             'age' => $this->faker->numberBetween(18, 40),
             'phone' => $this->faker->phoneNumber(),
+            'additional_phone' => $this->faker->optional(0.3)->phoneNumber(),
             'email' => $this->faker->unique()->safeEmail(),
             'marital_status' => $this->faker->randomElement(MaritalStatusEnum::cases())->value,
             'served_mission' => $this->faker->randomElement([1, 2, 3]), // MissionStatusEnum values

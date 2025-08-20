@@ -1,17 +1,17 @@
 import {
     type BaseEntity,
+    type BaseFilters,
+    type BaseFormData,
+    type BasePaginatedResponse,
+    type BaseUpdateFormData,
     type Country,
-    type Stake,
     type GenderInfo,
+    type JobTypeInfo,
     type MaritalStatusInfo,
     type MissionStatusInfo,
-    type JobTypeInfo,
+    type Stake,
     type StatusInfo,
-    type BaseFormData,
-    type BaseUpdateFormData,
-    type BaseFilters,
-    type BasePaginatedResponse
-} from "./common";
+} from './common';
 
 /**
  * Tipo base para una pre-inscripción con todos sus campos y relaciones
@@ -23,6 +23,7 @@ type PreInscription = BaseEntity & {
     second_last_name?: string;
     age: number;
     phone: string;
+    additional_phone?: string;
     email: string;
     served_mission: MissionStatusInfo;
     currently_working?: boolean;
@@ -56,12 +57,13 @@ type PreInscriptionFormData = Omit<
     | 'status'
     | 'declined_reason'
     | 'served_mission'
-> & BaseFormData & {
-    marital_status: number;
-    served_mission: number;
-    job_type_preference?: number;
-    status?: number;
-};
+> &
+    BaseFormData & {
+        marital_status: number;
+        served_mission: number;
+        job_type_preference?: number;
+        status?: number;
+    };
 
 /**
  * Tipo para actualizar el estado de una pre-inscripción
@@ -73,6 +75,13 @@ type PreInscriptionUpdateFormData = BaseUpdateFormData & {
 };
 
 /**
+ * Tipo para editar datos de una pre-inscripción existente
+ */
+type PreInscriptionEditFormData = Omit<PreInscriptionFormData, 'id'> & {
+    id: number;
+};
+
+/**
  * Tipo para filtros de búsqueda de pre-inscripciones
  */
 type PreInscriptionFilters = BaseFilters & {
@@ -80,6 +89,7 @@ type PreInscriptionFilters = BaseFilters & {
     last_name?: string;
     email?: string;
     phone?: string;
+    additional_phone?: string;
     gender?: number;
     marital_status?: number;
     served_mission?: MissionStatusInfo;
@@ -95,19 +105,20 @@ type PreInscriptionsPaginatedResponse = BasePaginatedResponse<PreInscription>;
 
 export type {
     PreInscription,
-    PreInscriptionFormData,
-    PreInscriptionUpdateFormData,
+    PreInscriptionEditFormData,
     PreInscriptionFilters,
+    PreInscriptionFormData,
     PreInscriptionsPaginatedResponse,
+    PreInscriptionUpdateFormData,
 };
 
 export type PreRegistrationRequest = {
     data: any;
-    setData: ((field: any, value: any) => void);
+    setData: (field: any, value: any) => void;
     post: (...args: any[]) => void;
     processing: boolean;
     errors: Record<string, string>;
-}
+};
 
 export type PreRegistrationFormData = BaseFormData & {
     first_name: string;
@@ -116,6 +127,7 @@ export type PreRegistrationFormData = BaseFormData & {
     second_last_name?: string;
     age: number;
     phone: string;
+    additional_phone?: string;
     email: string;
     marital_status: number;
     served_mission: number | null;
@@ -123,4 +135,4 @@ export type PreRegistrationFormData = BaseFormData & {
     job_type_preference?: number | null;
     currently_working?: boolean | null;
     available_full_time?: boolean | null;
-}
+};

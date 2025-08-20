@@ -87,7 +87,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         className="mx-auto flex min-w-4/5 items-center justify-center gap-2 rounded bg-blue-600 px-5 py-2 text-white hover:bg-blue-700 disabled:opacity-70"
                     >
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Log In
+                        Iniciar sesión
                     </Button>
                 </div>
             </form>

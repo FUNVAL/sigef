@@ -6,6 +6,7 @@ use App\Enums\CourseModalityEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
 use App\Enums\MissionStatusEnum;
+use App\Enums\ReferenceStatusEnum;
 use App\Enums\RequestStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +30,7 @@ class PreInscription extends Model
         'gender',
         'age',
         'phone',
+        'additional_phone',
         'email',
         'marital_status',
         'served_mission',
@@ -38,6 +40,7 @@ class PreInscription extends Model
         'status',
         'comments',
         'declined_reason',
+        'declined_description',
         'modified_by',
         'country_id',
         'stake_id',
@@ -86,5 +89,13 @@ class PreInscription extends Model
         }
         $user =  User::find($value);
         return $user ? $user->fullname : null;
+    }
+
+    public function getDeclinedReasonAttribute(): ?array
+    {
+        if (is_null($this->attributes['declined_reason'])) {
+            return null;
+        }
+        return ReferenceStatusEnum::fromId($this->attributes['declined_reason']);
     }
 }
