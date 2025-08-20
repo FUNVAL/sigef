@@ -1,5 +1,4 @@
 import * as React from "react"
-
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -8,13 +7,12 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 
 import { ChevronDown } from "lucide-react"
-
+import { router } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -38,13 +36,20 @@ interface DataTableProps<TData> {
   columns: ColumnDef<TData, any>[];
   filterKey: string;
   FilterBar: React.FC | React.ComponentType | null;
+  pagination?: {
+    current_page: number;
+    per_page: number;
+    total: number;
+    last_page: number;
+  };
 }
 
 export function DataTable<TData>({
   data,
   columns,
   filterKey,
-  FilterBar
+  FilterBar,
+  pagination
 }: DataTableProps<TData>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -58,7 +63,6 @@ export function DataTable<TData>({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -70,6 +74,18 @@ export function DataTable<TData>({
       rowSelection,
     },
   })
+
+  // Manejar cambio de página
+  const handlePageChange = (page: number) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', page.toString());
+
+    router.get(url.pathname + url.search, {}, {
+      preserveState: true,
+      preserveScroll: true,
+      only: ['references', 'pagination']
+    });
+  }
 
   return (
     <div className="w-full">
@@ -164,31 +180,38 @@ export function DataTable<TData>({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length === 0
-            ? "0 de 0 filas"
-            : `Mostrando ${table.getFilteredRowModel().rows.length} de ${data.length} resultados`}
+          {pagination ? (
+            `Mostrando ${data.length} de ${pagination.total} resultados`
+          ) : (
+            `Mostrando ${data.length} resultados`
+          )}
           {table.getFilteredSelectedRowModel().rows.length > 0 &&
             ` (${table.getFilteredSelectedRowModel().rows.length} seleccionadas)`
           }
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+        {pagination && (
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(pagination.current_page - 1)}
+              disabled={pagination.current_page <= 1}
+            >
+              Previous
+            </Button>
+            <span className="mx-2">
+              Página {pagination.current_page} de {pagination.last_page}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(pagination.current_page + 1)}
+              disabled={pagination.current_page >= pagination.last_page}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
