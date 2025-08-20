@@ -66,7 +66,6 @@ export default function StakesIndex({ stakes, pagination, countries, users }: Pr
                         data={stakes.data}
                         columns={columns}
                         filterKey="name"
-                        FilterBar={FilterBar}
                         pagination={pagination}
                     />
                 </div>
