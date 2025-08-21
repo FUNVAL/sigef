@@ -173,7 +173,7 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                                     {preInscription.served_mission?.name || "No especificado"}
                                 </Badge>
                             </div>
-                            <div>
+                            <div className='flex flex-col'>
                                 <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">¿Trabajando actualmente?</Label>
                                 <Badge variant={getVariant(currently_working)}>{getWorkingStatusDisplay()}</Badge>
                             </div>
