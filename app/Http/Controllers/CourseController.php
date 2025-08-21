@@ -102,7 +102,7 @@ class CourseController extends Controller
             $course->update($validated);
             $course->save();
             return redirect()->route('courses.index')
-                ->with('success', 'Course updated successfully.');
+                ->with('success', 'Curso actualizado exitosamente.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
@@ -122,7 +122,7 @@ class CourseController extends Controller
             $course->save();
 
             return redirect()->route('courses.index')
-                ->with('success', 'Course deleted successfully.');
+                ->with('success', 'Curso eliminado exitosamente.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => 'Failed to delete course: ' . $e->getMessage()]);
