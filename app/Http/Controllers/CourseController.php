@@ -48,6 +48,21 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
+        $course = course::where('name', $request->name)->first();
+
+        // dd($course->status);
+        if( $course && $course->status['id'] === StatusEnum::DELETED->value) {
+            // If the course exists but is deleted, restore it
+            $course->status = $request->status ?? StatusEnum::ACTIVE->value;
+            $course->duration = $request->duration ?? $course->duration;
+            $course->modality = $request->modality ?? $course->modality;
+
+            $course->save();
+
+            return redirect()->route('courses.index')
+                ->with('success', 'Curso restaurado exitosamente');
+        }
+
         try {
             $validated =  $request->validate([
                 'name' => 'required|string|max:255|unique:courses,name',
@@ -64,7 +79,7 @@ class CourseController extends Controller
             ]);
 
             return redirect()->route('courses.index')
-                ->with('success', 'Course created successfully.');
+                ->with('success', 'Curso restaurado exitosamente.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
@@ -103,7 +118,7 @@ class CourseController extends Controller
             $course->update($validated);
             $course->save();
             return redirect()->route('courses.index')
-                ->with('success', 'Course updated successfully.');
+                ->with('success', 'Curso actualizado exitosamente.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
@@ -123,7 +138,7 @@ class CourseController extends Controller
             $course->save();
 
             return redirect()->route('courses.index')
-                ->with('success', 'Course deleted successfully.');
+                ->with('success', 'Curso eliminado exitosamente.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => 'Failed to delete course: ' . $e->getMessage()]);

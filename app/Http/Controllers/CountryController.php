@@ -56,6 +56,22 @@ class CountryController extends Controller
     public function store(Request $request)
     {
 
+        $country = Country::where('name', $request->name)->first();
+        
+        if ($country && $country->status['id'] == StatusEnum::DELETED->value) {
+            // Si el país existe pero está eliminado, restaurarlo
+            $country->status = $request->status ?? StatusEnum::ACTIVE->value;
+            $country->code = $request->code ?? $country->code;
+            $country->phone_code = $request->phone_code ?? $country->phone_code;
+            $country->flag = $request->flag ?? null;
+
+            $country->save();
+
+            return redirect()->route('countries.index')
+                ->with('success', 'Pais creado exitosamente');
+        }
+         
+
         try {
             $validated =  $request->validate([
                 'name' => 'required|string|max:255|unique:countries,name',
@@ -72,7 +88,8 @@ class CountryController extends Controller
 
 
             return redirect()->route('countries.index')
-                ->with('success', 'Country created successfully.');
+                ->with('success', 'Pais creado exitosamente.');
+
         } catch (\Exception $e) {
 
             return redirect()->back()
@@ -128,7 +145,7 @@ class CountryController extends Controller
             $country->save();
 
             return redirect()->route('countries.index')
-                ->with('success', 'Country deleted successfully.');
+                ->with('success', 'Pais eliminado exitosamente.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => 'Failed to delete country: ' . $e->getMessage()]);
