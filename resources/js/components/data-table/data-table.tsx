@@ -1,5 +1,4 @@
 import * as React from "react"
-
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -8,13 +7,12 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 
 import { ChevronDown } from "lucide-react"
-
+import { router } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -32,19 +30,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { PaginationData } from "@/types/global"
 
 interface DataTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, any>[];
   filterKey: string;
-  FilterBar: React.FC | React.ComponentType | null;
+  FilterBar?: React.FC | React.ComponentType | null;
+  pagination: PaginationData;
+  searchValue?: string;
+  onSearch?: (value: string) => void;
 }
 
 export function DataTable<TData>({
   data,
   columns,
   filterKey,
-  FilterBar
+  FilterBar,
+  pagination,
+  searchValue = "",
+  onSearch
 }: DataTableProps<TData>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -52,13 +57,29 @@ export function DataTable<TData>({
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
+  // Establecer el valor inicial del filtro desde props
+  React.useEffect(() => {
+    if (filterKey && searchValue) {
+      setColumnFilters(prevFilters => {
+        const filterExists = prevFilters.some(filter => filter.id === filterKey);
+
+        if (filterExists) {
+          return prevFilters.map(filter =>
+            filter.id === filterKey ? { ...filter, value: searchValue } : filter
+          );
+        } else {
+          return [...prevFilters, { id: filterKey, value: searchValue }];
+        }
+      });
+    }
+  }, [searchValue, filterKey]);
+
   const table = useReactTable({
     data,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -71,6 +92,37 @@ export function DataTable<TData>({
     },
   })
 
+  // Manejar cambio de página
+  const handlePageChange = (page: number) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', page.toString());
+
+    router.get(url.pathname + url.search, {}, {
+      preserveState: true,
+      preserveScroll: true,
+    });
+  }
+
+  // Manejar cambio en la búsqueda
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    table.getColumn(filterKey)?.setFilterValue(value);
+
+    if (onSearch) {
+      // Agregar un pequeño debounce para no hacer demasiadas peticiones
+      const timeoutId = setTimeout(() => {
+        onSearch(value);
+      }, 500);
+
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+      searchTimeoutRef.current = setTimeout(() => {
+        onSearch(value);
+      }, 500);
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4 gap-4">
@@ -78,9 +130,7 @@ export function DataTable<TData>({
           <Input
             placeholder={`Filter by ${filterKey}...`}
             value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn(filterKey)?.setFilterValue(event.target.value)
-            }
+            onChange={handleSearchChange}
             className="max-w-sm"
           />
           {FilterBar && <FilterBar />}
@@ -164,31 +214,38 @@ export function DataTable<TData>({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length === 0
-            ? "0 de 0 filas"
-            : `Mostrando ${table.getFilteredRowModel().rows.length} de ${data.length} resultados`}
+          {pagination ? (
+            `Mostrando ${data.length} de ${pagination.total} resultados`
+          ) : (
+            `Mostrando ${data.length} resultados`
+          )}
           {table.getFilteredSelectedRowModel().rows.length > 0 &&
             ` (${table.getFilteredSelectedRowModel().rows.length} seleccionadas)`
           }
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+        {pagination && (
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(pagination.current_page - 1)}
+              disabled={pagination.current_page <= 1}
+            >
+              Previous
+            </Button>
+            <span className="mx-2">
+              Página {pagination.current_page} de {pagination.last_page}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(pagination.current_page + 1)}
+              disabled={pagination.current_page >= pagination.last_page}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )

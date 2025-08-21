@@ -205,3 +205,10 @@ type Translation = {
         back_to_home: string;
     };
 }
+
+type PaginationData = {
+    current_page: number;
+    per_page: number;
+    total: number;
+    last_page: number;
+}

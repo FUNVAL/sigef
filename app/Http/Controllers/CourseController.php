@@ -13,13 +13,29 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
+            $query = course::where('status', '!=', StatusEnum::DELETED->value);
+
+            if ($request->has('search')) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            }
+
+            $perPage = $request->input('per_page', 10);
+            $page = $request->input('page', 1);
+            $courses = $query->orderBy('status', 'asc')
+                ->paginate($perPage, ['*'], 'page', $page);
+
             return Inertia::render('courses/index', [
-                'courses' => course::where('status', '!=', StatusEnum::DELETED->value)
-                    ->orderBy('status', 'asc')
-                    ->get(),
+                'courses' => $courses,
+                'pagination' => [
+                    'current_page' => $courses->currentPage(),
+                    'per_page' => $courses->perPage(),
+                    'total' => $courses->total(),
+                    'last_page' => $courses->lastPage(),
+                ],
+                'filters' => $request->only(['search']),
             ]);
         } catch (\Exception $e) {
             return redirect()->back()

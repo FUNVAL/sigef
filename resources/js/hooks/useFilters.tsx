@@ -2,9 +2,9 @@ import { useCallback } from "react";
 import { router } from "@inertiajs/react";
 
 export type FilterConfig = {
-    key: string; // nombre del query param
-    defaultValue?: string; // valor que representa "todos" (por defecto "0")
-    getName?: (value: string) => string; // función para obtener el label de un valor
+    key: string;
+    defaultValue?: string;
+    getName?: (value: string) => string;
 };
 
 export type UseFiltersReturn = {
@@ -15,6 +15,7 @@ export type UseFiltersReturn = {
     clearFilter: (paramKey: string) => void;
     clearAllFilters: () => void;
     getName: (paramKey: string, value?: string | null) => string;
+    handleSearch: (search: string, routePath?: string) => void;
 };
 
 export default function useFilters(configs: FilterConfig[] = []): UseFiltersReturn {
@@ -87,6 +88,14 @@ export default function useFilters(configs: FilterConfig[] = []): UseFiltersRetu
         return v;
     }, [configs, getValue]);
 
+    const handleSearch = useCallback((search: string, routePath?: string) => {
+        const path = routePath || (typeof window !== "undefined" ? window.location.pathname : "");
+        router.get(path, { search }, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }, []);
+
     return {
         getValue,
         getAllValues,
@@ -95,5 +104,6 @@ export default function useFilters(configs: FilterConfig[] = []): UseFiltersRetu
         clearFilter,
         clearAllFilters,
         getName,
+        handleSearch,
     };
 }

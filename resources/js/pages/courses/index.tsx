@@ -1,16 +1,16 @@
 import { type BreadcrumbItem, } from '@/types';
-import { Head, Link, } from '@inertiajs/react';
-
+import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import { DataTable } from '@/components/data-table/data-table';
 import { createColumns } from '@/components/courses/course-data-table';
-import { Button } from '@/components/ui/button';
 import { Course } from '@/types/course';
 import { CreateCourse } from '@/components/courses/create-course';
 import { useState } from 'react';
 import { EditCourse } from '@/components/courses/edit-course';
 import { DeleteCourse } from '@/components/courses/delete-course';
+import useFilters from '@/hooks/useFilters';
+import { PaginationData } from '@/types/global';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,9 +19,18 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Courses({ courses }: { courses: [Course] }) {
+interface Props {
+    courses: { data: Course[] };
+    pagination: PaginationData;
+    filters?: {
+        search?: string;
+    };
+}
+
+export default function Courses({ courses, pagination, filters = {} }: Props) {
     const [editingCourse, setEditingCourse] = useState<Course | null>(null);
     const [deletingCourse, setDeletingCourse] = useState<Course | null>(null);
+    const { handleSearch } = useFilters();
 
     const columns = createColumns({
         onEditCourse: (course) => setEditingCourse(course),
@@ -40,9 +49,12 @@ export default function Courses({ courses }: { courses: [Course] }) {
                         <CreateCourse />
                     </div>
                     <DataTable<Course>
-                        data={courses}
+                        data={courses.data}
                         columns={columns}
                         filterKey="name"
+                        pagination={pagination}
+                        searchValue={filters.search || ''}
+                        onSearch={(value) => handleSearch(value, '/courses')}
                     />
                 </div>
 
