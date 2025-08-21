@@ -90,7 +90,6 @@ class CountryController extends Controller
             return redirect()->route('countries.index')
                 ->with('success', 'Pais creado exitosamente.');
 
-                ->with('success', 'Country created successfully.');
         } catch (\Exception $e) {
 
             return redirect()->back()
