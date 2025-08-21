@@ -7,34 +7,83 @@ use App\Models\Country;
 use App\Models\Stake;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
+use App\Enums\MissionStatusEnum;
 use App\Enums\RequestStatusEnum;
 use App\Enums\JobTypeEnum;
 use App\Enums\ReferenceStatusEnum;
 use App\Models\Course;
+use App\Notifications\RequestNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Exception;
+use Illuminate\Validation\ValidationException;
 
 class PreInscriptionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
             $user = Auth::user();
-
+            $isAdmin = $user->hasRole('Administrador');
             $query = PreInscription::query()->with(['country', 'stake'])->orderBy('created_at', 'desc');
 
-            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+            // Búsqueda simple para el frontend
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', '%' . $search . '%')
+                        ->orWhere('middle_name', 'like', '%' . $search . '%')
+                        ->orWhere('last_name', 'like', '%' . $search . '%')
+                        ->orWhere('second_last_name', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%');
+                });
+            }
+
+            if ($user->hasRole('Responsable') && !$isAdmin) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
 
+            $status = $request->input('status') ?? 0;
+            if ($status != 0) {
+                $query->where('status', $status);
+            }
+
+            $responsable = $request->input('responsable');
+            if ($responsable && $isAdmin) {
+                $stakesIds = Stake::where('user_id', $responsable)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $perPage = $request->input('per_page', 10);
+            $page = $request->input('page', 1);
+            $preInscriptions = $query->paginate($perPage, ['*'], 'page', $page);
+
+            $responsables = !$isAdmin ? null :
+                \App\Models\User::role('Responsable')
+                ->get()
+                ->map(fn($u) => [
+                    'id' => $u->id,
+                    'name' => $u->full_name,
+                ])
+                ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
+                ->values()
+                ->toArray();
+
             return Inertia::render('pre-registration/pre-inscription', [
-                'preInscriptions' => $query->get()
+                'preInscriptions' => $preInscriptions,
+                'responsables' => $responsables,
+                'pagination' => [
+                    'current_page' => $preInscriptions->currentPage(),
+                    'per_page' => $preInscriptions->perPage(),
+                    'total' => $preInscriptions->total(),
+                    'last_page' => $preInscriptions->lastPage(),
+                ],
+                'filters' => $request->only(['search', 'status', 'responsable']),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -55,7 +104,6 @@ class PreInscriptionController extends Controller
             return inertia('forms/pre-inscription-form', [
                 'step' => request()->input('step', 0),
                 'countries' => Country::all(),
-                'stakes' => Stake::all(),
                 'courses' => Course::all()
             ]);
         } catch (\Throwable $th) {
@@ -74,6 +122,17 @@ class PreInscriptionController extends Controller
     public function store(Request $request)
     {
         try {
+            // Validación manual del correo
+            $emailCheck = $this->checkEmailPreInscription($request->input('email'));
+            if ($emailCheck['exists']) {
+                $queryParams = array_merge($request->query(), ['step' => 5]);
+                $previousUrl = url()->previous();
+                $previousUrl = preg_replace('/([&?]step=\d+)/', '', $previousUrl);
+                return redirect()->to($previousUrl . '?' . http_build_query($queryParams))
+                    ->withInput()
+                    ->with('success',  $emailCheck['message']);
+            }
+
             $rules = [
                 'first_name' => 'required|string|max:50',
                 'middle_name' => 'nullable|string|max:50',
@@ -82,12 +141,11 @@ class PreInscriptionController extends Controller
                 'gender' => 'required|numeric|in:' . implode(',', GenderEnum::values()),
                 'age' => 'required|numeric|min:18|max:100',
                 'phone' => 'required|string|max:20',
+                'additional_phone' => 'nullable|string|max:20',
                 'email' => 'required|email|max:100|unique:pre_inscriptions',
                 'marital_status' => 'required|numeric|in:' . implode(',', MaritalStatusEnum::values()),
-                'served_mission' => 'required|boolean',
+                'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
                 'status' => 'nullable|numeric|in:' . implode(',', RequestStatusEnum::values()),
-                'comments' => 'nullable|string',
-                'declined_reason' => 'nullable|numeric|in:' . implode(',', ReferenceStatusEnum::values()),
                 'country_id' => 'required|exists:countries,id',
                 'stake_id' => 'required|exists:stakes,id'
             ];
@@ -110,9 +168,7 @@ class PreInscriptionController extends Controller
                 $rules = array_merge($rules, $aditionalRules);
             }
 
-
             $validated = $request->validate($rules);
-
             $preInscription =  PreInscription::create($validated);
 
             $message =  $this->generateMessage(
@@ -130,38 +186,20 @@ class PreInscriptionController extends Controller
 
                 $preInscription->update([
                     'status' => RequestStatusEnum::REJECTED->value,
-                    'declined_reason' => ReferenceStatusEnum::FEMALE->value,
-                    'comments' => 'Pre-inscripción filtrada automáticamente por criterios de género y disponibilidad laboral.',
+                    'declined_reason' => ReferenceStatusEnum::NO_APPLY->value,
+                    'comments' => 'Preinscripción filtrada automáticamente, no cumple con los requisitos.',
                     'modified_by' => 0
                 ]);
             }
+            $stake = Stake::find($validated['stake_id']);
+            $user = $stake->user;
+            $user->notify(new RequestNotification($this->buildReferenceNotification($user, $preInscription)));
 
             return  back()->with('success', $message);
         } catch (Exception $e) {
 
-            // For Inertia requests, return back with error
             return back()->withErrors(['error' => 'Error al crear la pre-inscripción: ' . $e->getMessage()]);
         }
-    }
-
-    /**
-     * Convert country and stake names to IDs if they are strings
-     */
-    private function convertNamesToIds(array $data): array
-    {
-        // Convert country name to ID if it's a string
-        if (isset($data['country_id']) && !is_numeric($data['country_id'])) {
-            $country = Country::where('name', $data['country_id'])->first();
-            $data['country_id'] = $country ? $country->id : 1; // Default to ID 1 if not found
-        }
-
-        // Convert stake name to ID if it's a string
-        if (isset($data['stake_id']) && !is_numeric($data['stake_id'])) {
-            $stake = Stake::where('name', $data['stake_id'])->first();
-            $data['stake_id'] = $stake ? $stake->id : 1; // Default to ID 1 if not found
-        }
-
-        return $data;
     }
 
     /**
@@ -182,43 +220,114 @@ class PreInscriptionController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        try {
+            $preInscription = PreInscription::with(['country', 'stake'])->findOrFail($id);
+
+            return Inertia::render('forms/pre-inscription-edit-form', [
+                'preInscription' => $preInscription,
+                'countries' => Country::all(),
+                'courses' => Course::all()
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('pre-inscription.index')
+                ->withErrors(['error' => 'Error al obtener la pre-inscripción para editar: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
     {
         try {
             $preInscription = PreInscription::findOrFail($id);
-            $validated = $request->validate([
+            $status = (int)$request->input('status');
+
+            $rules = [
                 'status' => 'required|in:' . implode(',', RequestStatusEnum::values()),
-                'declined_reason' => [
-                    'nullable',
-                    'numeric',
-                    function ($attribute, $value, $fail) use ($request) {
-                        if ((int)$request->input('status') === 3 && empty($value)) {
-                            $fail('El campo motivo de rechazo es obligatorio cuando el estatus es 3.');
-                        }
-                    },
-                ],
-                'declined_description' => [
-                    'nullable',
-                    'string',
-                    function ($attribute, $value, $fail) use ($request) {
-                        if ((int)$request->input('status') === 3 && empty($value)) {
-                            $fail('El campo descripción de rechazo es obligatorio cuando el estatus es 3.');
-                        }
-                    },
-                ],
-                'comments' => 'nullable|string',
-            ]);
+            ];
+
+            if ($status !== RequestStatusEnum::APPROVED->value) {
+                $rules['declined_reason'] = 'required|numeric|in:' . implode(',', ReferenceStatusEnum::values());
+
+                $rules['declined_description'] = 'required|string';
+            } else {
+                $rules['declined_description'] = 'nullable|string';
+            }
+
+            $messages = [
+                'declined_reason.in' => 'El motivo es obligatorio para este estado.',
+                'declined_description.required' => 'El campo comentarios es obligatorio.',
+            ];
+            $validated = $request->validate($rules, $messages);
 
             $validated['modified_by'] = Auth::id();
+
+
+            if (isset($validated['status']) && $validated['status'] === RequestStatusEnum::APPROVED->value) {
+                $validated['declined_reason'] = null;
+            }
 
             $preInscription->update($validated);
             $preInscription->save();
 
             return redirect()->back()
                 ->with('success', 'Pre-inscripción actualizada exitosamente');
+        } catch (ValidationException $e) {
+            return back()
+                ->withErrors($e->errors())
+                ->withInput();
         } catch (Exception $e) {
+
+            return redirect()->back()
+                ->withErrors(['error' => $e->getMessage()])
+                ->withInput();
+        }
+    }
+
+    /**
+     * Update the pre-inscription data (not status)
+     */
+    public function updatePreInscription(Request $request, $id)
+    {
+        try {
+            $preInscription = PreInscription::findOrFail($id);
+
+            $rules = [
+                'first_name' => 'required|string|max:50',
+                'middle_name' => 'nullable|string|max:50',
+                'last_name' => 'required|string|max:50',
+                'second_last_name' => 'nullable|string|max:50',
+                'gender' => 'required|numeric|in:' . implode(',', GenderEnum::values()),
+                'age' => 'required|numeric|min:18|max:100',
+                'phone' => 'required|string|max:20',
+                'additional_phone' => 'nullable|string|max:20',
+                'email' => 'required|email|max:100|unique:pre_inscriptions,email,' . $id,
+                'marital_status' => 'required|numeric|in:' . implode(',', MaritalStatusEnum::values()),
+                'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
+                'country_id' => 'required|exists:countries,id',
+                'stake_id' => 'required|exists:stakes,id',
+                'currently_working' => 'nullable|boolean',
+                'job_type_preference' => 'nullable|numeric|in:' . implode(',', JobTypeEnum::values()),
+                'available_full_time' => 'nullable|boolean',
+            ];
+
+            $validated = $request->validate($rules);
+            $validated['modified_by'] = Auth::id();
+
+            $preInscription->update($validated);
+
+            return redirect()->route('pre-inscription.index')
+                ->with('success', 'Pre-inscripción actualizada exitosamente');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
                 ->withInput();
@@ -246,27 +355,185 @@ class PreInscriptionController extends Controller
         }
     }
 
+    /**
+     * Get the pre-inscription dashboard data.
+     */
+    public function dashboard()
+    {
+        try {
+            $user = Auth::user();
+            $query = PreInscription::query()->with(['country', 'stake']);
+
+            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $preInscriptions = $query->get();
+            $total = $preInscriptions->count();
+
+            // General statistics
+            $pending = $preInscriptions->where('status.id', RequestStatusEnum::PENDING->value)->count();
+            $accepted = $preInscriptions->where('status.id', RequestStatusEnum::APPROVED->value)->count();
+            $rejected = $preInscriptions->where('status.id', RequestStatusEnum::REJECTED->value)->count();
+            $acceptancePercentage = $total > 0 ? round(($accepted / $total) * 100, 1) : 0;
+            // Pre-inscriptions this week
+            $newThisWeek = $preInscriptions->where('created_at', '>=', now()->startOfWeek())->count();
+
+            $stats = [
+                'total' => $total,
+                'pending' => $pending,
+                'accepted' => $accepted,
+                'rejected' => $rejected,
+                'acceptancePercentage' => $acceptancePercentage,
+                'newThisWeek' => $newThisWeek,
+            ];
+
+            // Pre-inscriptions by country
+            $preInscriptionsByCountry = $preInscriptions->groupBy('country.name')
+                ->map(function ($group, $country) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'country' => $country ?? 'No Country',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
+            // Pre-inscriptions by stake
+            $preInscriptionsByStake = $preInscriptions->groupBy('stake.name')
+                ->map(function ($group, $stake) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'stake' => $stake ?? 'No Stake',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
+            return Inertia::render('pre-registration/pre-inscriptions-dashboard', [
+                'data' => [
+                    'stats' => $stats,
+                    'preInscriptionsByCountry' => $preInscriptionsByCountry,
+                    'preInscriptionsByStake' => $preInscriptionsByStake
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener el dashboard de pre-inscripciones',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     private function generateMessage($currentlyWorking, $jobTypePreference, $availableFullTime, $gender): array
     {
         $response = [
-            'message' => "Gracias por tu aplicacion, Uno de nuestros representante te estara contactando entre las proximas 24-72 horas para brindarte toda la información del programa.",
+            'message' => __('common.messages.success.preinscription_success'),
             'type' => 'success'
         ];
+
         if ($gender === GenderEnum::FEMALE->value) {
             if ($currentlyWorking) {
-                $response['message'] = "Debido a las capacitaciones intensivas de Funval, el programa está dirigido a personas sin empleo. Si más adelante tienes la necesidad de un empleo no dudes en contactarnos nuevamente.";
+                $response['message'] = __('common.messages.rejections.working');
                 $response['type'] = 'rejected';
             } elseif ($jobTypePreference === JobTypeEnum::OWN_BOSS->value) {
-                $response['message'] = "Excelente, pronto recibirás más información de las organizaciones aliadas con FUNVAL expertas en emprendimiento.";
+                $response['message'] = __('common.messages.rejections.entrepreneur');
                 $response['type'] = 'rejected';
             } elseif ($jobTypePreference === JobTypeEnum::ONLINE->value && !$availableFullTime) {
-                $response['message'] = "FUNVAL tiene alianza con empresas que requieren que las personas trabajen presencialmente. Si en el futuro esta es una opción para ti, contáctanos nuevamente.";
+                $response['message'] = __('common.messages.rejections.online_part_time');
                 $response['type'] = 'rejected';
             } elseif (!$availableFullTime) {
-                $response['message'] = "Debido a la intensidad de los programas de FUNVAL se requiere una conexión continua sin realizar otras actividades durante el programa de capacitación. Si en el futuro tienes esta disponibilidad de tiempo, vuelve a contactarnos.";
+                $response['message'] = __('common.messages.rejections.part_time');
                 $response['type'] = 'rejected';
             }
         }
         return $response;
+    }
+
+    /**
+     * Verifica si el correo ya existe y retorna un mensaje personalizado si aplica.
+     */
+    private function checkEmailPreInscription($email)
+    {
+        $preInscription = PreInscription::where('email', $email)->first();
+        if (!$preInscription) {
+            return ['exists' => false];
+        }
+
+        $statusId = is_array($preInscription->status) ? $preInscription->status["id"] : $preInscription->status;
+        $genderId = is_array($preInscription->gender) ? $preInscription->gender["id"] : $preInscription->gender;
+        $jobTypePref = is_array($preInscription->job_type_preference ?? null) ? $preInscription->job_type_preference["id"] : ($preInscription->job_type_preference ?? null);
+
+        $responsablePhone = optional(optional($preInscription->stake)->user)->contact_phone_1;
+
+        if ($statusId == RequestStatusEnum::PENDING->value) {
+            $message = str_replace('[**]', $responsablePhone, __('common.messages.duplicates.pending'));
+
+            return [
+                'exists' => true,
+                'message' => [
+                    'type' => 'rejected',
+                    'message' => $message
+                ]
+            ];
+        }
+
+        if (
+            $statusId == RequestStatusEnum::REJECTED->value &&
+            $genderId == GenderEnum::FEMALE->value
+        ) {
+            $msg = $this->generateMessage(
+                $preInscription->currently_working,
+                $jobTypePref,
+                $preInscription->available_full_time,
+                $genderId
+            );
+
+            $message = str_replace('[**]', $msg['message'], __('common.messages.duplicates.rejected'));
+
+            return [
+                'exists' => true,
+                'message' => [
+                    'type' => $msg['type'],
+                    'message' => $message
+                ]
+            ];
+        }
+
+        return [
+            'exists' => true,
+            'message' => [
+                'type' => 'rejected',
+                'message' => __('common.messages.error.email_exists')
+            ]
+        ];
+    }
+
+    /**
+     * Get the attributes for the reference notification.
+     */
+    private function buildReferenceNotification($user, $reference): array
+    {
+        return [
+            'greeting' => 'Estimado ' . $user->full_name,
+            'subject' => 'Nueva Preinscripción: ' . $reference->name,
+            'mensaje' => <<<'EOT'
+Te informamos que tienes un nuevo preinscrito pendiente de revisión.
+Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.
+EOT,
+            'salutation' =>  'Atentamente: Sistema Integral de Gestión Educativa FUNVAL',
+            'action' => [
+                'text' => '👉 Ver Preinscripción',
+                'url' => route('pre-inscription.index'),
+            ],
+        ];
     }
 }

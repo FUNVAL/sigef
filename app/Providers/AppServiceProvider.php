@@ -8,12 +8,15 @@ use App\Enums\DocumentTypeEnum;
 use App\Enums\GenderEnum;
 use App\Enums\JobTypeEnum;
 use App\Enums\MaritalStatusEnum;
+use App\Enums\MissionStatusEnum;
 use App\Enums\ReferenceStatusEnum;
 use App\Enums\RelatedReferenceEnum;
 use App\Enums\RequestStatusEnum;
 use App\Enums\StatusEnum;
 use App\Enums\UserStatusEnum;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Schema::defaultStringLength(191);
+
         Inertia::share('enums', function () {
             return [
                 'userStatus' => UserStatusEnum::toArray(),
@@ -39,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
                 'documentType' => DocumentTypeEnum::toArray(),
                 'gender' => GenderEnum::toArray(),
                 'maritalStatus' => MaritalStatusEnum::toArray(),
+                'missionStatus' => MissionStatusEnum::toArray(),
                 'courseModality' => CourseModalityEnum::toArray(),
                 'statusEnum' => StatusEnum::toArray(),
                 'referenceStatus' =>  ReferenceStatusEnum::toArray(),
@@ -46,5 +52,41 @@ class AppServiceProvider extends ServiceProvider
                 'jobType' =>  JobTypeEnum::toArray(),
             ];
         });
+
+        Inertia::share('token', function () {
+            return config('app.public_form_token');
+        });
+
+        Inertia::share([
+            'locale' => function () {
+                return App::getLocale();
+            },
+            'languages' => function () {
+                return [
+                    'es' => 'Español',
+                    'en' => 'English',
+                    'pt' => 'Português',
+                    'ht' => 'Kreyòl'
+                ];
+            },
+            'ui' =>  function () {
+                return __('common.ui');
+            },
+            'welcome_disclaimer' => function () {
+                return __('common.welcome_disclaimer');
+            },
+            'action_selection' => function () {
+                return __('common.action_selection');
+            },
+            'forms' => function () {
+                return __('common.forms');
+            },
+            'message_step' => function () {
+                return __('common.message_step');
+            },
+            'stepper' => function () {
+                return __('common.stepper');
+            },
+        ]);
     }
 }

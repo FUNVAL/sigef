@@ -15,6 +15,7 @@ type CompleteDialogProps = {
     btnLabel: string;
     dialogTitle: string;
     dialogDescription: string;
+    contentClassName?: string;
     icon?: React.ReactNode;
     isSubmitting?: boolean;
     onSubmit?: (e: React.FormEvent<HTMLFormElement>) => Promise<void> | void;
@@ -72,6 +73,7 @@ export function CompleteDialog({
     dialogDescription,
     children,
     icon,
+    contentClassName,
     isSubmitting = false,
     onSubmit,
     onSuccess,
@@ -90,9 +92,9 @@ export function CompleteDialog({
                     {btnLabel}
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[525px]">
+            <DialogContent className={contentClassName}>
                 <DialogHeader>
-                    <DialogTitle>{dialogTitle}</DialogTitle>
+                    <DialogTitle className="text-2xl leading-3 pt-4">{dialogTitle}</DialogTitle>
                     <DialogDescription>
                         {dialogDescription}
                     </DialogDescription>

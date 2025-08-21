@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\CourseModalityEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
+use App\Enums\MissionStatusEnum;
+use App\Enums\ReferenceStatusEnum;
 use App\Enums\RequestStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,6 +30,7 @@ class PreInscription extends Model
         'gender',
         'age',
         'phone',
+        'additional_phone',
         'email',
         'marital_status',
         'served_mission',
@@ -35,11 +38,16 @@ class PreInscription extends Model
         'job_type_preference',
         'available_full_time',
         'status',
-        'comments',
         'declined_reason',
+        'declined_description',
         'modified_by',
         'country_id',
         'stake_id',
+    ];
+
+    protected $casts = [
+        'currently_working' => 'boolean',
+        'available_full_time' => 'boolean',
     ];
 
     public function country(): BelongsTo
@@ -72,6 +80,11 @@ class PreInscription extends Model
         return RequestStatusEnum::fromId($this->attributes['status'] ?? null);
     }
 
+    public function getServedMissionAttribute(): ?array
+    {
+        return MissionStatusEnum::fromId($this->attributes['served_mission'] ?? null);
+    }
+
     public function getModifiedByAttribute(): ?string
     {
         $value = $this->attributes['modified_by'];
@@ -80,5 +93,13 @@ class PreInscription extends Model
         }
         $user =  User::find($value);
         return $user ? $user->fullname : null;
+    }
+
+    public function getDeclinedReasonAttribute(): ?array
+    {
+        if (is_null($this->attributes['declined_reason'])) {
+            return null;
+        }
+        return ReferenceStatusEnum::fromId($this->attributes['declined_reason']);
     }
 }

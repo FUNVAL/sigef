@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Country;
+use App\Models\Stake;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role as ModelsRole;
 
@@ -12,12 +14,35 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-
         try {
+            $query = User::query();
+
+            // Búsqueda simple para el frontend
+            if ($request->has('search')) {
+                $query->where('email', 'like', '%' . $request->search . '%')
+                    ->orWhere('firstname', 'like', '%' . $request->search . '%')
+                    ->orWhere('lastname', 'like', '%' . $request->search . '%');
+            }
+
+            // Solo mostrar usuarios activos
+            $query->where('status', '!=', 'inactivo');
+
+            // Paginación
+            $perPage = $request->input('per_page', 10);
+            $page = $request->input('page', 1);
+            $users = $query->orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
             return Inertia::render('access-control/users/index', [
-                'users' => User::where('status', '!=', 'inactivo')->get(),
+                'users' => $users,
+                'pagination' => [
+                    'current_page' => $users->currentPage(),
+                    'per_page' => $users->perPage(),
+                    'total' => $users->total(),
+                    'last_page' => $users->lastPage(),
+                ],
+                'filters' => $request->only(['search'])
             ]);
         } catch (\Exception $e) {
             return redirect()->back()
@@ -142,5 +167,28 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Show the form for assigning stakes to a user.
+     */
+    public function assignStakes(int $id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $countries = Country::all();
+
+            $userStakes = $user->stakes->pluck('id')->toArray();
+
+            return Inertia::render('access-control/users/asign-stakes', [
+                'countries' => $countries,
+                'userId' => $id,
+                'userName' => $user->fullname,
+                'userStakes' => $userStakes,
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => 'Failed to load assign stakes page: ' . $e->getMessage()]);
+        }
     }
 }

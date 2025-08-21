@@ -4,6 +4,7 @@ import { Header } from '../../components/pre-registration/Header';
 import { StepIndicator } from '../../components/pre-registration/StepIndicator';
 import FormFooter from '@/components/form-footer';
 import { Stepper } from '@/types/global';
+import { useAppearance } from '@/hooks/use-appearance';
 
 export const StepperContext = React.createContext<{
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
@@ -24,7 +25,7 @@ export default function StepperProvider({ steps }: { steps: Stepper[] }) {
     }
     return 0;
   };
-
+  const { updateAppearance } = useAppearance();
   const [currentStep, setCurrentStep] = useState<number>(getStepFromUrl);
   const isInitialMount = useRef(true);
   const component = steps[currentStep]?.component;
@@ -71,6 +72,10 @@ export default function StepperProvider({ steps }: { steps: Stepper[] }) {
       setCurrentStep(currentStep - 1);
     }
   }, [currentStep]);
+
+  useEffect(() => {
+    updateAppearance('light');
+  }, [])
 
   return (
     <StepperContext.Provider value={{ setCurrentStep, nextStep, previousStep }}>

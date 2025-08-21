@@ -1,14 +1,16 @@
 import { type BreadcrumbItem, } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
-
+import { Head, usePage, router } from '@inertiajs/react';
+import { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { DataTable } from '@/components/data-table/data-table';
-import { columns } from '@/components/pre-registration/references-data-table';
+import { createColumns } from '@/components/pre-registration/references-data-table';
 import { Reference } from '@/types/reference';
-import ReferencesLayout from '@/layouts/references/layout';
-import { MenuOption } from '@/components/globals/appbar';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import referencesNavItems from '@/lib/consts/referencesNavItems';
+import ReferenceReview from '@/components/pre-registration/reference-review';
+import FilterBar from '@/components/data-table/table-filters';
+import { PaginationData } from '@/types/global';
+import useFilters from '@/hooks/useFilters';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -17,23 +19,48 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function References({ references }: { references: Reference[] }) {
-    const { auth } = usePage().props;
-    console.log('References Page', auth);
+
+interface ReferencesProps {
+    references: { data: Reference[] };
+    pagination: PaginationData;
+    filters?: {
+        search?: string;
+    };
+}
+
+export default function References({ references, pagination, filters = {} }: ReferencesProps) {
+    const [editingReference, seteditingReference] = useState<Reference | null>(null);
+    const { handleSearch } = useFilters();
+
+    const columns = createColumns({
+        onEditReference: (reference) => seteditingReference(reference),
+    });
+
     return (
         <AppLayout breadcrumbs={breadcrumbs} menuOptions={referencesNavItems}>
-            <Head title="Cursos" />
+            <Head title="Referencias" />
             <AccessControlLayout headings={{
                 title: 'Lista de Referencias',
                 description: 'Aquí puedes ver todos las referencias que has recibido.',
             }}>
                 <div className="space-y-6 w-full flex flex-col">
                     <DataTable<Reference>
-                        data={references}
+                        data={references.data}
                         columns={columns}
                         filterKey="name"
+                        FilterBar={FilterBar}
+                        pagination={pagination}
+                        searchValue={filters.search || ''}
+                        onSearch={(value) => handleSearch(value, '/references')}
                     />
 
+                    {editingReference && (
+                        <ReferenceReview
+                            reference={editingReference}
+                            open={!!editingReference}
+                            onOpenChange={(open) => !open && seteditingReference(null)}
+                        />
+                    )}
                 </div>
             </AccessControlLayout>
         </AppLayout>

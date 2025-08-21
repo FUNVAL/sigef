@@ -1,5 +1,6 @@
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
+import { Roles } from './roles';
 
 export interface Auth {
     user: User;
@@ -49,7 +50,7 @@ export interface User {
     contact_phone_1: string;
     contact_phone_2: string;
     permissions: string[];
-    roles: { id: number, name: string }[];
+    roles: Roles[];
     user_permissions: string[];
     user_roles: string[];
     status: {
@@ -57,3 +58,12 @@ export interface User {
         name: string;
     };
 }
+
+// Re-exportaciones de tipos centralizados
+export * from './common';
+export * from './dashboard';
+export * from './pre-inscription';
+export * from './reference';
+export * from './course';
+export * from './country';
+export * from './stake';

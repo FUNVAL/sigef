@@ -11,12 +11,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
-import TextLink from "../text-link";
 import { Course } from "@/types/course";
-import { EditCourse } from "./edit-course";
-import { DeleteCourse } from "./delete-course";
 
-export const columns: ColumnDef<Course>[] = [
+interface CourseDataTableProps {
+    onEditCourse?: (course: Course) => void;
+    onDeleteCourse?: (course: Course) => void;
+}
+
+export const createColumns = ({ onEditCourse, onDeleteCourse }: CourseDataTableProps): ColumnDef<Course>[] => [
     {
         id: "select",
         header: ({ table }) => (
@@ -40,8 +42,8 @@ export const columns: ColumnDef<Course>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "name",
-        header: "Nombre del referido",
+        accessorKey: "Nombre del curso",
+        header: "Nombre del curso",
         cell: ({ row }) => {
             const course = row.original;
             return (
@@ -52,7 +54,7 @@ export const columns: ColumnDef<Course>[] = [
         },
     },
     {
-        accessorKey: "duration",
+        accessorKey: "Duración",
         header: "Duración",
         cell: ({ row }) => {
             const course = row.original;
@@ -66,7 +68,7 @@ export const columns: ColumnDef<Course>[] = [
         },
     },
     {
-        accessorKey: "modality.name",
+        accessorKey: "Modalidad",
         header: "Modalidad",
         cell: ({ row }) => {
             const course = row.original;
@@ -80,7 +82,7 @@ export const columns: ColumnDef<Course>[] = [
         },
     },
     {
-        accessorKey: "status",
+        accessorKey: "Estado",
         header: "Estado",
         cell: ({ row }) => {
             const course = row.original;
@@ -114,16 +116,15 @@ export const columns: ColumnDef<Course>[] = [
                             Copy ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                            <EditCourse course={course} />
+                        <DropdownMenuItem onClick={() => onEditCourse?.(course)}>
+                            Editar
                         </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <DeleteCourse course={course} />
+                        <DropdownMenuItem onClick={() => onDeleteCourse?.(course)}>
+                            Eliminar
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
         },
     },
-
-] 
+]

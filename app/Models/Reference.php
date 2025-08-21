@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\GenderEnum;
 use App\Enums\ReferenceStatusEnum;
+use App\Enums\RelatedReferenceEnum;
 use App\Enums\RequestStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,10 +23,12 @@ class Reference extends Model
         'stake_id',
         'status',
         'declined_reason',
+        'declined_description',
         'referrer_name',
         'referrer_phone',
         'relationship_with_referred',
         'modifier_id',
+        'age',
     ];
 
     protected $hidden = [
@@ -68,6 +71,11 @@ class Reference extends Model
             return null;
         }
         return ReferenceStatusEnum::fromId($this->attributes['declined_reason']);
+    }
+
+    public function getRelationshipWithReferredAttribute(): ?array
+    {
+        return RelatedReferenceEnum::fromId($this->attributes['relationship_with_referred']);
     }
 
     public function getCountryAttribute()

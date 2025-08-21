@@ -37,7 +37,7 @@ export const columns: ColumnDef<User>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "fullname",
+        accessorKey: "Nombre completo",
         header: "Nombre completo",
         cell: ({ row }) => {
             const user = row.original;
@@ -49,7 +49,7 @@ export const columns: ColumnDef<User>[] = [
         },
     },
     {
-        accessorKey: "email",
+        accessorKey: "Email",
         header: "Email",
         cell: ({ row }) => {
             const user = row.original;
@@ -61,7 +61,7 @@ export const columns: ColumnDef<User>[] = [
         },
     },
     {
-        accessorKey: "roles",
+        accessorKey: "Roles",
         header: "Roles",
         cell: ({ row }) => {
             const user = row.original;
@@ -73,7 +73,7 @@ export const columns: ColumnDef<User>[] = [
         },
     },
     {
-        accessorKey: "document_number",
+        accessorKey: "No. documento",
         header: "No. documento",
         cell: ({ row }) => {
             const user = row.original;
@@ -85,7 +85,7 @@ export const columns: ColumnDef<User>[] = [
         },
     },
     {
-        accessorKey: "contact_phone_1",
+        accessorKey: "Teléfono",
         header: "Teléfono",
         cell: ({ row }) => {
             const user = row.original;
@@ -97,7 +97,7 @@ export const columns: ColumnDef<User>[] = [
         },
     },
     {
-        accessorKey: "status.name",
+        accessorKey: "Estado",
         header: "Estado",
         cell: ({ row }) => {
             const user = row.original;
@@ -136,10 +136,21 @@ export const columns: ColumnDef<User>[] = [
                                 Editar
                             </TextLink>
                         </DropdownMenuItem>
+                        {user.roles.some(role => role.name === "Responsable") && (
+                            <DropdownMenuItem>
+                                <TextLink
+                                    href={route('users.assign-stakes', user.id)}
+                                    className="flex items-center space-x-2"
+                                    onClick={() => console.log('Navigating to:', route('users.assign-stakes', user.id))}
+                                >
+                                    Asignar Estacas
+                                </TextLink>
+                            </DropdownMenuItem>
+                        )}
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
         },
     },
 
-] 
+]

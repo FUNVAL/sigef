@@ -7,71 +7,74 @@ import { Reference } from '../../types/reference';
 
 
 const ReferenceOverview = ({ reference }: { reference: Reference }) => {
+
     return (
         <CompleteDialog
             btnLabel="Ver Detalles"
             dialogTitle="Detalles de la Referencia"
             dialogDescription="Aquí puedes ver los detalles completos de la referencia seleccionada."
             icon={<Eye className="w-4 h-4" />}
+            contentClassName='md:max-w-3xl'
         >
-            <div className="grid gap-6 py-4 max-h-[80vh] overflow-y-auto">
+            <div className="grid gap-6 p-4 max-h-[80vh] overflow-y-auto">
 
                 <Card className="border-blue-200">
                     <CardHeader className="bg-transparent">
-                        <CardTitle className="text-lg text-blue-700 dark:text-blue-300">
+                        <CardTitle className="text-lg text-blue-800 dark:text-blue-500">
                             Persona Referida
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-1">
+                    <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Nombre Completo
+                                <Label className="font-bold font-mono text-lg text-blue-00 dark:text-blue-100">
+                                    Nombre Completo:
                                 </Label>
-                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {reference.name}
                                 </p>
                             </div>
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Género
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Género:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {reference.gender.name}
                                 </p>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Edad</Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Edad:
+                                </Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {reference.age} años
                                 </p>
                             </div>
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    País
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    País:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {reference.country.name}
                                 </p>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Teléfono
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Teléfono:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {reference.phone}
                                 </p>
                             </div>
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Estaca
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Estaca:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {reference.stake.name}
                                 </p>
                             </div>
@@ -82,33 +85,34 @@ const ReferenceOverview = ({ reference }: { reference: Reference }) => {
                 {/* Información del Referente */}
                 <Card className="border-blue-200">
                     <CardHeader className="bg-transparent">
-                        <CardTitle className="text-lg text-blue-700 dark:text-blue-300">
+                        <CardTitle className="text-lg text-blue-800 dark:text-blue-500">
                             Información del Referente
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-1">
+                    <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Nombre Completo
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Nombre Completo:
                                 </Label>
-                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {reference.referrer_name}
                                 </p>
                             </div>
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Teléfono
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Teléfono:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {reference.referrer_phone}
                                 </p>
                             </div>
                         </div>
                         <div>
-                            <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                Relación con la persona referida</Label>
-                            <p className="text-sm text-gray-900 dark:text-gray-100">
+                            <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                Relación con la persona referida:
+                            </Label>
+                            <p className="block text-sm text-gray-900 dark:text-gray-100">
                                 {reference.relationship_with_referred.name}
                             </p>
                         </div>
@@ -118,22 +122,22 @@ const ReferenceOverview = ({ reference }: { reference: Reference }) => {
                 {/* Estado y Seguimiento */}
                 <Card className="border-blue-200">
                     <CardHeader className="bg-transparent">
-                        <CardTitle className="text-lg text-blue-700 dark:text-blue-300">
+                        <CardTitle className="text-lg text-blue-800 dark:text-blue-500">
                             Estado y Seguimiento
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-1">
+                    <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                    Fecha de Creación
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Fecha de Creación:
                                 </Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {reference.created_at ? new Date(reference.created_at).toLocaleDateString() : 'N/A'}
                                 </p>
                             </div>
                             <div className="flex flex-col">
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-gray-300">
                                     Estado Actual
                                 </Label>
                                 <Badge
@@ -158,8 +162,10 @@ const ReferenceOverview = ({ reference }: { reference: Reference }) => {
                         </div>
                         {reference.declined_reason && (
                             <div>
-                                <Label className="text-sm font-medium text-gray-600 dark:text-gray-300">Razón del Rechazo</Label>
-                                <p className="text-sm text-gray-900 dark:text-gray-100">
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    Razón del Estado
+                                </Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">
                                     {reference.declined_reason.name}
                                 </p>
                             </div>

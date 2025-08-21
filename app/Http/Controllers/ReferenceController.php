@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\StatusEnum;
+use App\Enums\ReferenceStatusEnum;
+use App\Enums\RequestStatusEnum;
 use App\Models\Country;
 use App\Models\Reference;
 use Illuminate\Http\Request;
@@ -10,24 +11,71 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 use App\Models\Stake;
+use App\Notifications\RequestNotification;
+
+use App\Models\User;
+use Illuminate\Validation\ValidationException;
 
 class ReferenceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
             $user = Auth::user();
+            $isAdmin = $user->hasRole('Administrador');
             $query = Reference::query()->with(['country', 'stake', 'modifier'])->orderBy('created_at', 'desc');
 
-            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                });
+            }
+
+            if ($user->hasRole('Responsable') && !$isAdmin) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
-            return  Inertia::render('pre-registration/references', [
-                'references' => $query->get()
+
+            $status = $request->input('status') ?? 0;
+            if ($status != 0) {
+                $query->where('status', $status);
+            }
+
+            $responsable = $request->input('responsable');
+            if ($responsable && $isAdmin) {
+                $stakesIds = Stake::where('user_id', $responsable)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $perPage = $request->input('per_page', 10);
+            $page = $request->input('page', 1);
+            $references = $query->paginate($perPage, ['*'], 'page', $page);
+
+            $responsables = !$isAdmin ? null :
+                User::role('Responsable')
+                ->get()
+                ->map(fn($u) => [
+                    'id' => $u->id,
+                    'name' => $u->full_name,
+                ])
+                ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
+                ->values()
+                ->toArray();
+
+            return Inertia::render('pre-registration/references', [
+                'references' => $references,
+                'responsables' => $responsables,
+                'pagination' => [
+                    'current_page' => $references->currentPage(),
+                    'per_page' => $references->perPage(),
+                    'total' => $references->total(),
+                    'last_page' => $references->lastPage(),
+                ],
+                'filters' => $request->only(['search', 'status', 'responsable']),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -45,8 +93,7 @@ class ReferenceController extends Controller
     {
         return  Inertia::render('forms/reference-form', [
             'step' => request()->input('step', 0),
-            'countries' => Country::all(),
-            'stakes' => Stake::all(),
+            'countries' => Country::all()
         ]);
     }
 
@@ -68,12 +115,16 @@ class ReferenceController extends Controller
                 'relationship_with_referred' => 'nullable|numeric',
             ]);
 
-            Reference::create($validated);
+            $reference = Reference::create($validated);
 
             $message =  [
                 'type' => 'success',
-                'message' => "Gracias por tu referencia, Uno de nuestros representante estara contactando a tu referido entre las proximas 24-72 horas para brindarle toda la información del programa."
+                'message' =>  __('common.messages.success.reference_success'),
             ];
+
+            $stake = Stake::find($validated['stake_id']);
+            $user = $stake->user;
+            $user->notify(new RequestNotification($this->buildReferenceNotification($user, $reference)));
 
             return  back()->with('success', $message);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -84,7 +135,6 @@ class ReferenceController extends Controller
                 ->withInput();
         } catch (\Exception $e) {
             return back()
-                ->with(['step' => 2])
                 ->withErrors(['error' => $e->getMessage()])
                 ->withInput();
         }
@@ -112,19 +162,18 @@ class ReferenceController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Reference $reference): JsonResponse
+    public function edit($id)
     {
         try {
-            return response()->json([
-                'success' => true,
-                'data' => $reference
+            $reference = Reference::with(['country', 'stake'])->findOrFail($id);
+
+            return Inertia::render('forms/reference-edit-form', [
+                'reference' => $reference,
+                'countries' => Country::all()
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al obtener la referencia para editar',
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('references.index')
+                ->withErrors(['error' => 'Error al obtener la referencia para editar: ' . $e->getMessage()]);
         }
     }
 
@@ -135,30 +184,29 @@ class ReferenceController extends Controller
     {
         try {
             $reference = Reference::findOrFail($id);
-            $validated = $request->validate(
-                [
-                    'status' => 'required|in:' . implode(',', StatusEnum::values()),
-                    'declined_reason' => [
-                        'nullable',
-                        'numeric',
-                        function ($attribute, $value, $fail) use ($request) {
-                            if ((int)$request->input('status') === 3 && empty($value)) {
-                                $fail('El campo motivo de rechazo es obligatorio cuando el estatus es 3.');
-                            }
-                        },
-                    ],
-                    'declined_description' => [
-                        'nullable',
-                        'string',
-                        function ($attribute, $value, $fail) use ($request) {
-                            if ((int)$request->input('status') === 3 && empty($value)) {
-                                $fail('El campo descripción de rechazo es obligatorio cuando el estatus es 3.');
-                            }
-                        },
-                    ],
+            $status = (int)$request->input('status');
 
-                ]
-            );
+            $rules = [
+                'status' => 'required|in:' . implode(',', RequestStatusEnum::values()),
+            ];
+
+            if ($status !== RequestStatusEnum::APPROVED->value) {
+                $rules['declined_reason'] = 'required|numeric|in:' . implode(',', ReferenceStatusEnum::values());
+
+                $rules['declined_description'] = 'required|string';
+            } else {
+                $rules['declined_description'] = 'nullable|string';
+            }
+
+            $messages = [
+                'declined_reason.in' => 'El motivo es obligatorio para este estado.',
+                'declined_description.required' => 'El campo comentarios es obligatorio.',
+            ];
+            $validated = $request->validate($rules, $messages);
+
+            if (isset($validated['status']) && $validated['status'] === RequestStatusEnum::APPROVED->value) {
+                $validated['declined_reason'] = null;
+            }
 
             $validated['modifier_id'] = Auth::id();
 
@@ -166,6 +214,47 @@ class ReferenceController extends Controller
             $reference->save();
             return redirect()->back()
                 ->with('success', 'Referencia actualizada exitosamente');
+        } catch (ValidationException $e) {
+            return back()
+                ->withErrors($e->errors())
+                ->withInput();
+        } catch (\Exception $e) {
+            return back()
+                ->withErrors(['error' => $e->getMessage()])
+                ->withInput();
+        }
+    }
+
+    /**
+     * Update the reference data (not status)
+     */
+    public function updateReference(Request $request, $id)
+    {
+        try {
+            $reference = Reference::findOrFail($id);
+
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'gender' => 'required|integer',
+                'age' => 'required|integer|min:18|max:120',
+                'country_id' => 'required|exists:countries,id',
+                'phone' => 'nullable|string|max:20',
+                'stake_id' => 'required|exists:stakes,id',
+                'referrer_name' => 'nullable|string|max:255',
+                'referrer_phone' => 'nullable|string|max:20',
+                'relationship_with_referred' => 'nullable|numeric',
+            ]);
+
+            $validated['modifier_id'] = Auth::id();
+
+            $reference->update($validated);
+
+            return redirect()->route('references.index')
+                ->with('success', 'Referencia actualizada exitosamente');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
@@ -212,9 +301,9 @@ class ReferenceController extends Controller
             $total = $references->count();
 
             // General statistics
-            $pending = $references->where('status.id', 1)->count();
-            $accepted = $references->where('status.id', 2)->count();
-            $rejected = $references->where('status.id', 3)->count();
+            $pending = $references->where('status.id', RequestStatusEnum::PENDING->value)->count();
+            $accepted = $references->where('status.id', RequestStatusEnum::APPROVED->value)->count();
+            $rejected = $references->where('status.id', RequestStatusEnum::REJECTED->value)->count();
             $acceptancePercentage = $total > 0 ? round(($accepted / $total) * 100, 1) : 0;
 
             // References this week
@@ -257,7 +346,7 @@ class ReferenceController extends Controller
                 ->values()
                 ->toArray();
 
-            return Inertia::render('dashboard', [
+            return Inertia::render('pre-registration/references-dashboard', [
                 'data' => [
                     'stats' => $stats,
                     'referencesByCountry' => $referencesByCountry,
@@ -272,5 +361,25 @@ class ReferenceController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Get the attributes for the reference notification.
+     */
+    private function buildReferenceNotification($user, $reference): array
+    {
+        return [
+            'greeting' => 'Estimado ' . $user->full_name,
+            'subject' => 'Nueva Referencia: ' . $reference->name,
+            'mensaje' => <<<'EOT'
+Te informamos que tienes un nuevo referido pendiente de revisión.
+Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.
+EOT,
+            'salutation' =>  'Atentamente: Sistema Integral de Gestión Educativa FUNVAL',
+            'action' => [
+                'text' => '👉 Ver Referencias',
+                'url' => route('references.index'),
+            ],
+        ];
     }
 }

@@ -1,5 +1,4 @@
 import * as React from "react"
-
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -8,13 +7,12 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 
 import { ChevronDown } from "lucide-react"
-
+import { router } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -32,17 +30,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { PaginationData } from "@/types/global"
 
 interface DataTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, any>[];
   filterKey: string;
+  FilterBar?: React.FC | React.ComponentType | null;
+  pagination: PaginationData;
+  searchValue?: string;
+  onSearch?: (value: string) => void;
 }
 
 export function DataTable<TData>({
   data,
   columns,
-  filterKey
+  filterKey,
+  FilterBar,
+  pagination,
+  searchValue = "",
+  onSearch
 }: DataTableProps<TData>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -50,13 +57,29 @@ export function DataTable<TData>({
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
+  // Establecer el valor inicial del filtro desde props
+  React.useEffect(() => {
+    if (filterKey && searchValue) {
+      setColumnFilters(prevFilters => {
+        const filterExists = prevFilters.some(filter => filter.id === filterKey);
+
+        if (filterExists) {
+          return prevFilters.map(filter =>
+            filter.id === filterKey ? { ...filter, value: searchValue } : filter
+          );
+        } else {
+          return [...prevFilters, { id: filterKey, value: searchValue }];
+        }
+      });
+    }
+  }, [searchValue, filterKey]);
+
   const table = useReactTable({
     data,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -69,21 +92,47 @@ export function DataTable<TData>({
     },
   })
 
+  // Manejar cambio de página
+  const handlePageChange = (page: number) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', page.toString());
+
+    router.get(url.pathname + url.search, {}, {
+      preserveState: true,
+      preserveScroll: true,
+    });
+  }
+
+  // Estado local para el valor del input de búsqueda
+  const [localSearch, setLocalSearch] = React.useState(searchValue);
+
+  // Actualizar el filtro localmente y ejecutar búsqueda solo con Enter
+  const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      table.getColumn(filterKey)?.setFilterValue(localSearch);
+      if (onSearch) {
+        onSearch(localSearch);
+      }
+    }
+  };
+
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder={`Filter by ${filterKey}...`}
-          value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(filterKey)?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+      <div className="flex items-center justify-between py-4 gap-4">
+        <div className="flex items-center gap-4 flex-1">
+          <Input
+            placeholder={`Buscar... (presiona Enter)`}
+            value={localSearch}
+            onChange={e => setLocalSearch(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
+            className="max-w-sm"
+          />
+          {FilterBar && <FilterBar />}
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
+            <Button variant="outline">
+              Columnas <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -159,27 +208,38 @@ export function DataTable<TData>({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {pagination ? (
+            `Mostrando ${data.length} de ${pagination.total} resultados`
+          ) : (
+            `Mostrando ${data.length} resultados`
+          )}
+          {table.getFilteredSelectedRowModel().rows.length > 0 &&
+            ` (${table.getFilteredSelectedRowModel().rows.length} seleccionadas)`
+          }
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+        {pagination && (
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(pagination.current_page - 1)}
+              disabled={pagination.current_page <= 1}
+            >
+              Previous
+            </Button>
+            <span className="mx-2">
+              Página {pagination.current_page} de {pagination.last_page}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(pagination.current_page + 1)}
+              disabled={pagination.current_page >= pagination.last_page}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
