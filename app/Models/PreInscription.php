@@ -45,6 +45,11 @@ class PreInscription extends Model
         'stake_id',
     ];
 
+    protected $casts = [
+        'currently_working' => 'boolean',
+        'available_full_time' => 'boolean',
+    ];
+
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);

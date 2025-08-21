@@ -45,8 +45,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
         }
     }, [back_errors]);
 
-    const isWoman = data.gender === 2; // Assuming 2 is FEMALE
-
+    const isWoman = data.gender === 2;
     return (
         <div className="mx-auto w-full max-w-4xl space-y-6">
             <form onSubmit={handleSubmit} noValidate>
@@ -316,7 +315,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                                         ¿Trabaja actualmente?
                                     </Label>
                                     <Select
-                                        value={data.currently_working?.toString() || ''}
+                                        value={data.currently_working === null ? '' : data.currently_working?.toString()}
                                         onValueChange={(value) => setData('currently_working', value === 'true')}
                                         name="currently_working"
                                     >
@@ -324,7 +323,6 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                                             <SelectValue placeholder="¿Trabaja actualmente?" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="">Selecciona una opción</SelectItem>
                                             <SelectItem value="true">Sí</SelectItem>
                                             <SelectItem value="false">No</SelectItem>
                                         </SelectContent>
@@ -360,7 +358,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                                     </div>
                                 )}
 
-                                {data.job_type_preference === 1 && ( // IN_PERSON
+                                {data.job_type_preference === 2 && ( // IN_PERSON
                                     <div>
                                         <Label htmlFor="available_full_time" className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
                                             ¿Disponible tiempo completo?
@@ -374,7 +372,6 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                                                 <SelectValue placeholder="¿Disponible tiempo completo?" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="">Selecciona una opción</SelectItem>
                                                 <SelectItem value="true">Sí</SelectItem>
                                                 <SelectItem value="false">No</SelectItem>
                                             </SelectContent>
