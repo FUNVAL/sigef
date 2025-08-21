@@ -145,7 +145,7 @@ class CountryController extends Controller
             $country->save();
 
             return redirect()->route('countries.index')
-                ->with('success', 'Country deleted successfully.');
+                ->with('success', 'Pais eliminado exitosamente.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => 'Failed to delete country: ' . $e->getMessage()]);
