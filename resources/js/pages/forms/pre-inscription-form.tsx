@@ -9,7 +9,7 @@ import { Course } from '@/types/course';
 import { Stepper, Translation } from '@/types/global';
 import { PreRegistrationFormData } from '@/types/pre-inscription';
 import { Stake } from '@/types/stake';
-import { useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { useMemo } from 'react';
 import StepperProvider from './stepper-provider';
 
@@ -29,19 +29,17 @@ const PreInscriptionForm = ({ countries, courses }: PreInscriptionFormProps) => 
             type: 'disclaimer' | 'form' | 'femaleFilter' | 'courses' | 'message' | 'resumen';
             show: boolean;
         }> = [
-            { title: stepper.conditions, type: 'disclaimer', show: true },
-            { title: stepper.form, type: 'form', show: true },
-            { title: stepper.requirements, type: 'femaleFilter', show: Number(request.data.gender) === 2 },
-            { title: stepper.courses, type: 'courses', show: true },
-            { title: stepper.overview, type: 'resumen', show: true },
-            { title: stepper.confirmation, type: 'message', show: true },
-        ];
+                { title: stepper.conditions, type: 'disclaimer', show: true },
+                { title: stepper.form, type: 'form', show: true },
+                { title: stepper.requirements, type: 'femaleFilter', show: Number(request.data.gender) === 2 },
+                { title: stepper.courses, type: 'courses', show: true },
+                { title: stepper.overview, type: 'resumen', show: true },
+                { title: stepper.confirmation, type: 'message', show: true },
+            ];
 
-        // Filter out steps that shouldn't be shown
         return steps.filter((step) => step.show);
     }, [request.data.gender, stepper]);
 
-    // Create the actual Stepper components with current props when rendering
     const steps: Stepper[] = stepStructure.map((step) => {
         let component;
 
@@ -72,7 +70,12 @@ const PreInscriptionForm = ({ countries, courses }: PreInscriptionFormProps) => 
         };
     });
 
-    return <StepperProvider steps={steps} />;
+    return (
+        <>
+            <Head title="Pre-Inscription Form" />
+            <StepperProvider steps={steps} />
+        </>
+    );
 };
 
 export default PreInscriptionForm;
