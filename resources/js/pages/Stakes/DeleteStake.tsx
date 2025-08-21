@@ -23,8 +23,8 @@ export function DeleteStake({ stake, open, onOpenChange }: { stake: Stake; open:
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[525px]">
                 <DialogHeader>
-                    <DialogTitle>Eliminar Stake</DialogTitle>
-                    <DialogDescription>¿Estás seguro de eliminar "{stake.name}"? Esta acción marcará el stake como eliminado.</DialogDescription>
+                    <DialogTitle>Eliminar Estaca</DialogTitle>
+                    <DialogDescription>¿Estás seguro de eliminar <strong className='text-gray-800'>"{stake.name}"</strong>? Esta acción marcará la estaca como eliminada.</DialogDescription>
                 </DialogHeader>
                 <div className="mt-6 flex justify-end gap-4">
                     <Button type="button" variant="outline" disabled={processing} onClick={() => onOpenChange(false)}>

@@ -43,7 +43,7 @@ export function EditStake({ stake, countries, users, open, onOpenChange }: EditS
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[525px]">
                 <DialogHeader>
-                    <DialogTitle>Editar Stake</DialogTitle>
+                    <DialogTitle>Editar Estaca</DialogTitle>
                     <DialogDescription>Modifique los campos que desea actualizar.</DialogDescription>
                 </DialogHeader>
 
@@ -57,7 +57,7 @@ export function EditStake({ stake, countries, users, open, onOpenChange }: EditS
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
-                                placeholder="Nombre del Stake"
+                                placeholder="Nombre de la estaca"
                             />
                             <InputError message={errors.name} />
                         </div>
@@ -82,7 +82,7 @@ export function EditStake({ stake, countries, users, open, onOpenChange }: EditS
 
                         {/* Usuario */}
                         <div className="grid gap-2">
-                            <Label htmlFor="user_id">Responsable</Label>
+                            <Label htmlFor="user_id">Cambiar Responsable</Label>
                             <Select value={data.user_id} onValueChange={(value) => setData('user_id', value)}>
                                 <SelectTrigger id="user_id">
                                     <SelectValue placeholder="Seleccione un usuario" />

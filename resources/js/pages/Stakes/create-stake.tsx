@@ -20,7 +20,6 @@ export function CreateStake({ countries, users }: CreateStakeProps) {
     const { enums } = usePage<{ enums: Enums }>().props;
     const [open, setOpen] = useState(false);
 
-    // Encontrar el estado activo por defecto (normalmente id: 1)
     const activeStatus = enums.statusEnum.find((status) => status.id === 1)?.id || 1;
 
     const { data, setData, post, processing, reset, errors } = useForm({
@@ -45,12 +44,12 @@ export function CreateStake({ countries, users }: CreateStakeProps) {
             <DialogTrigger asChild>
                 <Button className="ml-auto" variant="link">
                     <PlusIcon className="mr-2 h-4 w-4" />
-                    Crear Stake
+                    Crear Estaca
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[525px]">
                 <DialogHeader>
-                    <DialogTitle>Crear Nuevo Stake</DialogTitle>
+                    <DialogTitle>Crear Nueva Estaca</DialogTitle>
                     <DialogDescription>Complete los campos requeridos para registrar una nueva estaca.</DialogDescription>
                 </DialogHeader>
 
@@ -64,7 +63,7 @@ export function CreateStake({ countries, users }: CreateStakeProps) {
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
-                                placeholder="Nombre del Stake"
+                                placeholder="Nombre de la estaca"
                             />
                             <InputError message={errors.name} />
                         </div>
@@ -89,7 +88,7 @@ export function CreateStake({ countries, users }: CreateStakeProps) {
 
                         {/* Usuario */}
                         <div className="grid gap-2">
-                            <Label htmlFor="user_id">Usuario</Label>
+                            <Label htmlFor="user_id">Asignar Responsable</Label>
                             <Select value={data.user_id} onValueChange={(value) => setData('user_id', value)}>
                                 <SelectTrigger id="user_id">
                                     <SelectValue placeholder="Seleccione un usuario" />
@@ -131,7 +130,7 @@ export function CreateStake({ countries, users }: CreateStakeProps) {
                             Cancelar
                         </Button>
                         <Button type="submit" disabled={processing}>
-                            Crear Stake
+                            Crear Estaca
                             {processing && <LoaderCircle className="ml-2 h-4 w-4 animate-spin" />}
                         </Button>
                     </DialogFooter>
