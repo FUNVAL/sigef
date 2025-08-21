@@ -56,7 +56,11 @@ export function PreRegistrationFormStep({ countries, request }: PreRegistrationF
 
     const cleanSpaces = useCallback(
         (field: keyof PreRegistrationFormData, value: string) => {
-            const cleanedValue = value.replace(/\s+/g, ' ').trim();
+            const nameFields = ['first_name', 'middle_name', 'last_name', 'second_last_name'];
+            let cleanedValue = value.replace(/\s+/g, ' ').trim();
+            if (nameFields.includes(field)) {
+                cleanedValue = cleanedValue.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
+            }
             setData(field, cleanedValue);
         },
         [setData],

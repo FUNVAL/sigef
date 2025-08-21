@@ -19,7 +19,7 @@ import { Stake } from "@/types/stake"
 import { Country } from "@/types/country"
 import { referralFormSchema } from "@/lib/schemas/referral"
 import validateForm from "@/lib/schemas/validate-schemas"
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { StepperContext } from "@/pages/forms/stepper-provider";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { StepsHeader } from "../steps-header";
@@ -70,6 +70,14 @@ export function ReferralFormStep({ countries, request, }: ReferralFormStepProps)
     }
   }, [back_errors]);
 
+  const cleanSpaces = useCallback(
+    (field: keyof ReferenceFormData, value: string) => {
+      let cleanedValue = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
+      setData(field, cleanedValue);
+    },
+    [setData],
+  );
+
   return (
     <Card className="w-full max-w-4xl shadow-2xl border-0 overflow-hidden pt-0 mx-auto">
       <StepsHeader
@@ -86,7 +94,7 @@ export function ReferralFormStep({ countries, request, }: ReferralFormStepProps)
                 id="name"
                 name="name"
                 value={data.name}
-                onChange={(e) => setData('name', e.target.value)}
+                onChange={(e) => cleanSpaces('name', e.target.value)}
                 placeholder={forms.referral.fields.name_placeholder}
                 autoComplete="name"
                 required
@@ -195,7 +203,7 @@ export function ReferralFormStep({ countries, request, }: ReferralFormStepProps)
                   id="referrer_name"
                   name="referrer_name"
                   value={data.referrer_name}
-                  onChange={(e) => setData('referrer_name', e.target.value)}
+                  onChange={(e) => cleanSpaces('referrer_name', e.target.value)}
                   placeholder={`Tu nombre completo`}
                   required
                 />
