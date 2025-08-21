@@ -132,7 +132,7 @@ export function DataTable<TData>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">
-              Columns <ChevronDown />
+              Columnas <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

@@ -1,4 +1,3 @@
-import { User } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -11,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
-import TextLink from "../text-link";
 import { Country } from "@/types/country";
 
 interface CountryDataTableProps {
@@ -43,54 +41,54 @@ export const createColumns = ({ onEditCountry, onDeleteCountry }: CountryDataTab
         enableHiding: false,
     },
     {
-        accessorKey: "name",
+        accessorKey: "Nombre del Pais",
+        accessorFn: (row) => row.name,
         header: "Nombre del Pais",
         cell: ({ row }) => {
-            const country = row.original;
+            const value = row.getValue("Nombre del Pais") as string;
             return (
                 <div className="flex items-center space-x-2">
-                    <div className="font-medium">{country.name}</div>
+                    <div className="font-medium">{value}</div>
                 </div>
             );
         },
     },
     {
-        accessorKey: "code",
+        accessorKey: "Código",
+        accessorFn: (row) => row.code,
         header: "Código",
         cell: ({ row }) => {
-            const country = row.original;
+            const value = row.getValue("Código") as string;
             return (
                 <div className="flex items-center space-x-2">
-                    <div className="font-medium">
-                        {country.code}
-                    </div>
+                    <div className="font-medium">{value}</div>
                 </div>
             );
         },
     },
     {
-        accessorKey: "phone_code",
+        accessorKey: "Código de Teléfono",
+        accessorFn: (row) => row.phone_code,
         header: "Código de Teléfono",
         cell: ({ row }) => {
-            const country = row.original;
+            const value = row.getValue("Código de Teléfono") as string;
             return (
                 <div className="flex items-center space-x-2">
-                    <div className="font-medium">
-                        {country.phone_code}
-                    </div>
+                    <div className="font-medium">{value}</div>
                 </div>
             );
         },
     },
     {
-        accessorKey: "status",
+        accessorKey: "Estado",
+        accessorFn: (row) => row.status?.name ?? '',
         header: "Estado",
         cell: ({ row }) => {
-            const country = row.original;
+            const value = row.getValue("Estado") as string;
             return (
                 <div className="flex items-center space-x-2">
-                    <div className={`font-medium ${country?.status?.name === 'Activo' ? 'text-green-600' : 'text-red-600'}`}>
-                        {country?.status?.name}
+                    <div className={`font-medium ${value === 'Activo' ? 'text-green-600' : 'text-red-600'}`}>
+                        {value}
                     </div>
                 </div>
             );
