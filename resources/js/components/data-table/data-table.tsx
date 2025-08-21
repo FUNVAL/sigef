@@ -103,23 +103,16 @@ export function DataTable<TData>({
     });
   }
 
-  // Manejar cambio en la búsqueda
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    table.getColumn(filterKey)?.setFilterValue(value);
+  // Estado local para el valor del input de búsqueda
+  const [localSearch, setLocalSearch] = React.useState(searchValue);
 
-    if (onSearch) {
-      // Agregar un pequeño debounce para no hacer demasiadas peticiones
-      const timeoutId = setTimeout(() => {
-        onSearch(value);
-      }, 500);
-
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
+  // Actualizar el filtro localmente y ejecutar búsqueda solo con Enter
+  const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      table.getColumn(filterKey)?.setFilterValue(localSearch);
+      if (onSearch) {
+        onSearch(localSearch);
       }
-      searchTimeoutRef.current = setTimeout(() => {
-        onSearch(value);
-      }, 500);
     }
   };
 
@@ -128,9 +121,10 @@ export function DataTable<TData>({
       <div className="flex items-center justify-between py-4 gap-4">
         <div className="flex items-center gap-4 flex-1">
           <Input
-            placeholder={`Filter by ${filterKey}...`}
-            value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ""}
-            onChange={handleSearchChange}
+            placeholder={`Buscar... (presiona Enter)`}
+            value={localSearch}
+            onChange={e => setLocalSearch(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
             className="max-w-sm"
           />
           {FilterBar && <FilterBar />}
