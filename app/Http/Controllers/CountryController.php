@@ -12,18 +12,35 @@ class CountryController extends Controller
     /** 
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-       try { 
+        try {
+            $query = Country::where('status', '!=', StatusEnum::DELETED->value);
+
+            // Búsqueda simple para el frontend
+            if ($request->has('search')) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            }
+
+            // Paginación
+            $perPage = $request->input('per_page', 10);
+            $page = $request->input('page', 1);
+            $countries = $query->orderBy('status', 'asc')
+                ->paginate($perPage, ['*'], 'page', $page);
+
             return Inertia::render('countries/index', [
-                'countries' => Country::where('status', '!=', StatusEnum::DELETED->value) 
-                  ->orderBy('status', 'asc')
-                    ->get(),
-                
+                'countries' => $countries,
+                'pagination' => [
+                    'current_page' => $countries->currentPage(),
+                    'per_page' => $countries->perPage(),
+                    'total' => $countries->total(),
+                    'last_page' => $countries->lastPage(),
+                ],
+                'filters' => $request->only(['search'])
             ]);
         } catch (\Exception $e) {
             return back()
-                ->withErrors(['error' => 'Failed to load users: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Failed to load countries: ' . $e->getMessage()]);
         }
     }
     /**
@@ -35,7 +52,7 @@ class CountryController extends Controller
      * Store a newly created resource in storage.
      */
 
-    
+
     public function store(Request $request)
     {
 
@@ -54,6 +71,7 @@ class CountryController extends Controller
                 ->with('success', 'Pais creado exitosamente');
         }
          
+
         try {
             $validated =  $request->validate([
                 'name' => 'required|string|max:255|unique:countries,name',
@@ -63,17 +81,18 @@ class CountryController extends Controller
                 'status' => 'required|in:' . implode(',', StatusEnum::Values()),
             ]);
 
-            
+
             $country = Country::create(
                 $validated
             );
-           
+
 
             return redirect()->route('countries.index')
                 ->with('success', 'Pais creado exitosamente.');
 
+                ->with('success', 'Country created successfully.');
         } catch (\Exception $e) {
-            
+
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
                 ->withInput();
@@ -92,7 +111,7 @@ class CountryController extends Controller
         }
     }
 
-  
+
     /**
      * Update the specified resource in storage.
      */
@@ -109,29 +128,28 @@ class CountryController extends Controller
 
             $country->update($validated);
             return redirect()->route('countries.index')
-            ->with('success', 'Country updated successfully.');
-
+                ->with('success', 'Country updated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-            ->withErrors(['error' => $e->getMessage()])
-            ->withInput();
+                ->withErrors(['error' => $e->getMessage()])
+                ->withInput();
         }
     }
- 
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Country $country)
     {
         try {
-        $country->status = StatusEnum::DELETED->value;
-        $country->save();
+            $country->status = StatusEnum::DELETED->value;
+            $country->save();
 
-        return redirect()->route('countries.index')
-            ->with('success', 'Country deleted successfully.');
-    } catch (\Exception $e) {
-        return redirect()->back()
-            ->withErrors(['error' => 'Failed to delete country: ' . $e->getMessage()]);
-    }
+            return redirect()->route('countries.index')
+                ->with('success', 'Country deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => 'Failed to delete country: ' . $e->getMessage()]);
+        }
     }
 }

@@ -14,12 +14,35 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-
         try {
+            $query = User::query();
+
+            // Búsqueda simple para el frontend
+            if ($request->has('search')) {
+                $query->where('email', 'like', '%' . $request->search . '%')
+                    ->orWhere('firstname', 'like', '%' . $request->search . '%')
+                    ->orWhere('lastname', 'like', '%' . $request->search . '%');
+            }
+
+            // Solo mostrar usuarios activos
+            $query->where('status', '!=', 'inactivo');
+
+            // Paginación
+            $perPage = $request->input('per_page', 10);
+            $page = $request->input('page', 1);
+            $users = $query->orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
             return Inertia::render('access-control/users/index', [
-                'users' => User::where('status', '!=', 'inactivo')->get(),
+                'users' => $users,
+                'pagination' => [
+                    'current_page' => $users->currentPage(),
+                    'per_page' => $users->perPage(),
+                    'total' => $users->total(),
+                    'last_page' => $users->lastPage(),
+                ],
+                'filters' => $request->only(['search'])
             ]);
         } catch (\Exception $e) {
             return redirect()->back()
