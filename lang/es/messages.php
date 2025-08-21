@@ -20,6 +20,6 @@ return [
     'duplicates' => [
         'rejected' => '<strong>Este correo ha sido registrado previamente.</strong><br/>Hemos identificado que ya existe una solicitud asociada con esta dirección de correo, la cual fue evaluada previamente con el siguiente resultado:<br/><br/>[**]',
 
-        'pending' => '<strong>Ya existe una solicitud pendiente asociada con esta dirección de correo.</strong><br/>Por favor espere a que uno de nuestros representantes se contacte con usted. El tiempo estimado de contacto es de hasta 72 horas.<br/><br/>Si ese tiempo ya ha transcurrido y aún no ha recibido respuesta, puede escribirnos al siguiente número: class="text-blue-600 font-bold">[**]</span>.<br/><br/>Agradecemos su paciencia y su interés en el programa.',
+        'pending' => '<strong>Ya existe una solicitud pendiente asociada con esta dirección de correo.</strong><br/>Por favor espere a que uno de nuestros representantes se contacte con usted. El tiempo estimado de contacto es de hasta 72 horas.<br/><br/>Si ese tiempo ya ha transcurrido y aún no ha recibido respuesta, puede escribirnos al siguiente número: <span class="text-blue-600 font-bold">[**]</span>.<br/><br/>Agradecemos su paciencia y su interés en el programa.',
     ]
 ];

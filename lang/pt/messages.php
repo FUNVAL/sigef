@@ -18,8 +18,8 @@ return [
     ],
 
     'duplicates' => [
-        'rejected' => '<strong>Esse e-mail já foi registrado anteriormente.</strong><br/>Identificamos que já existe uma solicitação associada a este e-mail, que foi avaliada anteriormente com o seguinte resultado:',
+        'rejected' => '<strong>Esse e-mail já foi registrado anteriormente.</strong><br/>Identificamos que já existe uma solicitação associada a este e-mail, que foi avaliada anteriormente com o seguinte resultado:<br/><br/>[**]',
 
-        'pending' => '<strong>Já existe uma solicitação pendente associada a esse e-mail.</strong><br/>Aguarde o contato de um de nossos representantes. O tempo estimado de contato é de até 72 horas.<br/><br/>Se esse tempo tiver passado e você ainda não tiver recebido uma resposta, poderá escrever para nós no seguinte número: [**].<br/><br/>Obrigado por sua paciência e interesse no programa.',
+        'pending' => '<strong>Já existe uma solicitação pendente associada a esse e-mail.</strong><br/>Aguarde o contato de um de nossos representantes. O tempo estimado de contato é de até 72 horas.<br/><br/>Se esse tempo tiver passado e você ainda não tiver recebido uma resposta, poderá escrever para nós no seguinte número: <span class="text-blue-600 font-bold">[**]</span>.<br/><br/>Obrigado por sua paciência e interesse no programa.',
     ]
 ];

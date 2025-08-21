@@ -18,8 +18,8 @@ return [
     ],
 
     'duplicates' => [
-        'rejected' => '<strong>This email address has already been registered.</strong><br/>We have identified an existing application associated with this email, which has already been evaluated with the following result:',
+        'rejected' => '<strong>This email address has already been registered.</strong><br/>We have identified an existing application associated with this email, which has already been evaluated with the following result:<br/><br/>[**]',
 
-        'pending' => '<strong>This email address has already been registered.</strong><br/>Please wait for one of our representatives to contact you. The estimated response time is up to 72 hours.<br/><br/>If this time has passed and you have not received a response, you can contact us at the following phone number: (Recruiter’s phone number).<br/><br/>We appreciate your patience and your interest in the program.',
+        'pending' => '<strong>This email address has already been registered.</strong><br/>Please wait for one of our representatives to contact you. The estimated response time is up to 72 hours.<br/><br/>If this time has passed and you have not received a response, you can contact us at the following phone number: <span class="text-blue-600 font-bold">[**]</span>.<br/><br/>We appreciate your patience and your interest in the program.',
     ]
 ];
