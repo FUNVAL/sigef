@@ -53,6 +53,7 @@ type Translation = {
             full_time: string;
             part_time: string;
             years: string;
+            country: string;
         };
         titles: Record<string, string>;
     };

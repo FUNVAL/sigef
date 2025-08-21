@@ -27,6 +27,7 @@ return [
             'full_time' => 'Tout tan',
             'part_time' => 'Tan pasyèl',
             'years' => 'ane',
+            'country' => 'Peyi'
         ],
         'titles' => [
             'dashboard' => 'Tablo Kòmand',

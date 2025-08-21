@@ -32,7 +32,7 @@ interface DropdownProps {
 
 const CountryDropdown = React.memo(({ countries, selectedCountry, onCountrySelect }: DropdownProps) => {
     const [open, setOpen] = React.useState(false);
-    const { forms } = usePage<Translation>().props;
+    const { ui } = usePage<Translation>().props;
     const handleSelect = (country: Country) => {
         onCountrySelect(country);
         setOpen(false);
@@ -47,7 +47,7 @@ const CountryDropdown = React.memo(({ countries, selectedCountry, onCountrySelec
                     aria-expanded={open}
                     className="w-22 justify-between rounded-r-none"
                 >
-                    {selectedCountry ? `${selectedCountry.code}` : forms.pre_inscription.fields.country}
+                    {selectedCountry ? `${selectedCountry.code}` : ui.labels.country}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
@@ -94,6 +94,8 @@ export interface PhoneInputProps extends React.InputHTMLAttributes<HTMLInputElem
 const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
     ({ className, value, onInputChange, countries, selectedCountryId, enableDropdown = false, ...props }, ref) => {
 
+        const { ui } = usePage<Translation>().props;
+
         const inputRef = React.useRef<HTMLInputElement>(null);
 
         const [internalCountry, setInternalCountry] = React.useState<Country | undefined>(() =>
@@ -121,7 +123,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             updateInputValue(inputRef.current?.value || '', country.phone_code || '');
         };
 
-        const prefix = internalCountry ? `${internalCountry.code}` : 'País';
+        const prefix = internalCountry ? `${internalCountry.code}` : ui.labels.country;
 
         return (
             <div className={cn('flex items-center w-full', className)}>

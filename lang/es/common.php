@@ -27,6 +27,7 @@ return [
             'full_time' => 'Tiempo completo',
             'part_time' => 'Tiempo parcial',
             'years' => 'años',
+            'country' => 'País',
         ],
         'titles' => [
             'dashboard' => 'Dashboard',
