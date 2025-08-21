@@ -18,8 +18,8 @@ return [
     ],
 
     'duplicates' => [
-        'rejected' => '<strong>Imèl sa a te anrejistre deja.</strong><br/>Nou te idantifye ke ou deja gen yon demann ki asosye ak imèl sa a, ki te deja evalye ak rezilta sa:',
+        'rejected' => '<strong>Imèl sa a te anrejistre deja.</strong><br/>Nou te idantifye ke ou deja gen yon demann ki asosye ak imèl sa a, ki te deja evalye ak rezilta sa:<br/><br/>[**]',
 
-        'pending' => '<strong>Gen deja yon demann ki an atant ki asosye ak imèl sa a.</strong><br/>Tanpri rete tann pou youn nan reprezantan nou yo kontakte ou. Tan kontak la estime jiska 72 èdtan.<br/><br/>Si peryòd sa a pase epi ou toujou pa resevwa yon repons, ou ka ekri nou nan nimewo sa a: [**].<br/><br/>Mèsi pou pasyans ou ak enterè nan pwogram nan.',
+        'pending' => '<strong>Gen deja yon demann ki an atant ki asosye ak imèl sa a.</strong><br/>Tanpri rete tann pou youn nan reprezantan nou yo kontakte ou. Tan kontak la estime jiska 72 èdtan.<br/><br/>Si peryòd sa a pase epi ou toujou pa resevwa yon repons, ou ka ekri nou nan nimewo sa a: <span class="text-blue-600 font-bold">[**]</span>.<br/><br/>Mèsi pou pasyans ou ak enterè nan pwogram nan.',
     ]
 ];

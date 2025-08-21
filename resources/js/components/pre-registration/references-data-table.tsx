@@ -34,7 +34,7 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
         enableHiding: false,
     },
     {
-        accessorKey: 'name',
+        accessorKey: 'Persona Referida',
         header: 'Persona Referida',
         cell: ({ row }) => {
             const reference = row.original;
@@ -49,7 +49,7 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
         },
     },
     {
-        accessorKey: 'phone',
+        accessorKey: 'Contacto',
         header: 'Contacto',
         cell: ({ row }) => {
             const reference = row.original;
@@ -62,7 +62,7 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
         },
     },
     {
-        accessorKey: 'stake.name',
+        accessorKey: 'Ubicación',
         header: 'Ubicación',
         cell: ({ row }) => {
             const reference = row.original;
@@ -70,7 +70,7 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
         },
     },
     {
-        accessorKey: 'referrer_name',
+        accessorKey: 'Referente',
         header: 'Referente',
         cell: ({ row }) => {
             const reference = row.original;
@@ -85,7 +85,7 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
         },
     },
     {
-        accessorKey: 'created_at',
+        accessorKey: 'Fecha',
         header: 'Fecha',
         cell: ({ row }) => {
             const reference = row.original;
@@ -93,7 +93,7 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
         },
     },
     {
-        accessorKey: 'status',
+        accessorKey: 'Estado',
         header: 'Estado',
         cell: ({ row }) => {
             const reference = row.original;

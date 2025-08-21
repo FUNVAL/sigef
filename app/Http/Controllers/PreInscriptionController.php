@@ -146,7 +146,6 @@ class PreInscriptionController extends Controller
                 'marital_status' => 'required|numeric|in:' . implode(',', MaritalStatusEnum::values()),
                 'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
                 'status' => 'nullable|numeric|in:' . implode(',', RequestStatusEnum::values()),
-                'comments' => 'nullable|string',
                 'country_id' => 'required|exists:countries,id',
                 'stake_id' => 'required|exists:stakes,id'
             ];

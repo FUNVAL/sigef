@@ -27,6 +27,7 @@ return [
             'full_time' => 'Tempo integral',
             'part_time' => 'Meio período',
             'years' => 'anos',
+            'country' => 'País',
         ],
         'titles' => [
             'dashboard' => 'Dashboard',

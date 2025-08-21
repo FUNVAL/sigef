@@ -5,8 +5,14 @@
         "lastname": "López",
         "email": "abinadilopez@fundaciondevalores.org",
         "document_number": "12345001",
-        "address": "Av. Reforma 123, Ciudad de México",
-        "role": "Responsable"
+        "address": "Blvd Norte #1015 colonia villas san Alejandro",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1977-01-02",
+        "marital_status": 2,
+        "contact_phone_1": "(+52) 5578446039",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 2,
@@ -15,7 +21,13 @@
         "email": "administracion@fundaciondevalores.org",
         "document_number": "12345002",
         "address": "Blvd. Suyapa 456, Tegucigalpa",
-        "role": "Administrador"
+        "role": "Administrador",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 3,
@@ -23,8 +35,14 @@
         "lastname": "Aguilar",
         "email": "alainaguilar@fundaciondevalores.org",
         "document_number": "12345003",
-        "address": "Av. Santa Cruz 789, La Paz",
-        "role": "Responsable"
+        "address": "Cochabamba - Vinto",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-12-07",
+        "marital_status": 2,
+        "contact_phone_1": "(+591) 69010696",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 4,
@@ -33,7 +51,13 @@
         "email": "alanbajan@fundaciondevalores.org",
         "document_number": "12345004",
         "address": "Zona 10, Guatemala City",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 5,
@@ -42,7 +66,13 @@
         "email": "albertosarango@fundaciondevalores.org",
         "document_number": "12345005",
         "address": "Av. Amazonas 321, Quito",
-        "role": "IT"
+        "role": "IT",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 6,
@@ -50,8 +80,14 @@
         "lastname": "Hernandez",
         "email": "alejandrohernandez@fundaciondevalores.org",
         "document_number": "12345006",
-        "address": "Zona 1, Guatemala City",
-        "role": "Responsable"
+        "address": "2da calle A 6-26 colonia san antonio, san miguel petapa",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1994-02-20",
+        "marital_status": 2,
+        "contact_phone_1": "(+502) 35658821",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 7,
@@ -60,7 +96,13 @@
         "email": "gabrieldeleon@fundaciondevalores.org",
         "document_number": "12345007",
         "address": "Zona 4, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 8,
@@ -69,7 +111,13 @@
         "email": "anacabrera@fundaciondevalores.org",
         "document_number": "12345008",
         "address": "Zona 12, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 9,
@@ -78,7 +126,13 @@
         "email": "anarotellini@fundaciondevalores.org",
         "document_number": "12345009",
         "address": "Av. Winston Churchill, Santo Domingo",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 10,
@@ -87,7 +141,13 @@
         "email": "andreagiron@fundaciondevalores.org",
         "document_number": "12345010",
         "address": "Zona 11, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 11,
@@ -95,8 +155,14 @@
         "lastname": "Balvin",
         "email": "angelobalvin@fundaciondevalores.org",
         "document_number": "12345011",
-        "address": "Av. Javier Prado 654, Lima",
-        "role": "Responsable"
+        "address": "AA.HH San Francisco de asís Mz A Lt 4",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1991-01-09",
+        "marital_status": 2,
+        "contact_phone_1": "(+51) 950493983",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 12,
@@ -105,7 +171,13 @@
         "email": "belladeleon@fundaciondevalores.org",
         "document_number": "12345012",
         "address": "Zona 9, Guatemala City",
-        "role": "Certificador"
+        "role": "Certificador",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 13,
@@ -114,7 +186,13 @@
         "email": "benjamingomez@fundaciondevalores.org",
         "document_number": "12345013",
         "address": "Zona 7, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 14,
@@ -123,7 +201,13 @@
         "email": "bernizdelossantos@fundaciondevalores.org",
         "document_number": "12345014",
         "address": "Av. 27 de Febrero, Santo Domingo",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 15,
@@ -132,7 +216,13 @@
         "email": "brandonchinchilla@fundaciondevalores.org",
         "document_number": "12345015",
         "address": "Zona 15, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 16,
@@ -140,8 +230,14 @@
         "lastname": "Rivera",
         "email": "brayanrivera@fundaciondevalores.org",
         "document_number": "12345016",
-        "address": "Col. Palmira, San Pedro Sula",
-        "role": "Supervisor de responsable"
+        "address": "Sps, Col Cerro verde Choloma",
+        "role": "Supervisor de responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1994-04-12",
+        "marital_status": 1,
+        "contact_phone_1": "(+504) 97231201",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 17,
@@ -150,7 +246,13 @@
         "email": "carmenortiz@fundaciondevalores.org",
         "document_number": "12345017",
         "address": "Zona 13, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 18,
@@ -159,7 +261,13 @@
         "email": "cesiaarias@fundaciondevalores.org",
         "document_number": "12345018",
         "address": "Zona 14, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 19,
@@ -168,7 +276,13 @@
         "email": "cindymeza@fundaciondevalores.org",
         "document_number": "12345019",
         "address": "Zona 18, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 20,
@@ -177,7 +291,13 @@
         "email": "claudiahuaman@fundaciondevalores.org",
         "document_number": "12345020",
         "address": "Av. Arequipa 987, Lima",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 21,
@@ -185,8 +305,14 @@
         "lastname": "Gomez",
         "email": "danielgomez@fundaciondevalores.org",
         "document_number": "12345021",
-        "address": "Col. Roma Norte, Ciudad de México",
-        "role": "Responsable"
+        "address": "lagunas salada 112A, colonia brisas del lago",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "2003-02-01",
+        "marital_status": 1,
+        "contact_phone_1": "(+52) 5579257600",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 22,
@@ -195,7 +321,13 @@
         "email": "danielmurillo@fundaciondevalores.org",
         "document_number": "12345022",
         "address": "Av. Larco 147, Lima",
-        "role": "Auditor de empleo"
+        "role": "Auditor de empleo",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 23,
@@ -204,7 +336,13 @@
         "email": "dani.wolke@fundaciondevalores.org",
         "document_number": "12345023",
         "address": "Zona 16, Guatemala City",
-        "role": "Director regional"
+        "role": "Director regional",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 24,
@@ -213,7 +351,13 @@
         "email": "davidgarrido@fundaciondevalores.org",
         "document_number": "12345024",
         "address": "Zona 17, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 25,
@@ -221,8 +365,14 @@
         "lastname": "Vilchis",
         "email": "davidvilchis@fundaciondevalores.org",
         "document_number": "12345025",
-        "address": "Col. Del Valle, Ciudad de México",
-        "role": "Responsable"
+        "address": "Jose Maria Morelos y Pavón 9",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1976-10-18",
+        "marital_status": 2,
+        "contact_phone_1": "(+52) 5513423299",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 26,
@@ -231,7 +381,13 @@
         "email": "dayanachocooj@fundaciondevalores.org",
         "document_number": "12345026",
         "address": "Zona 6, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 27,
@@ -240,7 +396,13 @@
         "email": "diegohuarsaya@fundaciondevalores.org",
         "document_number": "12345027",
         "address": "Av. Brasil 258, Lima",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 28,
@@ -248,8 +410,14 @@
         "lastname": "Merino",
         "email": "dorianmerino@fundaciondevalores.org",
         "document_number": "12345028",
-        "address": "Carrera 7 #45-67, Bogotá",
-        "role": "Responsable"
+        "address": "Calle 12 # 5-03 Barrio Aeropuerto, Cúcuta, Norte de Santander, Colombia.",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1975-05-19",
+        "marital_status": 2,
+        "contact_phone_1": "(+57) 3123545380",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 29,
@@ -257,8 +425,14 @@
         "lastname": "Gil",
         "email": "edgargil@fundaciondevalores.org",
         "document_number": "12345029",
-        "address": "Av. Grau 369, Lima",
-        "role": "Responsable"
+        "address": "Calle José de La Torre Ugarte 1511, Florencia de Mora, Trujillo, La Libertad",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1996-01-21",
+        "marital_status": 2,
+        "contact_phone_1": "(+51) 998133621",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 30,
@@ -266,8 +440,14 @@
         "lastname": "Trujillo",
         "email": "edgartrujillo@fundaciondevalores.org",
         "document_number": "12345030",
-        "address": "Av. 10 de Agosto 741, Quito",
-        "role": "Responsable"
+        "address": "La rotonda E5-173 y la Mar Sector Colinas del Valle Quito - Ecuador",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1994-11-27",
+        "marital_status": 2,
+        "contact_phone_1": "(+593) 967660817",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 31,
@@ -276,7 +456,13 @@
         "email": "eduardoorizabal@fundaciondevalores.org",
         "document_number": "12345031",
         "address": "Zona 19, Guatemala City",
-        "role": "Supervisor académico"
+        "role": "Supervisor académico",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 32,
@@ -285,7 +471,13 @@
         "email": "eduardocalle@fundaciondevalores.org",
         "document_number": "12345032",
         "address": "Av. Salaverry 852, Lima",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 33,
@@ -293,8 +485,14 @@
         "lastname": "Moreno",
         "email": "edwinfuentes@fundaciondevalores.org",
         "document_number": "12345033",
-        "address": "Carrera 15 #78-23, Bogotá",
-        "role": "Responsable"
+        "address": "Carrera 87B #90-40 interior 7 Bogotá",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1974-10-02",
+        "marital_status": 2,
+        "contact_phone_1": "(+57) 3108571413",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 34,
@@ -303,7 +501,13 @@
         "email": "elvincoy@fundaciondevalores.org",
         "document_number": "12345034",
         "address": "Zona 21, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 35,
@@ -311,8 +515,14 @@
         "lastname": "Bolivia",
         "email": "erickbolivia@fundaciondevalores.org",
         "document_number": "12345035",
-        "address": "Av. 16 de Julio 963, La Paz",
-        "role": "Responsable"
+        "address": "san juan de miraflores,pamplona alta mz. s lt. 3 las americas",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1993-06-06",
+        "marital_status": 2,
+        "contact_phone_1": "(+51) 946371517",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 36,
@@ -320,8 +530,14 @@
         "lastname": "Samayoa",
         "email": "estuardosamayoa@fundaciondevalores.org",
         "document_number": "12345036",
-        "address": "Zona 2, Guatemala City",
-        "role": "Supervisor de responsable"
+        "address": "Margaritas 6, Sector 2 -28, San Juan Sacatepéquez, Guatemala",
+        "role": "Supervisor de responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1992-03-08",
+        "marital_status": 2,
+        "contact_phone_1": "(+502) 42102125",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 37,
@@ -329,8 +545,14 @@
         "lastname": "Aldaz",
         "email": "faradayaldaz@fundaciondevalores.org",
         "document_number": "12345037",
-        "address": "Col. Condesa, Ciudad de México",
-        "role": "Responsable"
+        "address": "Calle Otilio Amezcua 48 Colonia Emiliano Zapata C.P. 56608",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1996-11-05",
+        "marital_status": 2,
+        "contact_phone_1": "(+52) 5512377571",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 38,
@@ -339,7 +561,13 @@
         "email": "freddypac@fundaciondevalores.org",
         "document_number": "12345038",
         "address": "Zona 3, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 39,
@@ -348,7 +576,13 @@
         "email": "frinxmendoza@fundaciondevalores.org",
         "document_number": "12345039",
         "address": "Zona 5, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 40,
@@ -356,8 +590,14 @@
         "lastname": "Marchan",
         "email": "geancarlosmarchan@fundaciondevalores.org",
         "document_number": "12345040",
-        "address": "Av. Abancay 147, Lima",
-        "role": "Supervisor de responsable"
+        "address": "Urb. Santa Margarita - Etapa 5 - Mz GA - Lt 20 - 26 de octubre - Piura",
+        "role": "Supervisor de responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1982-10-09",
+        "marital_status": 2,
+        "contact_phone_1": "(+51) 981422484",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 41,
@@ -365,8 +605,14 @@
         "lastname": "Saavedra",
         "email": "geraldsaavedra@fundaciondevalores.org",
         "document_number": "12345041",
-        "address": "Av. El Sol 258, Lima",
-        "role": "Responsable"
+        "address": "JR.TARMA 858, KM 11 COMAS",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1996-04-02",
+        "marital_status": 2,
+        "contact_phone_1": "(+51) 984647012",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 42,
@@ -375,7 +621,13 @@
         "email": "geraldinequispe@fundaciondevalores.org",
         "document_number": "12345042",
         "address": "Av. Universitaria 369, Lima",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 43,
@@ -384,7 +636,13 @@
         "email": "haroldaldana@fundaciondevalores.org",
         "document_number": "12345043",
         "address": "Zona 8, Guatemala City",
-        "role": "IT"
+        "role": "IT",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 44,
@@ -393,7 +651,13 @@
         "email": "hebertcua@fundaciondevalores.org",
         "document_number": "12345044",
         "address": "Zona 20, Guatemala City",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 45,
@@ -402,7 +666,13 @@
         "email": "henrryper@fundaciondevalores.org",
         "document_number": "12345045",
         "address": "Zona 22, Guatemala City",
-        "role": "Certificador"
+        "role": "Certificador",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 46,
@@ -411,7 +681,13 @@
         "email": "irenesiac@fundaciondevalores.org",
         "document_number": "12345046",
         "address": "Zona 23, Guatemala City",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 47,
@@ -420,7 +696,13 @@
         "email": "ivanmontalvo@fundaciondevalores.org",
         "document_number": "12345047",
         "address": "Av. Tacna 741, Lima",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 48,
@@ -428,8 +710,14 @@
         "lastname": "Oliver",
         "email": "olivierjacques@fundaciondevalores.org",
         "document_number": "12345048",
-        "address": "Rue Delmas 85, Puerto Príncipe",
-        "role": "Responsable"
+        "address": "1,Imp. Berenice Puits Blain 25, Port-au-Prince, Delmas, Haiti",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1985-10-19",
+        "marital_status": 2,
+        "contact_phone_1": "(+509) 37813113",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 49,
@@ -437,8 +725,14 @@
         "lastname": "Ticona",
         "email": "jampierticona@fundaciondevalores.org",
         "document_number": "12345049",
-        "address": "Av. Illimani 852, La Paz",
-        "role": "Responsable"
+        "address": "7WP9+3H4 Santa Cruz de la Sierra, Bolivia",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1996-10-04",
+        "marital_status": 2,
+        "contact_phone_1": "(+591) 69010795",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 50,
@@ -447,7 +741,13 @@
         "email": "javierayllon@fundaciondevalores.org",
         "document_number": "12345050",
         "address": "Av. Peru 963, Lima",
-        "role": "Supervisor académico"
+        "role": "Supervisor académico",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 51,
@@ -456,7 +756,13 @@
         "email": "jeremyvargas@fundaciondevalores.org",
         "document_number": "12345051",
         "address": "Av. Independencia 147, Santo Domingo",
-        "role": "IT"
+        "role": "IT",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 52,
@@ -465,7 +771,13 @@
         "email": "jesusporras@fundaciondevalores.org",
         "document_number": "12345052",
         "address": "Av. Colonial 258, Lima",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 53,
@@ -473,8 +785,14 @@
         "lastname": "Condori",
         "email": "jhossimarcondori@fundaciondevalores.org",
         "document_number": "12345053",
-        "address": "Av. Garcilaso 369, Lima",
-        "role": "Responsable"
+        "address": "A.H Saul Cantoral Huamani",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1995-04-05",
+        "marital_status": 2,
+        "contact_phone_1": "(+51) 968649665",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 54,
@@ -483,7 +801,13 @@
         "email": "joelreyes@fundaciondevalores.org",
         "document_number": "12345054",
         "address": "Av. Máximo Gómez 741, Santo Domingo",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 55,
@@ -492,7 +816,13 @@
         "email": "jorgesosa@fundaciondevalores.org",
         "document_number": "12345055",
         "address": "Av. Ballivian 852, La Paz",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 56,
@@ -501,7 +831,13 @@
         "email": "jorgemeza@fundaciondevalores.org",
         "document_number": "12345056",
         "address": "Zona 24, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 57,
@@ -509,8 +845,14 @@
         "lastname": "Casado",
         "email": "josecasado@fundaciondevalores.org",
         "document_number": "12345057",
-        "address": "Av. Abraham Lincoln 963, Santo Domingo",
-        "role": "Responsable"
+        "address": "villa Duarte 25 de febrero numer8 Santo Domingo Este.",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "2001-02-26",
+        "marital_status": 1,
+        "contact_phone_1": "(+1) 8499187526",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 58,
@@ -518,8 +860,14 @@
         "lastname": "Méndez",
         "email": "josemendez@fundaciondevalores.org",
         "document_number": "12345058",
-        "address": "Zona 25, Guatemala City",
-        "role": "Responsable"
+        "address": "Arcos de Santa María 1 apt. B1 sacatepequez km 36.5",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1988-08-19",
+        "marital_status": 2,
+        "contact_phone_1": "(+502) 42102361",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 59,
@@ -527,8 +875,14 @@
         "lastname": "Morales",
         "email": "josemorales@fundaciondevalores.org",
         "document_number": "12345059",
-        "address": "Zona 26, Guatemala City",
-        "role": "Responsable"
+        "address": "7 ave A 14-30 colinas de minerva z11 de mixco",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1991-11-19",
+        "marital_status": 2,
+        "contact_phone_1": "(+504) 42101386",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 60,
@@ -537,7 +891,13 @@
         "email": "josepelico@fundaciondevalores.org",
         "document_number": "12345060",
         "address": "Zona 27, Guatemala City",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 61,
@@ -545,8 +905,14 @@
         "lastname": "Ramirez",
         "email": "joseramirez@fundaciondevalores.org",
         "document_number": "12345061",
-        "address": "Av. 6 de Agosto 147, La Paz",
-        "role": "Responsable"
+        "address": "Bolivia, Departamento de La Paz, Ciudad El Alto, Satélite Plan 561 Calle 1-A Nro. 1074",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1989-12-16",
+        "marital_status": 2,
+        "contact_phone_1": "(+591) 77597662",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 62,
@@ -554,8 +920,14 @@
         "lastname": "Rodriguez",
         "email": "joserodriguez@fundaciondevalores.org",
         "document_number": "12345062",
-        "address": "Av. Montes 258, La Paz",
-        "role": "Director de escuela"
+        "address": "Calle St Exupery 6200. Entre 6to y 7mo anillo.",
+        "role": "Director de escuela",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1984-06-28",
+        "marital_status": 2,
+        "contact_phone_1": "(+591) 69150087",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 63,
@@ -563,8 +935,14 @@
         "lastname": "Martinez",
         "email": "juanmartinez@fundaciondevalores.org",
         "document_number": "12345063",
-        "address": "Av. Bolívar 369, Caracas",
-        "role": "Responsable"
+        "address": "Urb el encanto. Edf Araguaney. Piso 12 aoto12m4",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-11-26",
+        "marital_status": 2,
+        "contact_phone_1": "(+58) 4242715097",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 64,
@@ -572,8 +950,14 @@
         "lastname": "Lascano",
         "email": "juliolascano@fundaciondevalores.org",
         "document_number": "12345064",
-        "address": "Av. Patria 741, Quito",
-        "role": "Supervisor de responsable"
+        "address": "Ciudadela Ibarra calle c y rosario borja casa 53",
+        "role": "Supervisor de responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1984-05-14",
+        "marital_status": 2,
+        "contact_phone_1": "(+593) 0992713295",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 65,
@@ -581,8 +965,14 @@
         "lastname": "Peque",
         "email": "juliopeque@fundaciondevalores.org",
         "document_number": "12345065",
-        "address": "Zona 28, Guatemala City",
-        "role": "Supervisor de responsable"
+        "address": "11 av 5-89 zona 4 VN",
+        "role": "Supervisor de responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1988-04-13",
+        "marital_status": 2,
+        "contact_phone_1": "(+502) 42100827",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 66,
@@ -590,8 +980,14 @@
         "lastname": "Ernest",
         "email": "ernstlouissaint@fundaciondevalores.org",
         "document_number": "12345066",
-        "address": "Rue Pavée 852, Puerto Príncipe",
-        "role": "Responsable"
+        "address": "Haiti",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1984-11-02",
+        "marital_status": 2,
+        "contact_phone_1": "(+509) 46433535",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 67,
@@ -600,7 +996,13 @@
         "email": "krobertson@fundaciondevalores.org",
         "document_number": "12345067",
         "address": "Av. Pardo 963, Lima",
-        "role": "Director financiero"
+        "role": "Director financiero",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 68,
@@ -609,7 +1011,13 @@
         "email": "kevinespinosa@fundaciondevalores.org",
         "document_number": "12345068",
         "address": "Zona 29, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 69,
@@ -618,7 +1026,13 @@
         "email": "kevinrodriguez@fundaciondevalores.org",
         "document_number": "12345069",
         "address": "Av. Arce 147, La Paz",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 70,
@@ -627,7 +1041,13 @@
         "email": "kevinsac@fundaciondevalores.org",
         "document_number": "12345070",
         "address": "Zona 30, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 71,
@@ -635,8 +1055,14 @@
         "lastname": "Rodriguez",
         "email": "leonardorodriguez@fundaciondevalores.org",
         "document_number": "12345071",
-        "address": "Av. 12 de Octubre 258, Quito",
-        "role": "Supervisor de responsable"
+        "address": "Ambato y san Martín",
+        "role": "Supervisor de responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1997-10-12",
+        "marital_status": 2,
+        "contact_phone_1": "(+593) 0958990718",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 72,
@@ -645,7 +1071,13 @@
         "email": "lissetterosales@fundaciondevalores.org",
         "document_number": "12345072",
         "address": "Zona 31, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 73,
@@ -654,7 +1086,13 @@
         "email": "lizasac@fundaciondevalores.org",
         "document_number": "12345073",
         "address": "Zona 32, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 74,
@@ -662,8 +1100,14 @@
         "lastname": "Escribano",
         "email": "lorenaescribano@fundaciondevalores.org",
         "document_number": "12345074",
-        "address": "Av. Wilson 369, Lima",
-        "role": "Responsable"
+        "address": "Los Gladiolos 366 - Los Olivos",
+        "role": "Responsable",
+        "gender": 2,
+        "document_type": 1,
+        "birth_date": "1994-07-27",
+        "marital_status": 1,
+        "contact_phone_1": "(+51) 981437014",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 75,
@@ -672,7 +1116,13 @@
         "email": "luisperez@fundaciondevalores.org",
         "document_number": "12345075",
         "address": "Av. Benavides 741, Lima",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 76,
@@ -680,8 +1130,14 @@
         "lastname": "Chacaltana",
         "email": "marcoschacaltana@fundaciondevalores.org",
         "document_number": "12345076",
-        "address": "Av. Angamos 852, Lima",
-        "role": "Responsable"
+        "address": "Jr ingenieros Mz J lt 27 Huancaray San Juan de Lurigancho",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-05-31",
+        "marital_status": 2,
+        "contact_phone_1": "(+51) 998133398",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 77,
@@ -689,8 +1145,14 @@
         "lastname": "Elvira",
         "email": "marcoselvira@fundaciondevalores.org",
         "document_number": "12345077",
-        "address": "Zona 33, Guatemala City",
-        "role": "Responsable"
+        "address": "30 calle B 4-20 zona 10 de Mixco, Guatemala",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1993-06-06",
+        "marital_status": 2,
+        "contact_phone_1": "(+502) 42103130",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 78,
@@ -699,7 +1161,13 @@
         "email": "mariasiac@fundaciondevalores.org",
         "document_number": "12345078",
         "address": "Zona 34, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 79,
@@ -708,7 +1176,13 @@
         "email": "melanimamani@fundaciondevalores.org",
         "document_number": "12345079",
         "address": "Av. Puno 963, Lima",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 80,
@@ -717,7 +1191,13 @@
         "email": "michaelrodriguez@fundaciondevalores.org",
         "document_number": "12345080",
         "address": "Av. Camacho 147, La Paz",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 81,
@@ -725,8 +1205,14 @@
         "lastname": "Moreno",
         "email": "miguelmoreno@fundaciondevalores.org",
         "document_number": "12345081",
-        "address": "Av. Shyris 258, Quito",
-        "role": "Responsable"
+        "address": "coop. El cerro mz 95 sl. 15 mapasingue oeste",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1999-12-26",
+        "marital_status": 1,
+        "contact_phone_1": "(+593) 968810358",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 82,
@@ -734,8 +1220,14 @@
         "lastname": "Perez",
         "email": "miguelperez@fundaciondevalores.org",
         "document_number": "12345082",
-        "address": "Av. Ejército 369, Lima",
-        "role": "Responsable"
+        "address": "Mz u5 lt 29 los licenciados ventanilla callao",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1993-11-29",
+        "marital_status": 2,
+        "contact_phone_1": "(+51) 979342225",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 83,
@@ -744,7 +1236,13 @@
         "email": "sorelorellana@fundaciondevalores.org",
         "document_number": "12345083",
         "address": "Zona 35, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 84,
@@ -753,7 +1251,13 @@
         "email": "mitzicalderon@fundaciondevalores.org",
         "document_number": "12345084",
         "address": "Zona 36, Guatemala City",
-        "role": "Supervisor académico"
+        "role": "Supervisor académico",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 85,
@@ -761,8 +1265,14 @@
         "lastname": "Gonzáles",
         "email": "monicagonzales@fundaciondevalores.org",
         "document_number": "12345085",
-        "address": "Av. República 741, Lima",
-        "role": "Responsable"
+        "address": "Av. Flora tristán 492 - Tablada de Lurín - Villa María del Triunfo",
+        "role": "Responsable",
+        "gender": 2,
+        "document_type": 1,
+        "birth_date": "1995-03-02",
+        "marital_status": 1,
+        "contact_phone_1": "(+51) 981433754",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 86,
@@ -771,7 +1281,13 @@
         "email": "moronimiranda@fundaciondevalores.org",
         "document_number": "12345086",
         "address": "Av. Naciones Unidas 852, Quito",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 87,
@@ -780,7 +1296,13 @@
         "email": "nayelitorres@fundaciondevalores.org",
         "document_number": "12345087",
         "address": "Zona 37, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 88,
@@ -788,8 +1310,14 @@
         "lastname": "Jimenez",
         "email": "nilsonjimenez@fundaciondevalores.org",
         "document_number": "12345088",
-        "address": "Av. John F. Kennedy 963, Santo Domingo",
-        "role": "Responsable"
+        "address": "Calle Laurel # 16 el Valiente, santo domingo este",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1976-01-25",
+        "marital_status": 2,
+        "contact_phone_1": "(+1) 8499187523",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 89,
@@ -798,7 +1326,13 @@
         "email": "pamelahernandez@fundaciondevalores.org",
         "document_number": "12345089",
         "address": "Zona 38, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 90,
@@ -806,8 +1340,14 @@
         "lastname": "Apolaya",
         "email": "paulapolaya@fundaciondevalores.org",
         "document_number": "12345090",
-        "address": "Av. Venezuela 147, Lima",
-        "role": "Supervisor de responsable"
+        "address": "Quinta Montebello II Mz B Lt 5 Yanahuara- Arequipa",
+        "role": "Supervisor de responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1974-05-16",
+        "marital_status": 2,
+        "contact_phone_1": "(+51) 946363534",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 91,
@@ -816,7 +1356,13 @@
         "email": "pedrogerman@fundaciondevalores.org",
         "document_number": "12345091",
         "address": "Av. Tiradentes 258, Santo Domingo",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 92,
@@ -824,8 +1370,14 @@
         "lastname": "Piedrahita",
         "email": "josepiedrahita@fundaciondevalores.org",
         "document_number": "12345092",
-        "address": "Av. Francisco de Miranda 369, Caracas",
-        "role": "Responsable"
+        "address": "Veracruz estado tachira venezuela pasaje los llanos # 0 -135",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1981-07-25",
+        "marital_status": 2,
+        "contact_phone_1": "(+58) 04120675317",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 93,
@@ -834,7 +1386,13 @@
         "email": "reynaroca@fundaciondevalores.org",
         "document_number": "12345093",
         "address": "Zona 39, Guatemala City",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 94,
@@ -843,7 +1401,13 @@
         "email": "robertodeleon@fundaciondevalores.org",
         "document_number": "12345094",
         "address": "Zona 40, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 95,
@@ -852,7 +1416,13 @@
         "email": "rociolongo@fundaciondevalores.org",
         "document_number": "12345095",
         "address": "Zona 41, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 96,
@@ -860,8 +1430,14 @@
         "lastname": "Zaldaña",
         "email": "roquezaldana@fundaciondevalores.org",
         "document_number": "12345096",
-        "address": "Av. Roosevelt 741, San Salvador",
-        "role": "Responsable"
+        "address": "Res. Ciudad Pacífico, Calle principal, Block 18, #5, Ahuachapan, El Salvador.",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1975-02-12",
+        "marital_status": 2,
+        "contact_phone_1": "(+503) 76497379",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 97,
@@ -870,7 +1446,13 @@
         "email": "rosacardenas@fundaciondevalores.org",
         "document_number": "12345097",
         "address": "Av. La Marina 852, Lima",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 98,
@@ -878,8 +1460,14 @@
         "lastname": "Vera",
         "email": "axelvera@fundaciondevalores.org",
         "document_number": "12345098",
-        "address": "Col. Polanco, Ciudad de México",
-        "role": "Responsable"
+        "address": "Av 9 entre calle 30 y 32, #13 col. 5 de mayo, 77930, Bacalar, Quintana Roo.",
+        "role": "Responsable",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1999-08-05",
+        "marital_status": 2,
+        "contact_phone_1": "(+52) 5574365244",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 99,
@@ -888,7 +1476,13 @@
         "email": "saragalvez@fundaciondevalores.org",
         "document_number": "12345099",
         "address": "Zona 42, Guatemala City",
-        "role": "Certificador"
+        "role": "Certificador",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 100,
@@ -897,7 +1491,13 @@
         "email": "mauriciolopez@fundaciondevalores.org",
         "document_number": "12345100",
         "address": "Zona 43, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 101,
@@ -905,8 +1505,14 @@
         "lastname": "Valdez",
         "email": "valentinvaldez@fundaciondevalores.org",
         "document_number": "12345101",
-        "address": "Av. George Washington 963, Santo Domingo",
-        "role": "Director de escuela"
+        "address": "calle Valle los Cocos # 32 Res. Paseo de las Flores Tamarindo adentro zona oriental",
+        "role": "Director de escuela",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1971-02-14",
+        "marital_status": 2,
+        "contact_phone_1": "(+1) 8499187520",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 102,
@@ -914,8 +1520,14 @@
         "lastname": "Roldán",
         "email": "victorroldan@fundaciondevalores.org",
         "document_number": "12345102",
-        "address": "Av. Conquistadores 147, Lima",
-        "role": "Director de escuela"
+        "address": "Manco Inca II #452 Urb. Los próceres-Surco",
+        "role": "Director de escuela",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1992-07-08",
+        "marital_status": 2,
+        "contact_phone_1": "(+51) 998133557",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 103,
@@ -924,7 +1536,13 @@
         "email": "victoriamartinez@fundaciondevalores.org",
         "document_number": "12345103",
         "address": "Av. 20 de Octubre 258, La Paz",
-        "role": "Controller"
+        "role": "Controller",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 104,
@@ -932,8 +1550,14 @@
         "lastname": "Sanchez",
         "email": "dorasanchez@fundaciondevalores.org",
         "document_number": "12345104",
-        "address": "Av. Primavera 369, Lima",
-        "role": "Responsable"
+        "address": "Calle los gladiolos MZ a lt 26",
+        "role": "Responsable",
+        "gender": 2,
+        "document_type": 1,
+        "birth_date": "1978-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "(+51) 981439004",
+        "contact_phone_2": "0987654321"
     },
     {
         "id": 105,
@@ -942,6 +1566,12 @@
         "email": "yomalygomez@fundaciondevalores.org",
         "document_number": "12345105",
         "address": "Zona 44, Guatemala City",
-        "role": "Profesor"
+        "role": "Profesor",
+        "gender": 1,
+        "document_type": 1,
+        "birth_date": "1990-01-01",
+        "marital_status": 1,
+        "contact_phone_1": "1234567890",
+        "contact_phone_2": "0987654321"
     }
 ]

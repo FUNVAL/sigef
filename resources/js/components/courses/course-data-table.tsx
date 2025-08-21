@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
-import TextLink from "../text-link";
 import { Course } from "@/types/course";
 
 interface CourseDataTableProps {
@@ -43,7 +42,7 @@ export const createColumns = ({ onEditCourse, onDeleteCourse }: CourseDataTableP
         enableHiding: false,
     },
     {
-        accessorKey: "name",
+        accessorKey: "Nombre del curso",
         header: "Nombre del curso",
         cell: ({ row }) => {
             const course = row.original;
@@ -55,7 +54,7 @@ export const createColumns = ({ onEditCourse, onDeleteCourse }: CourseDataTableP
         },
     },
     {
-        accessorKey: "duration",
+        accessorKey: "Duración",
         header: "Duración",
         cell: ({ row }) => {
             const course = row.original;
@@ -69,7 +68,7 @@ export const createColumns = ({ onEditCourse, onDeleteCourse }: CourseDataTableP
         },
     },
     {
-        accessorKey: "modality.name",
+        accessorKey: "Modalidad",
         header: "Modalidad",
         cell: ({ row }) => {
             const course = row.original;
@@ -83,7 +82,7 @@ export const createColumns = ({ onEditCourse, onDeleteCourse }: CourseDataTableP
         },
     },
     {
-        accessorKey: "status",
+        accessorKey: "Estado",
         header: "Estado",
         cell: ({ row }) => {
             const course = row.original;

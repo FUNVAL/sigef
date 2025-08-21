@@ -2,8 +2,7 @@ import { ActionSelectionStep } from '@/components/pre-registration/steps/ActionS
 import { DisclaimerStep } from '@/components/pre-registration/steps/DisclaimerStep';
 import { Stepper, Translation } from '@/types/global';
 import StepperProvider from './stepper-provider';
-import { useContext } from 'react';
-import { usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 
 
 const PreRegistration = () => {
@@ -21,7 +20,10 @@ const PreRegistration = () => {
         ];
 
     return (
-        <StepperProvider steps={steps} />
+        <>
+            <Head title="Pre-Registration" />
+            <StepperProvider steps={steps} />
+        </>
     );
 }
 

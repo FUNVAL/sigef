@@ -38,12 +38,16 @@ class PreInscription extends Model
         'job_type_preference',
         'available_full_time',
         'status',
-        'comments',
         'declined_reason',
         'declined_description',
         'modified_by',
         'country_id',
         'stake_id',
+    ];
+
+    protected $casts = [
+        'currently_working' => 'boolean',
+        'available_full_time' => 'boolean',
     ];
 
     public function country(): BelongsTo

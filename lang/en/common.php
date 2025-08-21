@@ -27,6 +27,7 @@ return [
             'full_time' => 'Full time',
             'part_time' => 'Part time',
             'years' => 'years',
+            'country' => 'Country',
         ],
         'titles' => [
             'dashboard' => 'Dashboard',

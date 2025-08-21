@@ -22,8 +22,6 @@ interface ColumnsProps {
 }
 
 export const getColumns = ({ countries, users, enums, onEdit, onDelete }: ColumnsProps): ColumnDef<Stake>[] => {
-    // Como necesitamos acceso a los enums, esta función necesita recibir los enums como parámetro
-    // o ser refactorizada para usarse dentro de un componente
     return [
         {
             id: 'select',
@@ -41,18 +39,22 @@ export const getColumns = ({ countries, users, enums, onEdit, onDelete }: Column
             enableHiding: false,
         },
         {
-            accessorKey: 'name',
+            accessorKey: 'Nombre',
             header: 'Nombre',
+            accessorFn: (row: Stake) => row.name,
+            cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
         },
         {
             id: 'country',
             header: 'País',
+            accessorKey: 'País',
             accessorFn: (row: Stake) => row.country?.code || 'N/A',
             cell: ({ row }) => <span className="font-medium">{row.original.country?.code || 'N/A'}</span>,
         },
         {
             id: 'user',
             header: 'Responsable',
+            accessorKey: 'Responsable',
             accessorFn: (row: Stake) => (row.user ? `${row.user.firstname} ${row.user.lastname}` : 'N/A'),
             cell: ({ row }) => (
                 <span className="font-medium">{row.original.user ? `${row.original.user.firstname} ${row.original.user.lastname}` : 'N/A'}</span>
@@ -61,6 +63,7 @@ export const getColumns = ({ countries, users, enums, onEdit, onDelete }: Column
         {
             id: 'status',
             header: 'Estado',
+            accessorKey: 'Estado',
             accessorFn: (row: Stake) => row.status,
             cell: ({ row }) => {
                 const status = row.original.status;
@@ -84,6 +87,7 @@ export const getColumns = ({ countries, users, enums, onEdit, onDelete }: Column
             id: 'actions',
             header: 'Acciones',
             enableHiding: false,
+            accessorKey: 'Acciones',
             cell: ({ row }) => {
                 const stake = row.original;
 
