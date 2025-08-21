@@ -63,7 +63,7 @@ class CourseController extends Controller
             ]);
 
             return redirect()->route('courses.index')
-                ->with('success', 'Course created successfully.');
+                ->with('success', 'Curso restaurado exitosamente.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withErrors(['error' => $e->getMessage()])
