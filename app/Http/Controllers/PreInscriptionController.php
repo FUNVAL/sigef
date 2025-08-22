@@ -11,6 +11,7 @@ use App\Enums\MissionStatusEnum;
 use App\Enums\RequestStatusEnum;
 use App\Enums\JobTypeEnum;
 use App\Enums\ReferenceStatusEnum;
+use App\Enums\StatusEnum;
 use App\Models\Course;
 use App\Notifications\RequestNotification;
 use Illuminate\Http\Request;
@@ -103,8 +104,8 @@ class PreInscriptionController extends Controller
             // load view with inertia
             return inertia('forms/pre-inscription-form', [
                 'step' => request()->input('step', 0),
-                'countries' => Country::all(),
-                'courses' => Course::all()
+                'countries' => Country::where('status', StatusEnum::ACTIVE->value)->get(),
+                'courses' => Course::where('status', StatusEnum::ACTIVE->value)->get()
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -229,8 +230,8 @@ class PreInscriptionController extends Controller
 
             return Inertia::render('forms/pre-inscription-edit-form', [
                 'preInscription' => $preInscription,
-                'countries' => Country::all(),
-                'courses' => Course::all()
+                'countries' => Country::where('status', StatusEnum::ACTIVE->value)->get(),
+                'courses' => Course::where('status', StatusEnum::ACTIVE->value)->get()
             ]);
         } catch (\Exception $e) {
             return redirect()->route('pre-inscription.index')

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\ReferenceStatusEnum;
 use App\Enums\RequestStatusEnum;
+use App\Enums\StatusEnum;
 use App\Models\Country;
 use App\Models\Reference;
 use Illuminate\Http\Request;
@@ -93,7 +94,7 @@ class ReferenceController extends Controller
     {
         return  Inertia::render('forms/reference-form', [
             'step' => request()->input('step', 0),
-            'countries' => Country::all()
+            'countries' => Country::where('status', StatusEnum::ACTIVE->value)->get(),
         ]);
     }
 
@@ -169,7 +170,7 @@ class ReferenceController extends Controller
 
             return Inertia::render('forms/reference-edit-form', [
                 'reference' => $reference,
-                'countries' => Country::all()
+                'countries' => Country::where('status', StatusEnum::ACTIVE->value)->get()
             ]);
         } catch (\Exception $e) {
             return redirect()->route('references.index')
