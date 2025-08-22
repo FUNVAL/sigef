@@ -102,10 +102,10 @@
         "key": "reference:view-staff"
     },
     {
-        "name": "editar referencias",
+        "name": "actualizar estado de referencias",
         "description": "Permite actualizar el estado de una referencia",
         "category": "Gestion de referencias",
-        "key": "reference:edit"
+        "key": "reference:update-status"
     },
     {
         "name": "actualizar referencias",

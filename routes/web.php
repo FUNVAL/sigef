@@ -79,25 +79,35 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('references')->name('references.')
         ->controller(ReferenceController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
-            Route::get('/', 'index')->name('index')
+            Route::get('/', 'index')
+                ->name('index')
                 ->middleware('can:ver todas las referencias,ver referencias propias,ver referencias del personal');
-            Route::get('{id}', 'show')->name('show');
-            Route::get('{id}/edit', 'edit')->name('edit');
-            Route::patch('{id}', 'update')->name('update');
-            Route::put('{id}', 'updateReference')->name('update-reference');
-            Route::delete('{id}', 'destroy')->name('destroy');
+            Route::get('{id}/edit', 'edit')
+                ->name('edit')
+                ->middleware('can:actualizar referencias');
+            Route::patch('{id}', 'update')
+                ->name('update')
+                ->middleware('can:actualizar estado de referencias');
+            Route::put('{id}', 'updateReference')
+                ->name('update-reference')
+                ->middleware('can:actualizar referencias');
         });
 
     Route::prefix('pre-inscription')->name('pre-inscription.')
         ->controller(PreInscriptionController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
-            Route::get('/', 'index')->name('index')
+            Route::get('/', 'index')
+                ->name('index')
                 ->middleware('can:ver todas las preinscripciones,ver preinscripciones propias,ver preinscripciones del personal');
-            Route::get('{id}', 'show')->name('show');
-            Route::get('{id}/edit', 'edit')->name('edit');
-            Route::put('{id}', 'update')->name('update')->middleware('can:actualizar estado de preinscripciones');
-            Route::put('{id}/update-data', 'updatePreInscription')->name('update-data')->middleware('can:actualizar preinscripciones');
-            Route::delete('{id}', 'destroy')->name('destroy');
+            Route::get('{id}/edit', 'edit')
+                ->name('edit')
+                ->middleware('can:actualizar preinscripciones');
+            Route::put('{id}', 'update')
+                ->name('update')
+                ->middleware('can:actualizar estado de preinscripciones');
+            Route::put('{id}/update-data', 'updatePreInscription')
+                ->name('update-data')
+                ->middleware('can:actualizar preinscripciones');
         });
 
     Route::get('settings/appearance', function () {
