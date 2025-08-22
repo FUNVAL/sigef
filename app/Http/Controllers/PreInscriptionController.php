@@ -33,7 +33,7 @@ class PreInscriptionController extends Controller
             $all = $user->can('ver todas las preinscripciones');
             $own = $user->can('ver preinscripciones propias');
             $staff = $user->can('ver preinscripciones del personal');
-            /* dd($all); */
+
             $query = PreInscription::query()->with(['country', 'stake'])->orderBy('created_at', 'desc');
 
             if ($request->has('search')) {
@@ -47,7 +47,7 @@ class PreInscriptionController extends Controller
                 });
             }
 
-            if ($own) {
+            if ($own && !$all && !$staff) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
