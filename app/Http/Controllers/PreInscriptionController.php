@@ -13,6 +13,7 @@ use App\Enums\JobTypeEnum;
 use App\Enums\ReferenceStatusEnum;
 use App\Enums\StatusEnum;
 use App\Models\Course;
+use App\Models\User;
 use App\Notifications\RequestNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,10 +30,12 @@ class PreInscriptionController extends Controller
     {
         try {
             $user = Auth::user();
-            $isAdmin = $user->hasRole('Administrador');
+            $all = $user->can('ver todas las preinscripciones');
+            $own = $user->can('ver preinscripciones propias');
+            $staff = $user->can('ver preinscripciones del personal');
+            /* dd($all); */
             $query = PreInscription::query()->with(['country', 'stake'])->orderBy('created_at', 'desc');
 
-            // Búsqueda simple para el frontend
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($q) use ($search) {
@@ -44,7 +47,7 @@ class PreInscriptionController extends Controller
                 });
             }
 
-            if ($user->hasRole('Responsable') && !$isAdmin) {
+            if ($own) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
@@ -55,7 +58,7 @@ class PreInscriptionController extends Controller
             }
 
             $responsable = $request->input('responsable');
-            if ($responsable && $isAdmin) {
+            if ($responsable && $all) {
                 $stakesIds = Stake::where('user_id', $responsable)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
@@ -64,8 +67,8 @@ class PreInscriptionController extends Controller
             $page = $request->input('page', 1);
             $preInscriptions = $query->paginate($perPage, ['*'], 'page', $page);
 
-            $responsables = !$isAdmin ? null :
-                \App\Models\User::role('Responsable')
+            $responsables = !$all ? null :
+                User::role('Responsable')
                 ->get()
                 ->map(fn($u) => [
                     'id' => $u->id,

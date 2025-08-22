@@ -13,7 +13,7 @@ use Inertia\Inertia;
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('dashboard', function(){
+    Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })
         ->name('dashboard');
@@ -89,7 +89,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('pre-inscription')->name('pre-inscription.')
         ->controller(PreInscriptionController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
+            Route::get('/', 'index')->name('index')
+                ->middleware('can:ver todas las preinscripciones');
             Route::get('/dashboard', 'dashboard')->name('dashboard');
             Route::get('{id}', 'show')->name('show');
             Route::get('{id}/edit', 'edit')->name('edit');

@@ -102,10 +102,22 @@
         "key": "reference:update"
     },
     {
-        "name": "ver pre-inscripciones",
-        "description": "Permite ver la lista de pre-inscripciones",
-        "category": "Gestión de Pre-Inscripciones",
-        "key": "pre-inscription:view"
+        "name": "ver todas las preinscripciones",
+        "description": "Permite ver todas las preinscripciones",
+        "category": "Gestión de Preinscripciones",
+        "key": "pre-inscription:view-all"
+    },
+    {
+        "name": "ver preinscripciones propias",
+        "description": "Permite ver las preinscripciones propias",
+        "category": "Gestión de Preinscripciones",
+        "key": "pre-inscription:view-own"
+    },
+    {
+        "name": "ver preinscripciones del personal",
+        "description": "Permite ver las preinscripciones del personal asignado",
+        "category": "Gestión de Preinscripciones",
+        "key": "pre-inscription:view-staff"
     },
     {
         "name": "editar pre-inscripciones",
