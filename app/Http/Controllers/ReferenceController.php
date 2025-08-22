@@ -26,7 +26,10 @@ class ReferenceController extends Controller
     {
         try {
             $user = Auth::user();
-            $isAdmin = $user->hasRole('Administrador');
+            $all = $user->can('ver todas las preinscripciones');
+            $own = $user->can('ver preinscripciones propias');
+            $staff = $user->can('ver preinscripciones del personal');
+
             $query = Reference::query()->with(['country', 'stake', 'modifier'])->orderBy('created_at', 'desc');
 
             if ($request->has('search')) {
@@ -36,7 +39,7 @@ class ReferenceController extends Controller
                 });
             }
 
-            if ($user->hasRole('Responsable') && !$isAdmin) {
+            if (!$all && !$staff && $own) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
@@ -47,7 +50,7 @@ class ReferenceController extends Controller
             }
 
             $responsable = $request->input('responsable');
-            if ($responsable && $isAdmin) {
+            if ($responsable && $all) {
                 $stakesIds = Stake::where('user_id', $responsable)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
@@ -56,7 +59,7 @@ class ReferenceController extends Controller
             $page = $request->input('page', 1);
             $references = $query->paginate($perPage, ['*'], 'page', $page);
 
-            $responsables = !$isAdmin ? null :
+            $responsables = !$all ? null :
                 User::role('Responsable')
                 ->get()
                 ->map(fn($u) => [

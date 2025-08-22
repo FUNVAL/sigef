@@ -84,10 +84,22 @@
         "key": "course:delete"
     },
     {
-        "name": "ver referencias",
+        "name": "ver todas las referencias",
         "description": "Permite ver la lista de referencias",
         "category": "Gestion de referencias",
         "key": "reference:view"
+    },
+    {
+        "name": "ver referencias propias",
+        "description": "Permite ver las referencias propias",
+        "category": "Gestion de referencias",
+        "key": "reference:view-own"
+    },
+    {
+        "name": "ver referencias del personal",
+        "description": "Permite ver las referencias del personal asignado",
+        "category": "Gestion de referencias",
+        "key": "reference:view-staff"
     },
     {
         "name": "editar referencias",
@@ -120,15 +132,15 @@
         "key": "pre-inscription:view-staff"
     },
     {
-        "name": "editar pre-inscripciones",
-        "description": "Permite editar pre-inscripciones existentes",
-        "category": "Gestión de Pre-Inscripciones",
+        "name": "actualizar estado de preinscripciones",
+        "description": "Permite editar preinscripciones existentes",
+        "category": "Gestión de Preinscripciones",
         "key": "pre-inscription:edit"
     },
     {
-        "name": "actualizar pre-inscripciones",
-        "description": "Permite actualizar los datos de una pre-inscripción sin cambiar su estado",
-        "category": "Gestión de Pre-Inscripciones",
+        "name": "actualizar preinscripciones",
+        "description": "Permite actualizar los datos de una preinscripción sin cambiar su estado",
+        "category": "Gestión de Preinscripciones",
         "key": "pre-inscription:update"
     },
     {
