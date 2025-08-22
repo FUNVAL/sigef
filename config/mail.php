@@ -95,6 +95,10 @@ return [
             ],
         ],
 
+        'gmail-service-account' => [
+            'transport' => 'gmail-service-account',
+        ],
+
     ],
 
     /*
