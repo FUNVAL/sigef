@@ -6,7 +6,7 @@ return [
         'description' => 'Completa tu información personal para proceder con tu preinscripción',
         'overview' => [
             'title' => 'Revisa tus datos',
-            'subtitle' => 'Verifique que toda la información sea correcta antes de enviar',
+            'subtitle' => 'Verifica que toda la información sea correcta antes de enviar',
             'fields' => [
                 'first_name' => 'Primer nombre:',
                 'middle_name' => 'Segundo nombre:',
