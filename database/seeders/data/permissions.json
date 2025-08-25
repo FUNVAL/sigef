@@ -24,12 +24,6 @@
         "key": "user:delete"
     },
     {
-        "name": "ver estacas asignadas",
-        "description": "Permite ver las estacas asignadas a un usuario",
-        "category": "Gestión de Estacas",
-        "key": "stake:view-assigned"
-    },
-    {
         "name": "ver roles",
         "description": "Permite ver la lista de roles",
         "category": "Gestión de Roles",
@@ -84,6 +78,12 @@
         "key": "course:delete"
     },
     {
+        "name": "dashboard de referencias",
+        "description": "Permite ver el dashboard de referencias",
+        "category": "Gestion de referencias",
+        "key": "reference:dashboard"
+    },
+    {
         "name": "ver todas las referencias",
         "description": "Permite ver la lista de referencias",
         "category": "Gestion de referencias",
@@ -112,6 +112,12 @@
         "description": "Permite actualizar los datos de una referencia sin cambiar su estado",
         "category": "Gestion de referencias",
         "key": "reference:update"
+    },
+    {
+        "name": "dashboard de preinscripciones",
+        "description": "Permite ver el dashboard de preinscripciones",
+        "category": "Gestion de preinscripciones",
+        "key": "preinscripciones:dashboard"
     },
     {
         "name": "ver todas las preinscripciones",
@@ -154,6 +160,12 @@
         "description": "Permite ver la lista de estacas",
         "category": "Gestión de Estacas",
         "key": "stake:view"
+    },
+    {
+        "name": "ver estacas asignadas",
+        "description": "Permite ver las estacas asignadas a un usuario",
+        "category": "Gestión de Estacas",
+        "key": "stake:view-assigned"
     },
     {
         "name": "editar estacas",
