@@ -87,7 +87,7 @@
         "name": "ver todas las referencias",
         "description": "Permite ver la lista de referencias",
         "category": "Gestion de referencias",
-        "key": "reference:view"
+        "key": "reference:view-all"
     },
     {
         "name": "ver referencias propias",
@@ -122,31 +122,31 @@
     {
         "name": "ver todas las preinscripciones",
         "description": "Permite ver todas las preinscripciones",
-        "category": "Gestión de Preinscripciones",
+        "category": "Gestión de preinscripciones",
         "key": "pre-inscription:view-all"
     },
     {
         "name": "ver preinscripciones propias",
         "description": "Permite ver las preinscripciones propias",
-        "category": "Gestión de Preinscripciones",
+        "category": "Gestión de preinscripciones",
         "key": "pre-inscription:view-own"
     },
     {
         "name": "ver preinscripciones del personal",
         "description": "Permite ver las preinscripciones del personal asignado",
-        "category": "Gestión de Preinscripciones",
+        "category": "Gestión de preinscripciones",
         "key": "pre-inscription:view-staff"
     },
     {
         "name": "actualizar estado de preinscripciones",
         "description": "Permite editar preinscripciones existentes",
-        "category": "Gestión de Preinscripciones",
+        "category": "Gestión de preinscripciones",
         "key": "pre-inscription:edit"
     },
     {
         "name": "actualizar preinscripciones",
         "description": "Permite actualizar los datos de una preinscripción sin cambiar su estado",
-        "category": "Gestión de Preinscripciones",
+        "category": "Gestión de preinscripciones",
         "key": "pre-inscription:update"
     },
     {
