@@ -190,8 +190,8 @@ class PreInscriptionController extends Controller
 
                 $preInscription->update([
                     'status' => RequestStatusEnum::REJECTED->value,
-                    'declined_reason' => ReferenceStatusEnum::NO_APPLY->value,
-                    'comments' => 'Preinscripción filtrada automáticamente, no cumple con los requisitos.',
+                    'declined_reason' => ReferenceStatusEnum::FILTERED->value,
+                    'declined_description' => 'Preinscripción filtrada automáticamente, no cumple con los requisitos.',
                     'modified_by' => 0
                 ]);
             }
