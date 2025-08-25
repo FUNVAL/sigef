@@ -17,7 +17,7 @@ export const filterReferenceStatus = (enums: Enums, status: number) => {
         case 1:
             return enums.referenceStatus.slice(-3);
         case 3:
-            return enums.referenceStatus.slice(0, -2);
+            return enums.referenceStatus.slice(0, -3);
         default:
             return enums.referenceStatus;
     }

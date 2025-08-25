@@ -51,7 +51,7 @@ return [
         'health' => 'Salud',
         'graduate' => 'Egresado',
         'duplicate' => 'Duplicado',
-        'Untraceable' => 'Ilocalizable',
+        'untraceable' => 'Ilocalizable',
     ],
     'document_type' => [
         'identity_card' => 'Cédula de Identidad',
