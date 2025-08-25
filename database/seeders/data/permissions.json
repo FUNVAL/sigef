@@ -116,7 +116,7 @@
     {
         "name": "dashboard de preinscripciones",
         "description": "Permite ver el dashboard de preinscripciones",
-        "category": "Gestion de preinscripciones",
+        "category": "Gestión de preinscripciones",
         "key": "preinscripciones:dashboard"
     },
     {
