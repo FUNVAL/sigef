@@ -20,18 +20,22 @@ class StakeController extends Controller
     {
         $query = Stake::query()->with(['country', 'user']);
 
-        // Búsqueda simple para el frontend
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Mostrar solo activos e inactivos (no eliminados)
         $query->notDeleted();
 
-        // Paginación
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);
         $stakes = $query->orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
+        $users = User::all()->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->full_name,
+            ];
+        });
 
         return Inertia::render('Stakes/Index', [
             'stakes' => $stakes,
@@ -42,7 +46,7 @@ class StakeController extends Controller
                 'last_page' => $stakes->lastPage(),
             ],
             'countries' => Country::all(),
-            'users' => User::all(),
+            'users' =>  $users,
             'filters' => $request->only(['search'])
         ]);
     }
@@ -50,7 +54,7 @@ class StakeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    
+
     public function store(Request $request)
     {
 
@@ -67,7 +71,7 @@ class StakeController extends Controller
             return redirect()->route('stakes.index')
                 ->with('success', 'Estaca creada exitosamente');
         }
-            
+
 
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:stakes',
