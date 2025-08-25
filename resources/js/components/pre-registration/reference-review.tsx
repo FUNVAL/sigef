@@ -135,7 +135,7 @@ const ReferenceReview = ({ reference, open = false, onOpenChange }: ReferenceRev
                                 <SelectContent>
                                     <SelectItem value='0' disabled>Selecciona un motivo</SelectItem>
                                     {filterReferenceStatus(enums, data.status).map((status) => (
-                                        <SelectItem key={status.id} value={status.id.toString()}>
+                                        <SelectItem key={status.id} value={status.id.toString()} className={status.id === 8 ? 'hidden' : ''}>
                                             {status.name}
                                         </SelectItem>
                                     ))}
