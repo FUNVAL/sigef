@@ -50,6 +50,7 @@ return [
         'health' => 'Sante',
         'graduate' => 'gradye',
         'duplicate' => 'Doub',
+        'untraceable' => 'Ilocalizable',
     ],
     'document_type' => [
         'identity_card' => 'Kat Idantite',
