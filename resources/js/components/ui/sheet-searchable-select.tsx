@@ -18,7 +18,8 @@ interface SheetSearchableSelectProps extends React.ComponentPropsWithoutRef<'div
     required?: boolean;
     id?: string;
     label?: string;
-    hideSearch?: boolean; // Nueva prop para ocultar la búsqueda
+    hideSearch?: boolean;
+    all?: boolean;
 }
 
 const SheetSearchableSelect = React.forwardRef<HTMLDivElement, SheetSearchableSelectProps>(({
@@ -34,14 +35,14 @@ const SheetSearchableSelect = React.forwardRef<HTMLDivElement, SheetSearchableSe
     required = false,
     id,
     label,
-    hideSearch = false, // Valor predeterminado: mostrar la búsqueda
+    hideSearch = false,
+    all = true,
     ...props
 }, ref) => {
     const [searchQuery, setSearchQuery] = React.useState('');
     const [isOpen, setIsOpen] = React.useState(false);
     const componentRef = React.useRef<HTMLDivElement>(null);
 
-    // Filtrar datos basados en la búsqueda (solo si hideSearch es false)
     const filteredData = React.useMemo(() => {
         if (hideSearch || !searchQuery) return data;
         return data.filter(item =>
@@ -50,14 +51,12 @@ const SheetSearchableSelect = React.forwardRef<HTMLDivElement, SheetSearchableSe
         );
     }, [data, searchQuery, hideSearch]);
 
-    // Encontrar el nombre del valor seleccionado
     const selectedName = React.useMemo(() => {
         if (!value || value === "0") return placeholder;
         const selected = data.find(item => item.id.toString() === value);
         return selected ? selected.name : placeholder;
     }, [value, data, placeholder]);
 
-    // Manejar click outside para cerrar el dropdown
     React.useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
@@ -65,18 +64,15 @@ const SheetSearchableSelect = React.forwardRef<HTMLDivElement, SheetSearchableSe
             }
         }
 
-        // Añadir event listener cuando el dropdown está abierto
         if (isOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         }
 
-        // Cleanup event listener
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isOpen]);
 
-    // Limpiar búsqueda cuando se cierra el dropdown
     React.useEffect(() => {
         if (!isOpen) {
             setSearchQuery('');
@@ -97,7 +93,6 @@ const SheetSearchableSelect = React.forwardRef<HTMLDivElement, SheetSearchableSe
                 required={required}
             />
 
-            {/* Custom select trigger */}
             <div
                 className={cn(
                     "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
@@ -111,10 +106,9 @@ const SheetSearchableSelect = React.forwardRef<HTMLDivElement, SheetSearchableSe
                 <ChevronDown className={cn("h-4 w-4 opacity-50 transition-transform", isOpen && "rotate-180")} />
             </div>
 
-            {/* Dropdown menu */}
             {isOpen && (
                 <div className="absolute z-50 w-full min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80">
-                    {/* Mostrar campo de búsqueda solo si hideSearch es false */}
+
                     {!hideSearch && (
                         <div className="p-2">
                             <Input
@@ -127,21 +121,23 @@ const SheetSearchableSelect = React.forwardRef<HTMLDivElement, SheetSearchableSe
                         </div>
                     )}
 
-                    <ScrollArea className="max-h-[200px]">
+                    <ScrollArea className="max-h-[200px] overflow-y-auto" >
                         <div className={!hideSearch ? "" : "pt-2"}>
-                            {/* "Todos" option */}
-                            <div
-                                className={cn(
-                                    "relative flex cursor-default select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
-                                    (value === "" || value === "0") && "bg-accent text-accent-foreground"
-                                )}
-                                onClick={() => {
-                                    onValueChange("0");
-                                    setIsOpen(false);
-                                }}
-                            >
-                                Todos
-                            </div>
+
+                            {all &&
+                                <div
+                                    className={cn(
+                                        "relative flex cursor-default select-none items-center rounded-sm py-1.5 px-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
+                                        (value === "" || value === "0") && "bg-accent text-accent-foreground"
+                                    )}
+                                    onClick={() => {
+                                        onValueChange("0");
+                                        setIsOpen(false);
+                                    }}
+                                >
+                                    Todos
+                                </div>
+                            }
 
                             {filteredData.length === 0 ? (
                                 <div className="px-2 py-1.5 text-sm text-muted-foreground">
