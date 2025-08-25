@@ -48,8 +48,16 @@ export const mainNavItems: NavItem[] = [
 ];
 
 export const getNavItems = (userPermissions: string[]): NavItem[] => {
-    return mainNavItems.filter((item) => {
+    const filteredItems = mainNavItems.filter((item) => {
         if (!item.permissions) return true;
         return item.permissions.some((permission) => userPermissions.includes(permission));
     });
+
+    const dashboardItem = filteredItems.find(item => item.title === 'Dashboard');
+
+    const otherItems = filteredItems.filter(item => item.title !== 'Dashboard');
+
+    const sortedOtherItems = otherItems.sort((a, b) => a.title.localeCompare(b.title));
+
+    return dashboardItem ? [dashboardItem, ...sortedOtherItems] : sortedOtherItems;
 };
