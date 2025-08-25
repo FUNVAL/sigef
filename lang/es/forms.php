@@ -34,7 +34,7 @@ return [
             'title' => 'Seleccione su Curso',
             'description' => 'Elija el programa de capacitación que mejor se adapte a sus intereses y objetivos profesionales',
             'selected_course' => 'Curso seleccionado:',
-            'selection_confirmation' => 'Ha seleccionado este curso para su proceso de preinscripción. Al continuar, confirma su interés en participar en este programa.',
+            'selection_confirmation' => 'Has seleccionado este curso para tu proceso de preinscripción. Al continuar, confirmas tu interés en participar en este programa.',
             'duration' => 'semanas',
         ],
         'female_filter' => [

@@ -500,8 +500,8 @@ class PreInscriptionController extends Controller
                 $preInscription->available_full_time,
                 $genderId
             );
-
-            $message = str_replace('[**]', $msg['message'], __('common.messages.duplicates.rejected'));
+            $rejected_message = "<div class='bg-blue-200/30 rounded-md p-2'>" . $msg['message'] . "</div>";
+            $message = str_replace('[**]', $rejected_message, __('common.messages.duplicates.rejected'));
 
             return [
                 'exists' => true,
