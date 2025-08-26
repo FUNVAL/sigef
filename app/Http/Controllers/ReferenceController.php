@@ -55,6 +55,11 @@ class ReferenceController extends Controller
                 $query->whereIn('stake_id', $stakesIds);
             }
 
+            $country = $request->input('country') ?? 0;
+            if ($country != 0) {
+                $query->where('country_id', $country);
+            }
+
             $perPage = $request->input('per_page', 10);
             $page = $request->input('page', 1);
             $references = $query->paginate($perPage, ['*'], 'page', $page);
@@ -70,16 +75,20 @@ class ReferenceController extends Controller
                 ->values()
                 ->toArray();
 
+            $countries = Country::where('status', StatusEnum::ACTIVE->value)->get();
+
+
             return Inertia::render('pre-registration/references', [
                 'references' => $references,
                 'responsables' => $responsables,
+                'countries' => $countries,
                 'pagination' => [
                     'current_page' => $references->currentPage(),
                     'per_page' => $references->perPage(),
                     'total' => $references->total(),
                     'last_page' => $references->lastPage(),
                 ],
-                'filters' => $request->only(['search', 'status', 'responsable']),
+                'filters' => $request->only(['search', 'status', 'responsable', 'country']),
             ]);
         } catch (\Exception $e) {
             return response()->json([
