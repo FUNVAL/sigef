@@ -13,7 +13,11 @@ import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
 import TextLink from "../text-link";
 
-export const columns: ColumnDef<User>[] = [
+interface UserDataTableProps {
+    onDeleteUser?: (user: User) => void;
+}
+
+export const createColumns = ({ onDeleteUser }: UserDataTableProps): ColumnDef<User>[] => [
     {
         id: "select",
         header: ({ table }) => (
@@ -147,6 +151,9 @@ export const columns: ColumnDef<User>[] = [
                                 </TextLink>
                             </DropdownMenuItem>
                         )}
+                        <DropdownMenuItem onClick={() => onDeleteUser?.(user)}>
+                            Eliminar
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )

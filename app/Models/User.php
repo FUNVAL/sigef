@@ -7,7 +7,7 @@ namespace App\Models;
 use App\Enums\DocumentTypeEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
-use App\Enums\UserStatusEnum;
+use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -117,7 +117,7 @@ class User extends Authenticatable
      */
     public function getStatusAttribute(): ?array
     {
-        return UserStatusEnum::fromId($this->attributes['status']);
+        return StatusEnum::fromId($this->attributes['status']);
     }
 
     /**

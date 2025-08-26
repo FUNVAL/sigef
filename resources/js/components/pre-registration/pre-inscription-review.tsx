@@ -154,7 +154,7 @@ const PreInscriptionReview = ({ preInscription, open = false, onOpenChange }: Pr
                                 <SelectContent>
                                     <SelectItem value='0' disabled>Selecciona un motivo</SelectItem>
                                     {filterReferenceStatus(enums, data.status).map((status) => (
-                                        <SelectItem key={status.id} value={status.id.toString()}>
+                                        <SelectItem key={status.id} value={status.id.toString()} disabled={status.id === 8}>
                                             {status.name}
                                         </SelectItem>
                                     ))}

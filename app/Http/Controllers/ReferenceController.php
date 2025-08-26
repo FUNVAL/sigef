@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\ReferenceStatusEnum;
 use App\Enums\RequestStatusEnum;
+use App\Enums\StatusEnum;
 use App\Models\Country;
 use App\Models\Reference;
 use Illuminate\Http\Request;
@@ -25,7 +26,10 @@ class ReferenceController extends Controller
     {
         try {
             $user = Auth::user();
-            $isAdmin = $user->hasRole('Administrador');
+            $all = $user->can('ver todas las preinscripciones');
+            $own = $user->can('ver preinscripciones propias');
+            $staff = $user->can('ver preinscripciones del personal');
+
             $query = Reference::query()->with(['country', 'stake', 'modifier'])->orderBy('created_at', 'desc');
 
             if ($request->has('search')) {
@@ -35,7 +39,7 @@ class ReferenceController extends Controller
                 });
             }
 
-            if ($user->hasRole('Responsable') && !$isAdmin) {
+            if (!$all && !$staff && $own) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
@@ -46,16 +50,32 @@ class ReferenceController extends Controller
             }
 
             $responsable = $request->input('responsable');
-            if ($responsable && $isAdmin) {
+            if ($responsable && $all) {
                 $stakesIds = Stake::where('user_id', $responsable)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
+
+            $country = $request->input('country') ?? 0;
+            if ($country != 0) {
+                $query->where('country_id', $country);
+            }
+
+            $stake = $request->input('stake') ?? 0;
+            $stakes = $country != 0 ?
+                Stake::where('country_id', $country)
+                ->where('status', StatusEnum::ACTIVE->value)
+                ->get() : [];
+
+            if ($stake != 0 && $country != 0) {
+                $query->where('stake_id', $stake);
+            }
+
 
             $perPage = $request->input('per_page', 10);
             $page = $request->input('page', 1);
             $references = $query->paginate($perPage, ['*'], 'page', $page);
 
-            $responsables = !$isAdmin ? null :
+            $responsables = !$all ? null :
                 User::role('Responsable')
                 ->get()
                 ->map(fn($u) => [
@@ -66,16 +86,21 @@ class ReferenceController extends Controller
                 ->values()
                 ->toArray();
 
+            $countries = Country::where('status', StatusEnum::ACTIVE->value)->get();
+
+
             return Inertia::render('pre-registration/references', [
                 'references' => $references,
                 'responsables' => $responsables,
+                'countries' => $countries,
+                'stakes' => $stakes,
                 'pagination' => [
                     'current_page' => $references->currentPage(),
                     'per_page' => $references->perPage(),
                     'total' => $references->total(),
                     'last_page' => $references->lastPage(),
                 ],
-                'filters' => $request->only(['search', 'status', 'responsable']),
+                'filters' => $request->only(['search', 'status', 'responsable', 'country', 'stake']),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -93,7 +118,7 @@ class ReferenceController extends Controller
     {
         return  Inertia::render('forms/reference-form', [
             'step' => request()->input('step', 0),
-            'countries' => Country::all()
+            'countries' => Country::where('status', StatusEnum::ACTIVE->value)->get(),
         ]);
     }
 
@@ -169,7 +194,7 @@ class ReferenceController extends Controller
 
             return Inertia::render('forms/reference-edit-form', [
                 'reference' => $reference,
-                'countries' => Country::all()
+                'countries' => Country::where('status', StatusEnum::ACTIVE->value)->get()
             ]);
         } catch (\Exception $e) {
             return redirect()->route('references.index')

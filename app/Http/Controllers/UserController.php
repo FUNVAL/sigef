@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RequestStatusEnum;
+use App\Enums\StatusEnum;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Country;
@@ -18,18 +20,14 @@ class UserController extends Controller
     {
         try {
             $query = User::query();
+            $query->where('status', '!=', StatusEnum::DELETED->value);
 
-            // Búsqueda simple para el frontend
             if ($request->has('search')) {
                 $query->where('email', 'like', '%' . $request->search . '%')
                     ->orWhere('firstname', 'like', '%' . $request->search . '%')
                     ->orWhere('lastname', 'like', '%' . $request->search . '%');
             }
 
-            // Solo mostrar usuarios activos
-            $query->where('status', '!=', 'inactivo');
-
-            // Paginación
             $perPage = $request->input('per_page', 10);
             $page = $request->input('page', 1);
             $users = $query->orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
@@ -166,7 +164,19 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $user = User::findOrFail($id);
+            $user->update(
+                ['status' => StatusEnum::DELETED->value]
+            );
+
+            return redirect()
+                ->route('users.index')
+                ->with('success', 'Usuario eliminado exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => 'Failed to delete user: ' . $e->getMessage()]);
+        }
     }
 
     /**

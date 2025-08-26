@@ -11,7 +11,9 @@ use App\Enums\MissionStatusEnum;
 use App\Enums\RequestStatusEnum;
 use App\Enums\JobTypeEnum;
 use App\Enums\ReferenceStatusEnum;
+use App\Enums\StatusEnum;
 use App\Models\Course;
+use App\Models\User;
 use App\Notifications\RequestNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,10 +30,12 @@ class PreInscriptionController extends Controller
     {
         try {
             $user = Auth::user();
-            $isAdmin = $user->hasRole('Administrador');
+            $all = $user->can('ver todas las preinscripciones');
+            $own = $user->can('ver preinscripciones propias');
+            $staff = $user->can('ver preinscripciones del personal');
+
             $query = PreInscription::query()->with(['country', 'stake'])->orderBy('created_at', 'desc');
 
-            // Búsqueda simple para el frontend
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($q) use ($search) {
@@ -43,7 +47,7 @@ class PreInscriptionController extends Controller
                 });
             }
 
-            if ($user->hasRole('Responsable') && !$isAdmin) {
+            if ($own && !$all && !$staff) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
@@ -54,17 +58,32 @@ class PreInscriptionController extends Controller
             }
 
             $responsable = $request->input('responsable');
-            if ($responsable && $isAdmin) {
+            if ($responsable && $all) {
                 $stakesIds = Stake::where('user_id', $responsable)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $country = $request->input('country') ?? 0;
+            if ($country != 0) {
+                $query->where('country_id', $country);
+            }
+
+            $stake = $request->input('stake') ?? 0;
+            $stakes = $country != 0 ?
+                Stake::where('country_id', $country)
+                ->where('status', StatusEnum::ACTIVE->value)
+                ->get() : [];
+
+            if ($stake != 0 && $country != 0) {
+                $query->where('stake_id', $stake);
             }
 
             $perPage = $request->input('per_page', 10);
             $page = $request->input('page', 1);
             $preInscriptions = $query->paginate($perPage, ['*'], 'page', $page);
 
-            $responsables = !$isAdmin ? null :
-                \App\Models\User::role('Responsable')
+            $responsables = !$all ? null :
+                User::role('Responsable')
                 ->get()
                 ->map(fn($u) => [
                     'id' => $u->id,
@@ -74,16 +93,21 @@ class PreInscriptionController extends Controller
                 ->values()
                 ->toArray();
 
+            $countries = Country::where('status', StatusEnum::ACTIVE->value)->get();
+
+
             return Inertia::render('pre-registration/pre-inscription', [
                 'preInscriptions' => $preInscriptions,
                 'responsables' => $responsables,
+                'countries' => $countries,
+                'stakes' => $stakes,
                 'pagination' => [
                     'current_page' => $preInscriptions->currentPage(),
                     'per_page' => $preInscriptions->perPage(),
                     'total' => $preInscriptions->total(),
                     'last_page' => $preInscriptions->lastPage(),
                 ],
-                'filters' => $request->only(['search', 'status', 'responsable']),
+                'filters' => $request->only(['search', 'status', 'responsable', 'country', 'stake']),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -103,8 +127,8 @@ class PreInscriptionController extends Controller
             // load view with inertia
             return inertia('forms/pre-inscription-form', [
                 'step' => request()->input('step', 0),
-                'countries' => Country::all(),
-                'courses' => Course::all()
+                'countries' => Country::where('status', StatusEnum::ACTIVE->value)->get(),
+                'courses' => Course::where('status', StatusEnum::ACTIVE->value)->get()
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -186,8 +210,8 @@ class PreInscriptionController extends Controller
 
                 $preInscription->update([
                     'status' => RequestStatusEnum::REJECTED->value,
-                    'declined_reason' => ReferenceStatusEnum::NO_APPLY->value,
-                    'comments' => 'Preinscripción filtrada automáticamente, no cumple con los requisitos.',
+                    'declined_reason' => ReferenceStatusEnum::FILTERED->value,
+                    'declined_description' => 'Preinscripción filtrada automáticamente, no cumple con los requisitos.',
                     'modified_by' => 0
                 ]);
             }
@@ -229,8 +253,8 @@ class PreInscriptionController extends Controller
 
             return Inertia::render('forms/pre-inscription-edit-form', [
                 'preInscription' => $preInscription,
-                'countries' => Country::all(),
-                'courses' => Course::all()
+                'countries' => Country::where('status', StatusEnum::ACTIVE->value)->get(),
+                'courses' => Course::where('status', StatusEnum::ACTIVE->value)->get()
             ]);
         } catch (\Exception $e) {
             return redirect()->route('pre-inscription.index')
@@ -496,8 +520,8 @@ class PreInscriptionController extends Controller
                 $preInscription->available_full_time,
                 $genderId
             );
-
-            $message = str_replace('[**]', $msg['message'], __('common.messages.duplicates.rejected'));
+            $rejected_message = "<div class='bg-blue-200/30 rounded-md p-2'>" . $msg['message'] . "</div>";
+            $message = str_replace('[**]', $rejected_message, __('common.messages.duplicates.rejected'));
 
             return [
                 'exists' => true,

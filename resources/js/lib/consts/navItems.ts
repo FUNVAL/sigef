@@ -12,7 +12,7 @@ export const mainNavItems: NavItem[] = [
         title: 'Access Control',
         href: '/access-control',
         icon: Shield,
-        permissions: ['user:view', 'user:create', 'user:edit', 'user:delete', 'role:view', 'role:create', 'role:edit', 'role:delete' , "stake:view-assigned" , "stake:assign-users"],
+        permissions: ['user:view', 'user:create', 'user:edit', 'user:delete', 'role:view', 'role:create', 'role:edit', 'role:delete', "stake:view-assigned", "stake:assign-users"],
     },
     {
         title: 'Cursos',
@@ -24,13 +24,14 @@ export const mainNavItems: NavItem[] = [
         title: 'Referencias',
         href: '/references/dashboard',
         icon: Notebook,
-        permissions: ['reference:view', 'reference:edit', 'reference:update'],
+        permissions: ['reference:edit', 'reference:update', 'reference:view-all', 'reference:view-own', 'reference:view-staff'],
     },
     {
         title: 'Preinscripciones',
         href: '/pre-inscription/dashboard',
         icon: ListPlus,
-        permissions: ['pre-inscription:update', 'pre-inscription:edit', 'pre-inscription:view'],
+        permissions: ['pre-inscription:update', 'pre-inscription:edit', 'pre-inscription:view-all',
+            'pre-inscription:view-own', 'pre-inscription:view-staff',],
     },
     {
         title: 'Stakes',
@@ -47,8 +48,16 @@ export const mainNavItems: NavItem[] = [
 ];
 
 export const getNavItems = (userPermissions: string[]): NavItem[] => {
-    return mainNavItems.filter((item) => {
+    const filteredItems = mainNavItems.filter((item) => {
         if (!item.permissions) return true;
         return item.permissions.some((permission) => userPermissions.includes(permission));
     });
+
+    const dashboardItem = filteredItems.find(item => item.title === 'Dashboard');
+
+    const otherItems = filteredItems.filter(item => item.title !== 'Dashboard');
+
+    const sortedOtherItems = otherItems.sort((a, b) => a.title.localeCompare(b.title));
+
+    return dashboardItem ? [dashboardItem, ...sortedOtherItems] : sortedOtherItems;
 };

@@ -40,7 +40,7 @@ return [
         'pending' => 'Pendiente',
         'approved' => 'Aprobado',
         'rejected' => 'Rechazado',
-        'no_apply' => 'No aplica',
+        'filtered' => 'Filtrada',
         'incorrect_number' => 'Número incorrecto',
         'no_response' => 'Sin respuesta',
         'no_contact' => 'Sin contactar',
@@ -51,6 +51,7 @@ return [
         'health' => 'Salud',
         'graduate' => 'Egresado',
         'duplicate' => 'Duplicado',
+        'untraceable' => 'Ilocalizable',
     ],
     'document_type' => [
         'identity_card' => 'Cédula de Identidad',

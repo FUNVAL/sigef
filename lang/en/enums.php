@@ -50,6 +50,7 @@ return [
         'health' => 'Health',
         'graduate' => 'Graduate',
         'duplicate' => 'Duplicate',
+        'untraceable' => 'Untraceable',
     ],
     'document_type' => [
         'identity_card' => 'Identity Card',
