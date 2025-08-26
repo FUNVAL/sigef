@@ -24,12 +24,6 @@
         "key": "user:delete"
     },
     {
-        "name": "ver estacas asignadas",
-        "description": "Permite ver las estacas asignadas a un usuario",
-        "category": "Gestión de Estacas",
-        "key": "stake:view-assigned"
-    },
-    {
         "name": "ver roles",
         "description": "Permite ver la lista de roles",
         "category": "Gestión de Roles",
@@ -84,16 +78,34 @@
         "key": "course:delete"
     },
     {
-        "name": "ver referencias",
-        "description": "Permite ver la lista de referencias",
+        "name": "dashboard de referencias",
+        "description": "Permite ver el dashboard de referencias",
         "category": "Gestion de referencias",
-        "key": "reference:view"
+        "key": "reference:dashboard"
     },
     {
-        "name": "editar referencias",
+        "name": "ver todas las referencias",
+        "description": "Permite ver la lista de referencias",
+        "category": "Gestion de referencias",
+        "key": "reference:view-all"
+    },
+    {
+        "name": "ver referencias propias",
+        "description": "Permite ver las referencias propias",
+        "category": "Gestion de referencias",
+        "key": "reference:view-own"
+    },
+    {
+        "name": "ver referencias del personal",
+        "description": "Permite ver las referencias del personal asignado",
+        "category": "Gestion de referencias",
+        "key": "reference:view-staff"
+    },
+    {
+        "name": "actualizar estado de referencias",
         "description": "Permite actualizar el estado de una referencia",
         "category": "Gestion de referencias",
-        "key": "reference:edit"
+        "key": "reference:update-status"
     },
     {
         "name": "actualizar referencias",
@@ -102,21 +114,39 @@
         "key": "reference:update"
     },
     {
-        "name": "ver pre-inscripciones",
-        "description": "Permite ver la lista de pre-inscripciones",
-        "category": "Gestión de Pre-Inscripciones",
-        "key": "pre-inscription:view"
+        "name": "dashboard de preinscripciones",
+        "description": "Permite ver el dashboard de preinscripciones",
+        "category": "Gestión de preinscripciones",
+        "key": "preinscripciones:dashboard"
     },
     {
-        "name": "editar pre-inscripciones",
-        "description": "Permite editar pre-inscripciones existentes",
-        "category": "Gestión de Pre-Inscripciones",
+        "name": "ver todas las preinscripciones",
+        "description": "Permite ver todas las preinscripciones",
+        "category": "Gestión de preinscripciones",
+        "key": "pre-inscription:view-all"
+    },
+    {
+        "name": "ver preinscripciones propias",
+        "description": "Permite ver las preinscripciones propias",
+        "category": "Gestión de preinscripciones",
+        "key": "pre-inscription:view-own"
+    },
+    {
+        "name": "ver preinscripciones del personal",
+        "description": "Permite ver las preinscripciones del personal asignado",
+        "category": "Gestión de preinscripciones",
+        "key": "pre-inscription:view-staff"
+    },
+    {
+        "name": "actualizar estado de preinscripciones",
+        "description": "Permite editar preinscripciones existentes",
+        "category": "Gestión de preinscripciones",
         "key": "pre-inscription:edit"
     },
     {
-        "name": "actualizar pre-inscripciones",
-        "description": "Permite actualizar los datos de una pre-inscripción sin cambiar su estado",
-        "category": "Gestión de Pre-Inscripciones",
+        "name": "actualizar preinscripciones",
+        "description": "Permite actualizar los datos de una preinscripción sin cambiar su estado",
+        "category": "Gestión de preinscripciones",
         "key": "pre-inscription:update"
     },
     {
@@ -130,6 +160,12 @@
         "description": "Permite ver la lista de estacas",
         "category": "Gestión de Estacas",
         "key": "stake:view"
+    },
+    {
+        "name": "ver estacas asignadas",
+        "description": "Permite ver las estacas asignadas a un usuario",
+        "category": "Gestión de Estacas",
+        "key": "stake:view-assigned"
     },
     {
         "name": "editar estacas",

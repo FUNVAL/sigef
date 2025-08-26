@@ -4,17 +4,17 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import SheetSearchableSelect from '@/components/ui/sheet-searchable-select';
 import { Country } from '@/types/country';
-import { Enums } from '@/types/global';
+import { EnumItem, Enums } from '@/types/global';
 import { Stake } from '@/types/stake';
-import { User } from '@/types/users';
 import { useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
 interface EditStakeProps {
     stake: Stake;
     countries: Country[];
-    users: User[];
+    users: EnumItem[];
     open: boolean;
     onOpenChange: (open: boolean) => void;
 }
@@ -83,18 +83,14 @@ export function EditStake({ stake, countries, users, open, onOpenChange }: EditS
                         {/* Usuario */}
                         <div className="grid gap-2">
                             <Label htmlFor="user_id">Cambiar Responsable</Label>
-                            <Select value={data.user_id} onValueChange={(value) => setData('user_id', value)}>
-                                <SelectTrigger id="user_id">
-                                    <SelectValue placeholder="Seleccione un usuario" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {users.map((user) => (
-                                        <SelectItem key={user.id} value={String(user.id)}>
-                                            {user.firstname} {user.lastname}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <SheetSearchableSelect
+                                data={users}
+                                onValueChange={(value) => setData('user_id', value)}
+                                placeholder="Seleccione un usuario"
+                                label='Asignar responsable'
+                                value={data.user_id}
+                                all={false}
+                            />
                             <InputError message={errors.user_id} />
                         </div>
 

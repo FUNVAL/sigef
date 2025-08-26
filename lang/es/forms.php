@@ -2,16 +2,16 @@
 
 return [
     'pre_inscription' => [
-        'title' => 'Formulario de Preinscripción',
-        'description' => 'Complete su información personal para proceder con su preinscripción',
+        'title' => 'Formulario de preinscripción',
+        'description' => 'Completa tu información personal para proceder con tu preinscripción',
         'overview' => [
-            'title' => 'Revise sus datos',
-            'subtitle' => 'Verifique que toda la información sea correcta antes de enviar',
+            'title' => 'Revisa tus datos',
+            'subtitle' => 'Verifica que toda la información sea correcta antes de enviar',
             'fields' => [
-                'first_name' => 'Primer Nombre:',
-                'middle_name' => 'Segundo Nombre:',
-                'last_name' => 'Apellido:',
-                'second_last_name' => 'Segundo Apellido:',
+                'first_name' => 'Primer nombre:',
+                'middle_name' => 'Segundo nombre:',
+                'last_name' => 'Primer apellido:',
+                'second_last_name' => 'Segundo apellido:',
                 'gender' => 'Género:',
                 'age' => 'Edad:',
                 'country' => 'País de residencia:',
@@ -34,7 +34,7 @@ return [
             'title' => 'Seleccione su Curso',
             'description' => 'Elija el programa de capacitación que mejor se adapte a sus intereses y objetivos profesionales',
             'selected_course' => 'Curso seleccionado:',
-            'selection_confirmation' => 'Ha seleccionado este curso para su proceso de preinscripción. Al continuar, confirma su interés en participar en este programa.',
+            'selection_confirmation' => 'Has seleccionado este curso para tu proceso de preinscripción. Al continuar, confirmas tu interés en participar en este programa.',
             'duration' => 'semanas',
         ],
         'female_filter' => [
@@ -78,9 +78,9 @@ return [
         ],
     ],
     'referral' => [
-        'title' => 'Formulario de Referencia',
-        'description' => 'Comparta los datos de la persona que quiere referir',
-        'referrer_info' => 'Información del Referente',
+        'title' => 'Formulario de referencia',
+        'description' => 'Comparte los datos de la persona que quieres referir',
+        'referrer_info' => 'Información del referente',
         'fields' => [
             'name' => 'Nombre completo de la persona referida',
             'name_placeholder' => 'Nombre completo',
@@ -91,9 +91,9 @@ return [
             'country' => 'País de residencia:',
             'phone' => 'Teléfono',
             'stake' => 'Estaca/Distrito/Misión',
-            'referrer_name' => 'Su Nombre',
-            'referrer_phone' => 'Su Teléfono',
-            'relationship' => 'Relación con la Persona Referida',
+            'referrer_name' => 'Tu nombre',
+            'referrer_phone' => 'Tu teléfono',
+            'relationship' => 'Relación con la persona referida',
         ],
         'overview' => [
             'title' => 'Revisar datos de referencia',
@@ -106,8 +106,8 @@ return [
                 'phone' => 'Teléfono:',
                 'stake' => 'Estaca/Distrito/Misión:',
                 'referrer_info' => 'Información del referente:',
-                'referrer_name' => 'Su nombre:',
-                'referrer_phone' => 'Su teléfono:',
+                'referrer_name' => 'Tu nombre:',
+                'referrer_phone' => 'Tu teléfono:',
                 'relationship' => 'Relación con la persona referida:',
             ],
             'buttons' => [

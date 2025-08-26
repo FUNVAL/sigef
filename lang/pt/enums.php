@@ -50,6 +50,7 @@ return [
         'health' => 'Saúde',
         'graduate' => 'Diplomado',
         'duplicate' => 'Duplicado',
+        'untraceable' => 'Ilocalizável',
     ],
     'document_type' => [
         'identity_card' => 'Carteira de Identidade',

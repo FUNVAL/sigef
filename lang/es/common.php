@@ -60,7 +60,7 @@ return [
     'welcome_disclaimer' => [
         'title' => '¡Bienvenido a FUNVAL Internacional!',
 
-        'subtitle' => 'Nos complace recibir tu aplicación o referencia.',
+        'subtitle' => 'Nos alegra recibir tu aplicación o la referencia de tu amigo(a).',
 
         'program_description' => [
             'title' => '¿Estas buscando empleo?&nbsp;&nbsp;¡Este Programa es para Ti! ',

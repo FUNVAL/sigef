@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\ReferenceStatusEnum;
 use App\Enums\RequestStatusEnum;
+use App\Enums\StatusEnum;
 use App\Models\Country;
 use App\Models\Reference;
 use Illuminate\Http\Request;
@@ -25,7 +26,10 @@ class ReferenceController extends Controller
     {
         try {
             $user = Auth::user();
-            $isAdmin = $user->hasRole('Administrador');
+            $all = $user->can('ver todas las preinscripciones');
+            $own = $user->can('ver preinscripciones propias');
+            $staff = $user->can('ver preinscripciones del personal');
+
             $query = Reference::query()->with(['country', 'stake', 'modifier'])->orderBy('created_at', 'desc');
 
             if ($request->has('search')) {
@@ -35,7 +39,7 @@ class ReferenceController extends Controller
                 });
             }
 
-            if ($user->hasRole('Responsable') && !$isAdmin) {
+            if (!$all && !$staff && $own) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
@@ -46,7 +50,7 @@ class ReferenceController extends Controller
             }
 
             $responsable = $request->input('responsable');
-            if ($responsable && $isAdmin) {
+            if ($responsable && $all) {
                 $stakesIds = Stake::where('user_id', $responsable)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
@@ -55,7 +59,7 @@ class ReferenceController extends Controller
             $page = $request->input('page', 1);
             $references = $query->paginate($perPage, ['*'], 'page', $page);
 
-            $responsables = !$isAdmin ? null :
+            $responsables = !$all ? null :
                 User::role('Responsable')
                 ->get()
                 ->map(fn($u) => [
@@ -93,7 +97,7 @@ class ReferenceController extends Controller
     {
         return  Inertia::render('forms/reference-form', [
             'step' => request()->input('step', 0),
-            'countries' => Country::all()
+            'countries' => Country::where('status', StatusEnum::ACTIVE->value)->get(),
         ]);
     }
 
@@ -169,7 +173,7 @@ class ReferenceController extends Controller
 
             return Inertia::render('forms/reference-edit-form', [
                 'reference' => $reference,
-                'countries' => Country::all()
+                'countries' => Country::where('status', StatusEnum::ACTIVE->value)->get()
             ]);
         } catch (\Exception $e) {
             return redirect()->route('references.index')
