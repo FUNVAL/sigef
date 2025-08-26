@@ -49,8 +49,6 @@ export default function TableFilters() {
     const currentCountry = getValue("country");
     const currentStake = getValue("stake");
 
-    console.log(stakes);
-
     return (
         <div className="flex items-center gap-4">
 
