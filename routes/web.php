@@ -28,6 +28,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('{id}', 'edit')->name('edit');
             Route::post('create', 'store')->name('store');
             Route::put('{id}', 'update')->name('update');
+            Route::delete('{id}', 'destroy')
+                ->name('destroy')
+                ->middleware('can:eliminar usuarios');
         });
 
     Route::get('api/admin/stakes/{country_id}', [StakeController::class, 'filterByCountryId'])

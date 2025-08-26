@@ -3,7 +3,7 @@
 use App\Enums\DocumentTypeEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
-use App\Enums\UserStatusEnum;
+use App\Enums\StatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('contact_phone_1');
             $table->string('contact_phone_2')->nullable();
             $table->string('password');
-            $table->integer('status')->default(UserStatusEnum::ACTIVE->value);
+            $table->integer('status')->default(StatusEnum::ACTIVE->value);
             $table->rememberToken();
             $table->timestamps();
         });
