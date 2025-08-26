@@ -28,6 +28,7 @@ type User = Omit<UserForm, 'gender' | 'marital_status' | 'document_type' | 'stat
     marital_status: IdName;
     document_type: IdName;
     roles: IdName[];
+    full_name: string;
 };
 
 // Crear usuario (algunos campos podrían ser opcionales)
