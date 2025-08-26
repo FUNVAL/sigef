@@ -60,6 +60,17 @@ class ReferenceController extends Controller
                 $query->where('country_id', $country);
             }
 
+            $stake = $request->input('stake') ?? 0;
+            $stakes = $country != 0 ?
+                Stake::where('country_id', $country)
+                ->where('status', StatusEnum::ACTIVE->value)
+                ->get() : [];
+
+            if ($stake != 0 && $country != 0) {
+                $query->where('stake_id', $stake);
+            }
+
+
             $perPage = $request->input('per_page', 10);
             $page = $request->input('page', 1);
             $references = $query->paginate($perPage, ['*'], 'page', $page);
@@ -82,13 +93,14 @@ class ReferenceController extends Controller
                 'references' => $references,
                 'responsables' => $responsables,
                 'countries' => $countries,
+                'stakes' => $stakes,
                 'pagination' => [
                     'current_page' => $references->currentPage(),
                     'per_page' => $references->perPage(),
                     'total' => $references->total(),
                     'last_page' => $references->lastPage(),
                 ],
-                'filters' => $request->only(['search', 'status', 'responsable', 'country']),
+                'filters' => $request->only(['search', 'status', 'responsable', 'country', 'stake']),
             ]);
         } catch (\Exception $e) {
             return response()->json([

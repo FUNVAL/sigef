@@ -13,10 +13,11 @@ type PageProps = {
     enums: Enums;
     responsables: EnumItem[] | null;
     countries: EnumItem[] | null;
+    stakes: EnumItem[] | null;
 }
 
 export default function TableFilters() {
-    const { enums, responsables,countries } = usePage<PageProps>().props;
+    const { enums, responsables,countries, stakes } = usePage<PageProps>().props;
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     const { getValue, applyFilter, clearFilter, clearAllFilters, activeFiltersCount, getName } = useFilters([
@@ -34,12 +35,21 @@ export default function TableFilters() {
             key: "country",
             defaultValue: "0",
             getName: (v: string) => countries?.find(c => c.id.toString() === v)?.name ?? v,
+        },
+        {
+            key: "stake",
+            defaultValue: "0",
+            getName: (v: string) => stakes?.find(s => s.id.toString() === v)?.name ?? v,
         }
+
     ]);
 
     const currentStatus = getValue("status");
     const currentResponsable = getValue("responsable");
     const currentCountry = getValue("country");
+    const currentStake = getValue("stake");
+
+    console.log(stakes);
 
     return (
         <div className="flex items-center gap-4">
@@ -122,7 +132,25 @@ export default function TableFilters() {
                             </div>
                         )}
 
+                        {stakes && currentCountry && currentCountry !== "0" && (
+                            <div className="space-y-3">
+                                <Label htmlFor="stake-filter" className="text-sm font-medium">
+                                    Estaca
+                                </Label>
+                                <SheetSearchableSelect
+                                    id="stake-filter"
+                                    data={stakes}
+                                    value={currentStake === "0" ? "" : currentStake ?? undefined}
+                                    onValueChange={(value) => applyFilter("stake", value || "0")}
+                                    placeholder="Selecciona una estaca"
+                                    searchPlaceholder="Buscar estaca..."
+                                    emptyMessage="No se encontraron estacas."
+                                    className="w-full"
+                                />
+                            </div>
+                        )}
 
+                        
 
                         {activeFiltersCount > 0 && (
                             <>
@@ -165,7 +193,7 @@ export default function TableFilters() {
                             </Button>
                         </Badge>
                     )}
-                    
+
                     {currentResponsable && currentResponsable !== "0" && (
                         <Badge
                             variant="secondary"
@@ -196,6 +224,24 @@ export default function TableFilters() {
                                 size="sm"
                                 onClick={() => clearFilter("country")}
                                 className="h-4 w-4 p-0 hover:bg-yellow-200 rounded-full ml-1"
+                            >
+                                <X className="h-3 w-3" />
+                            </Button>
+                        </Badge>
+                    )}
+
+                    {currentStake && currentStake !== "0" && (
+                        <Badge
+                            variant="secondary"
+                            className="gap-1 pr-1 bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100"
+                        >
+                            <span className="text-xs">Estaca:</span>
+                            <span className="font-medium">{getName("stake", currentStake)}</span>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearFilter("stake")}
+                                className="h-4 w-4 p-0 hover:bg-purple-200 rounded-full ml-1"
                             >
                                 <X className="h-3 w-3" />
                             </Button>
