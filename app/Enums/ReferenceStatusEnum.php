@@ -31,7 +31,7 @@ enum ReferenceStatusEnum: int
             self::HEALTH => __('common.enums.reference_status.health'),
             self::GRADUATE => __('common.enums.reference_status.graduate'),
             self::DUPLICATE => __('common.enums.reference_status.duplicate'),
-            self::FILTERED => __('common.enums.reference_status.filered'),
+            self::FILTERED => __('common.enums.reference_status.filtered'),
             self::INCORRECT_NUMBER => __('common.enums.reference_status.incorrect_number'),
             self::NO_RESPONSE => __('common.enums.reference_status.no_response'),
             self::NO_CONTACT => __('common.enums.reference_status.no_contact'),

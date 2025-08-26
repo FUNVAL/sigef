@@ -40,7 +40,7 @@ return [
         'pending' => 'Pendiente',
         'approved' => 'Aprobado',
         'rejected' => 'Rechazado',
-        'filered' => 'Filtrada',
+        'filtered' => 'Filtrada',
         'incorrect_number' => 'Número incorrecto',
         'no_response' => 'Sin respuesta',
         'no_contact' => 'Sin contactar',
