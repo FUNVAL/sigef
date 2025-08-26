@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\StatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
@@ -32,7 +33,7 @@ class AuthenticatedSessionController extends Controller
     {
         $user = User::where('email', $request->email)->first();
 
-        if ($user && $user->status !== \App\Enums\StatusEnum::ACTIVE->value) {
+        if ($user && $user->status['id'] !== StatusEnum::ACTIVE->value) {
             return back()
                 ->withInput()
                 ->withErrors(['email' => 'Correo o contraseña incorrectos.']);
