@@ -20,7 +20,7 @@ class UserController extends Controller
     {
         try {
             $query = User::query();
-            $query->where('status', '!=', RequestStatusEnum::REJECTED->value);
+            $query->where('status', '!=', StatusEnum::DELETED->value);
 
             if ($request->has('search')) {
                 $query->where('email', 'like', '%' . $request->search . '%')
