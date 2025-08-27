@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\CourseModalityEnum;
 use App\Enums\StatusEnum;
-use App\Models\course;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
