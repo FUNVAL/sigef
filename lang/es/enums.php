@@ -34,7 +34,7 @@ return [
     'request_status' => [
         'pending' => 'Pendiente',
         'approved' => 'Aprobado',
-        'rejected' => 'Rechazado',
+        'rejected' => 'No aprobado',
     ],
     'reference_status' => [
         'pending' => 'Pendiente',
