@@ -117,8 +117,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->name('dashboard')
                 ->middleware('can:dashboard de referencias');
             Route::get('/', 'index')
-                ->name('index')
-                ->middleware('can:ver todas las referencias,ver referencias propias,ver referencias del personal');
+                ->name('index');
             Route::get('{id}/edit', 'edit')
                 ->name('edit')
                 ->middleware('can:actualizar referencias');
@@ -136,8 +135,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->name('dashboard')
                 ->middleware('can:dashboard de preinscripciones');
             Route::get('/', 'index')
-                ->name('index')
-                ->middleware('can:ver todas las preinscripciones,ver preinscripciones propias,ver preinscripciones del personal');
+                ->name('index');
             Route::get('{id}/edit', 'edit')
                 ->name('edit')
                 ->middleware('can:actualizar preinscripciones');
