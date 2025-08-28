@@ -24,6 +24,12 @@
         "key": "user:delete"
     },
     {
+        "name": "recibir asignaciones de estacas",
+        "description": "Permite que un usuario reciba asignaciones de estacas",
+        "category": "Gestión de Usuarios",
+        "key": "user:receive-assignments"
+    },
+    {
         "name": "ver roles",
         "description": "Permite ver la lista de roles",
         "category": "Gestión de Roles",
