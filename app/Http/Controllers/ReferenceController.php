@@ -80,7 +80,7 @@ class ReferenceController extends Controller
             $references = $query->paginate($perPage, ['*'], 'page', $page);
 
             $responsables = !$all ? null :
-                User::role('Responsable')
+                User::permission('recibir asignaciones de estacas')
                 ->get()
                 ->map(fn($u) => [
                     'id' => $u->id,

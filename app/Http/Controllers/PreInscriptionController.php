@@ -87,7 +87,7 @@ class PreInscriptionController extends Controller
             $preInscriptions = $query->paginate($perPage, ['*'], 'page', $page);
 
             $responsables = !$all ? null :
-                User::role('Responsable')
+                User::permission('recibir asignaciones de estacas')
                 ->get()
                 ->map(fn($u) => [
                     'id' => $u->id,
@@ -304,7 +304,7 @@ class PreInscriptionController extends Controller
             $preInscription->save();
 
             return redirect()->back()
-                ->with('success', 'Pre-inscripción actualizada exitosamente');
+                ->with('success', 'Preinscripción actualizada exitosamente');
         } catch (ValidationException $e) {
             return back()
                 ->withErrors($e->errors())
@@ -372,7 +372,7 @@ class PreInscriptionController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Pre-inscription deleted successfully'
+                'message' => 'Preinscription deleted successfully'
             ]);
         } catch (Exception $e) {
             return response()->json([
