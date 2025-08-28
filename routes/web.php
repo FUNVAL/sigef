@@ -114,8 +114,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('references')->name('references.')
         ->controller(ReferenceController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')
-                ->name('dashboard')
-                ->middleware('can:dashboard de referencias');
+                ->name('dashboard');
             Route::get('/', 'index')
                 ->name('index');
             Route::get('{id}/edit', 'edit')
@@ -132,8 +131,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('pre-inscription')->name('pre-inscription.')
         ->controller(PreInscriptionController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')
-                ->name('dashboard')
-                ->middleware('can:dashboard de preinscripciones');
+                ->name('dashboard');
             Route::get('/', 'index')
                 ->name('index');
             Route::get('{id}/edit', 'edit')

@@ -78,12 +78,6 @@
         "key": "course:delete"
     },
     {
-        "name": "dashboard de referencias",
-        "description": "Permite ver el dashboard de referencias",
-        "category": "Gestion de referencias",
-        "key": "reference:dashboard"
-    },
-    {
         "name": "ver todas las referencias",
         "description": "Permite ver la lista de referencias",
         "category": "Gestion de referencias",
@@ -112,12 +106,6 @@
         "description": "Permite actualizar los datos de una referencia sin cambiar su estado",
         "category": "Gestion de referencias",
         "key": "reference:update"
-    },
-    {
-        "name": "dashboard de preinscripciones",
-        "description": "Permite ver el dashboard de preinscripciones",
-        "category": "Gestión de preinscripciones",
-        "key": "preinscripciones:dashboard"
     },
     {
         "name": "ver todas las preinscripciones",
