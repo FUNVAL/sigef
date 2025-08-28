@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\CourseModalityEnum;
 use App\Enums\StatusEnum;
-use App\Models\course;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -51,7 +51,7 @@ class CourseController extends Controller
         $course = course::where('name', $request->name)->first();
 
         // dd($course->status);
-        if( $course && $course->status['id'] === StatusEnum::DELETED->value) {
+        if ($course && $course->status['id'] === StatusEnum::DELETED->value) {
             // If the course exists but is deleted, restore it
             $course->status = $request->status ?? StatusEnum::ACTIVE->value;
             $course->duration = $request->duration ?? $course->duration;
