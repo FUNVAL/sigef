@@ -319,9 +319,17 @@ class ReferenceController extends Controller
     {
         try {
             $user = Auth::user();
+            $all = $user->can('ver todas las preinscripciones');
+            $own = $user->can('ver preinscripciones propias');
+            $staff = $user->can('ver preinscripciones del personal');
+
+            if (!$all && !$own && !$staff) {
+                return back()->with('forbidden', 'No tienes permiso para realizar esta acción. Si crees que esto es un error, contacta al administrador del sistema.');
+            }
+
             $query = Reference::query()->with(['country', 'stake', 'modifier']);
 
-            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
+            if (!$all && !$staff && $own) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
