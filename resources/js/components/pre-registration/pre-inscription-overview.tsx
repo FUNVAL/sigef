@@ -20,7 +20,6 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
         currently_working,
         available_full_time,
         created_at,
-        comments,
         declined_description,
         gender,
         marital_status,
@@ -29,9 +28,8 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
         job_type_preference,
         status,
         declined_reason,
+        course,
     } = preInscription;
-
-    // Funciones auxiliares para evaluación de datos
     const getFullName = () => `${first_name} ${middle_name || ''} ${last_name} ${second_last_name || ''}`.trim();
 
     const getGenderDisplay = () => gender?.name || 'No especificado';
@@ -63,8 +61,8 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
     const getStatusVariant = () => {
         if (!status) return 'outline';
         const statusName = status.name.toLowerCase();
-        if (statusName === 'aprobado') return 'default';
-        if (statusName === 'rechazado') return 'destructive';
+        if (statusName === 'aprobada') return 'default';
+        if (statusName === 'no aprobada') return 'destructive';
         return 'secondary';
     };
 
@@ -74,7 +72,7 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
         if (statusName === 'aprobado') {
             return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
         }
-        if (statusName === 'rechazado') {
+        if (statusName === 'no aprobada') {
             return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
         }
         return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
@@ -86,7 +84,7 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
         <CompleteDialog
             btnLabel="Ver Detalles"
             dialogTitle="Detalles de la preinscripción"
-            dialogDescription="Aquí puedes ver los detalles completos de la pre-inscripción seleccionada."
+            dialogDescription="Aquí puedes ver los detalles completos de la preinscripción seleccionada."
             icon={<Eye className="h-4 w-4" />}
             contentClassName="md:max-w-3xl"
         >
@@ -132,6 +130,10 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                                     <p className="block text-sm text-gray-900 dark:text-gray-100">{additional_phone}</p>
                                 </div>
                             )}
+                            <div>
+                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Curso seleccionado:</Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">{course?.name}</p>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
@@ -213,28 +215,24 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                                 </Badge>
                             </div>
                         </div>
-                        {declined_reason && (
-                            <div>
-                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                    Razón del Estado
-                                </Label>
-                                <p className="block text-sm text-gray-900 dark:text-gray-100">
-                                    {getDeclinedReasonDisplay()}
-                                </p>
-                            </div>
-                        )}
-                        {comments && (
-                            <div>
-                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Comentarios</Label>
-                                <p className="block text-sm whitespace-pre-wrap text-gray-900 dark:text-gray-100">{comments}</p>
-                            </div>
-                        )}
-                        {declined_description && (
-                            <div>
-                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Descripción del Rechazo</Label>
-                                <p className="block text-sm whitespace-pre-wrap text-gray-900 dark:text-gray-100">{declined_description}</p>
-                            </div>
-                        )}
+                        <div className="grid grid-cols-2 gap-4">
+                            {declined_reason && (
+                                <div>
+                                    <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                        Razón del Estado
+                                    </Label>
+                                    <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                        {getDeclinedReasonDisplay()}
+                                    </p>
+                                </div>
+                            )}
+                            {declined_description && (
+                                <div>
+                                    <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Descripción del estado</Label>
+                                    <p className="block text-sm whitespace-pre-wrap text-gray-900 dark:text-gray-100">{declined_description}</p>
+                                </div>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
             </div>

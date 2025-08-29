@@ -14,17 +14,17 @@ interface PreInscriptionEditFormProps {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Pre-inscripciones',
+        title: 'Preinscripciones',
         href: '/pre-inscription',
     },
     {
-        title: 'Editar Pre-inscripción',
+        title: 'Editar Preinscripción',
         href: '#',
     },
 ];
 
 export default function PreInscriptionEditForm({ preInscription, countries }: PreInscriptionEditFormProps) {
-    // Convertir los datos de la pre-inscripción al formato del formulario
+
     const initialData: PreInscriptionEditFormData = {
         id: preInscription.id,
         first_name: preInscription.first_name || '',
@@ -43,6 +43,7 @@ export default function PreInscriptionEditForm({ preInscription, countries }: Pr
         currently_working: preInscription.currently_working,
         job_type_preference: preInscription.job_type_preference?.id,
         available_full_time: preInscription.available_full_time,
+        course_id: preInscription.course_id || 0,
     };
 
     const request = useForm<PreInscriptionEditFormData>(initialData);
@@ -65,11 +66,11 @@ export default function PreInscriptionEditForm({ preInscription, countries }: Pr
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Editar Pre-inscripción - ${fullName}`} />
+            <Head title={`Editar Preinscripción - ${fullName}`} />
             <AccessControlLayout
                 headings={{
-                    title: 'Editar Pre-inscripción',
-                    description: `Edita la información de la pre-inscripción de ${fullName}.`,
+                    title: 'Editar Preinscripción',
+                    description: `Edita la información de la preinscripción de ${fullName}.`,
                 }}
             >
                 <div className="flex w-full flex-col items-center space-y-6">

@@ -57,18 +57,19 @@ export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
             onValueChange={(value) => setData('currently_working', value === 'si')}
             className="space-y-3"
           >
-            <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
+
+            <Label htmlFor="trabajando-si" className="cursor-pointer flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50 gap-4">
               <RadioGroupItem value="si" id="trabajando-si" />
-              <Label htmlFor="trabajando-si" className="cursor-pointer">
-                {forms.pre_inscription.female_filter.answers.working_yes}
-              </Label>
-            </div>
-            <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
+              {forms.pre_inscription.female_filter.answers.working_yes}
+            </Label>
+
+            <Label
+              htmlFor="trabajando-no"
+              className="cursor-pointer flex items-center space-x-3 gap-4 p-3 border rounded-lg hover:bg-muted/50"
+            >
               <RadioGroupItem value="no" id="trabajando-no" />
-              <Label htmlFor="trabajando-no" className="cursor-pointer">
-                {forms.pre_inscription.female_filter.answers.working_no}
-              </Label>
-            </div>
+              {forms.pre_inscription.female_filter.answers.working_no}
+            </Label>
           </RadioGroup>
           {errors.currently_working && (
             <p className="text-red-500 text-sm mt-2">{errors.currently_working}</p>
@@ -88,12 +89,14 @@ export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
             >
               {
                 enums?.jobType?.map((modality) => (
-                  <div key={modality.id} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
+                  <Label
+                    key={modality.id}
+                    htmlFor={modality.id.toString()}
+                    className="cursor-pointer flex items-center gap-4 p-3 border rounded-lg hover:bg-muted/50"
+                  >
                     <RadioGroupItem value={modality.id.toString()} id={modality.id.toString()} />
-                    <Label htmlFor={modality.id.toString()} className="cursor-pointer">
-                      {modality.name}
-                    </Label>
-                  </div>
+                    {modality.name}
+                  </Label>
                 ))
               }
             </RadioGroup>
@@ -114,18 +117,20 @@ export function FemaleFilterStep({ request }: FemaleFilterStepProps) {
               onValueChange={(value) => setData('available_full_time', value === 'si')}
               className="space-y-3"
             >
-              <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
+              <Label
+                htmlFor="disponibilidad-si"
+                className="cursor-pointer flex items-center gap-4 p-3 border rounded-lg hover:bg-muted/50"
+              >
                 <RadioGroupItem value="si" id="disponibilidad-si" />
-                <Label htmlFor="disponibilidad-si" className="cursor-pointer">
-                  {forms.pre_inscription.female_filter.answers.availability_yes}
-                </Label>
-              </div>
-              <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
+                {forms.pre_inscription.female_filter.answers.availability_yes}
+              </Label>
+              <Label
+                htmlFor="disponibilidad-no"
+                className="cursor-pointer flex items-center gap-4 p-3 border rounded-lg hover:bg-muted/50"
+              >
                 <RadioGroupItem value="no" id="disponibilidad-no" />
-                <Label htmlFor="disponibilidad-no" className="cursor-pointer">
-                  {forms.pre_inscription.female_filter.answers.availability_no}
-                </Label>
-              </div>
+                {forms.pre_inscription.female_filter.answers.availability_no}
+              </Label>
             </RadioGroup>
             {errors.available_full_time && (
               <p className="text-red-500 text-sm mt-2">{errors.available_full_time}</p>

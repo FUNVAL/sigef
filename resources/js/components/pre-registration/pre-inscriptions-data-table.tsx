@@ -67,7 +67,7 @@ export const createColumns = ({
             },
         },
         {
-            id: 'church_contact',
+            id: 'Ubicación',
             header: 'Ubicación',
             cell: ({ row }) => {
                 const preInscription = row.original;
@@ -83,7 +83,7 @@ export const createColumns = ({
             },
         },
         {
-            accessorKey: 'estado_civil',
+            accessorKey: 'Estado civil',
             header: 'Estado Civil',
             cell: ({ row }) => {
                 const preInscription = row.original;
@@ -92,11 +92,11 @@ export const createColumns = ({
         },
 
         {
-            accessorKey: 'mision',
+            accessorKey: 'Misión',
             header: 'Misión',
             cell: ({ row }) => {
                 const preInscription = row.original;
-                return <Badge variant={preInscription.served_mission ? 'default' : 'secondary'}>{preInscription.served_mission ? 'Sí' : 'No'}</Badge>;
+                return <Badge variant={preInscription.served_mission.name === "Si" ? 'default' : 'secondary'}>{preInscription.served_mission.name}</Badge>;
             },
         },
 
@@ -120,7 +120,7 @@ export const createColumns = ({
                 const status = preInscription.status.name.toLowerCase();
 
                 return (
-                    <Badge variant={status === 'aprobado' ? 'default' : status === 'rechazado' ? 'destructive' : 'secondary'}>
+                    <Badge variant={status === 'aprobado' ? 'default' : status === 'no aprobada' ? 'destructive' : 'secondary'}>
                         {preInscription.status.name}
                     </Badge>
                 );
@@ -158,7 +158,7 @@ export const createColumns = ({
                             {canEdit && (
                                 <DropdownMenuItem onClick={handleEditPreInscription}>
                                     <Pencil className="h-4 w-4" />
-                                    Editar pre-inscripción
+                                    Editar preinscripción
                                 </DropdownMenuItem>
                             )}
                             {isPending && (

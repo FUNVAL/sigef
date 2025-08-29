@@ -6,9 +6,9 @@ export interface DashboardConfig {
     title: string;
     description: string;
     pageTitle: string;
-    entityName: string; // "Referencias", "Pre-inscripciones", etc.
-    entitySingular: string; // "referencia", "pre-inscripción", etc.
-    entityPlural: string; // "referencias", "pre-inscripciones", etc.
+    entityName: string; // "Referencias", "Preinscripciones", etc.
+    entitySingular: string; // "referencia", "preinscripción", etc.
+    entityPlural: string; // "referencias", "preinscripciones", etc.
 
     // Configuración de navegación
     breadcrumbs: BreadcrumbItem[];
@@ -19,9 +19,9 @@ export interface DashboardConfig {
 
     // Configuración de etiquetas de estado
     statusLabels: {
-        pending: string; // "Pendientes"
-        accepted: string; // "Aprobadas"/"Aceptadas"
-        rejected: string; // "Rechazadas"
+        pending: string;
+        accepted: string;
+        rejected: string;
     };
 
     // Configuración de títulos de secciones
@@ -30,9 +30,9 @@ export interface DashboardConfig {
         acceptanceRateDescription: string;
         statusSummary: string; // "Resumen de Estados"
         statusSummaryDescription: string;
-        byCountry: string; // "Pre-inscripciones por País"/"Referencias por País"
+        byCountry: string; // "Preinscripciones por País"/"Referencias por País"
         byCountryDescription: string;
-        byStake: string; // "Pre-inscripciones por Estaca"/"Referencias por Estaca"
+        byStake: string; // "Preinscripciones por Estaca"/"Referencias por Estaca"
         byStakeDescription: string;
         pendingActions: string; // "Acciones Pendientes"
         pendingActionsDescription: string;
@@ -40,12 +40,12 @@ export interface DashboardConfig {
 
     // Configuración de acciones pendientes
     pendingActionsLabels: {
-        pendingItems: string; // "Pre-inscripciones pendientes"/"Referencias pendientes"
+        pendingItems: string; // "Preinscripciones pendientes"/"Referencias pendientes"
         pendingDescription: string; // "Requieren evaluación"
         newThisWeek: string; // "Nuevas esta semana"
         newDescription: string; // "Recién recibidas"
         acceptanceRate: string; // "Tasa de aprobación"/"Tasa de aceptación"
-        acceptanceDescription: string; // "Pre-inscripciones aprobadas"/"Referencias aceptadas"
+        acceptanceDescription: string; // "Preinscripciones aprobados"/"Referencias aceptadas"
     };
 }
 
@@ -80,7 +80,7 @@ export function useDashboardConfig(): {
             statusLabels: {
                 pending: 'Pendientes',
                 accepted: 'Aceptadas',
-                rejected: 'Rechazadas',
+                rejected: 'No aprobadas',
             },
 
             sectionTitles: {
@@ -114,9 +114,9 @@ export function useDashboardConfig(): {
             title: 'Dashboard de Preinscripciones',
             description: 'Resumen y métricas de las preinscripciones recibidas',
             pageTitle: 'Dashboard Preinscripciones',
-            entityName: 'Pre-inscripciones',
-            entitySingular: 'pre-inscripción',
-            entityPlural: 'pre-inscripciones',
+            entityName: 'Preinscripciones',
+            entitySingular: 'preinscripción',
+            entityPlural: 'preinscripciones',
 
             breadcrumbs: defaultBreadcrumbs,
             useAccessControlLayout: true,
@@ -124,29 +124,29 @@ export function useDashboardConfig(): {
             statusLabels: {
                 pending: 'Pendientes',
                 accepted: 'Aprobadas',
-                rejected: 'Rechazadas',
+                rejected: 'No aprobadas',
             },
 
             sectionTitles: {
                 acceptanceRate: 'Tasa de Aprobación',
-                acceptanceRateDescription: 'Porcentaje de pre-inscripciones procesadas que fueron aprobadas',
+                acceptanceRateDescription: 'Porcentaje de preinscripciones procesadas que fueron aprobados',
                 statusSummary: 'Resumen de Estados',
-                statusSummaryDescription: 'Distribución de estados de las pre-inscripciones',
-                byCountry: 'Pre-inscripciones por País',
-                byCountryDescription: 'Distribución geográfica de las pre-inscripciones',
-                byStake: 'Pre-inscripciones por Estaca',
-                byStakeDescription: 'Distribución por estaca de las pre-inscripciones',
+                statusSummaryDescription: 'Distribución de estados de las preinscripciones',
+                byCountry: 'Preinscripciones por País',
+                byCountryDescription: 'Distribución geográfica de las preinscripciones',
+                byStake: 'Preinscripciones por Estaca',
+                byStakeDescription: 'Distribución por estaca de las preinscripciones',
                 pendingActions: 'Acciones Pendientes',
-                pendingActionsDescription: 'Pre-inscripciones que requieren atención inmediata',
+                pendingActionsDescription: 'Preinscripciones que requieren atención inmediata',
             },
 
             pendingActionsLabels: {
-                pendingItems: 'Pre-inscripciones pendientes',
+                pendingItems: 'Preinscripciones pendientes',
                 pendingDescription: 'Requieren evaluación',
                 newThisWeek: 'Nuevas esta semana',
                 newDescription: 'Recién recibidas',
                 acceptanceRate: 'Tasa de aprobación',
-                acceptanceDescription: 'Pre-inscripciones aprobadas',
+                acceptanceDescription: 'Preinscripciones aprobados',
             },
         };
 
@@ -167,13 +167,13 @@ export function useDashboardConfig(): {
 
             statusLabels: {
                 pending: 'Pendientes',
-                accepted: 'Aceptados',
-                rejected: 'Rechazados',
+                accepted: 'Aceptadas',
+                rejected: 'No aprobadas',
             },
 
             sectionTitles: {
                 acceptanceRate: 'Tasa de Aceptación',
-                acceptanceRateDescription: 'Porcentaje de elementos procesados que fueron aceptados',
+                acceptanceRateDescription: 'Porcentaje de elementos procesados que fueron aceptadas',
                 statusSummary: 'Resumen de Estados',
                 statusSummaryDescription: 'Distribución de estados de los elementos',
                 byCountry: 'Elementos por País',
@@ -190,7 +190,7 @@ export function useDashboardConfig(): {
                 newThisWeek: 'Nuevos esta semana',
                 newDescription: 'Recién recibidos',
                 acceptanceRate: 'Tasa de aceptación',
-                acceptanceDescription: 'Elementos aceptados',
+                acceptanceDescription: 'Elementos aceptadas',
             },
         };
 

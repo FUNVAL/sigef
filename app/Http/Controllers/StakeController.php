@@ -21,7 +21,13 @@ class StakeController extends Controller
         $query = Stake::query()->with(['country', 'user']);
 
         if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                    ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                        $userQuery->whereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $searchTerm . '%']);
+                    });
+            });
         }
 
         $query->notDeleted();

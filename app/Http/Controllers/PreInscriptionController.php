@@ -38,7 +38,7 @@ class PreInscriptionController extends Controller
                 return back()->with('forbidden', 'No tienes permiso para realizar esta acción. Si crees que esto es un error, contacta al administrador del sistema.');
             }
 
-            $query = PreInscription::query()->with(['country', 'stake'])->orderBy('created_at', 'desc');
+            $query = PreInscription::query()->with(['country', 'stake', 'course'])->orderBy('created_at', 'desc');
 
             if ($request->has('search')) {
                 $search = $request->input('search');
@@ -175,7 +175,8 @@ class PreInscriptionController extends Controller
                 'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
                 'status' => 'nullable|numeric|in:' . implode(',', RequestStatusEnum::values()),
                 'country_id' => 'required|exists:countries,id',
-                'stake_id' => 'required|exists:stakes,id'
+                'stake_id' => 'required|exists:stakes,id',
+                'course_id' => 'required|exists:courses,id',
             ];
 
             $is_woman = $request['gender'] === GenderEnum::FEMALE->value;
@@ -226,7 +227,7 @@ class PreInscriptionController extends Controller
             return  back()->with('success', $message);
         } catch (Exception $e) {
 
-            return back()->withErrors(['error' => 'Error al crear la pre-inscripción: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Error al crear la preinscripción: ' . $e->getMessage()]);
         }
     }
 
@@ -262,7 +263,7 @@ class PreInscriptionController extends Controller
             ]);
         } catch (\Exception $e) {
             return redirect()->route('pre-inscription.index')
-                ->withErrors(['error' => 'Error al obtener la pre-inscripción para editar: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Error al obtener la preinscripción para editar: ' . $e->getMessage()]);
         }
     }
 
@@ -342,6 +343,7 @@ class PreInscriptionController extends Controller
                 'currently_working' => 'nullable|boolean',
                 'job_type_preference' => 'nullable|numeric|in:' . implode(',', JobTypeEnum::values()),
                 'available_full_time' => 'nullable|boolean',
+                'course_id' => 'required|exists:courses,id',
             ];
 
             $validated = $request->validate($rules);
@@ -350,7 +352,7 @@ class PreInscriptionController extends Controller
             $preInscription->update($validated);
 
             return redirect()->route('pre-inscription.index')
-                ->with('success', 'Pre-inscripción actualizada exitosamente');
+                ->with('success', 'Preinscripción actualizada exitosamente');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
                 ->withErrors($e->errors())
@@ -458,7 +460,7 @@ class PreInscriptionController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al obtener el dashboard de pre-inscripciones',
+                'message' => 'Error al obtener el dashboard de preinscripciones',
                 'error' => $e->getMessage()
             ], 500);
         }
