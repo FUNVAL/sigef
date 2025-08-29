@@ -9,7 +9,7 @@ export const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Access Control',
+        title: 'Control de Acceso',
         href: '/access-control',
         icon: Shield,
         permissions: ['user:view', 'user:create', 'user:edit', 'user:delete', 'role:view', 'role:create', 'role:edit', 'role:delete', "stake:view-assigned", "stake:assign-users"],
@@ -34,13 +34,13 @@ export const mainNavItems: NavItem[] = [
             'pre-inscription:view-own', 'pre-inscription:view-staff',],
     },
     {
-        title: 'Stakes',
+        title: 'Estacas',
         href: '/stakes',
         icon: Church,
         permissions: ['stake:view', 'stake:create', 'stake:edit', 'stake:delete'],
     },
     {
-        title: 'Paises',
+        title: 'Países',
         href: '/countries',
         icon: Globe,
         permissions: ['country:view', 'country:create', 'country:edit', 'country:delete'],
