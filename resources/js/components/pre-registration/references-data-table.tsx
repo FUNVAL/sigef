@@ -113,8 +113,9 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
         cell: ({ row }) => {
             const reference = row.original;
             const { auth } = usePage<SharedData>().props;
-            const isPending = reference.status.id === 1 || validateRole(auth.user.roles, 'Administrador');
-            const canEdit = validateRole(auth.user.roles, 'Administrador') || validateRole(auth.user.roles, 'Responsable');
+
+            const canEdit = auth.user.user_permissions.includes('reference:update');
+            const isPending = reference.status.id === 1 || canEdit;
 
             const handleEditReference = () => {
                 router.visit(route('references.edit', reference.id));
