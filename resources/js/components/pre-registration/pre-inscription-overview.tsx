@@ -20,7 +20,6 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
         currently_working,
         available_full_time,
         created_at,
-        comments,
         declined_description,
         gender,
         marital_status,
@@ -29,9 +28,8 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
         job_type_preference,
         status,
         declined_reason,
+        course,
     } = preInscription;
-
-    // Funciones auxiliares para evaluación de datos
     const getFullName = () => `${first_name} ${middle_name || ''} ${last_name} ${second_last_name || ''}`.trim();
 
     const getGenderDisplay = () => gender?.name || 'No especificado';
@@ -132,6 +130,10 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                                     <p className="block text-sm text-gray-900 dark:text-gray-100">{additional_phone}</p>
                                 </div>
                             )}
+                            <div>
+                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Curso seleccionado:</Label>
+                                <p className="block text-sm text-gray-900 dark:text-gray-100">{course?.name}</p>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

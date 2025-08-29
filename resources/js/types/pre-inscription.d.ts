@@ -38,6 +38,11 @@ type PreInscription = BaseEntity & {
     country: Country;
     stake: Stake;
     updated_at?: string;
+    course?: {
+        id: number;
+        name: string;
+    }
+
 };
 
 /**
