@@ -307,9 +307,9 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                                 {errors.served_mission && <p className="text-sm text-red-500">{errors.served_mission}</p>}
                             </div>
                             <div>
-                                {/* <Label htmlFor="served_mission" className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
-                                    ¿Ha servido misión?
-                                </Label> */}
+                                <Label htmlFor="course_id" className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
+                                    Curso seleccionado
+                                </Label>
                                 <SearchableSelect
                                     data={courses}
                                     name="course_id"
@@ -317,7 +317,6 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                                     value={data.course_id?.toString() || '0'}
                                     onValueChange={(value) => setData('course_id', Number(value))}
                                     placeholder="Selecciona un curso"
-                                    label='Selecciona un curso'
                                 />
                                 {errors.course_id &&
                                     <p className="text-sm text-red-500">
