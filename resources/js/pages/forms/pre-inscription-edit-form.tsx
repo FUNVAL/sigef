@@ -18,13 +18,13 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/pre-inscription',
     },
     {
-        title: 'Editar Pre-inscripción',
+        title: 'Editar Preinscripción',
         href: '#',
     },
 ];
 
 export default function PreInscriptionEditForm({ preInscription, countries }: PreInscriptionEditFormProps) {
-    // Convertir los datos de la pre-inscripción al formato del formulario
+
     const initialData: PreInscriptionEditFormData = {
         id: preInscription.id,
         first_name: preInscription.first_name || '',
@@ -65,11 +65,11 @@ export default function PreInscriptionEditForm({ preInscription, countries }: Pr
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Editar Pre-inscripción - ${fullName}`} />
+            <Head title={`Editar Preinscripción - ${fullName}`} />
             <AccessControlLayout
                 headings={{
-                    title: 'Editar Pre-inscripción',
-                    description: `Edita la información de la pre-inscripción de ${fullName}.`,
+                    title: 'Editar Preinscripción',
+                    description: `Edita la información de la preinscripción de ${fullName}.`,
                 }}
             >
                 <div className="flex w-full flex-col items-center space-y-6">

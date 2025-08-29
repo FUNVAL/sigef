@@ -39,7 +39,7 @@ return [
     'reference_status' => [
         'pending' => 'Pendiente',
         'approved' => 'Aprobado',
-        'rejected' => 'Rechazado',
+        'rejected' => 'No aprobado',
         'filtered' => 'Filtrada',
         'incorrect_number' => 'Número incorrecto',
         'no_response' => 'Sin respuesta',

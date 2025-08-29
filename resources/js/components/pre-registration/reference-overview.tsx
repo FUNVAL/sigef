@@ -144,14 +144,14 @@ const ReferenceOverview = ({ reference }: { reference: Reference }) => {
                                     variant={
                                         reference.status.name.toLowerCase() === "aceptado"
                                             ? "default"
-                                            : reference.status.name.toLowerCase() === "rechazado"
+                                            : reference.status.name.toLowerCase() === "no aprobado"
                                                 ? "destructive"
                                                 : "secondary"
                                     }
                                     className={
                                         reference.status.name.toLowerCase() === "aceptado"
                                             ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                            : reference.status.name.toLowerCase() === "rechazado"
+                                            : reference.status.name.toLowerCase() === "no aprobado"
                                                 ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
                                                 : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                                     }

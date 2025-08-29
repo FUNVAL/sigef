@@ -23,9 +23,9 @@ interface GenericDashboardProps {
         title: string;
         description: string;
         pageTitle: string;
-        entityName: string; // "Referencias", "Pre-inscripciones", etc.
-        entitySingular: string; // "referencia", "pre-inscripción", etc.
-        entityPlural: string; // "referencias", "pre-inscripciones", etc.
+        entityName: string; // "Referencias", "Preinscripciones", etc.
+        entitySingular: string; // "referencia", "preinscripción", etc.
+        entityPlural: string; // "referencias", "preinscripciones", etc.
 
         // Configuración de navegación
         breadcrumbs: BreadcrumbItem[];
@@ -47,9 +47,9 @@ interface GenericDashboardProps {
             acceptanceRateDescription: string;
             statusSummary: string; // "Resumen de Estados"
             statusSummaryDescription: string;
-            byCountry: string; // "Pre-inscripciones por País"/"Referencias por País"
+            byCountry: string; // "Preinscripciones por País"/"Referencias por País"
             byCountryDescription: string;
-            byStake: string; // "Pre-inscripciones por Estaca"/"Referencias por Estaca"
+            byStake: string; // "Preinscripciones por Estaca"/"Referencias por Estaca"
             byStakeDescription: string;
             pendingActions: string; // "Acciones Pendientes"
             pendingActionsDescription: string;
@@ -57,12 +57,12 @@ interface GenericDashboardProps {
 
         // Configuración de acciones pendientes
         pendingActionsLabels: {
-            pendingItems: string; // "Pre-inscripciones pendientes"/"Referencias pendientes"
+            pendingItems: string; // "Preinscripciones pendientes"/"Referencias pendientes"
             pendingDescription: string; // "Requieren evaluación"
             newThisWeek: string; // "Nuevas esta semana"
             newDescription: string; // "Recién recibidas"
             acceptanceRate: string; // "Tasa de aprobación"/"Tasa de aceptación"
-            acceptanceDescription: string; // "Pre-inscripciones aprobadas"/"Referencias aceptadas"
+            acceptanceDescription: string; // "Preinscripciones aprobadas"/"Referencias aceptadas"
         };
     };
 }

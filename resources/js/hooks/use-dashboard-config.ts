@@ -7,7 +7,7 @@ export interface DashboardConfig {
     description: string;
     pageTitle: string;
     entityName: string; // "Referencias", "Pre-inscripciones", etc.
-    entitySingular: string; // "referencia", "pre-inscripción", etc.
+    entitySingular: string; // "referencia", "preinscripción", etc.
     entityPlural: string; // "referencias", "pre-inscripciones", etc.
 
     // Configuración de navegación
@@ -45,7 +45,7 @@ export interface DashboardConfig {
         newThisWeek: string; // "Nuevas esta semana"
         newDescription: string; // "Recién recibidas"
         acceptanceRate: string; // "Tasa de aprobación"/"Tasa de aceptación"
-        acceptanceDescription: string; // "Pre-inscripciones aprobadas"/"Referencias aceptadas"
+        acceptanceDescription: string; // "Pre-inscripciones aprobados"/"Referencias aceptadas"
     };
 }
 
@@ -115,8 +115,8 @@ export function useDashboardConfig(): {
             description: 'Resumen y métricas de las preinscripciones recibidas',
             pageTitle: 'Dashboard Preinscripciones',
             entityName: 'Pre-inscripciones',
-            entitySingular: 'pre-inscripción',
-            entityPlural: 'pre-inscripciones',
+            entitySingular: 'preinscripción',
+            entityPlural: 'preinscripciones',
 
             breadcrumbs: defaultBreadcrumbs,
             useAccessControlLayout: true,
@@ -129,7 +129,7 @@ export function useDashboardConfig(): {
 
             sectionTitles: {
                 acceptanceRate: 'Tasa de Aprobación',
-                acceptanceRateDescription: 'Porcentaje de pre-inscripciones procesadas que fueron aprobadas',
+                acceptanceRateDescription: 'Porcentaje de pre-inscripciones procesadas que fueron aprobados',
                 statusSummary: 'Resumen de Estados',
                 statusSummaryDescription: 'Distribución de estados de las pre-inscripciones',
                 byCountry: 'Pre-inscripciones por País',
@@ -146,7 +146,7 @@ export function useDashboardConfig(): {
                 newThisWeek: 'Nuevas esta semana',
                 newDescription: 'Recién recibidas',
                 acceptanceRate: 'Tasa de aprobación',
-                acceptanceDescription: 'Pre-inscripciones aprobadas',
+                acceptanceDescription: 'Pre-inscripciones aprobados',
             },
         };
 
@@ -168,7 +168,7 @@ export function useDashboardConfig(): {
             statusLabels: {
                 pending: 'Pendientes',
                 accepted: 'Aceptados',
-                rejected: 'Rechazados',
+                rejected: 'No aprobados',
             },
 
             sectionTitles: {

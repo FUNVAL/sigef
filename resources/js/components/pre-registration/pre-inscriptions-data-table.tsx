@@ -121,7 +121,7 @@ export const createColumns = ({
                 const status = preInscription.status.name.toLowerCase();
 
                 return (
-                    <Badge variant={status === 'aprobado' ? 'default' : status === 'rechazado' ? 'destructive' : 'secondary'}>
+                    <Badge variant={status === 'aprobado' ? 'default' : status === 'no aprobado' ? 'destructive' : 'secondary'}>
                         {preInscription.status.name}
                     </Badge>
                 );
@@ -159,7 +159,7 @@ export const createColumns = ({
                             {canEdit && (
                                 <DropdownMenuItem onClick={handleEditPreInscription}>
                                     <Pencil className="h-4 w-4" />
-                                    Editar pre-inscripción
+                                    Editar preinscripción
                                 </DropdownMenuItem>
                             )}
                             {isPending && (

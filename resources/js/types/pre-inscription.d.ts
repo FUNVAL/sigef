@@ -14,7 +14,7 @@ import {
 } from './common';
 
 /**
- * Tipo base para una pre-inscripción con todos sus campos y relaciones
+ * Tipo base para una preinscripción con todos sus campos y relaciones
  */
 type PreInscription = BaseEntity & {
     first_name: string;
@@ -41,7 +41,7 @@ type PreInscription = BaseEntity & {
 };
 
 /**
- * Tipo para crear una nueva pre-inscripción
+ * Tipo para crear una nueva preinscripción
  * Convierte las relaciones de objetos a IDs numéricos
  */
 type PreInscriptionFormData = Omit<
@@ -66,7 +66,7 @@ type PreInscriptionFormData = Omit<
     };
 
 /**
- * Tipo para actualizar el estado de una pre-inscripción
+ * Tipo para actualizar el estado de una preinscripción
  */
 type PreInscriptionUpdateFormData = BaseUpdateFormData & {
     declined_reason?: number;
@@ -75,7 +75,7 @@ type PreInscriptionUpdateFormData = BaseUpdateFormData & {
 };
 
 /**
- * Tipo para editar datos de una pre-inscripción existente
+ * Tipo para editar datos de una preinscripción existente
  */
 type PreInscriptionEditFormData = Omit<PreInscriptionFormData, 'id'> & {
     id: number;

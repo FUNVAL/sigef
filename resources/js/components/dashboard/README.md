@@ -22,7 +22,7 @@ resources/js/
 
 ### 1. GenericDashboard
 Componente base que renderiza la estructura común de todos los dashboards:
-- Tarjetas de estadísticas principales (Total, Pendientes, Aceptados, Rechazados)
+- Tarjetas de estadísticas principales (Total, Pendientes, Aceptados, No aprobados)
 - Gráfico de tasa de aceptación y resumen de estados
 - Distribuciones por país y estaca
 - Sección de acciones pendientes
@@ -112,7 +112,7 @@ interface BaseStats {
 ### Opciones de configuración
 - **useAccessControlLayout**: `true` (default) para usar AccessControlLayout, `false` para layout simple
 - **entityName/entitySingular/entityPlural**: Términos específicos de la entidad
-- **statusLabels**: Etiquetas para los estados (pendiente, aceptado, rechazado)
+- **statusLabels**: Etiquetas para los estados (pendiente, aceptado, no aprobado)
 - **sectionTitles**: Títulos de las diferentes secciones del dashboard
 - **pendingActionsLabels**: Etiquetas para la sección de acciones pendientes
 

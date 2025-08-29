@@ -222,7 +222,7 @@ class PreInscriptionController extends Controller
             return  back()->with('success', $message);
         } catch (Exception $e) {
 
-            return back()->withErrors(['error' => 'Error al crear la pre-inscripción: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Error al crear la preinscripción: ' . $e->getMessage()]);
         }
     }
 
@@ -258,7 +258,7 @@ class PreInscriptionController extends Controller
             ]);
         } catch (\Exception $e) {
             return redirect()->route('pre-inscription.index')
-                ->withErrors(['error' => 'Error al obtener la pre-inscripción para editar: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Error al obtener la preinscripción para editar: ' . $e->getMessage()]);
         }
     }
 
@@ -300,7 +300,7 @@ class PreInscriptionController extends Controller
             $preInscription->save();
 
             return redirect()->back()
-                ->with('success', 'Pre-inscripción actualizada exitosamente');
+                ->with('success', 'Preinscripción actualizada exitosamente');
         } catch (ValidationException $e) {
             return back()
                 ->withErrors($e->errors())
@@ -346,7 +346,7 @@ class PreInscriptionController extends Controller
             $preInscription->update($validated);
 
             return redirect()->route('pre-inscription.index')
-                ->with('success', 'Pre-inscripción actualizada exitosamente');
+                ->with('success', 'Preinscripción actualizada exitosamente');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
                 ->withErrors($e->errors())

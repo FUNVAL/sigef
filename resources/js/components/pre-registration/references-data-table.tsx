@@ -100,7 +100,7 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
             const status = reference.status.name.toLowerCase();
 
             return (
-                <Badge variant={status === 'aprobado' ? 'default' : status === 'rechazado' ? 'destructive' : 'secondary'}>
+                <Badge variant={status === 'aprobado' ? 'default' : status === 'no aprobado' ? 'destructive' : 'secondary'}>
                     {reference.status.name}
                 </Badge>
             );
