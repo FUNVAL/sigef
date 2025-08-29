@@ -15,15 +15,15 @@ const PermissionGroup: React.FC<PermissionGroupProps> = ({
     expandedGroupId,
     onExpand
 }) => {
- 
+
     const isExpanded = expandedGroupId === group.id;
 
     const toggleExpand = () => {
         if (!isExpanded) {
             onExpand(group.id);
         }
-    }; 
-    
+    };
+
     const assignedCount = group.permissions.filter((permission: { id: number }) => selectedPermissions.includes(permission.id)).length;
     const totalCount = group.permissions.length;
     return (
@@ -35,11 +35,11 @@ const PermissionGroup: React.FC<PermissionGroupProps> = ({
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         {isExpanded ?
-                            <ChevronUp className="text-indigo-500" size={20} /> :
-                            <ChevronDown className="text-indigo-500" size={20} />
+                            <ChevronUp className="text-blue-600" size={20} /> :
+                            <ChevronDown className="text-blue-600" size={20} />
                         }
                         <div>
-                            <h3 className="font-medium text-indigo-500">{group.name}</h3>
+                            <h3 className="font-medium text-blue-600">{group.name}</h3>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -47,8 +47,8 @@ const PermissionGroup: React.FC<PermissionGroupProps> = ({
                             <div className="flex items-center">
                                 <div className="w-32 h-2 rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-indigo-600 rounded-full"
-                                    style={{ width: `${(assignedCount / totalCount) * 100}%` }}
+                                        className="h-full text-blue-700 rounded-full"
+                                        style={{ width: `${(assignedCount / totalCount) * 100}%` }}
                                     />
                                 </div>
                                 <span className="ml-2 text-sm text-gray-600">{assignedCount} of {totalCount} assigned</span>
@@ -61,7 +61,7 @@ const PermissionGroup: React.FC<PermissionGroupProps> = ({
                                 e.stopPropagation();
                                 handleAssignAll(group.id);
                             }}
-                            className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50"
+                            className="text-blue-700 hover:text-blue-800 hover:bg-indigo-50"
                         >
                             Assign All
                         </Button>
@@ -72,7 +72,7 @@ const PermissionGroup: React.FC<PermissionGroupProps> = ({
                                 e.stopPropagation();
                                 handleUnassignAll(group.id);
                             }}
-                            className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50"
+                            className="text-blue-700 hover:text-blue-800 hover:bg-indigo-50"
                         >
                             Unassign All
                         </Button>
