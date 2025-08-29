@@ -61,7 +61,7 @@ const PermissionGroup: React.FC<PermissionGroupProps> = ({
                                 e.stopPropagation();
                                 handleAssignAll(group.id);
                             }}
-                            className="text-blue-700 hover:text-blue-800 hover:bg-indigo-50"
+                            className="text-blue-700 hover:text-blue-800 hover:bg-blue-50"
                         >
                             Assign All
                         </Button>
@@ -72,7 +72,7 @@ const PermissionGroup: React.FC<PermissionGroupProps> = ({
                                 e.stopPropagation();
                                 handleUnassignAll(group.id);
                             }}
-                            className="text-blue-700 hover:text-blue-800 hover:bg-indigo-50"
+                            className="text-blue-700 hover:text-blue-800 hover:bg-blue-50"
                         >
                             Unassign All
                         </Button>
