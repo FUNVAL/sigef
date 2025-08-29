@@ -343,6 +343,7 @@ class PreInscriptionController extends Controller
                 'currently_working' => 'nullable|boolean',
                 'job_type_preference' => 'nullable|numeric|in:' . implode(',', JobTypeEnum::values()),
                 'available_full_time' => 'nullable|boolean',
+                'course_id' => 'required|exists:courses,id',
             ];
 
             $validated = $request->validate($rules);
