@@ -23,7 +23,7 @@ export function SuccessAlert({
     className
 }: SuccessAlertProps) {
     const { flash } = usePage().props;
-    const successMessage = (flash as { success?: string })?.success;
+    const successMessage = (flash as { success?: string })?.success; // Mensaje de éxito fijo para demostración
 
     const [visible, setVisible] = useState(false);
     const [isExiting, setIsExiting] = useState(false);
@@ -70,7 +70,7 @@ export function SuccessAlert({
         <Alert
             variant="default"
             className={cn(
-                "fixed top-4 right-4 z-50 w-full max-w-lg bg-green-600/30 border-green-500 shadow-lg transition-all duration-300",
+                "fixed top-4 right-4 z-50 w-full max-w-lg bg-green-600/80 border-green-500 shadow-lg transition-all duration-300",
                 isExiting
                     ? "opacity-0 translate-y-[-10px] slide-out-to-top"
                     : "opacity-100 translate-y-0 animate-in slide-in-from-top-5 duration-500",
@@ -80,7 +80,7 @@ export function SuccessAlert({
             <CheckCheck />
 
             <AlertTitle className="text-gray-200 font-medium">Operación exitosa</AlertTitle>
-            <AlertDescription className="text-gray-400">
+            <AlertDescription className="text-blue-800  dark:text-blue-100">
                 {successMessage}
             </AlertDescription>
 
