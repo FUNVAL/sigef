@@ -42,6 +42,7 @@ type PreInscription = BaseEntity & {
         id: number;
         name: string;
     }
+    course_id?: number;
 
 };
 

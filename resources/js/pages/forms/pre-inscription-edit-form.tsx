@@ -43,6 +43,7 @@ export default function PreInscriptionEditForm({ preInscription, countries }: Pr
         currently_working: preInscription.currently_working,
         job_type_preference: preInscription.job_type_preference?.id,
         available_full_time: preInscription.available_full_time,
+        course_id: preInscription.course_id || 0,
     };
 
     const request = useForm<PreInscriptionEditFormData>(initialData);
