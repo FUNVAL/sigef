@@ -26,9 +26,9 @@ class ReferenceController extends Controller
     {
         try {
             $user = Auth::user();
-            $all = $user->can('ver todas las preinscripciones');
-            $own = $user->can('ver preinscripciones propias');
-            $staff = $user->can('ver preinscripciones del personal');
+            $all = $user->can('ver todas las referencias');
+            $own = $user->can('ver referencias propias');
+            $staff = $user->can('ver referencias del personal');
 
             if (!$all && !$own && !$staff) {
                 return back()->with('forbidden', 'No tienes permiso para realizar esta acción. Si crees que esto es un error, contacta al administrador del sistema.');
@@ -319,9 +319,9 @@ class ReferenceController extends Controller
     {
         try {
             $user = Auth::user();
-            $all = $user->can('ver todas las preinscripciones');
-            $own = $user->can('ver preinscripciones propias');
-            $staff = $user->can('ver preinscripciones del personal');
+            $all = $user->can('ver todas las referencias');
+            $own = $user->can('ver referencias propias');
+            $staff = $user->can('ver referencias del personal');
 
             if (!$all && !$own && !$staff) {
                 return back()->with('forbidden', 'No tienes permiso para realizar esta acción. Si crees que esto es un error, contacta al administrador del sistema.');
