@@ -10,7 +10,7 @@ Esta carpeta contiene todos los tipos TypeScript centralizados del proyecto, org
 - **`global.d.ts`** - Tipos globales de la aplicación
 
 ### 📁 Tipos de Entidades
-- **`pre-inscription.d.ts`** - Tipos relacionados con pre-inscripciones
+- **`pre-inscription.d.ts`** - Tipos relacionados con preinscripciones
 - **`reference.d.ts`** - Tipos relacionados con referencias
 - **`course.d.ts`** - Tipos relacionados con cursos
 - **`country.d.ts`** - Tipos relacionados con países

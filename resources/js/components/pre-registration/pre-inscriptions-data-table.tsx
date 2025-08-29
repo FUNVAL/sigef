@@ -6,7 +6,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { validateRole } from '@/lib/utils';
 import { SharedData } from '@/types';
 import { type PreInscription } from '@/types/pre-inscription';
 import { router, usePage } from '@inertiajs/react';
@@ -68,7 +67,7 @@ export const createColumns = ({
             },
         },
         {
-            id: 'church_contact',
+            id: 'Ubicación',
             header: 'Ubicación',
             cell: ({ row }) => {
                 const preInscription = row.original;
@@ -84,7 +83,7 @@ export const createColumns = ({
             },
         },
         {
-            accessorKey: 'estado_civil',
+            accessorKey: 'Estado civil',
             header: 'Estado Civil',
             cell: ({ row }) => {
                 const preInscription = row.original;
@@ -93,11 +92,11 @@ export const createColumns = ({
         },
 
         {
-            accessorKey: 'mision',
+            accessorKey: 'Misión',
             header: 'Misión',
             cell: ({ row }) => {
                 const preInscription = row.original;
-                return <Badge variant={preInscription.served_mission ? 'default' : 'secondary'}>{preInscription.served_mission ? 'Sí' : 'No'}</Badge>;
+                return <Badge variant={preInscription.served_mission.name === "Si" ? 'default' : 'secondary'}>{preInscription.served_mission.name}</Badge>;
             },
         },
 
@@ -121,7 +120,7 @@ export const createColumns = ({
                 const status = preInscription.status.name.toLowerCase();
 
                 return (
-                    <Badge variant={status === 'aprobado' ? 'default' : status === 'rechazado' ? 'destructive' : 'secondary'}>
+                    <Badge variant={status === 'aprobado' ? 'default' : status === 'no aprobada' ? 'destructive' : 'secondary'}>
                         {preInscription.status.name}
                     </Badge>
                 );
@@ -134,8 +133,8 @@ export const createColumns = ({
             cell: ({ row }) => {
                 const preInscription = row.original;
                 const { auth } = usePage<SharedData>().props;
-                const isPending = preInscription.status.id === 1 || validateRole(auth.user.roles, 'Administrador');
-                const canEdit = validateRole(auth.user.roles, 'Administrador') || validateRole(auth.user.roles, 'Responsable');
+                const canEdit = auth.user.user_permissions.includes('pre-inscription:update');
+                const isPending = preInscription.status.id === 1 || canEdit;
 
                 const handleEditPreInscription = () => {
                     router.visit(route('pre-inscription.edit', preInscription.id));
@@ -159,7 +158,7 @@ export const createColumns = ({
                             {canEdit && (
                                 <DropdownMenuItem onClick={handleEditPreInscription}>
                                     <Pencil className="h-4 w-4" />
-                                    Editar pre-inscripción
+                                    Editar preinscripción
                                 </DropdownMenuItem>
                             )}
                             {isPending && (

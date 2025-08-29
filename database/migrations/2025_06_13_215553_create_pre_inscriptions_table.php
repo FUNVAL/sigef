@@ -38,6 +38,7 @@ return new class extends Migration
             $table->integer('modified_by')->nullable();
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
             $table->foreignId('stake_id')->constrained()->onDelete('cascade');
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

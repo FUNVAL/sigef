@@ -82,7 +82,6 @@ export function EditStake({ stake, countries, users, open, onOpenChange }: EditS
 
                         {/* Usuario */}
                         <div className="grid gap-2">
-                            <Label htmlFor="user_id">Cambiar Responsable</Label>
                             <SheetSearchableSelect
                                 data={users}
                                 onValueChange={(value) => setData('user_id', value)}

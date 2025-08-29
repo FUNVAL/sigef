@@ -21,7 +21,13 @@ class StakeController extends Controller
         $query = Stake::query()->with(['country', 'user']);
 
         if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                    ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                        $userQuery->whereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $searchTerm . '%']);
+                    });
+            });
         }
 
         $query->notDeleted();
@@ -30,12 +36,14 @@ class StakeController extends Controller
         $page = $request->input('page', 1);
         $stakes = $query->orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
-        $users = User::all()->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'name' => $user->full_name,
-            ];
-        });
+        $users = User::permission('recibir asignaciones de estacas')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->full_name,
+                ];
+            });
 
         return Inertia::render('Stakes/Index', [
             'stakes' => $stakes,

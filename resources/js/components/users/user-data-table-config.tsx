@@ -118,7 +118,8 @@ export const createColumns = ({ onDeleteUser }: UserDataTableProps): ColumnDef<U
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-            const user = row.original
+            const user = row.original;
+
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -140,7 +141,7 @@ export const createColumns = ({ onDeleteUser }: UserDataTableProps): ColumnDef<U
                                 Editar
                             </TextLink>
                         </DropdownMenuItem>
-                        {user.roles.some(role => role.name === "Responsable") && (
+                        {user.user_permissions.includes('user:receive-assignments') && (
                             <DropdownMenuItem>
                                 <TextLink
                                     href={route('users.assign-stakes', user.id)}

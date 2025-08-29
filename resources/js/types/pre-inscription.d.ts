@@ -14,7 +14,7 @@ import {
 } from './common';
 
 /**
- * Tipo base para una pre-inscripción con todos sus campos y relaciones
+ * Tipo base para una preinscripción con todos sus campos y relaciones
  */
 type PreInscription = BaseEntity & {
     first_name: string;
@@ -38,10 +38,16 @@ type PreInscription = BaseEntity & {
     country: Country;
     stake: Stake;
     updated_at?: string;
+    course?: {
+        id: number;
+        name: string;
+    }
+    course_id?: number;
+
 };
 
 /**
- * Tipo para crear una nueva pre-inscripción
+ * Tipo para crear una nueva preinscripción
  * Convierte las relaciones de objetos a IDs numéricos
  */
 type PreInscriptionFormData = Omit<
@@ -66,7 +72,7 @@ type PreInscriptionFormData = Omit<
     };
 
 /**
- * Tipo para actualizar el estado de una pre-inscripción
+ * Tipo para actualizar el estado de una preinscripción
  */
 type PreInscriptionUpdateFormData = BaseUpdateFormData & {
     declined_reason?: number;
@@ -75,14 +81,14 @@ type PreInscriptionUpdateFormData = BaseUpdateFormData & {
 };
 
 /**
- * Tipo para editar datos de una pre-inscripción existente
+ * Tipo para editar datos de una preinscripción existente
  */
 type PreInscriptionEditFormData = Omit<PreInscriptionFormData, 'id'> & {
     id: number;
 };
 
 /**
- * Tipo para filtros de búsqueda de pre-inscripciones
+ * Tipo para filtros de búsqueda de preinscripciones
  */
 type PreInscriptionFilters = BaseFilters & {
     first_name?: string;
@@ -99,7 +105,7 @@ type PreInscriptionFilters = BaseFilters & {
 };
 
 /**
- * Tipo para la respuesta paginada de pre-inscripciones
+ * Tipo para la respuesta paginada de 
  */
 type PreInscriptionsPaginatedResponse = BasePaginatedResponse<PreInscription>;
 

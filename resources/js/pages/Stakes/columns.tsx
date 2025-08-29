@@ -45,14 +45,14 @@ export const getColumns = ({ countries, users, enums, onEdit, onDelete }: Column
             cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
         },
         {
-            id: 'country',
+            id: 'País',
             header: 'País',
             accessorKey: 'País',
             accessorFn: (row: Stake) => row.country?.code || 'N/A',
             cell: ({ row }) => <span className="font-medium">{row.original.country?.code || 'N/A'}</span>,
         },
         {
-            id: 'user',
+            id: 'Responsable',
             header: 'Responsable',
             accessorKey: 'Responsable',
             accessorFn: (row: Stake) => (row.user ? `${row.user.firstname} ${row.user.lastname}` : 'N/A'),
@@ -61,7 +61,7 @@ export const getColumns = ({ countries, users, enums, onEdit, onDelete }: Column
             ),
         },
         {
-            id: 'status',
+            id: 'Estado',
             header: 'Estado',
             accessorKey: 'Estado',
             accessorFn: (row: Stake) => row.status,
