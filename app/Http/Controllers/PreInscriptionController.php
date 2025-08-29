@@ -34,7 +34,7 @@ class PreInscriptionController extends Controller
             $own = $user->can('ver preinscripciones propias');
             $staff = $user->can('ver preinscripciones del personal');
 
-            $query = PreInscription::query()->with(['country', 'stake'])->orderBy('created_at', 'desc');
+            $query = PreInscription::query()->with(['country', 'stake', 'course'])->orderBy('created_at', 'desc');
 
             if ($request->has('search')) {
                 $search = $request->input('search');
@@ -171,7 +171,8 @@ class PreInscriptionController extends Controller
                 'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
                 'status' => 'nullable|numeric|in:' . implode(',', RequestStatusEnum::values()),
                 'country_id' => 'required|exists:countries,id',
-                'stake_id' => 'required|exists:stakes,id'
+                'stake_id' => 'required|exists:stakes,id',
+                'course_id' => 'required|exists:courses,id',
             ];
 
             $is_woman = $request['gender'] === GenderEnum::FEMALE->value;
