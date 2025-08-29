@@ -97,7 +97,6 @@ export const createColumns = ({
             header: 'Misión',
             cell: ({ row }) => {
                 const preInscription = row.original;
-                console.log(preInscription.served_mission);
                 return <Badge variant={preInscription.served_mission.name === "Si" ? 'default' : 'secondary'}>{preInscription.served_mission.name}</Badge>;
             },
         },
