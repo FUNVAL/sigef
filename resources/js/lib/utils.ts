@@ -8,10 +8,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export function validateRole(roles: Roles[], allowedRole: String): boolean {
-    return roles.some((r) => r.name === allowedRole)
-}
-
 export const filterReferenceStatus = (enums: Enums, status: number) => {
     switch (status) {
         case 1:

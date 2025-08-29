@@ -6,7 +6,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { validateRole } from '@/lib/utils';
 import { SharedData } from '@/types';
 import { Reference } from '@/types/reference';
 import { router, usePage } from '@inertiajs/react';
