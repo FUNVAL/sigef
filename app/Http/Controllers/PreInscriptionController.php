@@ -51,7 +51,7 @@ class PreInscriptionController extends Controller
                 });
             }
 
-            if ($own && !$all && !$staff) {
+            if ($own && !$all) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
@@ -402,6 +402,11 @@ class PreInscriptionController extends Controller
             }
 
             $query = PreInscription::query()->with(['country', 'stake']);
+
+            if ($own && !$all) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
 
             $preInscriptions = $query->get();
             $total = $preInscriptions->count();
