@@ -320,7 +320,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                                 />
                                 {errors.course_id &&
                                     <p className="text-sm text-red-500">
-                                        {errors.course}
+                                        {errors.course_id}
                                     </p>}
                             </div>
                         </div>
