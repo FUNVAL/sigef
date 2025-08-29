@@ -36,12 +36,14 @@ class StakeController extends Controller
         $page = $request->input('page', 1);
         $stakes = $query->orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
-        $users = User::all()->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'name' => $user->full_name,
-            ];
-        });
+        $users = User::permission('recibir asignaciones de estacas')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->full_name,
+                ];
+            });
 
         return Inertia::render('Stakes/Index', [
             'stakes' => $stakes,

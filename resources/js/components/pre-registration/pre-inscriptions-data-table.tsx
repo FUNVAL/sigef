@@ -6,7 +6,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { validateRole } from '@/lib/utils';
 import { SharedData } from '@/types';
 import { type PreInscription } from '@/types/pre-inscription';
 import { router, usePage } from '@inertiajs/react';
@@ -134,8 +133,8 @@ export const createColumns = ({
             cell: ({ row }) => {
                 const preInscription = row.original;
                 const { auth } = usePage<SharedData>().props;
-                const isPending = preInscription.status.id === 1 || validateRole(auth.user.roles, 'Administrador');
-                const canEdit = validateRole(auth.user.roles, 'Administrador') || validateRole(auth.user.roles, 'Responsable');
+                const canEdit = auth.user.user_permissions.includes('pre-inscription:update');
+                const isPending = preInscription.status.id === 1 || canEdit;
 
                 const handleEditPreInscription = () => {
                     router.visit(route('pre-inscription.edit', preInscription.id));

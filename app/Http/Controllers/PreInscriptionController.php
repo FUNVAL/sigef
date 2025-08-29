@@ -34,6 +34,10 @@ class PreInscriptionController extends Controller
             $own = $user->can('ver preinscripciones propias');
             $staff = $user->can('ver preinscripciones del personal');
 
+            if (!$all && !$own && !$staff) {
+                return back()->with('forbidden', 'No tienes permiso para realizar esta acción. Si crees que esto es un error, contacta al administrador del sistema.');
+            }
+
             $query = PreInscription::query()->with(['country', 'stake', 'course'])->orderBy('created_at', 'desc');
 
             if ($request->has('search')) {
@@ -83,7 +87,7 @@ class PreInscriptionController extends Controller
             $preInscriptions = $query->paginate($perPage, ['*'], 'page', $page);
 
             $responsables = !$all ? null :
-                User::role('Responsable')
+                User::permission('recibir asignaciones de estacas')
                 ->get()
                 ->map(fn($u) => [
                     'id' => $u->id,
@@ -369,7 +373,7 @@ class PreInscriptionController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Pre-inscription deleted successfully'
+                'message' => 'Preinscription deleted successfully'
             ]);
         } catch (Exception $e) {
             return response()->json([
@@ -387,17 +391,20 @@ class PreInscriptionController extends Controller
     {
         try {
             $user = Auth::user();
-            $query = PreInscription::query()->with(['country', 'stake']);
 
-            if ($user->hasRole('Responsable') && !$user->hasRole('Administrador')) {
-                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
-                $query->whereIn('stake_id', $stakesIds);
+            $all = $user->can('ver todas las preinscripciones');
+            $own = $user->can('ver preinscripciones propias');
+            $staff = $user->can('ver preinscripciones del personal');
+
+            if (!$all && !$own && !$staff) {
+                return back()->with('forbidden', 'No tienes permiso para realizar esta acción. Si crees que esto es un error, contacta al administrador del sistema.');
             }
+
+            $query = PreInscription::query()->with(['country', 'stake']);
 
             $preInscriptions = $query->get();
             $total = $preInscriptions->count();
 
-            // General statistics
             $pending = $preInscriptions->where('status.id', RequestStatusEnum::PENDING->value)->count();
             $accepted = $preInscriptions->where('status.id', RequestStatusEnum::APPROVED->value)->count();
             $rejected = $preInscriptions->where('status.id', RequestStatusEnum::REJECTED->value)->count();
