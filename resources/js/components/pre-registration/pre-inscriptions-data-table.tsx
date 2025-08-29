@@ -68,7 +68,7 @@ export const createColumns = ({
             },
         },
         {
-            id: 'church_contact',
+            id: 'Ubicación',
             header: 'Ubicación',
             cell: ({ row }) => {
                 const preInscription = row.original;
@@ -84,7 +84,7 @@ export const createColumns = ({
             },
         },
         {
-            accessorKey: 'estado_civil',
+            accessorKey: 'Estado civil',
             header: 'Estado Civil',
             cell: ({ row }) => {
                 const preInscription = row.original;
@@ -93,11 +93,12 @@ export const createColumns = ({
         },
 
         {
-            accessorKey: 'mision',
+            accessorKey: 'Misión',
             header: 'Misión',
             cell: ({ row }) => {
                 const preInscription = row.original;
-                return <Badge variant={preInscription.served_mission ? 'default' : 'secondary'}>{preInscription.served_mission ? 'Sí' : 'No'}</Badge>;
+                console.log(preInscription.served_mission);
+                return <Badge variant={preInscription.served_mission.name === "Si" ? 'default' : 'secondary'}>{preInscription.served_mission.name}</Badge>;
             },
         },
 
