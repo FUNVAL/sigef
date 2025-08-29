@@ -121,7 +121,7 @@ export const createColumns = ({
                 const status = preInscription.status.name.toLowerCase();
 
                 return (
-                    <Badge variant={status === 'aprobado' ? 'default' : status === 'no aprobado' ? 'destructive' : 'secondary'}>
+                    <Badge variant={status === 'aprobado' ? 'default' : status === 'no aprobada' ? 'destructive' : 'secondary'}>
                         {preInscription.status.name}
                     </Badge>
                 );

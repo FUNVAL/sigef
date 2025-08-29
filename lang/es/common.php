@@ -31,7 +31,7 @@ return [
         ],
         'titles' => [
             'dashboard' => 'Dashboard',
-            'pre_inscriptions' => 'Pre-inscripciones',
+            'pre_inscriptions' => 'Preinscripciones',
             'references' => 'Referencias',
             'personal_info' => 'Información Personal',
             'location' => 'Ubicación',
@@ -49,7 +49,7 @@ return [
         'access_control' => 'Control de Acceso',
         'courses' => 'Cursos',
         'references' => 'Referencias',
-        'pre_inscriptions' => 'Pre-Inscripciones',
+        'pre_inscriptions' => 'Preinscripciones',
         'settings' => 'Configuración',
         'profile' => 'Perfil',
         'password' => 'Contraseña',

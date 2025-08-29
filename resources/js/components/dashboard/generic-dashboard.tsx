@@ -36,9 +36,9 @@ interface GenericDashboardProps {
 
         // Configuración de etiquetas de estado
         statusLabels: {
-            pending: string; // "Pendientes"
-            accepted: string; // "Aprobadas"/"Aceptadas"
-            rejected: string; // "Rechazadas"
+            pending: string;
+            accepted: string;
+            rejected: string;
         };
 
         // Configuración de títulos de secciones

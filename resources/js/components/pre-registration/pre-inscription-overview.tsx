@@ -63,8 +63,8 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
     const getStatusVariant = () => {
         if (!status) return 'outline';
         const statusName = status.name.toLowerCase();
-        if (statusName === 'aprobado') return 'default';
-        if (statusName === 'no aprobado') return 'destructive';
+        if (statusName === 'aprobada') return 'default';
+        if (statusName === 'no aprobada') return 'destructive';
         return 'secondary';
     };
 
@@ -74,7 +74,7 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
         if (statusName === 'aprobado') {
             return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
         }
-        if (statusName === 'no aprobado') {
+        if (statusName === 'no aprobada') {
             return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
         }
         return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
@@ -213,28 +213,24 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                                 </Badge>
                             </div>
                         </div>
-                        {declined_reason && (
-                            <div>
-                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
-                                    Razón del Estado
-                                </Label>
-                                <p className="block text-sm text-gray-900 dark:text-gray-100">
-                                    {getDeclinedReasonDisplay()}
-                                </p>
-                            </div>
-                        )}
-                        {comments && (
-                            <div>
-                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Comentarios</Label>
-                                <p className="block text-sm whitespace-pre-wrap text-gray-900 dark:text-gray-100">{comments}</p>
-                            </div>
-                        )}
-                        {declined_description && (
-                            <div>
-                                <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Descripción del Rechazo</Label>
-                                <p className="block text-sm whitespace-pre-wrap text-gray-900 dark:text-gray-100">{declined_description}</p>
-                            </div>
-                        )}
+                        <div className="grid grid-cols-2 gap-4">
+                            {declined_reason && (
+                                <div>
+                                    <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                        Razón del Estado
+                                    </Label>
+                                    <p className="block text-sm text-gray-900 dark:text-gray-100">
+                                        {getDeclinedReasonDisplay()}
+                                    </p>
+                                </div>
+                            )}
+                            {declined_description && (
+                                <div>
+                                    <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Descripción del estado</Label>
+                                    <p className="block text-sm whitespace-pre-wrap text-gray-900 dark:text-gray-100">{declined_description}</p>
+                                </div>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
             </div>

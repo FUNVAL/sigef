@@ -1,6 +1,6 @@
 # Sistema de Dashboard Modular
 
-Este sistema permite crear dashboards reutilizables y configurables para diferentes tipos de entidades (referencias, pre-inscripciones, etc.) sin duplicar código.
+Este sistema permite crear dashboards reutilizables y configurables para diferentes tipos de entidades (referencias, preinscripciones, etc.) sin duplicar código.
 
 ## Estructura
 
@@ -22,7 +22,7 @@ resources/js/
 
 ### 1. GenericDashboard
 Componente base que renderiza la estructura común de todos los dashboards:
-- Tarjetas de estadísticas principales (Total, Pendientes, Aceptados, No aprobados)
+- Tarjetas de estadísticas principales (Total, Pendientes, Aceptadas, No aprobadas)
 - Gráfico de tasa de aceptación y resumen de estados
 - Distribuciones por país y estaca
 - Sección de acciones pendientes
@@ -30,7 +30,7 @@ Componente base que renderiza la estructura común de todos los dashboards:
 ### 2. useDashboardConfig Hook
 Proporciona configuraciones predefinidas para diferentes tipos de dashboards:
 - `createReferencesConfig()` - Para dashboards de referencias
-- `createPreInscriptionsConfig()` - Para dashboards de pre-inscripciones
+- `createPreInscriptionsConfig()` - Para dashboards de preinscripciones
 - `createCustomConfig()` - Para dashboards personalizados
 
 ## Uso
@@ -112,7 +112,7 @@ interface BaseStats {
 ### Opciones de configuración
 - **useAccessControlLayout**: `true` (default) para usar AccessControlLayout, `false` para layout simple
 - **entityName/entitySingular/entityPlural**: Términos específicos de la entidad
-- **statusLabels**: Etiquetas para los estados (pendiente, aceptado, no aprobado)
+- **statusLabels**: Etiquetas para los estados (pendiente, aceptado, no aprobada)
 - **sectionTitles**: Títulos de las diferentes secciones del dashboard
 - **pendingActionsLabels**: Etiquetas para la sección de acciones pendientes
 

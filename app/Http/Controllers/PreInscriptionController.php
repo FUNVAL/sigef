@@ -451,7 +451,7 @@ class PreInscriptionController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al obtener el dashboard de pre-inscripciones',
+                'message' => 'Error al obtener el dashboard de preinscripciones',
                 'error' => $e->getMessage()
             ], 500);
         }

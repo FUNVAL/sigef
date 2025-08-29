@@ -14,7 +14,7 @@ interface PreInscriptionEditFormProps {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Pre-inscripciones',
+        title: 'Preinscripciones',
         href: '/pre-inscription',
     },
     {

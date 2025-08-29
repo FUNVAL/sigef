@@ -82,7 +82,7 @@ type PreInscriptionEditFormData = Omit<PreInscriptionFormData, 'id'> & {
 };
 
 /**
- * Tipo para filtros de búsqueda de pre-inscripciones
+ * Tipo para filtros de búsqueda de preinscripciones
  */
 type PreInscriptionFilters = BaseFilters & {
     first_name?: string;
@@ -99,7 +99,7 @@ type PreInscriptionFilters = BaseFilters & {
 };
 
 /**
- * Tipo para la respuesta paginada de pre-inscripciones
+ * Tipo para la respuesta paginada de 
  */
 type PreInscriptionsPaginatedResponse = BasePaginatedResponse<PreInscription>;
 
