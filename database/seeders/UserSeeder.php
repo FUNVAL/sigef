@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
             }
 
             $baseData = [
-                'password' => Hash::make('123456'),
+                'password' => Hash::make(env('DEFAULT_PASSWORD', '123456')),
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
