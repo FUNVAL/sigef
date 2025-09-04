@@ -105,7 +105,7 @@ export const createColumns = ({
             header: 'Curso',
             cell: ({ row }) => {
                 const preInscription = row.original;
-                return <p className="text-sm font-medium">{preInscription.course?.name || 'No asignado'}</p>;
+                return <p className="text-sm font-medium min-w-28 text-wrap">{preInscription.course?.name || 'No asignado'}</p>;
             },
         },
 
