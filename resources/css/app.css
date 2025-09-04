@@ -165,4 +165,7 @@
     label:has(+:is(*:required, *[aria-required="true"])) {
         @apply after:content-['*'] after:text-red-500 after:ml-1 after:text-base;
     }
+    label:has(+ div input:required) {
+        @apply after:content-['*'] after:text-red-500 after:ml-1 after:text-base;
+    }
 }
