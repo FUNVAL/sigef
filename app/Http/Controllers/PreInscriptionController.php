@@ -150,13 +150,15 @@ class PreInscriptionController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validación manual del correo
-            $emailCheck = $this->checkEmailPreInscription($request->input('email'));
+            $is_woman = $request['gender'] === GenderEnum::FEMALE->value;
+            $emailCheck = $this->checkEmailPreInscription($request->input('email'), $request);
             if ($emailCheck['exists']) {
-                $queryParams = array_merge($request->query(), ['step' => 5]);
+
                 $previousUrl = url()->previous();
-                $previousUrl = preg_replace('/([&?]step=\d+)/', '', $previousUrl);
-                return redirect()->to($previousUrl . '?' . http_build_query($queryParams))
+                $step = $is_woman ? 6 : 5;
+                $newUrl = preg_replace('/([&?]step=\d+)/', '', $previousUrl) . '&' . http_build_query(['step' => $step]);
+
+                return redirect()->to($newUrl)
                     ->withInput()
                     ->with('success',  $emailCheck['message']);
             }
@@ -178,8 +180,6 @@ class PreInscriptionController extends Controller
                 'stake_id' => 'required|exists:stakes,id',
                 'course_id' => 'required|exists:courses,id',
             ];
-
-            $is_woman = $request['gender'] === GenderEnum::FEMALE->value;
 
             if ($is_woman) {
                 $aditionalRules = [
@@ -499,12 +499,15 @@ class PreInscriptionController extends Controller
     /**
      * Verifica si el correo ya existe y retorna un mensaje personalizado si aplica.
      */
-    private function checkEmailPreInscription($email)
+    private function checkEmailPreInscription($email, $request = null)
     {
         $preInscription = PreInscription::where('email', $email)->first();
+
         if (!$preInscription) {
             return ['exists' => false];
         }
+
+        $moreThanSixMonths = $preInscription->updated_at->lt(now()->subMonths(6));
 
         $statusId = is_array($preInscription->status) ? $preInscription->status["id"] : $preInscription->status;
         $genderId = is_array($preInscription->gender) ? $preInscription->gender["id"] : $preInscription->gender;
@@ -522,6 +525,30 @@ class PreInscriptionController extends Controller
                     'message' => $message
                 ]
             ];
+        }
+
+        if ($moreThanSixMonths && $statusId == RequestStatusEnum::REJECTED->value) {
+            if (
+                !$request['currently_working'] &&
+                $request['job_type_preference'] === JobTypeEnum::IN_PERSON->value &&
+                $request['available_full_time']
+            ) {
+                $preInscription->update([
+                    'status' => RequestStatusEnum::PENDING->value,
+                    'declined_reason' => null,
+                    'declined_description' => null,
+                    'created_at' => now(),
+                    'modified_by' => 0
+                ]);
+
+                return [
+                    'exists' => true,
+                    'message' => [
+                        'type' => 'success',
+                        'message' => __('common.messages.success.preinscription_success')
+                    ]
+                ];
+            }
         }
 
         if (
