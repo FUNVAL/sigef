@@ -222,7 +222,7 @@ export function PreRegistrationFormStep({ countries, request }: PreRegistrationF
                                         selectedCountryId={data.country_id}
                                         minLength={3}
                                         maxLength={18}
-                                        required
+                                        
                                     />
                                 </div>
                                 {errors.additional_phone && <p className="text-sm text-red-500">{errors.additional_phone}</p>}
@@ -238,6 +238,7 @@ export function PreRegistrationFormStep({ countries, request }: PreRegistrationF
                                     label={forms.pre_inscription.fields.stake}
                                     disabled={!data.country_id}
                                     placeholder={data.country_id ? 'Selecciona una estaca/distrito/misión' : 'Primero selecciona un país'}
+                                    required
                                 />
 
                                 {errors.stake_id && <p className="text-sm text-red-500">{errors.stake_id}</p>}
