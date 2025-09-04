@@ -186,11 +186,11 @@ class PreInscriptionController extends Controller
                     'currently_working' => 'required|boolean',
                 ];
 
-                if (!$request['currently_working']) {
+                if (!$request->input('currently_working')) {
                     $aditionalRules['job_type_preference'] = 'required|numeric|in:' . implode(',', JobTypeEnum::values());
                 }
 
-                if ($request['job_type_preference'] === JobTypeEnum::IN_PERSON->value) {
+                if ($request->input('job_type_preference') === JobTypeEnum::IN_PERSON->value) {
                     $aditionalRules['available_full_time'] = 'required|boolean';
                 }
 
@@ -201,10 +201,10 @@ class PreInscriptionController extends Controller
             $preInscription =  PreInscription::create($validated);
 
             $message =  $this->generateMessage(
-                $request['currently_working'],
-                $request['job_type_preference'],
-                $request['available_full_time'],
-                $request['gender']
+                !$request->input('currently_working'),
+                $request->input('job_type_preference'),
+                $request->input('available_full_time'),
+                $request->input('gender')
             );
 
             $is_workig = $request['currently_working'];
@@ -222,7 +222,7 @@ class PreInscriptionController extends Controller
             }
             $stake = Stake::find($validated['stake_id']);
             $user = $stake->user;
-            $user->notify(new RequestNotification($this->buildReferenceNotification($user, $preInscription)));
+            /* $user->notify(new RequestNotification($this->buildReferenceNotification($user, $preInscription))); */
 
             return  back()->with('success', $message);
         } catch (Exception $e) {
@@ -529,9 +529,9 @@ class PreInscriptionController extends Controller
 
         if ($moreThanSixMonths && $statusId == RequestStatusEnum::REJECTED->value) {
             if (
-                !$request['currently_working'] &&
-                $request['job_type_preference'] === JobTypeEnum::IN_PERSON->value &&
-                $request['available_full_time']
+                !$request->input('currently_working') &&
+                $request->input('job_type_preference') === JobTypeEnum::IN_PERSON->value &&
+                $request->input('available_full_time')
             ) {
                 $preInscription->update([
                     'status' => RequestStatusEnum::PENDING->value,
