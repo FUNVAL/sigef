@@ -46,13 +46,13 @@ export function MessageStep() {
         </div>
 
         <div className="text-center pt-4">
-          <Link
-            href="/preinscription-reference"
+          <a
+            href="https://www.fundaciondevalores.org/"
             className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600"
             onClick={() => sessionStorage.removeItem('successMessage')}
           >
             {message_step.back_to_home}
-          </Link>
+          </a>
         </div>
       </CardContent>
     </Card>
