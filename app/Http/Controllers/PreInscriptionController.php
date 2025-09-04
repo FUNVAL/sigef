@@ -153,14 +153,7 @@ class PreInscriptionController extends Controller
             $is_woman = $request['gender'] === GenderEnum::FEMALE->value;
             $emailCheck = $this->checkEmailPreInscription($request->input('email'), $request);
             if ($emailCheck['exists']) {
-
-                $previousUrl = url()->previous();
-                $step = $is_woman ? 6 : 5;
-                $newUrl = preg_replace('/([&?]step=\d+)/', '', $previousUrl) . '&' . http_build_query(['step' => $step]);
-
-                return redirect()->to($newUrl)
-                    ->withInput()
-                    ->with('success',  $emailCheck['message']);
+                return  back()->with('success', $emailCheck['message']);
             }
 
             $rules = [
@@ -222,7 +215,7 @@ class PreInscriptionController extends Controller
             }
             $stake = Stake::find($validated['stake_id']);
             $user = $stake->user;
-            /* $user->notify(new RequestNotification($this->buildReferenceNotification($user, $preInscription))); */
+            $user->notify(new RequestNotification($this->buildReferenceNotification($user, $preInscription)));
 
             return  back()->with('success', $message);
         } catch (Exception $e) {
@@ -534,11 +527,12 @@ class PreInscriptionController extends Controller
                 $request->input('available_full_time')
             ) {
                 $preInscription->update([
+                    ...$request->all(),
                     'status' => RequestStatusEnum::PENDING->value,
                     'declined_reason' => null,
                     'declined_description' => null,
                     'created_at' => now(),
-                    'modified_by' => 0
+                    'modified_by' => null
                 ]);
 
                 return [
