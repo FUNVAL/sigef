@@ -150,69 +150,18 @@ class PreInscriptionController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validación manual del correo
-            $emailCheck = $this->checkEmailPreInscription($request->input('email'));
+            $emailCheck = $this->checkEmailPreInscription($request->input('email'), $request);
             if ($emailCheck['exists']) {
-                $queryParams = array_merge($request->query(), ['step' => 5]);
-                $previousUrl = url()->previous();
-                $previousUrl = preg_replace('/([&?]step=\d+)/', '', $previousUrl);
-                return redirect()->to($previousUrl . '?' . http_build_query($queryParams))
-                    ->withInput()
-                    ->with('success',  $emailCheck['message']);
+                return back()->with('success', $emailCheck['message']);
             }
 
-            $rules = [
-                'first_name' => 'required|string|max:50',
-                'middle_name' => 'nullable|string|max:50',
-                'last_name' => 'required|string|max:50',
-                'second_last_name' => 'nullable|string|max:50',
-                'gender' => 'required|numeric|in:' . implode(',', GenderEnum::values()),
-                'age' => 'required|numeric|min:18|max:100',
-                'phone' => 'required|string|max:20',
-                'additional_phone' => 'nullable|string|max:20',
-                'email' => 'required|email|max:100|unique:pre_inscriptions',
-                'marital_status' => 'required|numeric|in:' . implode(',', MaritalStatusEnum::values()),
-                'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
-                'status' => 'nullable|numeric|in:' . implode(',', RequestStatusEnum::values()),
-                'country_id' => 'required|exists:countries,id',
-                'stake_id' => 'required|exists:stakes,id',
-                'course_id' => 'required|exists:courses,id',
-            ];
+            $validated = $this->validatePreInscriptionData($request);
+            $preInscription = PreInscription::create($validated);
 
-            $is_woman = $request['gender'] === GenderEnum::FEMALE->value;
+            // Aplicar filtros automáticos y obtener mensaje
+            $filterResult = $this->applyAutomaticFilters($preInscription, $request);
 
-            if ($is_woman) {
-                $aditionalRules = [
-                    'currently_working' => 'required|boolean',
-                ];
-
-                if (!$request['currently_working']) {
-                    $aditionalRules['job_type_preference'] = 'required|numeric|in:' . implode(',', JobTypeEnum::values());
-                }
-
-                if ($request['job_type_preference'] === JobTypeEnum::IN_PERSON->value) {
-                    $aditionalRules['available_full_time'] = 'required|boolean';
-                }
-
-                $rules = array_merge($rules, $aditionalRules);
-            }
-
-            $validated = $request->validate($rules);
-            $preInscription =  PreInscription::create($validated);
-
-            $message =  $this->generateMessage(
-                $request['currently_working'],
-                $request['job_type_preference'],
-                $request['available_full_time'],
-                $request['gender']
-            );
-
-            $is_workig = $request['currently_working'];
-            $is_valid_job = $request['job_type_preference'] === JobTypeEnum::IN_PERSON->value;
-            $is_available = $request['available_full_time'];
-
-            if ($is_woman && ($is_workig || !$is_valid_job || !$is_available)) {
-
+            if ($filterResult['shouldReject']) {
                 $preInscription->update([
                     'status' => RequestStatusEnum::REJECTED->value,
                     'declined_reason' => ReferenceStatusEnum::FILTERED->value,
@@ -220,13 +169,11 @@ class PreInscriptionController extends Controller
                     'modified_by' => 0
                 ]);
             }
-            $stake = Stake::find($validated['stake_id']);
-            $user = $stake->user;
-            $user->notify(new RequestNotification($this->buildReferenceNotification($user, $preInscription)));
 
-            return  back()->with('success', $message);
+            $this->sendNotificationToResponsible($preInscription);
+
+            return back()->with('success', $filterResult['message']);
         } catch (Exception $e) {
-
             return back()->withErrors(['error' => 'Error al crear la preinscripción: ' . $e->getMessage()]);
         }
     }
@@ -471,50 +418,166 @@ class PreInscriptionController extends Controller
         }
     }
 
-    private function generateMessage($currentlyWorking, $jobTypePreference, $availableFullTime, $gender): array
+    /**
+     * Valida los datos de preinscripción según las reglas de negocio
+     */
+    private function validatePreInscriptionData(Request $request): array
     {
-        $response = [
-            'message' => __('common.messages.success.preinscription_success'),
-            'type' => 'success'
+        $isWoman = $request->input('gender') === GenderEnum::FEMALE->value;
+
+        $rules = [
+            'first_name' => 'required|string|max:50',
+            'middle_name' => 'nullable|string|max:50',
+            'last_name' => 'required|string|max:50',
+            'second_last_name' => 'nullable|string|max:50',
+            'gender' => 'required|numeric|in:' . implode(',', GenderEnum::values()),
+            'age' => 'required|numeric|min:18|max:100',
+            'phone' => 'required|string|max:20',
+            'additional_phone' => 'nullable|string|max:20',
+            'email' => 'required|email|max:100|unique:pre_inscriptions',
+            'marital_status' => 'required|numeric|in:' . implode(',', MaritalStatusEnum::values()),
+            'served_mission' => 'required|numeric|in:' . implode(',', MissionStatusEnum::values()),
+            'status' => 'nullable|numeric|in:' . implode(',', RequestStatusEnum::values()),
+            'country_id' => 'required|exists:countries,id',
+            'stake_id' => 'required|exists:stakes,id',
+            'course_id' => 'required|exists:courses,id',
         ];
 
-        if ($gender === GenderEnum::FEMALE->value) {
-            if ($currentlyWorking) {
-                $response['message'] = __('common.messages.rejections.working');
-                $response['type'] = 'rejected';
-            } elseif ($jobTypePreference === JobTypeEnum::OWN_BOSS->value) {
-                $response['message'] = __('common.messages.rejections.entrepreneur');
-                $response['type'] = 'rejected';
-            } elseif ($jobTypePreference === JobTypeEnum::ONLINE->value && !$availableFullTime) {
-                $response['message'] = __('common.messages.rejections.online_part_time');
-                $response['type'] = 'rejected';
-            } elseif (!$availableFullTime) {
-                $response['message'] = __('common.messages.rejections.part_time');
-                $response['type'] = 'rejected';
+        if ($isWoman) {
+            $rules['currently_working'] = 'required|boolean';
+
+            if (!$request->input('currently_working')) {
+                $rules['job_type_preference'] = 'required|numeric|in:' . implode(',', JobTypeEnum::values());
+            }
+
+            if ($request->input('job_type_preference') === JobTypeEnum::IN_PERSON->value) {
+                $rules['available_full_time'] = 'required|boolean';
             }
         }
-        return $response;
+
+        return $request->validate($rules);
+    }
+
+    /**
+     * Aplica filtros automáticos para determinar elegibilidad
+     */
+    private function applyAutomaticFilters($preInscription, Request $request): array
+    {
+        $eligibilityCheck = $this->checkWomanEligibility(
+            $request->input('gender'),
+            $request->input('currently_working'),
+            $request->input('job_type_preference'),
+            $request->input('available_full_time')
+        );
+
+        return [
+            'shouldReject' => !$eligibilityCheck['eligible'],
+            'message' => $eligibilityCheck['message']
+        ];
+    }
+
+    /**
+     * Verifica elegibilidad de mujeres según reglas de negocio (lógica centralizada)
+     */
+    private function checkWomanEligibility($gender, $currentlyWorking, $jobTypePreference, $availableFullTime): array
+    {
+        if ($gender !== GenderEnum::FEMALE->value) {
+            return [
+                'eligible' => true,
+                'message' => [
+                    'type' => 'success',
+                    'message' => __('common.messages.success.preinscription_success')
+                ]
+            ];
+        }
+
+        // Verificar condiciones de rechazo para mujeres
+        if ($currentlyWorking) {
+            return [
+                'eligible' => false,
+                'message' => [
+                    'type' => 'rejected',
+                    'message' => __('common.messages.rejections.working')
+                ]
+            ];
+        }
+
+        if ($jobTypePreference === JobTypeEnum::OWN_BOSS->value) {
+            return [
+                'eligible' => false,
+                'message' => [
+                    'type' => 'rejected',
+                    'message' => __('common.messages.rejections.entrepreneur')
+                ]
+            ];
+        }
+
+        if ($jobTypePreference === JobTypeEnum::ONLINE->value && !$availableFullTime) {
+            return [
+                'eligible' => false,
+                'message' => [
+                    'type' => 'rejected',
+                    'message' => __('common.messages.rejections.online_part_time')
+                ]
+            ];
+        }
+
+        if ($jobTypePreference === JobTypeEnum::IN_PERSON->value && !$availableFullTime) {
+            return [
+                'eligible' => false,
+                'message' => [
+                    'type' => 'rejected',
+                    'message' => __('common.messages.rejections.part_time')
+                ]
+            ];
+        }
+
+        return [
+            'eligible' => true,
+            'message' => [
+                'type' => 'success',
+                'message' => __('common.messages.success.preinscription_success')
+            ]
+        ];
+    }
+
+    /**
+     * Envía notificación al responsable de la estaca
+     */
+    private function sendNotificationToResponsible($preInscription): void
+    {
+        $stake = Stake::find($preInscription->stake_id);
+        if ($stake && $stake->user) {
+            $stake->user->notify(new RequestNotification($this->buildReferenceNotification($stake->user, $preInscription)));
+        }
+    }
+
+    /**
+     * Extrae el valor del enum (maneja tanto arrays como valores directos)
+     */
+    private function getEnumValue($value)
+    {
+        return is_array($value) ? $value["id"] : $value;
     }
 
     /**
      * Verifica si el correo ya existe y retorna un mensaje personalizado si aplica.
      */
-    private function checkEmailPreInscription($email)
+    private function checkEmailPreInscription($email, $request)
     {
         $preInscription = PreInscription::where('email', $email)->first();
+
         if (!$preInscription) {
             return ['exists' => false];
         }
 
-        $statusId = is_array($preInscription->status) ? $preInscription->status["id"] : $preInscription->status;
-        $genderId = is_array($preInscription->gender) ? $preInscription->gender["id"] : $preInscription->gender;
-        $jobTypePref = is_array($preInscription->job_type_preference ?? null) ? $preInscription->job_type_preference["id"] : ($preInscription->job_type_preference ?? null);
-
+        $moreThanSixMonths = $preInscription->updated_at->lt(now()->subMonths(6));
+        $statusId = $this->getEnumValue($preInscription->status);
         $responsablePhone = optional(optional($preInscription->stake)->user)->contact_phone_1;
 
+        // Caso: Preinscripción pendiente
         if ($statusId == RequestStatusEnum::PENDING->value) {
             $message = str_replace('[**]', $responsablePhone, __('common.messages.duplicates.pending'));
-
             return [
                 'exists' => true,
                 'message' => [
@@ -524,23 +587,78 @@ class PreInscriptionController extends Controller
             ];
         }
 
-        if (
-            $statusId == RequestStatusEnum::REJECTED->value &&
-            $genderId == GenderEnum::FEMALE->value
-        ) {
-            $msg = $this->generateMessage(
+        // Caso: Preinscripción rechazada hace más de 6 meses (reintento)
+        if ($moreThanSixMonths && $statusId == RequestStatusEnum::REJECTED->value) {
+            return $this->handleRetryAfterSixMonths($preInscription, $request);
+        }
+
+        // Caso: Preinscripción rechazada (mostrar motivo anterior)
+        if ($statusId == RequestStatusEnum::REJECTED->value) {
+            return $this->handleRejectedPreInscription($preInscription);
+        }
+
+        // Caso por defecto: email ya existe
+        return [
+            'exists' => true,
+            'message' => [
+                'type' => 'rejected',
+                'message' => __('common.messages.error.email_exists')
+            ]
+        ];
+    }
+
+    /**
+     * Maneja reintento después de 6 meses
+     */
+    private function handleRetryAfterSixMonths($preInscription, $request): array
+    {
+        $eligibilityCheck = $this->checkWomanEligibility(
+            $request->input('gender'),
+            $request->input('currently_working'),
+            $request->input('job_type_preference'),
+            $request->input('available_full_time')
+        );
+        $validated = $this->validatePreInscriptionData($request);
+        if ($eligibilityCheck['eligible']) {
+            $preInscription->update([
+                ...$validated,
+                'status' => RequestStatusEnum::PENDING->value,
+                'declined_reason' => null,
+                'declined_description' => null,
+                'created_at' => now(),
+                'modified_by' => null
+            ]);
+        }
+
+        return [
+            'exists' => true,
+            'message' => $eligibilityCheck['message']
+        ];
+    }
+
+    /**
+     * Maneja preinscripción previamente rechazada
+     */
+    private function handleRejectedPreInscription($preInscription): array
+    {
+        $genderId = $this->getEnumValue($preInscription->gender);
+
+        if ($genderId == GenderEnum::FEMALE->value) {
+            $jobTypePref = $this->getEnumValue($preInscription->job_type_preference);
+            $eligibilityCheck = $this->checkWomanEligibility(
+                $genderId,
                 $preInscription->currently_working,
                 $jobTypePref,
-                $preInscription->available_full_time,
-                $genderId
+                $preInscription->available_full_time
             );
-            $rejected_message = "<div class='bg-blue-200/30 rounded-md p-2'>" . $msg['message'] . "</div>";
-            $message = str_replace('[**]', $rejected_message, __('common.messages.duplicates.rejected'));
+
+            $rejectedMessage = "<div class='bg-blue-200/30 rounded-md p-2'>" . $eligibilityCheck['message']['message'] . "</div>";
+            $message = str_replace('[**]', $rejectedMessage, __('common.messages.duplicates.rejected'));
 
             return [
                 'exists' => true,
                 'message' => [
-                    'type' => $msg['type'],
+                    'type' => $eligibilityCheck['message']['type'],
                     'message' => $message
                 ]
             ];
