@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from '@/components/ui/input';
 import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
 
 import {
   Select,
@@ -42,6 +43,7 @@ export function ReferralFormStep({ countries, request, }: ReferralFormStepProps)
   const { stakes } = useFilteredStakes(data.country_id);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [dontKnowStake, setDontKnowStake] = useState(false);
 
   const isFull = new URLSearchParams(window.location.search).get('full') === 'true';
 
@@ -77,6 +79,15 @@ export function ReferralFormStep({ countries, request, }: ReferralFormStepProps)
     },
     [setData],
   );
+
+  const handleDontKnowStakeChange = (checked: boolean) => {
+    setDontKnowStake(checked);
+    if (checked) {
+      setData('stake_id', 0);
+    } else {
+      setData('stake_id', '');
+    }
+  };
 
   return (
     <Card className="w-full max-w-4xl shadow-2xl border-0 overflow-hidden pt-0 mx-auto">
@@ -176,17 +187,35 @@ export function ReferralFormStep({ countries, request, }: ReferralFormStepProps)
             </div>
 
             <div>
-              <SearchableSelect
-                data={stakes}
-                name="stake_id"
-                id="stake_id"
-                value={data.stake_id.toString()}
-                onValueChange={(value) => setData('stake_id', Number(value))}
-                label={forms.referral.fields.stake}
-                disabled={!data.country_id}
-                placeholder={data.country_id ? "Selecciona una estaca/distrito/misión" : "Primero selecciona un país"}
-                required
-              />
+              <Label htmlFor="stake_id">{forms.referral.fields.stake}</Label>
+              <div className="space-y-3">
+                <SearchableSelect
+                  data={stakes}
+                  name="stake_id"
+                  id="stake_id"
+                  value={dontKnowStake ? "" : data.stake_id.toString()}
+                  onValueChange={(value) => setData('stake_id', Number(value))}
+                  label=""
+                  disabled={!data.country_id || dontKnowStake}
+                  placeholder={data.country_id ? "Selecciona una estaca/distrito/misión" : "Primero selecciona un país"}
+                  required={!dontKnowStake}
+                />
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="dont_know_stake"
+                    checked={dontKnowStake}
+                    onCheckedChange={handleDontKnowStakeChange}
+                    disabled={!data.country_id}
+                  />
+                  <Label
+                    htmlFor="dont_know_stake"
+                    className="text-sm text-gray-600 cursor-pointer"
+                  >
+                    {forms.referral.fields.unknown_stake}
+                  </Label>
+                </div>
+              </div>
               {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
             </div>
 

@@ -132,6 +132,13 @@ class ReferenceController extends Controller
     public function store(Request $request)
     {
         try {
+            if (!$request->input('stake_id')) {
+                $stakes = Stake::where('status', StatusEnum::ACTIVE->value)
+                    ->where('country_id', $request->input('country_id'))->get();
+                $randomStake = $stakes->random();
+                $request->merge(['stake_id' => $randomStake->id]);
+            }
+
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'gender' => 'integer',
@@ -153,7 +160,7 @@ class ReferenceController extends Controller
 
             $stake = Stake::find($validated['stake_id']);
             $user = $stake->user;
-            $user->notify(new RequestNotification($this->buildReferenceNotification($user, $reference)));
+            /* $user->notify(new RequestNotification($this->buildReferenceNotification($user, $reference))); */
 
             return  back()->with('success', $message);
         } catch (\Illuminate\Validation\ValidationException $e) {
