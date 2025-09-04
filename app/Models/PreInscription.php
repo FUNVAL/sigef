@@ -43,6 +43,7 @@ class PreInscription extends Model
         'modified_by',
         'country_id',
         'stake_id',
+        'course_id',
     ];
 
     protected $casts = [
@@ -58,6 +59,11 @@ class PreInscription extends Model
     public function stake(): BelongsTo
     {
         return $this->belongsTo(Stake::class);
+    }
+
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class);
     }
 
     public function getJobTypePreferenceAttribute(): ?array

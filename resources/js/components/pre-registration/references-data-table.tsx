@@ -6,7 +6,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { validateRole } from '@/lib/utils';
 import { SharedData } from '@/types';
 import { Reference } from '@/types/reference';
 import { router, usePage } from '@inertiajs/react';
@@ -100,7 +99,7 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
             const status = reference.status.name.toLowerCase();
 
             return (
-                <Badge variant={status === 'aprobado' ? 'default' : status === 'rechazado' ? 'destructive' : 'secondary'}>
+                <Badge variant={status === 'aprobado' ? 'default' : status === 'no aprobada' ? 'destructive' : 'secondary'}>
                     {reference.status.name}
                 </Badge>
             );
@@ -113,8 +112,9 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
         cell: ({ row }) => {
             const reference = row.original;
             const { auth } = usePage<SharedData>().props;
-            const isPending = reference.status.id === 1 || validateRole(auth.user.roles, 'Administrador');
-            const canEdit = validateRole(auth.user.roles, 'Administrador') || validateRole(auth.user.roles, 'Responsable');
+
+            const canEdit = auth.user.user_permissions.includes('reference:update');
+            const isPending = reference.status.id === 1 || canEdit;
 
             const handleEditReference = () => {
                 router.visit(route('references.edit', reference.id));

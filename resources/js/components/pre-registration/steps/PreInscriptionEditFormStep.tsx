@@ -6,8 +6,9 @@ import { PhoneInput } from '@/components/ui/phone-input';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import useFilteredStakes from '@/hooks/use-filtered-stakes';
+import { Course } from '@/types';
 import { Country } from '@/types/country';
-import { Enums, Translation } from '@/types/global';
+import { Enums } from '@/types/global';
 import { PreInscriptionEditFormData } from '@/types/pre-inscription';
 import { usePage } from '@inertiajs/react';
 import { ArrowLeft, LoaderCircle, Save } from 'lucide-react';
@@ -28,7 +29,7 @@ interface PreInscriptionEditFormStepProps {
 export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCancel }: PreInscriptionEditFormStepProps) {
     const { setData, data, errors: back_errors, processing } = request;
     const { enums } = usePage<{ enums: Enums }>().props;
-    const { ui, forms } = usePage<Translation>().props;
+    const { courses } = usePage<{ courses: Course[] }>().props;
     const { stakes } = useFilteredStakes(data.country_id);
 
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -304,6 +305,23 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                                     </SelectContent>
                                 </Select>
                                 {errors.served_mission && <p className="text-sm text-red-500">{errors.served_mission}</p>}
+                            </div>
+                            <div>
+                                <Label htmlFor="course_id" className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
+                                    Curso seleccionado
+                                </Label>
+                                <SearchableSelect
+                                    data={courses}
+                                    name="course_id"
+                                    id="course_id"
+                                    value={data.course_id?.toString() || '0'}
+                                    onValueChange={(value) => setData('course_id', Number(value))}
+                                    placeholder="Selecciona un curso"
+                                />
+                                {errors.course_id &&
+                                    <p className="text-sm text-red-500">
+                                        {errors.course_id}
+                                    </p>}
                             </div>
                         </div>
 

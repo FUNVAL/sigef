@@ -34,12 +34,12 @@ return [
     'request_status' => [
         'pending' => 'Pendiente',
         'approved' => 'Aprobado',
-        'rejected' => 'Rechazado',
+        'rejected' => 'No aprobada',
     ],
     'reference_status' => [
         'pending' => 'Pendiente',
         'approved' => 'Aprobado',
-        'rejected' => 'Rechazado',
+        'rejected' => 'No aprobada',
         'filtered' => 'Filtrada',
         'incorrect_number' => 'Número incorrecto',
         'no_response' => 'Sin respuesta',

@@ -33,7 +33,7 @@ export default function PreInscriptionDashboard({ data }: DashboardProps) {
         byStake: data.preInscriptionsByStake,
     };
 
-    // Configuración específica para pre-inscripciones usando el hook
+    // Configuración específica para preinscripciones usando el hook
     const config = createPreInscriptionsConfig({
         breadcrumbs,
         menuOptions: preinscriptionsNavItems,

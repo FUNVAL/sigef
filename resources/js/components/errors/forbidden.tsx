@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
-import { XCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { usePage } from '@inertiajs/react';
+import { Home, ShieldX } from 'lucide-react';
+import React, { useEffect } from 'react';
 
 interface ForbiddenModalProps {
     open: boolean;
@@ -26,32 +28,39 @@ export default function Forbidden({ open: controlledOpen, onOpenChange, message 
 
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-            <DialogContent
-                className="max-w-3xl w-full h-[90vh] flex bg-gray-50 p-0 border-none shadow-none rounded-xl"
-                style={{ maxHeight: '90vh' }}
-            >
-                <div className="w-full h-full flex items-center justify-center px-10">
-                    <div className="bg-white shadow-lg rounded-lg p-10 text-center w-full max-w-lg mx-auto flex flex-col items-center">
-                        <div className="mb-6 flex flex-col items-center">
-                            <XCircle className="text-red-500 mb-2" size={64} />
-                            <div className="text-6xl font-bold text-red-500 mb-2">403</div>
-                            <DialogTitle className="text-2xl font-semibold text-gray-800 mb-4">
-                                Acceso Denegado
-                            </DialogTitle>
-                            <DialogDescription className="text-gray-600 mb-6">
-                                {forbiddenMessage || 'No tienes permiso para realizar esta acción.'}
-                            </DialogDescription>
+            <DialogContent className="mx-auto max-w-lg border-0 bg-transparent p-0 shadow-none">
+                <Card className="border-destructive/20 shadow-xl">
+                    <CardContent className="p-12 text-center">
+                        <DialogHeader className="space-y-8">
+                            {/* Icono y código de error */}
+                            <div className="flex flex-col items-center space-y-6">
+                                <div className="relative">
+                                    <div className="bg-destructive/10 absolute inset-0 rounded-full blur-xl" />
+                                    <ShieldX className="text-destructive relative h-20 w-20" />
+                                </div>
+                                <div className="text-destructive text-6xl font-bold tabular-nums">403</div>
+                            </div>
+
+                            {/* Título y descripción */}
+                            <div className="space-y-4">
+                                <DialogTitle className="text-foreground text-center text-4xl font-semibold">Acceso Denegado</DialogTitle>
+                                <DialogDescription className="text-muted-foreground mx-auto max-w-md text-lg leading-relaxed">
+                                    {forbiddenMessage || 'No tienes permiso para realizar esta acción.'}
+                                </DialogDescription>
+                            </div>
+                        </DialogHeader>
+
+                        {/* Botón de acción */}
+                        <div className="mt-10">
+                            <Button asChild className="w-full" size="lg">
+                                <a href={route('dashboard')}>
+                                    <Home className="mr-2 h-5 w-5" />
+                                    Ir al Dashboard
+                                </a>
+                            </Button>
                         </div>
-                        <div className="space-y-3 w-full">
-                            <a
-                                href={route('dashboard')}
-                                className="block w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 text-center"
-                            >
-                                Ir al Dashboard
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                    </CardContent>
+                </Card>
             </DialogContent>
         </Dialog>
     );
