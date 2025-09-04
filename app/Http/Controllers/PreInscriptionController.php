@@ -563,7 +563,7 @@ class PreInscriptionController extends Controller
     /**
      * Verifica si el correo ya existe y retorna un mensaje personalizado si aplica.
      */
-    private function checkEmailPreInscription($email, $request = null)
+    private function checkEmailPreInscription($email, $request)
     {
         $preInscription = PreInscription::where('email', $email)->first();
 
@@ -618,21 +618,10 @@ class PreInscriptionController extends Controller
             $request->input('job_type_preference'),
             $request->input('available_full_time')
         );
-
+        $validated = $this->validatePreInscriptionData($request);
         if ($eligibilityCheck['eligible']) {
             $preInscription->update([
-                ...$request->only([
-                    'course_id',
-                    'country_id',
-                    'stake_id',
-                    'age',
-                    'marital_status',
-                    'phone',
-                    'additional_phone',
-                    'currently_working',
-                    'job_type_preference',
-                    'available_full_time'
-                ]),
+                ...$validated,
                 'status' => RequestStatusEnum::PENDING->value,
                 'declined_reason' => null,
                 'declined_description' => null,
