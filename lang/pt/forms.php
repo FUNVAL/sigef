@@ -94,6 +94,7 @@ return [
             'referrer_name' => 'Seu Nome',
             'referrer_phone' => 'Seu Telefone',
             'relationship' => 'Relacionamento com a Pessoa Indicada',
+            'unknown_stake' => 'Não sei a estaca/distrito/missão dele(a)'
         ],
         'overview' => [
             'title' => 'Revisar dados da referência',

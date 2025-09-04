@@ -94,6 +94,7 @@ return [
             'referrer_name' => 'Your Name',
             'referrer_phone' => 'Your Phone',
             'relationship' => 'Relationship with Referred Person',
+            'unknown_stake' => 'I do not know their stake/district/mission',
         ],
         'overview' => [
             'title' => 'Review reference data',

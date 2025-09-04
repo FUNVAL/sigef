@@ -95,6 +95,7 @@ return [
             'referrer_name' => 'Non Ou',
             'referrer_phone' => 'Telefòn Ou',
             'relationship' => 'Relasyon ak Moun nan',
+            'unknown_stake' => 'M pa konnen poto/distri/misyon li',
         ],
         'overview' => [
             'title' => 'Revize done referans yo',
