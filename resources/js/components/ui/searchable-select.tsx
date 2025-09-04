@@ -56,7 +56,7 @@ const SearchableSelect = React.forwardRef<HTMLDivElement, SearchableSelectProps>
     return (
         <div className="relative space-y-2" ref={ref} {...props}>
             {label && (
-                <Label htmlFor={id}>{label}</Label>
+                <Label htmlFor={id} className={cn(required && 'after:content-["*"] after:text-red-500 after:ml-1 after:text-base')}>{label}</Label>
             )}
 
             <div>
