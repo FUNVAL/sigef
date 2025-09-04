@@ -3195,6 +3195,16 @@
         "user_id": 36
     },
     {
+        "name": "Estaca Guatemala Antigua",
+        "country_id": 9,
+        "user_id": 36
+    },
+    {
+        "name": "Distrito Chiquimula Esté",
+        "country_id": 9,
+        "user_id": 36
+    },
+    {
         "name": "Estaca Chulac",
         "country_id": 9,
         "user_id": 36
@@ -3625,6 +3635,11 @@
         "user_id": 16
     },
     {
+        "name": "Distrito Intibuca",
+        "country_id": 11,
+        "user_id": 16
+    },
+    {
         "name": "Estaca Choluteca Honduras Porvenir",
         "country_id": 11,
         "user_id": 59
@@ -3711,11 +3726,6 @@
     },
     {
         "name": "Estaca Tegucigalpa Honduras Villa Olímpica",
-        "country_id": 11,
-        "user_id": 59
-    },
-    {
-        "name": "Distrito San Marcos Colon",
         "country_id": 11,
         "user_id": 59
     },
@@ -4107,17 +4117,17 @@
     {
         "name": "Misión Mexico Villahermosa",
         "country_id": 12,
-        "user_id": 16
+        "user_id": 59
     },
     {
         "name": "Estaca Gaviotas Villahermosa",
         "country_id": 12,
-        "user_id": 16
+        "user_id": 59
     },
     {
         "name": "Estaca Villahermosa",
         "country_id": 12,
-        "user_id": 16
+        "user_id": 59
     },
     {
         "name": "Estaca Jardines",
@@ -4535,12 +4545,12 @@
         "user_id": 37
     },
     {
-        "name": "Mexico City Oriental Stake",
+        "name": "Estaca ciudad de Mexico Oriental",
         "country_id": 12,
         "user_id": 37
     },
     {
-        "name": "Mexico City Paraiso Stake",
+        "name": "Estaca ciudad de Mexico Paraiso",
         "country_id": 12,
         "user_id": 37
     },
@@ -5301,11 +5311,6 @@
     },
     {
         "name": "Distrito Chitré",
-        "country_id": 14,
-        "user_id": 77
-    },
-    {
-        "name": "Centro de historia familiar Colón",
         "country_id": 14,
         "user_id": 77
     },
