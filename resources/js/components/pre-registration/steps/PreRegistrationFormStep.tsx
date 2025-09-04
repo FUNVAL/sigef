@@ -222,6 +222,7 @@ export function PreRegistrationFormStep({ countries, request }: PreRegistrationF
                                         selectedCountryId={data.country_id}
                                         minLength={3}
                                         maxLength={18}
+                                        required
                                     />
                                 </div>
                                 {errors.additional_phone && <p className="text-sm text-red-500">{errors.additional_phone}</p>}
