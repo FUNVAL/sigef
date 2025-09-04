@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('contact_phone_2')->nullable();
             $table->string('password');
             $table->integer('status')->default(StatusEnum::ACTIVE->value);
+            $table->foreignId('supervisor_id')->nullable()->constrained('users')->nullOnDelete();
             $table->rememberToken();
             $table->timestamps();
         });
