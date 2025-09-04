@@ -194,7 +194,7 @@ class PreInscriptionController extends Controller
             $preInscription =  PreInscription::create($validated);
 
             $message =  $this->generateMessage(
-                !$request->input('currently_working'),
+                $request->input('currently_working'),
                 $request->input('job_type_preference'),
                 $request->input('available_full_time'),
                 $request->input('gender')
@@ -527,7 +527,18 @@ class PreInscriptionController extends Controller
                 $request->input('available_full_time')
             ) {
                 $preInscription->update([
-                    ...$request->all(),
+                    ...$request->only([
+                        'course_id',
+                        'country_id',
+                        'stake_id',
+                        'age',
+                        'marital_status',
+                        'phone',
+                        'additional_phone',
+                        'currently_working',
+                        'job_type_preference',
+                        'available_full_time'
+                    ]),
                     'status' => RequestStatusEnum::PENDING->value,
                     'declined_reason' => null,
                     'declined_description' => null,
