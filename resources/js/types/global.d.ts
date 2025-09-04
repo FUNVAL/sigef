@@ -165,6 +165,7 @@ type Translation = {
                 referrer_name: string;
                 referrer_phone: string;
                 relationship: string;
+                unknown_stake: string;
             },
             overview: {
                 title: string;
