@@ -7,7 +7,7 @@ const preinscriptionsNavItems: MenuOption[] = [
     },
     {
         label: 'Preinscripciones',
-        href: '/pre-inscription',
+        href: '/pre-inscription?status=1',
     },
 ];
 

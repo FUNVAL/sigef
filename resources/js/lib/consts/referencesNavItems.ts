@@ -7,7 +7,7 @@ const referencesNavItems: MenuOption[] = [
     },
     {
         label: 'References',
-        href: '/references',
+        href: '/references?status=1',
     },
 ];
 
