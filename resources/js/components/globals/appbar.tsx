@@ -33,12 +33,30 @@ interface NavigationMenuDemoProps {
 
 export default function Appbar({ menuOptions, className }: NavigationMenuDemoProps) {
     const [isOpen, setIsOpen] = React.useState(false);
+    const menuRef = React.useRef<HTMLDivElement>(null);
+
     const toggleMenu = () => setIsOpen(prev => !prev);
     const currentPath = (window.location.pathname);
 
+    // Cerrar menú al hacer clic fuera
+    React.useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        }
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen]);
 
     return (
-        <NavigationMenu viewport={false}>
+        <NavigationMenu viewport={false} ref={menuRef}>
             <Button variant="ghost" className="sm:hidden" onClick={toggleMenu} aria-label="Toggle Menu">
                 <Menu className=" h-8 w-8" />
             </Button>
@@ -128,6 +146,7 @@ export default function Appbar({ menuOptions, className }: NavigationMenuDemoPro
                                     <NavigationMenuLink
                                         asChild
                                         className={`${navigationMenuTriggerStyle()} ${activeClass}`}
+                                        onClick={() => setIsOpen(false)}
                                     >
                                         <Link href={option.href}>{option.label}</Link>
                                     </NavigationMenuLink>
