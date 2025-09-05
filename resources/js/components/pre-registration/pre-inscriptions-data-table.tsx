@@ -101,6 +101,15 @@ export const createColumns = ({
         },
 
         {
+            accessorKey: 'Curso',
+            header: 'Curso',
+            cell: ({ row }) => {
+                const preInscription = row.original;
+                return <p className="text-sm font-medium min-w-28 text-wrap">{preInscription.course?.name || 'No asignado'}</p>;
+            },
+        },
+
+        {
             accessorKey: 'fecha',
             header: 'Fecha',
             cell: ({ row }) => {

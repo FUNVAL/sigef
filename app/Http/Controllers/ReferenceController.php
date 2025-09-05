@@ -43,7 +43,7 @@ class ReferenceController extends Controller
                 });
             }
 
-            if (!$all && !$staff && $own) {
+            if (!$all && $own) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }
@@ -329,7 +329,7 @@ class ReferenceController extends Controller
 
             $query = Reference::query()->with(['country', 'stake', 'modifier']);
 
-            if (!$all && !$staff && $own) {
+            if (!$all && $own) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
                 $query->whereIn('stake_id', $stakesIds);
             }

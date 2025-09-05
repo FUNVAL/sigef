@@ -185,6 +185,7 @@ export function ReferralFormStep({ countries, request, }: ReferralFormStepProps)
                 label={forms.referral.fields.stake}
                 disabled={!data.country_id}
                 placeholder={data.country_id ? "Selecciona una estaca/distrito/misión" : "Primero selecciona un país"}
+                required
               />
               {errors.stake_id && <p className="text-red-500 text-sm">{errors.stake_id}</p>}
             </div>
