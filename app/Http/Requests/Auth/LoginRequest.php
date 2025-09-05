@@ -45,7 +45,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'password' => 'Correo o contraseña incorrectos.',
+                'email' => 'Correo o contraseña incorrectos.',
             ]);
         }
 
