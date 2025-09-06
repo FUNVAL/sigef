@@ -22,7 +22,7 @@ export default function AccessControlLayout({ children, headings }: AccessContro
     }
 
     return (
-        <div className="px-4 py-2 relative">
+        <div className="px-0 md:px-4 py-2 relative">
             <div className="flex flex-col">
                 {(headings?.title || headings?.description) && (
                     <>
@@ -34,7 +34,7 @@ export default function AccessControlLayout({ children, headings }: AccessContro
                         <Separator className="my-6" />
                     </>
                 )}
-                <div className="flex-1 p-4 pb-6 ">
+                <div className="flex-1 md:p-4 pb-6 ">
                     <section className="space-y-12 px-4 ">{children}</section>
                 </div>
             </div>

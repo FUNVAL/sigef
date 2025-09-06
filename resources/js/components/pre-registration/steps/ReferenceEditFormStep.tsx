@@ -62,7 +62,7 @@ export function ReferenceEditFormStep({ countries, request, onSubmit, onCancel }
                     <CardHeader className="bg-transparent">
                         <CardTitle className="text-lg text-blue-800 dark:text-blue-500">Información de la Persona Referida</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-3 sm:space-y-4">
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
                                 <Label htmlFor="name" className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
@@ -187,7 +187,7 @@ export function ReferenceEditFormStep({ countries, request, onSubmit, onCancel }
                     <CardHeader className="bg-transparent">
                         <CardTitle className="text-lg text-blue-800 dark:text-blue-500">Información del Referente</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-3 sm:space-y-4">
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
                                 <Label htmlFor="referrer_name" className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
