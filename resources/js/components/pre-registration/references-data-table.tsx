@@ -101,9 +101,7 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
                 mobile: false,
                 tablet: false,
                 desktop: true,
-
             }
-
         }
     },
     {
