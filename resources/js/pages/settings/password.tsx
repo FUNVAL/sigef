@@ -6,7 +6,6 @@ import AccessControlLayout from '@/layouts/access-control/layout';
 import AppLayout from '@/layouts/app-layout';
 import { settingsNavItems } from '@/lib/consts/settings-nav-items';
 import { type BreadcrumbItem } from '@/types';
-import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
@@ -22,7 +21,6 @@ export default function Password() {
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 
-    // Estados para controlar la visibilidad de las contraseñas
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
@@ -155,16 +153,6 @@ export default function Password() {
                         </div>
 
                         <div className="flex items-center justify-end gap-4 border-t pt-6">
-                            <Transition
-                                show={recentlySuccessful}
-                                enter="transition ease-in-out"
-                                enterFrom="opacity-0"
-                                leave="transition ease-in-out"
-                                leaveTo="opacity-0"
-                            >
-                                <p className="text-sm font-medium text-green-600">¡Contraseña actualizada!</p>
-                            </Transition>
-
                             <Button type="submit" disabled={processing} className="min-w-[140px]">
                                 {processing ? 'Guardando...' : 'Guardar Cambios'}
                             </Button>

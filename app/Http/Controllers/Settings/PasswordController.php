@@ -43,6 +43,6 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return back()->with('success', 'Contraseña actualizada correctamente.');
+        return redirect()->back()->with('success', 'Contraseña actualizada correctamente.');
     }
 }

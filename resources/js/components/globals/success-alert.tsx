@@ -23,28 +23,25 @@ export function SuccessAlert({
     className
 }: SuccessAlertProps) {
     const { flash } = usePage().props;
-    const successMessage = (flash as { success?: string })?.success; // Mensaje de éxito fijo para demostración
-
-    const [visible, setVisible] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(null as string | null);
     const [isExiting, setIsExiting] = useState(false);
     const exitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Función para manejar el cierre con animación
     const handleClose = () => {
         setIsExiting(true);
 
         // Esperar a que termine la animación antes de ocultar completamente
         exitTimeoutRef.current = setTimeout(() => {
-            setVisible(false);
+            setSuccessMessage(null);
             setIsExiting(false);
         }, 300); // Duración de la animación de salida
-    };
+    }
 
     useEffect(() => {
-        // Mostrar la alerta cuando hay un mensaje de éxito
-        if (successMessage) {
-            setIsExiting(false);
-            setVisible(true);
+        const message = (flash as { success?: string })?.success;
+        if (message) {
+            setIsExiting(false); // Reset exit animation if new message appears
+            setSuccessMessage(message);
 
             // Configurar el temporizador para cerrar automáticamente
             const timer = setTimeout(() => {
@@ -59,10 +56,9 @@ export function SuccessAlert({
                 }
             };
         }
-    }, [successMessage, autoCloseTime]);
+    }, [flash, autoCloseTime]);
 
-    // Si no hay mensaje o no es visible, no renderizar nada
-    if (!successMessage || (!visible && !isExiting)) {
+    if (!successMessage && !isExiting) {
         return null;
     }
 
@@ -70,9 +66,9 @@ export function SuccessAlert({
         <Alert
             variant="default"
             className={cn(
-                "fixed top-4 right-4 z-50 w-full max-w-lg bg-green-600/80 border-green-500 shadow-lg transition-all duration-300",
+                "fixed top-4 right-4 z-50 w-full max-w-80 sm:max-w-lg bg-green-600/80 border-green-500 shadow-lg transition-all duration-300",
                 isExiting
-                    ? "opacity-0 translate-y-[-10px] slide-out-to-top"
+                    ? "opacity-0 translate-y-[-10px]"
                     : "opacity-100 translate-y-0 animate-in slide-in-from-top-5 duration-500",
                 className
             )}
@@ -80,7 +76,7 @@ export function SuccessAlert({
             <CheckCheck />
 
             <AlertTitle className="text-gray-200 font-medium">Operación exitosa</AlertTitle>
-            <AlertDescription className="text-blue-800  dark:text-blue-100">
+            <AlertDescription className="text-blue-800 dark:text-blue-100">
                 {successMessage}
             </AlertDescription>
 
