@@ -31,6 +31,13 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
         ),
         enableSorting: false,
         enableHiding: false,
+        meta: {
+            defaultVisibility: {
+                mobile: false,
+                tablet: false,
+                desktop: true,
+            },
+        }
     },
     {
         accessorKey: 'Persona Referida',
