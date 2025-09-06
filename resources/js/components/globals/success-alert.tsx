@@ -35,7 +35,7 @@ export function SuccessAlert({
             setSuccessMessage(null);
             setIsExiting(false);
         }, 300); // Duración de la animación de salida
-    }
+    };
 
     useEffect(() => {
         const message = (flash as { success?: string })?.success;
