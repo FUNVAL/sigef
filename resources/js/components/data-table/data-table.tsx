@@ -3,7 +3,6 @@ import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -31,6 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { PaginationData } from "@/types/global"
+import { useResponsiveVisibility } from "@/hooks/useResponsiveVisibility"
 
 interface DataTableProps<TData> {
   data: TData[];
@@ -49,15 +49,14 @@ export function DataTable<TData>({
   FilterBar,
   pagination,
   searchValue = "",
-  onSearch
+  onSearch,
 }: DataTableProps<TData>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const { columnVisibility, setColumnVisibility } = useResponsiveVisibility(columns);
 
-  // Establecer el valor inicial del filtro desde props
   React.useEffect(() => {
     if (filterKey && searchValue) {
       setColumnFilters(prevFilters => {
@@ -118,44 +117,46 @@ export function DataTable<TData>({
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4 gap-4">
-        <div className="flex items-center gap-4 flex-1">
-          <Input
-            placeholder={`Buscar... (presiona Enter)`}
-            value={localSearch}
-            onChange={e => setLocalSearch(e.target.value)}
-            onKeyDown={handleSearchKeyDown}
-            className="max-w-sm"
-          />
-          {FilterBar && <FilterBar />}
+
+      <div className="flex flex-wrap justify-between items-center gap-4 flex-1 pb-4">
+        <Input
+          placeholder={`Buscar... (presiona Enter)`}
+          value={localSearch}
+          onChange={e => setLocalSearch(e.target.value)}
+          onKeyDown={handleSearchKeyDown}
+          className="md:max-w-sm"
+        />
+        {FilterBar && <FilterBar />}
+        <div className="w-fit ml-auto">
+          <DropdownMenu >
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                Columnas <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              Columnas <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
+
       <div className="rounded-md border">
         <Table className="">
           <TableHeader className="text-base py-2">
@@ -179,18 +180,20 @@ export function DataTable<TData>({
           <TableBody className="dark:bg-black">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
+                <TableRow key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+
+                    return (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    )
+                  })}
                 </TableRow>
               ))
             ) : (
