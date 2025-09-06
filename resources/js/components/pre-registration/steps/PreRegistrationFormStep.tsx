@@ -3,18 +3,18 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PhoneInput } from '@/components/ui/phone-input';
-import useFilteredStakes from '@/hooks/use-filtered-stakes';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft } from 'lucide-react';
-import { usePage } from '@inertiajs/react';
-import { Enums, Translation } from '@/types/global';
 import SearchableSelect from '@/components/ui/searchable-select';
-import { Country } from '@/types/country';
-import { useCallback, useContext, useState } from 'react';
-import validateForm from '@/lib/schemas/validate-schemas';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import useFilteredStakes from '@/hooks/use-filtered-stakes';
 import { preRegistrationSchema } from '@/lib/schemas/pre-registration';
+import validateForm from '@/lib/schemas/validate-schemas';
 import { StepperContext } from '@/pages/forms/stepper-provider';
+import { Country } from '@/types/country';
+import { Enums, Translation } from '@/types/global';
 import { PreRegistrationFormData } from '@/types/pre-inscription';
+import { usePage } from '@inertiajs/react';
+import { ArrowLeft } from 'lucide-react';
+import { useCallback, useContext, useState } from 'react';
 import { StepsHeader } from '../steps-header';
 
 interface PreRegistrationFormStepProps {
@@ -71,7 +71,7 @@ export function PreRegistrationFormStep({ countries, request }: PreRegistrationF
             <Card className="mx-auto w-full max-w-4xl overflow-hidden border-0 pt-0 shadow-2xl">
                 <StepsHeader title={forms.pre_inscription.title} subtitle={forms.pre_inscription.description} />
 
-                <CardContent className="space-y-8 p-8">
+                <CardContent className="space-y-6 p-3 sm:space-y-8 sm:p-6 md:p-8">
                     <form className="space-y-6" onSubmit={handleSubmit} noValidate>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Primer Nombre */}
@@ -222,7 +222,6 @@ export function PreRegistrationFormStep({ countries, request }: PreRegistrationF
                                         selectedCountryId={data.country_id}
                                         minLength={3}
                                         maxLength={18}
-                                        
                                     />
                                 </div>
                                 {errors.additional_phone && <p className="text-sm text-red-500">{errors.additional_phone}</p>}
