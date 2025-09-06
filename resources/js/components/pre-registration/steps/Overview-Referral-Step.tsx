@@ -51,11 +51,11 @@ export function OverviewReferralStep({ request, countries }: OverviewReferralSte
         <Card className="mx-auto w-full max-w-4xl overflow-hidden border-0 pt-0 shadow-2xl">
             <StepsHeader title={forms.referral.overview.title} />
 
-            <CardContent className="space-y-8 p-8">
+            <CardContent className="space-y-6 p-3 sm:space-y-8 sm:p-6 md:p-8">
                 <div className="prose prose-sm dark:prose-invert max-w-none">
                     <Card className="m-4">
                         <h3 className="ml-5 text-2xl font-semibold text-gray-800">{forms.referral.overview.fields.referral_info}</h3>
-                        <ul className="grid grid-cols-1 gap-4 p-4 text-left md:grid-cols-2">
+                        <ul className="grid grid-cols-1 gap-4 p-3 text-left sm:p-4 md:grid-cols-2">
                             <li>
                                 <strong>{forms.referral.overview.fields.full_name}</strong>&nbsp;<span>{data.name || '-'}</span>
                             </li>
@@ -78,7 +78,7 @@ export function OverviewReferralStep({ request, countries }: OverviewReferralSte
                     </Card>
                     <Card className="m-4">
                         <h3 className="ml-5 text-2xl font-semibold text-gray-800">{forms.referral.overview.fields.referrer_info}</h3>
-                        <ul className="grid grid-cols-1 gap-4 p-4 text-left md:grid-cols-2">
+                        <ul className="grid grid-cols-1 gap-4 p-3 text-left sm:p-4 md:grid-cols-2">
                             <li>
                                 <strong>{forms.referral.overview.fields.referrer_name}</strong>&nbsp;<span>{data.referrer_name || '-'}</span>
                             </li>
