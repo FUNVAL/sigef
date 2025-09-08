@@ -31,6 +31,13 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
         ),
         enableSorting: false,
         enableHiding: false,
+        meta: {
+            defaultVisibility: {
+                mobile: false,
+                tablet: false,
+                desktop: true,
+            },
+        }
     },
     {
         accessorKey: 'Persona Referida',
@@ -67,6 +74,13 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
             const reference = row.original;
             return <div className="text-sm">{reference.stake.name}</div>;
         },
+        meta: {
+            defaultVisibility: {
+                mobile: false,
+                tablet: false,
+                desktop: true,
+            }
+        }
     },
     {
         accessorKey: 'Referente',
@@ -82,6 +96,13 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
                 </div>
             );
         },
+        meta: {
+            defaultVisibility: {
+                mobile: false,
+                tablet: false,
+                desktop: true,
+            }
+        }
     },
     {
         accessorKey: 'Fecha',
@@ -90,6 +111,13 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
             const reference = row.original;
             return <div className="text-sm">{reference.created_at ? new Date(reference.created_at).toLocaleDateString() : '-'}</div>;
         },
+        meta: {
+            defaultVisibility: {
+                mobile: false,
+                tablet: true,
+                desktop: true,
+            },
+        }
     },
     {
         accessorKey: 'Estado',
@@ -104,6 +132,14 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
                 </Badge>
             );
         },
+        meta: {
+            defaultVisibility: {
+                mobile: false,
+                tablet: true,
+                desktop: true,
+            }
+        }
+
     },
     {
         id: 'actions',

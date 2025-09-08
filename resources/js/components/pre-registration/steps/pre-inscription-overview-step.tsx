@@ -1,15 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, Loader, User, Globe, Phone, Mail, Heart, Briefcase, GraduationCap } from "lucide-react"
-import { Country } from "@/types/country"
-import { Course } from "@/types/course"
-import { Enums, Translation } from "@/types/global"
-import { PreRegistrationRequest } from "@/types/pre-inscription"
-import { usePage } from "@inertiajs/react"
-import { useContext } from "react"
-import { StepperContext } from "@/pages/forms/stepper-provider"
-import { StepsHeader } from "../steps-header"
-import useFilteredStakes from "@/hooks/use-filtered-stakes"
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import useFilteredStakes from '@/hooks/use-filtered-stakes';
+import { StepperContext } from '@/pages/forms/stepper-provider';
+import { Country } from '@/types/country';
+import { Course } from '@/types/course';
+import { Enums, Translation } from '@/types/global';
+import { PreRegistrationRequest } from '@/types/pre-inscription';
+import { usePage } from '@inertiajs/react';
+import { ArrowLeft, Briefcase, Globe, GraduationCap, Heart, Loader, Mail, Phone, User } from 'lucide-react';
+import { useContext } from 'react';
+import { StepsHeader } from '../steps-header';
 
 interface OverviewStepProps {
     request: PreRegistrationRequest;
@@ -21,7 +21,7 @@ type PageProps = {
     forms: Translation['forms'];
     ui: Translation['ui'];
     courses: Course[];
-}
+};
 
 interface FieldData {
     label: string | React.ReactNode;
@@ -52,15 +52,21 @@ export function PreInscriptionOverviewStep({ request, countries }: OverviewStepP
     const getCourseDetails = () => courses.find((c) => c.id === data.course_id);
 
     const getBadge = (condition: boolean, trueLabel: string, falseLabel: string) => (
-        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${condition ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-            }`}>
+        <span
+            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                condition ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            }`}
+        >
             {condition ? trueLabel : falseLabel}
         </span>
     );
 
     const getModalityBadge = (modalityName: string) => (
-        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${modalityName === "En Línea" ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
-            }`}>
+        <span
+            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                modalityName === 'En Línea' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
+            }`}
+        >
             {modalityName}
         </span>
     );
@@ -68,7 +74,7 @@ export function PreInscriptionOverviewStep({ request, countries }: OverviewStepP
     // Data configuration for sections
     const sections: SectionData[] = [
         {
-            title: "Información Personal",
+            title: 'Información Personal',
             icon: <User className="h-5 w-5 text-blue-600" />,
             fields: [
                 { label: forms.pre_inscription.overview.fields.first_name, value: data.first_name || '-' },
@@ -77,34 +83,36 @@ export function PreInscriptionOverviewStep({ request, countries }: OverviewStepP
                 { label: forms.pre_inscription.overview.fields.second_last_name, value: data.second_last_name || '-' },
                 { label: forms.pre_inscription.overview.fields.gender, value: getGenderName() },
                 { label: forms.pre_inscription.overview.fields.age, value: data.age || '-' },
-            ]
+            ],
         },
         {
-            title: "Ubicación",
+            title: 'Ubicación',
             icon: <Globe className="h-5 w-5 text-blue-600" />,
             fields: [
                 { label: forms.pre_inscription.overview.fields.country, value: getCountryName() },
                 { label: forms.pre_inscription.overview.fields.stake, value: getStakeName() },
-            ]
+            ],
         },
         {
-            title: "Curso Seleccionado",
+            title: 'Curso Seleccionado',
             icon: <GraduationCap className="h-5 w-5 text-blue-600" />,
             fields: [
                 {
-                    label: "Nombre del Curso",
+                    label: 'Nombre del Curso',
                     value: getCourseName(),
-                    className: "font-medium",
-                    colSpan: "md:col-span-2"
+                    className: 'font-medium',
+                    colSpan: 'md:col-span-2',
                 },
-                ...(getCourseDetails() ? [
-                    { label: "Duración", value: `${getCourseDetails()?.duration} meses` },
-                    { label: "Modalidad", value: getModalityBadge(getCourseDetails()?.modality.name || '') },
-                ] : [])
-            ]
+                ...(getCourseDetails()
+                    ? [
+                          { label: 'Duración', value: `${getCourseDetails()?.duration} meses` },
+                          { label: 'Modalidad', value: getModalityBadge(getCourseDetails()?.modality.name || '') },
+                      ]
+                    : []),
+            ],
         },
         {
-            title: "Información de Contacto",
+            title: 'Información de Contacto',
             icon: <Phone className="h-5 w-5 text-blue-600" />,
             fields: [
                 { label: forms.pre_inscription.overview.fields.phone, value: data.phone || '-' },
@@ -117,42 +125,53 @@ export function PreInscriptionOverviewStep({ request, countries }: OverviewStepP
                         </span>
                     ),
                     value: data.email || '-',
-                    colSpan: "md:col-span-2"
+                    colSpan: 'md:col-span-2',
                 },
-            ]
+            ],
         },
         {
-            title: "Estado Personal",
+            title: 'Estado Personal',
             icon: <Heart className="h-5 w-5 text-blue-600" />,
             fields: [
                 { label: forms.pre_inscription.overview.fields.marital_status, value: getMaritalStatusName() },
                 { label: forms.pre_inscription.overview.fields.served_mission, value: getMission() },
-            ]
+            ],
         },
         // Work Information Section - Only for Female
-        ...(data.gender === 2 ? [{
-            title: "Información Laboral",
-            icon: <Briefcase className="h-5 w-5 text-blue-600" />,
-            fields: [
-                {
-                    label: forms.pre_inscription.overview.fields.currently_working,
-                    value: getBadge(data.currently_working, ui.labels.yes, ui.labels.no)
-                },
-                ...(data.currently_working ? [] : [{
-                    label: forms.pre_inscription.overview.fields.job_type_preference,
-                    value: enums?.jobType?.find((j) => j.id === data.job_type_preference)?.name || '-'
-                }]),
-                {
-                    label: forms.pre_inscription.overview.fields.available_full_time,
-                    value: (
-                        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${data.available_full_time ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                            }`}>
-                            {data.available_full_time ? ui.labels.yes : ui.labels.no}
-                        </span>
-                    )
-                },
-            ]
-        }] : [])
+        ...(data.gender === 2
+            ? [
+                  {
+                      title: 'Información Laboral',
+                      icon: <Briefcase className="h-5 w-5 text-blue-600" />,
+                      fields: [
+                          {
+                              label: forms.pre_inscription.overview.fields.currently_working,
+                              value: getBadge(data.currently_working, ui.labels.yes, ui.labels.no),
+                          },
+                          ...(data.currently_working
+                              ? []
+                              : [
+                                    {
+                                        label: forms.pre_inscription.overview.fields.job_type_preference,
+                                        value: enums?.jobType?.find((j) => j.id === data.job_type_preference)?.name || '-',
+                                    },
+                                ]),
+                          {
+                              label: forms.pre_inscription.overview.fields.available_full_time,
+                              value: (
+                                  <span
+                                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                          data.available_full_time ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                                      }`}
+                                  >
+                                      {data.available_full_time ? ui.labels.yes : ui.labels.no}
+                                  </span>
+                              ),
+                          },
+                      ],
+                  },
+              ]
+            : []),
     ];
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -172,22 +191,15 @@ export function PreInscriptionOverviewStep({ request, countries }: OverviewStepP
         <div key={index} className="space-y-4">
             <div className="flex items-center gap-2 border-b border-gray-200 pb-2">
                 {section.icon}
-                <h3 className="text-lg font-semibold text-gray-900">
-                    {section.title}
-                </h3>
+                <h3 className="text-lg font-semibold text-gray-900">{section.title}</h3>
             </div>
-            <div className={`grid grid-cols-1 gap-4 ${section.fields.length > 2 ? 'md:grid-cols-2' : 'md:grid-cols-2'} ${section.title === "Curso Seleccionado" ? 'md:grid-cols-3' : ''}`}>
+            <div
+                className={`grid grid-cols-1 gap-4 ${section.fields.length > 2 ? 'md:grid-cols-2' : 'md:grid-cols-2'} ${section.title === 'Curso Seleccionado' ? 'md:grid-cols-3' : ''}`}
+            >
                 {section.fields.map((field, fieldIndex) => (
-                    <div
-                        key={fieldIndex}
-                        className={`space-y-1 ${field.colSpan || ''}`}
-                    >
-                        <label className="text-sm font-medium text-gray-600">
-                            {field.label}
-                        </label>
-                        <p className={`text-base text-gray-900 ${field.className || ''}`}>
-                            {field.value}
-                        </p>
+                    <div key={fieldIndex} className={`space-y-1 ${field.colSpan || ''}`}>
+                        <label className="text-sm font-medium text-gray-600">{field.label}</label>
+                        <p className={`text-base text-gray-900 ${field.className || ''}`}>{field.value}</p>
                     </div>
                 ))}
             </div>
@@ -199,10 +211,10 @@ export function PreInscriptionOverviewStep({ request, countries }: OverviewStepP
             <Card className="overflow-hidden border-0 pt-0 shadow-2xl">
                 <StepsHeader title={forms.pre_inscription.overview.title} subtitle={forms.pre_inscription.overview.subtitle} />
 
-                <CardContent className="space-y-6 p-8">
+                <CardContent className="space-y-4 p-3 sm:space-y-6 sm:p-6 md:p-8">
                     {sections.map(renderSection)}
 
-                    <form className="flex justify-between pt-6 border-t border-gray-200" onSubmit={handleSubmit}>
+                    <form className="flex justify-between border-t border-gray-200 pt-6" onSubmit={handleSubmit}>
                         <Button type="button" onClick={previousStep} variant="outline" size="lg" disabled={processing} className="min-w-[120px]">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             {ui.buttons.previous}

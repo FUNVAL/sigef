@@ -1,5 +1,5 @@
 import { type BreadcrumbItem, } from '@/types';
-import { Head, usePage, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { DataTable } from '@/components/data-table/data-table';

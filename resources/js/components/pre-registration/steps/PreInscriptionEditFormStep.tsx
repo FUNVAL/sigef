@@ -55,7 +55,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                     <CardHeader className="bg-transparent">
                         <CardTitle className="text-lg text-blue-800 dark:text-blue-500">Información Personal</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-3 sm:space-y-4">
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
                                 <Label htmlFor="first_name" className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
@@ -172,7 +172,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                     <CardHeader className="bg-transparent">
                         <CardTitle className="text-lg text-blue-800 dark:text-blue-500">Información de Contacto</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-3 sm:space-y-4">
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
                                 <Label htmlFor="email" className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
@@ -251,7 +251,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                     <CardHeader className="bg-transparent">
                         <CardTitle className="text-lg text-blue-800 dark:text-blue-500">Información Adicional</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-3 sm:space-y-4">
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
                                 <Label htmlFor="marital_status" className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">
@@ -318,10 +318,7 @@ export function PreInscriptionEditFormStep({ countries, request, onSubmit, onCan
                                     onValueChange={(value) => setData('course_id', Number(value))}
                                     placeholder="Selecciona un curso"
                                 />
-                                {errors.course_id &&
-                                    <p className="text-sm text-red-500">
-                                        {errors.course_id}
-                                    </p>}
+                                {errors.course_id && <p className="text-sm text-red-500">{errors.course_id}</p>}
                             </div>
                         </div>
 

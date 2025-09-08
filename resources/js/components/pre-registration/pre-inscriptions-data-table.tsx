@@ -35,6 +35,13 @@ export const createColumns = ({
             ),
             enableSorting: false,
             enableHiding: false,
+            meta: {
+                defaultVisibility: {
+                    mobile: false,
+                    tablet: false,
+                    desktop: true,
+                },
+            }
         },
         {
             accessorKey: 'candidato',
@@ -81,6 +88,13 @@ export const createColumns = ({
                     </div>
                 );
             },
+            meta: {
+                defaultVisibility: {
+                    mobile: false,
+                    tablet: false,
+                    desktop: true,
+                },
+            }
         },
         {
             accessorKey: 'Estado civil',
@@ -89,6 +103,13 @@ export const createColumns = ({
                 const preInscription = row.original;
                 return <p className="text-sm">{preInscription.marital_status?.name || 'No especificado'}</p>;
             },
+            meta: {
+                defaultVisibility: {
+                    mobile: false,
+                    tablet: false,
+                    desktop: true,
+                },
+            }
         },
 
         {
@@ -98,6 +119,13 @@ export const createColumns = ({
                 const preInscription = row.original;
                 return <Badge variant={preInscription.served_mission.name === "Si" ? 'default' : 'secondary'}>{preInscription.served_mission.name}</Badge>;
             },
+            meta: {
+                defaultVisibility: {
+                    mobile: false,
+                    tablet: false,
+                    desktop: true,
+                },
+            }
         },
 
         {
@@ -107,6 +135,13 @@ export const createColumns = ({
                 const preInscription = row.original;
                 return <p className="text-sm font-medium min-w-28 text-wrap">{preInscription.course?.name || 'No asignado'}</p>;
             },
+            meta: {
+                defaultVisibility: {
+                    mobile: false,
+                    tablet: true,
+                    desktop: true,
+                },
+            }
         },
 
         {
@@ -116,6 +151,13 @@ export const createColumns = ({
                 const preInscription = row.original;
                 return <p className="text-sm">{preInscription.created_at ? new Date(preInscription.created_at).toLocaleDateString() : '-'}</p>;
             },
+            meta: {
+                defaultVisibility: {
+                    mobile: false,
+                    tablet: true,
+                    desktop: true,
+                },
+            }
         },
         {
             accessorKey: 'estado',
@@ -134,6 +176,13 @@ export const createColumns = ({
                     </Badge>
                 );
             },
+            meta: {
+                defaultVisibility: {
+                    mobile: false,
+                    tablet: true,
+                    desktop: true,
+                },
+            }
         },
         {
             id: 'actions',
