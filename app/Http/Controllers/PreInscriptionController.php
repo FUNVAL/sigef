@@ -335,7 +335,7 @@ class PreInscriptionController extends Controller
     /**
      * Get the pre-inscription dashboard data.
      */
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         try {
             $user = Auth::user();
@@ -388,25 +388,38 @@ class PreInscriptionController extends Controller
                 ->values()
                 ->toArray();
 
-            // Pre-inscriptions by stake
-            $preInscriptionsByStake = $preInscriptions->groupBy('stake.name')
-                ->map(function ($group, $stake) use ($total) {
+            // Pre-inscriptions by stake con filtro de país opcional
+            $stakeData = $preInscriptions;
+
+            // Aplicar filtro de país si se proporciona y el usuario tiene permisos
+            if ($all && $request->has('country') && $request->get('country') !== '') {
+                $countryId = (int) $request->get('country');
+                $stakeData = $preInscriptions->where('country.id', $countryId);
+            }
+
+            $preInscriptionsByStake = $stakeData->groupBy('stake.name')
+                ->map(function ($group, $stake) use ($stakeData) {
                     $quantity = $group->count();
+                    $filteredTotal = $stakeData->count();
                     return [
                         'stake' => $stake ?? 'No Stake',
                         'quantity' => $quantity,
-                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                        'percentage' => $filteredTotal > 0 ? round(($quantity / $filteredTotal) * 100, 1) : 0
                     ];
                 })
                 ->sortByDesc('quantity')
                 ->values()
                 ->toArray();
 
+            // Obtener países solo si el usuario tiene permisos para ver todo
+            $countries = $all ? Country::where('status', StatusEnum::ACTIVE->value)->get(['id', 'name']) : [];
+
             return Inertia::render('pre-registration/pre-inscriptions-dashboard', [
                 'data' => [
                     'stats' => $stats,
                     'preInscriptionsByCountry' => $preInscriptionsByCountry,
-                    'preInscriptionsByStake' => $preInscriptionsByStake
+                    'preInscriptionsByStake' => $preInscriptionsByStake,
+                    'countries' => $countries
                 ]
             ]);
         } catch (\Exception $e) {

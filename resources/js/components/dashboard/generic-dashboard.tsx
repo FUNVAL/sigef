@@ -5,10 +5,12 @@ import AccessControlLayout from '@/layouts/access-control/layout';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type BaseStats, type ByCountry, type ByStake } from '@/types/dashboard';
+import { type Country } from '@/types/country';
 import { Head } from '@inertiajs/react';
 import { Briefcase, CheckCircle, Clock, MapPin, TrendingUp, Users, XCircle } from 'lucide-react';
 import { type MenuOption } from '@/components/globals/appbar';
 import { type ReactNode } from 'react';
+import { CountryFilter } from './country-filter';
 
 interface GenericDashboardData {
     stats: BaseStats;
@@ -65,9 +67,21 @@ interface GenericDashboardProps {
             acceptanceDescription: string; // "Preinscripciones aprobadas"/"Referencias aceptadas"
         };
     };
+    // Propiedades opcionales para el filtro de país
+    showCountryFilter?: boolean;
+    countries?: Country[];
+    selectedCountryId?: string;
+    onCountryChange?: (countryId: string | undefined) => void;
 }
 
-function DashboardContent({ data, config }: GenericDashboardProps): ReactNode {
+function DashboardContent({
+    data,
+    config,
+    showCountryFilter,
+    countries,
+    selectedCountryId,
+    onCountryChange
+}: GenericDashboardProps): ReactNode {
     return (
         <>
             {/* Tarjetas de estadísticas principales */}
@@ -217,8 +231,23 @@ function DashboardContent({ data, config }: GenericDashboardProps): ReactNode {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-primary">{config.sectionTitles.byStake}</CardTitle>
-                        <CardDescription>{config.sectionTitles.byStakeDescription}</CardDescription>
+                        <div className="flex flex-col lg:items-start lg:justify-between gap-4">
+                            <div className="flex-1 min-w-0">
+                                <CardTitle className="text-primary">{config.sectionTitles.byStake}</CardTitle>
+                                <CardDescription>{config.sectionTitles.byStakeDescription}</CardDescription>
+                            </div>
+                            {/* Mostrar filtro solo si está habilitado */}
+                            {showCountryFilter && countries && onCountryChange && (
+                                <div className="flex-shrink-0 w-full lg:w-auto">
+                                    <CountryFilter
+                                        countries={countries}
+                                        selectedCountryId={selectedCountryId}
+                                        onCountryChange={onCountryChange}
+                                        className="lg:ml-4"
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
@@ -285,7 +314,14 @@ function DashboardContent({ data, config }: GenericDashboardProps): ReactNode {
     );
 }
 
-export default function GenericDashboard({ data, config }: GenericDashboardProps) {
+export default function GenericDashboard({
+    data,
+    config,
+    showCountryFilter,
+    countries,
+    selectedCountryId,
+    onCountryChange
+}: GenericDashboardProps) {
     const useAccessControl = config.useAccessControlLayout !== false; // Por defecto true
 
     return (
@@ -298,7 +334,14 @@ export default function GenericDashboard({ data, config }: GenericDashboardProps
                         description: config.description,
                     }}
                 >
-                    <DashboardContent data={data} config={config} />
+                    <DashboardContent
+                        data={data}
+                        config={config}
+                        showCountryFilter={showCountryFilter}
+                        countries={countries}
+                        selectedCountryId={selectedCountryId}
+                        onCountryChange={onCountryChange}
+                    />
                 </AccessControlLayout>
             ) : (
                 <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
@@ -308,7 +351,14 @@ export default function GenericDashboard({ data, config }: GenericDashboardProps
                             <p className="text-muted-foreground">{config.description}</p>
                         </div>
                     </div>
-                    <DashboardContent data={data} config={config} />
+                    <DashboardContent
+                        data={data}
+                        config={config}
+                        showCountryFilter={showCountryFilter}
+                        countries={countries}
+                        selectedCountryId={selectedCountryId}
+                        onCountryChange={onCountryChange}
+                    />
                 </div>
             )}
         </AppLayout>
