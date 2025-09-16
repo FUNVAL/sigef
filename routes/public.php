@@ -4,6 +4,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PreInscriptionController;
 use App\Http\Controllers\ReferenceController;
 use App\Http\Controllers\StakeController;
+use App\Http\Controllers\StudentRegistrationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -26,6 +27,13 @@ Route::get('/reference-form', [ReferenceController::class, 'create'])
 # formulario publico que maneja la preinscripcion y referencias
 Route::get('preinscription-reference', fn() => Inertia::render('forms/pre-registration'))
     ->name('preinscription-reference');
+
+# formulario publico de inscripcion de estudiantes
+Route::get('student-registration', [StudentRegistrationController::class, 'create'])
+    ->name('student-registration');
+
+Route::post('/student-registration', [StudentRegistrationController::class, 'store'])
+    ->name('student-registration.store');
 
 Route::get('language/{locale}', [LanguageController::class, 'switchLang'])->name('language.switch');
 

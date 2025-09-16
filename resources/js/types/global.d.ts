@@ -20,15 +20,18 @@ type Enums = {
     referenceStatus: EnumItem[];
     relatedReference: EnumItem[];
     jobType: EnumItem[];
+    baptismStatus: EnumItem[];
+    templeStatus: EnumItem[];
+    educationLevel: EnumItem[];
+    englishConnectLevel: EnumItem[];
 };
 
 type Stepper = {
     title: string;
     component: ReactNode;
-}
+};
 
 type Translation = {
-
     welcome_disclaimer: {
         title: string;
         subtitle: string;
@@ -64,11 +67,11 @@ type Translation = {
         referral: {
             title: string;
             description: string;
-        },
+        };
         pre_inscription: {
             title: string;
             description: string;
-        }
+        };
     };
 
     forms: {
@@ -139,15 +142,15 @@ type Translation = {
                 job_type_preference: string;
                 available_full_time: string;
                 course: string;
-            },
+            };
             validation: {
                 required: string;
                 email: string;
                 min_age: string;
                 max_age: string;
                 unique: string;
-            }
-        },
+            };
+        };
         referral: {
             title: string;
             description: string;
@@ -165,7 +168,7 @@ type Translation = {
                 referrer_name: string;
                 referrer_phone: string;
                 relationship: string;
-            },
+            };
             overview: {
                 title: string;
                 fields: {
@@ -180,13 +183,13 @@ type Translation = {
                     referrer_name: string;
                     referrer_phone: string;
                     relationship: string;
-                },
+                };
                 buttons: {
                     sending: string;
                     submit: string;
-                }
-            }
-        }
+                };
+            };
+        };
     };
 
     stepper: {
@@ -205,11 +208,11 @@ type Translation = {
         confirmation_subtitle: string;
         back_to_home: string;
     };
-}
+};
 
 type PaginationData = {
     current_page: number;
     per_page: number;
     total: number;
     last_page: number;
-}
+};
