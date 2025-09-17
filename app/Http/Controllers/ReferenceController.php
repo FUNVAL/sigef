@@ -402,6 +402,20 @@ class ReferenceController extends Controller
                 ->values()
                 ->toArray();
 
+            // Referencias por estaca (para usuarios sin permiso view-all)
+            $referencesByStake = $references->groupBy('stake.name')
+                ->map(function ($group, $stake) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'stake' => $stake ?? 'No Stake',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
             // Obtener países solo si el usuario tiene permisos para ver todo
             $countries = $all ? Country::where('status', StatusEnum::ACTIVE->value)->get(['id', 'name']) : [];
 
@@ -410,7 +424,9 @@ class ReferenceController extends Controller
                     'stats' => $stats,
                     'referencesByCountry' => $referencesByCountry,
                     'referencesByRecruiter' => $referencesByRecruiter,
-                    'countries' => $countries
+                    'referencesByStake' => $referencesByStake,
+                    'countries' => $countries,
+                    'canViewAll' => $all
                 ]
             ]);
         } catch (\Exception $e) {

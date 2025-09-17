@@ -3,18 +3,19 @@ import { useDashboardConfig } from '@/hooks/use-dashboard-config';
 import referencesNavItems from '@/lib/consts/referencesNavItems';
 import { type BreadcrumbItem } from '@/types';
 import { type Reference } from '@/types/reference';
-import { type ReferenceStats, type ReferenceByCountry, type ReferenceByRecruiter } from '@/types/dashboard';
+import { type ReferenceStats, type ReferenceByCountry, type ReferenceByRecruiter, type ReferenceByStake } from '@/types/dashboard';
 import { type Country } from '@/types/country';
-import { router, usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { useState, useMemo } from 'react';
-import { type SharedData } from '@/types';
 
 interface DashboardData {
     stats: ReferenceStats;
     referencesByCountry: ReferenceByCountry[];
     referencesByRecruiter: ReferenceByRecruiter[];
+    referencesByStake: ReferenceByStake[];
     references: Reference[];
     countries?: Country[];
+    canViewAll: boolean;
 }
 
 interface DashboardProps {
@@ -30,7 +31,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Dashboard({ data }: DashboardProps) {
     const { createReferencesConfig } = useDashboardConfig();
-    const { auth } = usePage<SharedData>().props;
 
     // Inicializar el filtro desde la URL
     const getInitialCountryFilter = () => {
@@ -44,9 +44,10 @@ export default function Dashboard({ data }: DashboardProps) {
     const [selectedCountryId, setSelectedCountryId] = useState<string | undefined>(getInitialCountryFilter);
 
     // Verificar si el usuario tiene permiso para ver todas las referencias
-    const canViewAll = auth.user.user_permissions.includes('reference:view-all');
+    // Usar la información del backend que es más confiable
+    const canViewAll = data.canViewAll;
 
-    // Filtrar los datos por reclutador basado en el país seleccionado
+    // Filtrar los datos por reclutador basado en el país seleccionado (solo para usuarios con permiso view-all)
     const filteredByRecruiter = useMemo(() => {
         if (!selectedCountryId || !canViewAll) {
             return data.referencesByRecruiter;
@@ -78,14 +79,24 @@ export default function Dashboard({ data }: DashboardProps) {
     const genericData = {
         stats: data.stats,
         byCountry: data.referencesByCountry,
-        byStake: filteredByRecruiter,
+        byStake: canViewAll ? filteredByRecruiter : data.referencesByStake,
     };
 
     // Configuración específica para referencias usando el hook
-    const config = createReferencesConfig({
+    const baseConfig = createReferencesConfig({
         breadcrumbs,
         menuOptions: referencesNavItems,
     });
+
+    // Personalizar textos según el tipo de vista
+    const config = canViewAll ? baseConfig : {
+        ...baseConfig,
+        sectionTitles: {
+            ...baseConfig.sectionTitles,
+            byStake: 'Referencias por Estaca',
+            byStakeDescription: 'Distribución de referencias por estaca asignada',
+        },
+    };
 
     // Props adicionales para el filtro
     const filterProps = canViewAll ? {
