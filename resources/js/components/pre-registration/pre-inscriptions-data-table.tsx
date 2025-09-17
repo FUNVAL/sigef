@@ -68,7 +68,7 @@ export const createColumns = ({
                 return (
                     <div className="space-y-1">
                         <p className="text-sm font-medium">{preInscription.email}</p>
-                        <p className="text-sm text-gray-500">{preInscription.phone}</p>
+                        <a href={`https://wa.me/${preInscription.phone.replace(/\D/g, "")}`} target='_blank'  className="text-sm text-gray-500">{preInscription.phone}</a>
                     </div>
                 );
             },
