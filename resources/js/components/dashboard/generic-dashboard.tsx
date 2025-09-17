@@ -4,10 +4,10 @@ import { Progress } from '@/components/ui/progress';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { type BaseStats, type ByCountry, type ByStake } from '@/types/dashboard';
+import { type BaseStats, type ByCountry, type ByStake, type ByRecruiter } from '@/types/dashboard';
 import { type Country } from '@/types/country';
 import { Head } from '@inertiajs/react';
-import { Briefcase, CheckCircle, Clock, MapPin, TrendingUp, Users, XCircle } from 'lucide-react';
+import { Briefcase, CheckCircle, Clock, MapPin, TrendingUp, Users, XCircle, User } from 'lucide-react';
 import { type MenuOption } from '@/components/globals/appbar';
 import { type ReactNode } from 'react';
 import { CountryFilter } from './country-filter';
@@ -15,7 +15,7 @@ import { CountryFilter } from './country-filter';
 interface GenericDashboardData {
     stats: BaseStats;
     byCountry: ByCountry[];
-    byStake: ByStake[];
+    byStake: ByStake[] | ByRecruiter[];
 }
 
 interface GenericDashboardProps {
@@ -72,6 +72,21 @@ interface GenericDashboardProps {
     countries?: Country[];
     selectedCountryId?: string;
     onCountryChange?: (countryId: string | undefined) => void;
+}
+
+// Helper function para obtener el texto y el icono correcto según el tipo de item
+function getItemDisplayInfo(item: ByStake | ByRecruiter) {
+    if ('stake' in item) {
+        return {
+            text: item.stake,
+            Icon: Briefcase
+        };
+    } else {
+        return {
+            text: item.recruiter,
+            Icon: User
+        };
+    }
 }
 
 function DashboardContent({
@@ -252,21 +267,24 @@ function DashboardContent({
                     <CardContent>
                         <div className="space-y-4">
                             {data.byStake.length > 0 ? (
-                                data.byStake.map((item, index) => (
-                                    <div key={index} className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-2">
-                                            <Briefcase className="text-primary h-4 w-4" />
-                                            <span className="text-sm font-medium">{item.stake}</span>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <span className="text-muted-foreground text-sm">{item.quantity}</span>
-                                            <div className="w-16">
-                                                <Progress value={item.percentage} className="h-2" />
+                                data.byStake.map((item, index) => {
+                                    const { text, Icon } = getItemDisplayInfo(item);
+                                    return (
+                                        <div key={index} className="flex items-center justify-between">
+                                            <div className="flex items-center space-x-2">
+                                                <Icon className="text-primary h-4 w-4" />
+                                                <span className="text-sm font-medium">{text}</span>
                                             </div>
-                                            <span className="text-muted-foreground w-10 text-xs">{item.percentage}%</span>
+                                            <div className="flex items-center space-x-2">
+                                                <span className="text-muted-foreground text-sm">{item.quantity}</span>
+                                                <div className="w-16">
+                                                    <Progress value={item.percentage} className="h-2" />
+                                                </div>
+                                                <span className="text-muted-foreground w-10 text-xs">{item.percentage}%</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))
+                                    );
+                                })
                             ) : (
                                 <p className="text-muted-foreground py-4 text-center text-sm">No hay datos disponibles</p>
                             )}

@@ -348,7 +348,7 @@ class PreInscriptionController extends Controller
                 return back()->with('forbidden', 'No tienes permiso para realizar esta acción. Si crees que esto es un error, contacta al administrador del sistema.');
             }
 
-            $query = PreInscription::query()->with(['country', 'stake']);
+            $query = PreInscription::query()->with(['country', 'stake.user']);
 
             if ($own && !$all) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
@@ -388,21 +388,31 @@ class PreInscriptionController extends Controller
                 ->values()
                 ->toArray();
 
-            // Pre-inscriptions by stake con filtro de país opcional
-            $stakeData = $preInscriptions;
+            // Pre-inscriptions by recruiter (pendientes) con filtro de país opcional
+            $recruiterQuery = $preInscriptions->where('status.id', RequestStatusEnum::PENDING->value);
 
             // Aplicar filtro de país si se proporciona y el usuario tiene permisos
             if ($all && $request->has('country') && $request->get('country') !== '') {
                 $countryId = (int) $request->get('country');
-                $stakeData = $preInscriptions->where('country.id', $countryId);
+                $recruiterQuery = $recruiterQuery->where('country.id', $countryId);
             }
 
-            $preInscriptionsByStake = $stakeData->groupBy('stake.name')
-                ->map(function ($group, $stake) use ($stakeData) {
+            $preInscriptionsByRecruiter = $recruiterQuery->groupBy('stake.user.firstname', 'stake.user.lastname', 'stake.user.id')
+                ->map(function ($group, $key) use ($recruiterQuery) {
                     $quantity = $group->count();
-                    $filteredTotal = $stakeData->count();
+                    $filteredTotal = $recruiterQuery->count();
+
+                    // Obtener info del reclutador del primer elemento del grupo
+                    $firstItem = $group->first();
+                    $recruiterName = 'Sin asignar';
+
+                    if ($firstItem && $firstItem->stake && $firstItem->stake->user) {
+                        $user = $firstItem->stake->user;
+                        $recruiterName = trim($user->firstname . ' ' . $user->lastname);
+                    }
+
                     return [
-                        'stake' => $stake ?? 'No Stake',
+                        'recruiter' => $recruiterName,
                         'quantity' => $quantity,
                         'percentage' => $filteredTotal > 0 ? round(($quantity / $filteredTotal) * 100, 1) : 0
                     ];
@@ -418,7 +428,7 @@ class PreInscriptionController extends Controller
                 'data' => [
                     'stats' => $stats,
                     'preInscriptionsByCountry' => $preInscriptionsByCountry,
-                    'preInscriptionsByStake' => $preInscriptionsByStake,
+                    'preInscriptionsByRecruiter' => $preInscriptionsByRecruiter,
                     'countries' => $countries
                 ]
             ]);

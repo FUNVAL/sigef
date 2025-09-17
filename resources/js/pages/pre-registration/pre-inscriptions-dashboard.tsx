@@ -3,7 +3,7 @@ import { useDashboardConfig } from '@/hooks/use-dashboard-config';
 import preinscriptionsNavItems from '@/lib/consts/preinscriptionNavItems';
 import { type BreadcrumbItem } from '@/types';
 import { type PreInscription } from '@/types/pre-inscription';
-import { type PreInscriptionStats, type PreInscriptionByCountry, type PreInscriptionByStake } from '@/types/dashboard';
+import { type PreInscriptionStats, type PreInscriptionByCountry, type PreInscriptionByRecruiter } from '@/types/dashboard';
 import { type Country } from '@/types/country';
 import { router, usePage } from '@inertiajs/react';
 import { useState, useMemo } from 'react';
@@ -12,7 +12,7 @@ import { type SharedData } from '@/types';
 interface DashboardData {
     stats: PreInscriptionStats;
     preInscriptionsByCountry: PreInscriptionByCountry[];
-    preInscriptionsByStake: PreInscriptionByStake[];
+    preInscriptionsByRecruiter: PreInscriptionByRecruiter[];
     preInscriptions: PreInscription[];
     countries?: Country[];
 }
@@ -46,15 +46,15 @@ export default function PreInscriptionDashboard({ data }: DashboardProps) {
     // Verificar si el usuario tiene permiso para ver todas las preinscripciones
     const canViewAll = auth.user.user_permissions.includes('pre-inscription:view-all');
 
-    // Filtrar los datos por estaca basado en el país seleccionado
-    const filteredByStake = useMemo(() => {
+    // Filtrar los datos por reclutador basado en el país seleccionado
+    const filteredByRecruiter = useMemo(() => {
         if (!selectedCountryId || !canViewAll) {
-            return data.preInscriptionsByStake;
+            return data.preInscriptionsByRecruiter;
         }
 
         // Si hay un país seleccionado, el backend ya maneja el filtrado
-        return data.preInscriptionsByStake;
-    }, [data.preInscriptionsByStake, selectedCountryId, canViewAll]);
+        return data.preInscriptionsByRecruiter;
+    }, [data.preInscriptionsByRecruiter, selectedCountryId, canViewAll]);
 
     // Manejar cambio de filtro de país
     const handleCountryChange = (countryId: string | undefined) => {
@@ -78,7 +78,7 @@ export default function PreInscriptionDashboard({ data }: DashboardProps) {
     const genericData = {
         stats: data.stats,
         byCountry: data.preInscriptionsByCountry,
-        byStake: filteredByStake,
+        byStake: filteredByRecruiter,
     };
 
     // Configuración específica para preinscripciones usando el hook
