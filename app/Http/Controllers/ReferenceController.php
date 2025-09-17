@@ -13,6 +13,8 @@ use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 use App\Models\Stake;
 use App\Notifications\RequestNotification;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
@@ -397,6 +399,97 @@ class ReferenceController extends Controller
                 'message' => 'Error al obtener el dashboard de referencias',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Exportar referencias pendientes a Excel
+     */
+    public function exportPendingToExcel()
+    {
+        try {
+            $user = Auth::user();
+            $all = $user->can('ver todas las referencias');
+            $own = $user->can('ver referencias propias');
+            $staff = $user->can('ver referencias del personal');
+
+            if (!$all && !$own && !$staff) {
+                return back()->with('forbidden', 'No tienes permiso para realizar esta acción.');
+            }
+
+            // Obtener referencias pendientes
+            $query = Reference::query()
+                ->with(['country', 'stake'])
+                ->where('status', RequestStatusEnum::PENDING->value);
+
+            if ($own && !$all) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $references = $query->orderBy('created_at', 'desc')->get();
+
+            // Cargar el template específico para referencias
+            $templatePath = base_path('statics/template-reference.xlsx');
+            if (!file_exists($templatePath)) {
+                return back()->withErrors(['error' => 'Template de referencias no encontrado.']);
+            }
+
+            $spreadsheet = IOFactory::load($templatePath);
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            // Agregar datos a partir de la fila 5 (después de los headers del template)
+            $row = 5;
+            foreach ($references as $reference) {
+                // Columna B: Nombre del referido (Persona Referida - Nombre)
+                $worksheet->setCellValue('B' . $row, $reference->name);
+
+                // Columna C: Género (Persona Referida - Género)
+                $worksheet->setCellValue('C' . $row, $reference->gender['name'] ?? 'N/A');
+
+                // Columna D: Edad (Persona Referida - Edad)
+                $worksheet->setCellValue('D' . $row, $reference->age);
+
+                // Columna E: Teléfono del referido (Contacto - Número)
+                $worksheet->setCellValue('E' . $row, $reference->phone);
+
+                // Columna F: País (Ubicación - País)
+                $worksheet->setCellValue('F' . $row, $reference->country->name ?? 'N/A');
+
+                // Columna G: Estaca o distrito (Ubicación - Estaca o distrito)
+                $worksheet->setCellValue('G' . $row, $reference->stake->name ?? 'N/A');
+
+                // Columna H: Nombre del referente (Referente - Nombre)
+                $worksheet->setCellValue('H' . $row, $reference->referrer_name ?? 'N/A');
+
+                // Columna I: Relación con el referido (Referente - Relación)
+                $worksheet->setCellValue('I' . $row, $reference->relationship_with_referred['name'] ?? 'N/A');
+
+                // Columna J: Teléfono del referente (Referente - Número)
+                $worksheet->setCellValue('J' . $row, $reference->referrer_phone ?? 'N/A');
+
+                // Columna L: Fecha de registro (Fecha)
+                $worksheet->setCellValue('K' . $row, $reference->created_at->format('d/m/Y'));
+
+                $row++;
+            }
+
+            // Generar el archivo
+            $writer = new Xlsx($spreadsheet);
+            $filename = 'referencias_pendientes_' . date('Y-m-d_H-i-s') . '.xlsx';
+            $tempPath = storage_path('app/temp/' . $filename);
+
+            // Crear directorio si no existe
+            if (!file_exists(dirname($tempPath))) {
+                mkdir(dirname($tempPath), 0755, true);
+            }
+
+            $writer->save($tempPath);
+
+            return response()->download($tempPath, $filename)->deleteFileAfterSend(true);
+
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Error al generar el archivo Excel: ' . $e->getMessage()]);
         }
     }
 

@@ -10,6 +10,7 @@ import { type BreadcrumbItem } from '@/types';
 import { PaginationData } from '@/types/global';
 import { type PreInscription } from '@/types/pre-inscription';
 import { Head } from '@inertiajs/react';
+import { Download } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -44,6 +45,24 @@ export default function PreInscription({ preInscriptions, pagination, filters = 
                 }}
             >
                 <div className="flex w-full flex-col space-y-6">
+                    {/* Header con botón de descarga */}
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h3 className="text-lg font-medium">Preinscripciones</h3>
+                            <p className="text-sm text-muted-foreground">
+                                Gestiona las preinscripciones recibidas en el sistema.
+                            </p>
+                        </div>
+                        <a
+                            href="/pre-inscription/export-pending"
+                            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
+                            download
+                        >
+                            <Download className="mr-2 h-4 w-4" />
+                            Descargar Pendientes
+                        </a>
+                    </div>
+
                     <DataTable<PreInscription>
                         data={preInscriptions.data}
                         columns={columns}
