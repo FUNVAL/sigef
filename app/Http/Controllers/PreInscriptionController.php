@@ -421,6 +421,20 @@ class PreInscriptionController extends Controller
                 ->values()
                 ->toArray();
 
+            // Pre-inscriptions by stake (para usuarios sin permiso view-all)
+            $preInscriptionsByStake = $preInscriptions->groupBy('stake.name')
+                ->map(function ($group, $stake) use ($total) {
+                    $quantity = $group->count();
+                    return [
+                        'stake' => $stake ?? 'No Stake',
+                        'quantity' => $quantity,
+                        'percentage' => $total > 0 ? round(($quantity / $total) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
             // Obtener países solo si el usuario tiene permisos para ver todo
             $countries = $all ? Country::where('status', StatusEnum::ACTIVE->value)->get(['id', 'name']) : [];
 
@@ -429,7 +443,9 @@ class PreInscriptionController extends Controller
                     'stats' => $stats,
                     'preInscriptionsByCountry' => $preInscriptionsByCountry,
                     'preInscriptionsByRecruiter' => $preInscriptionsByRecruiter,
-                    'countries' => $countries
+                    'preInscriptionsByStake' => $preInscriptionsByStake,
+                    'countries' => $countries,
+                    'canViewAll' => $all
                 ]
             ]);
         } catch (\Exception $e) {
