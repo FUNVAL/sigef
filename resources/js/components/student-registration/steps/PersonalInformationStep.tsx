@@ -48,27 +48,20 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
             return;
         }
 
-        // Calcular edad automáticamente
-        if (data.birth_date) {
-            const birthDate = new Date(data.birth_date);
-            const today = new Date();
-            const age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                setData('age', age - 1);
-            } else {
-                setData('age', age);
-            }
-        }
-
+        // La edad ya se calcula automáticamente cuando se selecciona la fecha
         setErrors({});
         nextStep();
     };
 
     const cleanSpaces = useCallback(
         (field: keyof StudentRegistrationFormData, value: string) => {
-            const nameFields = ['first_name', 'middle_name', 'last_name', 'second_last_name', 'recruiter_name'];
+            const nameFields: (keyof StudentRegistrationFormData)[] = [
+                'first_name',
+                'middle_name',
+                'last_name',
+                'second_last_name',
+                'recruiter_name',
+            ];
             let cleanedValue = value.replace(/\s+/g, ' ').trim();
             if (nameFields.includes(field)) {
                 cleanedValue = cleanedValue.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
@@ -76,6 +69,52 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
             setData(field, cleanedValue);
         },
         [setData],
+    );
+
+    // Función para calcular la edad automáticamente
+    const calculateAge = useCallback(
+        (birthDateString: string) => {
+            if (!birthDateString) {
+                setData('age', undefined);
+                return;
+            }
+
+            const birthDate = new Date(birthDateString);
+            const today = new Date();
+
+            // Verificar que la fecha es válida
+            if (isNaN(birthDate.getTime())) {
+                setData('age', undefined);
+                return;
+            }
+
+            // Verificar que la fecha no sea futura
+            if (birthDate > today) {
+                setData('age', undefined);
+                return;
+            }
+
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+            // Si no ha llegado el cumpleaños este año, restar 1
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age = age - 1;
+            }
+
+            // Asegurar que la edad no sea negativa
+            setData('age', Math.max(0, age));
+        },
+        [setData],
+    );
+
+    // Función para manejar el cambio de fecha de nacimiento
+    const handleBirthDateChange = useCallback(
+        (value: string) => {
+            setData('birth_date', value);
+            calculateAge(value);
+        },
+        [setData, calculateAge],
     );
 
     return (
@@ -168,7 +207,8 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                     name="birth_date"
                                     type="date"
                                     value={data.birth_date || ''}
-                                    onChange={(e) => setData('birth_date', e.target.value)}
+                                    onChange={(e) => handleBirthDateChange(e.target.value)}
+                                    max={new Date().toISOString().split('T')[0]} // No permitir fechas futuras
                                     required
                                 />
                                 {errors.birth_date && <p className="text-sm text-red-500">{errors.birth_date}</p>}
