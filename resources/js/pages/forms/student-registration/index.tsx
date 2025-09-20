@@ -88,16 +88,16 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
             component: <PersonalInformationStep countries={countries} request={request} />,
         },
         {
-            title: 'Documentos Requeridos',
-            component: <RequiredDocumentsStep request={request} />,
-        },
-        {
-            title: 'Información Religiosa',
+            title: 'Información Eleclesiástica',
             component: <ReligiousInformationStep countries={countries} request={request} />,
         },
         {
             title: 'Información Académica',
             component: <AcademicInformationStep courses={courses} request={request} />,
+        },
+        {
+            title: 'Documentos Requeridos',
+            component: <RequiredDocumentsStep request={request} />,
         },
         {
             title: 'Confirmación',

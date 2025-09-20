@@ -67,7 +67,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
     return (
         <Card className="mx-auto w-full max-w-4xl overflow-hidden border-0 pt-0 shadow-2xl">
-            <StepsHeader title="Información Religiosa / Eclesiástica" subtitle="Complete su información de membresía y participación religiosa" />
+            <StepsHeader title="Información Eclesiástica" subtitle="Complete su información de membresía" />
 
             <CardContent className="space-y-6 p-3 sm:space-y-8 sm:p-6 md:p-8">
                 <form className="space-y-6" onSubmit={handleSubmit} noValidate>
@@ -113,6 +113,8 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                 {errors.member_certificate_number && <p className="text-sm text-red-500">{errors.member_certificate_number}</p>}
                             </div>
                         )}
+
+
 
                         {/* Año de bautismo */}
                         <div>
@@ -247,6 +249,20 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                     placeholder="Ej: Maestro de Escuela Dominical"
                                 />
                             </div>
+                            {/* País */}
+                            <div>
+                                <SearchableSelect
+                                    data={countries}
+                                    name="country_id"
+                                    id="country_id"
+                                    value={data.country_id?.toString() || ''}
+                                    onValueChange={(value) => setData('country_id', Number(value))}
+                                    label="País"
+                                    required
+                                    placeholder="Seleccione su país"
+                                />
+                                {errors.country_id && <p className="text-sm text-red-500">{errors.country_id}</p>}
+                            </div>
 
                             {/* Barrio o rama */}
                             <div>
@@ -269,7 +285,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                 id="stake_id"
                                 value={data.stake_id?.toString() || ''}
                                 onValueChange={(value) => setData('stake_id', Number(value))}
-                                label="Estaca, distrito o misión a la que pertenece *"
+                                label="Estaca, distrito o misión a la que pertenece"
                                 disabled={!data.country_id}
                                 placeholder={
                                     data.country_id ? 'Seleccione su estaca/distrito/misión' : 'Primero seleccione un país en el paso anterior'

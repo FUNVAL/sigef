@@ -11,9 +11,10 @@ import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
 import { StudentRegistrationFormData, StudentRegistrationRequest } from '@/types/student-registration';
 import { usePage } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Mail, MapPin, Phone, User } from 'lucide-react';
+import { ArrowLeft, Calendar, HelpCircle, Mail, MapPin, Phone, User } from 'lucide-react';
 import { useCallback, useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface PersonalInformationStepProps {
     countries: Country[];
@@ -26,7 +27,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
     const { enums } = usePage<{ enums: Enums }>().props;
     const { ui } = usePage<Translation>().props;
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const { stakes } = useFilteredStakes(data.country_id);
+    //const { stakes } = useFilteredStakes(data.country_id);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -38,10 +39,10 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
         if (!data.last_name?.trim()) validationErrors.last_name = 'El apellido es obligatorio';
         if (!data.birth_date) validationErrors.birth_date = 'La fecha de nacimiento es obligatoria';
         if (!data.gender) validationErrors.gender = 'El género es obligatorio';
-        if (!data.country_id) validationErrors.country_id = 'El país es obligatorio';
+        //if (!data.country_id) validationErrors.country_id = 'El país es obligatorio';
         if (!data.marital_status) validationErrors.marital_status = 'El estado civil es obligatorio';
         if (!data.email?.trim()) validationErrors.email = 'El correo electrónico es obligatorio';
-        if (!data.phone?.trim()) validationErrors.phone = 'El teléfono es obligatorio';
+        //if (!data.phone?.trim()) validationErrors.phone = 'El teléfono es obligatorio';
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -133,7 +134,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Primer Nombre */}
                             <div>
-                                <Label htmlFor="first_name">Primer Nombre *</Label>
+                                <Label htmlFor="first_name">Primer Nombre</Label>
                                 <Input
                                     id="first_name"
                                     name="first_name"
@@ -162,7 +163,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
 
                             {/* Primer Apellido */}
                             <div>
-                                <Label htmlFor="last_name">Primer Apellido *</Label>
+                                <Label htmlFor="last_name">Primer Apellido</Label>
                                 <Input
                                     id="last_name"
                                     name="last_name"
@@ -201,7 +202,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                             {/* Fecha de nacimiento */}
                             <div>
-                                <Label htmlFor="birth_date">Fecha de Nacimiento *</Label>
+                                <Label htmlFor="birth_date">Fecha de Nacimiento</Label>
                                 <Input
                                     id="birth_date"
                                     name="birth_date"
@@ -225,12 +226,13 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                     readOnly
                                     placeholder="Se calcula automáticamente"
                                     className="bg-gray-50"
+                                    required
                                 />
                             </div>
 
                             {/* Género */}
                             <div>
-                                <Label htmlFor="gender">Género *</Label>
+                                <Label htmlFor="gender">Género</Label>
                                 <Select
                                     value={data.gender?.toString() || ''}
                                     onValueChange={(value) => setData('gender', Number(value))}
@@ -260,25 +262,50 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                             <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Ubicación</h3>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            {/* País */}
-                            <div>
+                        {/* País */}
+                           {/*  <div>
                                 <SearchableSelect
                                     data={countries}
                                     name="country_id"
                                     id="country_id"
                                     value={data.country_id?.toString() || ''}
                                     onValueChange={(value) => setData('country_id', Number(value))}
-                                    label="País *"
+                                    label="País"
                                     required
                                     placeholder="Seleccione su país"
                                 />
                                 {errors.country_id && <p className="text-sm text-red-500">{errors.country_id}</p>}
-                            </div>
+                            </div> */}
+
+                        <div>
+                            <Label htmlFor="referrer_phone">Teléfono</Label>
+                            <PhoneInput
+                                id="referrer_phone"
+                                name="referrer_phone"
+                                autoComplete="tel-referrer"
+                                type="tel"
+                                value={data.referrer_phone?.toString() || ''}
+                                onInputChange={(value: string) => setData('referrer_phone', value)}
+                                placeholder={`Tu número de teléfono`}
+                                className="rounded-l-none max-w-[25rem]"
+                                countries={countries}
+                                selectedCountryId={data.country_id}
+                                required
+                                enableDropdown={true}
+                                minLength={3}
+                                maxLength={18}
+                            />
+                            {errors.referrer_phone && <p className="text-sm text-red-500">{errors.referrer_phone}</p>}
+                        </div>
+
+
+
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
 
                             {/* Estado civil */}
                             <div>
-                                <Label htmlFor="marital_status">Estado Civil *</Label>
+                                <Label htmlFor="marital_status">Estado Civil</Label>
                                 <Select
                                     value={data.marital_status?.toString() || ''}
                                     onValueChange={(value) => setData('marital_status', Number(value))}
@@ -311,7 +338,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Correo electrónico */}
                             <div>
-                                <Label htmlFor="email">Correo Electrónico *</Label>
+                                <Label htmlFor="email">Correo Electrónico</Label>
                                 <div className="relative">
                                     <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                                     <Input
@@ -328,9 +355,12 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                 {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                             </div>
 
+                            
+
                             {/* Teléfono */}
-                            <div>
-                                <Label htmlFor="phone">Teléfono de Contacto *</Label>
+
+                            {/* <div>
+                                <Label htmlFor="phone">Teléfono de Contacto</Label>
                                 <PhoneInput
                                     id="phone"
                                     name="phone"
@@ -346,36 +376,58 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                     maxLength={18}
                                 />
                                 {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
-                            </div>
+                            </div> */}
                         </div>
 
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            {/* Reclutador/responsable */}
-                            <div>
-                                <Label htmlFor="recruiter_name">Reclutador/Responsable</Label>
-                                <Input
-                                    id="recruiter_name"
-                                    name="recruiter_name"
-                                    value={data.recruiter_name || ''}
-                                    onChange={(e) => cleanSpaces('recruiter_name', e.target.value)}
-                                    placeholder="Nombre del reclutador (opcional)"
-                                />
-                            </div>
-
-                            {/* Link de ubicación */}
-                            <div>
-                                <Label htmlFor="home_location_link">Link de Ubicación de Casa</Label>
-                                <Input
-                                    id="home_location_link"
-                                    name="home_location_link"
-                                    type="url"
-                                    value={data.home_location_link || ''}
-                                    onChange={(e) => setData('home_location_link', e.target.value)}
-                                    placeholder="https://maps.google.com/... (opcional)"
-                                />
-                            </div>
-                        </div>
                     </div>
+
+                    {/* Dirección */}
+                    <div>
+                        <Label htmlFor="address">Dirección de Residencia</Label>
+                        <Input
+                            id="address"
+                            name="address"
+                            value={data.address || ''}
+                            onChange={(e) => setData('address', e.target.value)}
+                            placeholder="Ingrese su dirección"
+                            required
+                        />
+                        {errors.address && <p className="text-sm text-red-500">{errors.address}</p>}
+                    </div>
+
+                    {/* Facebook URL */}
+                    <div>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <button
+                                        type="button"
+                                        className="p-0 m-0 mr-2 bg-transparent border-none cursor-pointer"
+                                        onClick={() => window.open('https://www.youtube.com/watch?v=yQt93aKDG0c', '_blank')}
+                                        aria-label="Ayuda Facebook URL"
+                                    >
+                                        <HelpCircle className="w-4 h-4 text-blue-500 hover:text-blue-700" />
+                                    </button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    ¿Tienes duda de cómo pegar la URL de tu Facebook?
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        <Label htmlFor="facebook_url">Facebook URL</Label>
+                        
+                        <Input
+                            id="facebook_url"
+                            name="facebook_url"
+                            type="url"
+                            value={data.facebook_url || ''}
+                            onChange={(e) => setData('facebook_url', e.target.value)}
+                            placeholder="https://facebook.com/usuario"
+                            required
+                        />
+                        {errors.facebook_url && <p className="text-sm text-red-500">{errors.facebook_url}</p>}
+                    </div>
+
 
                     {/* Botones */}
                     <div className="flex justify-between pt-4">
