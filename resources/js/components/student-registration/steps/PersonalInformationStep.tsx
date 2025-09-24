@@ -257,9 +257,13 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
 
                     {/* Ubicación */}
                     <div className="space-y-4">
-                        <div className="mb-4 flex items-center gap-2">
+                        {/* <div className="mb-4 flex items-center gap-2">
                             <MapPin className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
                             <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Ubicación</h3>
+                        </div> */}
+                        <div className="mb-4 flex items-center gap-2">
+                            <Phone className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
+                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Información de Contacto</h3>
                         </div>
 
                         {/* País */}
@@ -278,14 +282,14 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                             </div> */}
 
                         <div>
-                            <Label htmlFor="referrer_phone">Teléfono</Label>
+                            <Label htmlFor="phone">Teléfono</Label>
                             <PhoneInput
-                                id="referrer_phone"
-                                name="referrer_phone"
-                                autoComplete="tel-referrer"
+                                id="phone"
+                                name="phone"
+                                autoComplete="tel"
                                 type="tel"
-                                value={data.referrer_phone?.toString() || ''}
-                                onInputChange={(value: string) => setData('referrer_phone', value)}
+                                value={data.phone?.toString() || ''}
+                                onInputChange={(value: string) => setData('phone', value)}
                                 placeholder={`Tu número de teléfono`}
                                 className="rounded-l-none max-w-[25rem]"
                                 countries={countries}
@@ -295,7 +299,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                 minLength={3}
                                 maxLength={18}
                             />
-                            {errors.referrer_phone && <p className="text-sm text-red-500">{errors.referrer_phone}</p>}
+                            {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
                         </div>
 
 
@@ -329,11 +333,11 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                     </div>
 
                     {/* Información de contacto */}
-                    <div className="space-y-4">
-                        <div className="mb-4 flex items-center gap-2">
+                    
+                        {/* <div className="mb-4 flex items-center gap-2">
                             <Phone className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
                             <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Información de Contacto</h3>
-                        </div>
+                        </div> */}
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Correo electrónico */}
@@ -379,7 +383,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                             </div> */}
                         </div>
 
-                    </div>
+              
 
                     {/* Dirección */}
                     <div>
