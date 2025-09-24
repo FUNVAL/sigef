@@ -20,14 +20,14 @@ enum DocumentTypeEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::DNI => __('common.enums.document_type.dni'),
-            self::PASSPORT => __('common.enums.document_type.passport'),
-            self::PTP => __('common.enums.document_type.ptp'),
-            self::FOREIGNER_CARD => __('common.enums.document_type.foreigner_card'),
-            self::REFUGEE_LETTER => __('common.enums.document_type.refugee_letter'),
-            self::RG_BRAZIL => __('common.enums.document_type.rg_brazil'),
-            self::DUI_EL_SALVADOR => __('common.enums.document_type.dui_el_salvador'),
-            self::INE_MEXICO => __('common.enums.document_type.ine_mexico'),
+            self::DNI => __('DNI (Documento Nacional de Identidad)'),
+            self::PASSPORT => __('Pasaporte'),
+            self::PTP => __('PTP'),
+            self::FOREIGNER_CARD => __('Tarjeta de Extranjero'),
+            self::REFUGEE_LETTER => __('Carta de Refugio'),
+            self::RG_BRAZIL => __('RG (Registro Geral) - Brasil'),
+            self::DUI_EL_SALVADOR => __('DUI (Documento Único de Identidad) - El Salvador'),
+            self::INE_MEXICO => __('INE (Instituto Nacional de Electoral) - México'),
         };
     }
 }
