@@ -1,4 +1,5 @@
 import { AcademicInformationStep } from '@/components/student-registration/steps/AcademicInformationStep';
+import { AgreementStep } from '@/components/student-registration/steps/AgreementStep';
 import { PersonalInformationStep } from '@/components/student-registration/steps/PersonalInformationStep';
 import { ReligiousInformationStep } from '@/components/student-registration/steps/ReligiousInformationStep';
 import { RequiredDocumentsStep } from '@/components/student-registration/steps/RequiredDocumentsStep';
@@ -61,6 +62,11 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
         education_level: 0,
         course_id: 0,
         english_connect_level: 0,
+
+        // Agreement Information
+        agreement_terms_accepted: false,
+        agreement_privacy_accepted: false,
+        agreement_conduct_accepted: false,
     });
 
     const request = {
@@ -98,6 +104,20 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
         {
             title: 'Documentos Requeridos',
             component: <RequiredDocumentsStep request={request} />,
+        },
+        {
+            title: 'Acuerdos y Compromisos',
+            component: (
+                <AgreementStep
+                    data={{
+                        agreement_terms_accepted: data.agreement_terms_accepted,
+                        agreement_privacy_accepted: data.agreement_privacy_accepted,
+                        agreement_conduct_accepted: data.agreement_conduct_accepted,
+                    }}
+                    onDataChange={(field, value) => setData(field, value)}
+                    errors={errors as Record<string, string>}
+                />
+            ),
         },
         {
             title: 'Confirmación',
