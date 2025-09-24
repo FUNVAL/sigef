@@ -14,6 +14,7 @@ import { usePage } from '@inertiajs/react';
 import { ArrowLeft, Church, Heart, Users } from 'lucide-react';
 import { useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
+import { PhoneInput } from '@/components/ui/phone-input';
 
 interface ReligiousInformationStepProps {
     countries: Country[];
@@ -28,6 +29,33 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
     const [errors, setErrors] = useState<Record<string, string>>({});
     const { stakes } = useFilteredStakes(data.country_id);
 
+    const formatMemberNumber = (value: string) => {
+        // Remove all non-alphanumeric characters (keep letters and numbers)
+        const alphanumeric = value.replace(/[^a-zA-Z0-9]/g, '');
+
+        // Apply formatting: 000-0000-0000 (but now accepting letters too)
+        if (alphanumeric.length <= 3) {
+            return alphanumeric;
+        } else if (alphanumeric.length <= 7) {
+            return `${alphanumeric.slice(0, 3)}-${alphanumeric.slice(3)}`;
+        } else {
+            return `${alphanumeric.slice(0, 3)}-${alphanumeric.slice(3, 7)}-${alphanumeric.slice(7, 11)}`;
+        }
+    };
+
+    // Validate member number format
+    /* const isValidMemberNumber = (value: string) => {
+        const memberNumberRegex = /^\d{3}-\d{4}-\d{4}$/;
+        return memberNumberRegex.test(value);
+    }; */
+
+    const handleMemberNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formattedValue = formatMemberNumber(e.target.value);
+        setData('member_number', formattedValue);
+    };
+
+
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -40,8 +68,8 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
         if (!data.stake_id) validationErrors.stake_id = 'Debe seleccionar su estaca/distrito/misión';
 
         // Validaciones condicionales
-        if (data.is_active_member && !data.member_certificate_number?.trim()) {
-            validationErrors.member_certificate_number = 'El número de cédula de miembro es requerido para miembros activos';
+        if (data.is_active_member && !data.member_number?.trim()) {
+            validationErrors.member_number = 'El número de cédula de miembro es requerido para miembros activos';
         }
 
         if (data.is_returned_missionary) {
@@ -80,11 +108,12 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                         {/* ¿Es miembro activo? */}
                         <div className="space-y-3">
-                            <Label className="text-base font-medium">¿Es un miembro activo en su iglesia? *</Label>
+                            <Label className="text-base font-medium">¿Es un miembro activo en su iglesia?</Label>
                             <RadioGroup
                                 value={data.is_active_member !== undefined ? data.is_active_member.toString() : ''}
                                 onValueChange={(value) => setData('is_active_member', value === 'true')}
                                 className="flex gap-6"
+                                required
                             >
                                 <div className="flex items-center space-x-2">
                                     <RadioGroupItem value="true" id="active-yes" />
@@ -98,21 +127,21 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                             {errors.is_active_member && <p className="text-sm text-red-500">{errors.is_active_member}</p>}
                         </div>
 
-                        {/* Número de cédula de miembro */}
-                        {data.is_active_member && (
-                            <div>
-                                <Label htmlFor="member_certificate_number">Número de Cédula de Miembro *</Label>
-                                <Input
-                                    id="member_certificate_number"
-                                    name="member_certificate_number"
-                                    value={data.member_certificate_number || ''}
-                                    onChange={(e) => setData('member_certificate_number', e.target.value)}
-                                    placeholder="Ingrese su número de cédula de miembro"
-                                    required={data.is_active_member}
-                                />
-                                {errors.member_certificate_number && <p className="text-sm text-red-500">{errors.member_certificate_number}</p>}
-                            </div>
-                        )}
+                        {/* Número de cédula de miembro - Always shown */}
+                        <div>
+                            <Label htmlFor="member_number">Número de Cédula de Miembro</Label>
+                            <Input
+                                id="member_number"
+                                name="member_number"
+                                value={data.member_number || ''}
+                                onChange={handleMemberNumberChange}
+                                placeholder="000-0000-0000"
+                                maxLength={13}
+                                required
+                            />
+                            {/* <p className="mt-1 text-xs text-gray-500">Formato: 000-0000-0000</p> */}
+                            {errors.member_number && <p className="text-sm text-red-500">{errors.member_number}</p>}
+                        </div>
 
 
 
@@ -128,7 +157,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                     <SelectValue placeholder="Seleccione el año de bautismo" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="0">No aplica / No recuerdo</SelectItem>
+                                    <SelectItem value="0">No recuerdo</SelectItem>
                                     {years.map((year) => (
                                         <SelectItem key={year} value={year.toString()}>
                                             {year}
@@ -148,11 +177,12 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                         {/* ¿Es misionero retornado? */}
                         <div className="space-y-3">
-                            <Label className="text-base font-medium">Misionero retornado *</Label>
+                            <Label className="text-base font-medium">Misionero retornado</Label>
                             <RadioGroup
                                 value={data.is_returned_missionary !== undefined ? data.is_returned_missionary.toString() : ''}
                                 onValueChange={(value) => setData('is_returned_missionary', value === 'true')}
                                 className="flex gap-6"
+                                required
                             >
                                 <div className="flex items-center space-x-2">
                                     <RadioGroupItem value="true" id="missionary-yes" />
@@ -170,7 +200,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                         {data.is_returned_missionary && (
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div>
-                                    <Label htmlFor="mission_served">¿En qué misión sirvió? *</Label>
+                                    <Label htmlFor="mission_served">¿En qué misión sirvió?</Label>
                                     <Input
                                         id="mission_served"
                                         name="mission_served"
@@ -183,7 +213,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                 </div>
 
                                 <div>
-                                    <Label htmlFor="mission_end_year">¿Año en que finalizó la misión? *</Label>
+                                    <Label htmlFor="mission_end_year">¿Año en que finalizó la misión?</Label>
                                     <Select
                                         value={data.mission_end_year?.toString() || ''}
                                         onValueChange={(value) => setData('mission_end_year', Number(value))}
@@ -208,7 +238,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                         {/* Estado del templo */}
                         <div>
-                            <Label htmlFor="temple_status">Sellado en el Templo *</Label>
+                            <Label htmlFor="temple_status">Sellado en el Templo</Label>
                             <Select
                                 value={data.temple_status?.toString() || ''}
                                 onValueChange={(value) => setData('temple_status', Number(value))}
@@ -265,6 +295,26 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                             </div>
 
                             {/* Barrio o rama */}
+
+
+                            {/* Estaca */}
+                            <div>
+                                <SearchableSelect
+                                    data={stakes}
+                                    name="stake_id"
+                                    id="stake_id"
+                                    value={data.stake_id?.toString() || ''}
+                                    onValueChange={(value) => setData('stake_id', Number(value))}
+                                    label="Estaca, distrito o misión a la que pertenece"
+                                    disabled={!data.country_id}
+                                    placeholder={
+                                        data.country_id ? 'Seleccione su estaca/distrito/misión' : 'Primero seleccione un país'
+                                    }
+                                    required
+                                />
+                                {errors.stake_id && <p className="text-sm text-red-500">{errors.stake_id}</p>}
+                            </div>
+
                             <div>
                                 <Label htmlFor="ward_branch">Barrio o Rama a la que Pertenece</Label>
                                 <Input
@@ -275,25 +325,46 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                     placeholder="Ej: Barrio Centro, Rama San Juan"
                                 />
                             </div>
+
+                            {/*Nombre presidente cuorum / presidenta sociedad de socorro*/}
+                            <div>
+                                <Label htmlFor="auxiliar_president">Nombre del Presidente(a) de Cuorum / SOC</Label>
+                                <Input
+                                    id="auxiliar_president"
+                                    name="auxiliar_president"
+                                    value={data.auxiliar_president || ''}
+                                    onChange={(e) => setData('auxiliar_president', e.target.value)} 
+                                    placeholder="Nombre del Presidente(a) de Cuorum / SOC"
+                                    autoComplete="given-name"
+                                    required
+                                />
+                                {errors.auxiliar_president && <p className="text-sm text-red-500">{errors.auxiliar_president}</p>}
+                            </div>
+
+                            <div>
+                                <Label htmlFor="auxiliary_president_phone">Teléfono</Label>
+                                <PhoneInput
+                                    id="auxiliary_president_phone"
+                                    name="auxiliary_president_phone"
+                                    autoComplete="tel"
+                                    type="tel"
+                                    value={data.auxiliary_president_phone?.toString() || ''}
+                                    onInputChange={(value: string) => setData('auxiliary_president_phone', value)}
+                                    placeholder={`Tu número de teléfono`}
+                                    className="rounded-l-none max-w-[25rem]"
+                                    countries={countries}
+                                    selectedCountryId={data.country_id}
+                                    required
+                                    enableDropdown={true}
+                                    minLength={3}
+                                    maxLength={18}
+                                />
+                                {errors.auxiliary_president_phone && <p className="text-sm text-red-500">{errors.auxiliar_president_phone}</p>}
+                            </div>
+
                         </div>
 
-                        {/* Estaca */}
-                        <div>
-                            <SearchableSelect
-                                data={stakes}
-                                name="stake_id"
-                                id="stake_id"
-                                value={data.stake_id?.toString() || ''}
-                                onValueChange={(value) => setData('stake_id', Number(value))}
-                                label="Estaca, distrito o misión a la que pertenece"
-                                disabled={!data.country_id}
-                                placeholder={
-                                    data.country_id ? 'Seleccione su estaca/distrito/misión' : 'Primero seleccione un país en el paso anterior'
-                                }
-                                required
-                            />
-                            {errors.stake_id && <p className="text-sm text-red-500">{errors.stake_id}</p>}
-                        </div>
+
                     </div>
 
                     {/* Botones */}

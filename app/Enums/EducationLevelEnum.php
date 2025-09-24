@@ -23,17 +23,17 @@ enum EducationLevelEnum: int
     public function name(): string
     {
         return match ($this) {
-            self::PRIMARY_INCOMPLETE => __('common.enums.education_level.primary_incomplete'),
-            self::PRIMARY_COMPLETE => __('common.enums.education_level.primary_complete'),
-            self::SECONDARY_INCOMPLETE => __('common.enums.education_level.secondary_incomplete'),
-            self::SECONDARY_COMPLETE => __('common.enums.education_level.secondary_complete'),
-            self::UNIVERSITY_INCOMPLETE => __('common.enums.education_level.university_incomplete'),
-            self::UNIVERSITY_COMPLETE => __('common.enums.education_level.university_complete'),
-            self::TECHNICAL_INCOMPLETE => __('common.enums.education_level.technical_incomplete'),
-            self::TECHNICAL_COMPLETE => __('common.enums.education_level.technical_complete'),
-            self::POSTGRADUATE => __('common.enums.education_level.postgraduate'),
-            self::MASTER => __('common.enums.education_level.master'),
-            self::DOCTORATE => __('common.enums.education_level.doctorate'),
+            self::PRIMARY_INCOMPLETE => __('Primaria Incompleta'),
+            self::PRIMARY_COMPLETE => __('Primaria Completa'),
+            self::SECONDARY_INCOMPLETE => __('Secundaria Incompleta'),
+            self::SECONDARY_COMPLETE => __('Secundaria Completa'),
+            self::UNIVERSITY_INCOMPLETE => __('Universidad Incompleta'),
+            self::UNIVERSITY_COMPLETE => __('Universidad Completa'),
+            self::TECHNICAL_INCOMPLETE => __('Técnica Incompleta'),
+            self::TECHNICAL_COMPLETE => __('Técnica Completa'),
+            self::POSTGRADUATE => __('Postgrado'),
+            self::MASTER => __('Maestría'),
+            self::DOCTORATE => __('Doctorado'),
         };
     }
 }
