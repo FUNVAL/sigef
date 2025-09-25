@@ -315,7 +315,7 @@ class ReferenceController extends Controller
     /**
      * Get the reference dashboard data.
      */
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         try {
             $user = Auth::user();
@@ -327,7 +327,7 @@ class ReferenceController extends Controller
                 return back()->with('forbidden', 'No tienes permiso para realizar esta acción. Si crees que esto es un error, contacta al administrador del sistema.');
             }
 
-            $query = Reference::query()->with(['country', 'stake', 'modifier']);
+            $query = Reference::query()->with(['country', 'stake.user']);
 
             if (!$all && $own) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
@@ -369,7 +369,40 @@ class ReferenceController extends Controller
                 ->values()
                 ->toArray();
 
-            // References by stake
+            // Referencias por reclutador (pendientes) con filtro de país opcional
+            $recruiterQuery = $references->where('status.id', RequestStatusEnum::PENDING->value);
+
+            // Aplicar filtro de país si se proporciona y el usuario tiene permisos
+            if ($all && $request->has('country') && $request->get('country') !== '') {
+                $countryId = (int) $request->get('country');
+                $recruiterQuery = $recruiterQuery->where('country.id', $countryId);
+            }
+
+            $referencesByRecruiter = $recruiterQuery->groupBy('stake.user.firstname', 'stake.user.lastname', 'stake.user.id')
+                ->map(function ($group, $key) use ($recruiterQuery) {
+                    $quantity = $group->count();
+                    $filteredTotal = $recruiterQuery->count();
+
+                    // Obtener info del reclutador del primer elemento del grupo
+                    $firstItem = $group->first();
+                    $recruiterName = 'Sin asignar';
+
+                    if ($firstItem && $firstItem->stake && $firstItem->stake->user) {
+                        $user = $firstItem->stake->user;
+                        $recruiterName = trim($user->firstname . ' ' . $user->lastname);
+                    }
+
+                    return [
+                        'recruiter' => $recruiterName,
+                        'quantity' => $quantity,
+                        'percentage' => $filteredTotal > 0 ? round(($quantity / $filteredTotal) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
+            // Referencias por estaca (para usuarios sin permiso view-all)
             $referencesByStake = $references->groupBy('stake.name')
                 ->map(function ($group, $stake) use ($total) {
                     $quantity = $group->count();
@@ -383,12 +416,17 @@ class ReferenceController extends Controller
                 ->values()
                 ->toArray();
 
+            // Obtener países solo si el usuario tiene permisos para ver todo
+            $countries = $all ? Country::where('status', StatusEnum::ACTIVE->value)->get(['id', 'name']) : [];
+
             return Inertia::render('pre-registration/references-dashboard', [
                 'data' => [
                     'stats' => $stats,
                     'referencesByCountry' => $referencesByCountry,
+                    'referencesByRecruiter' => $referencesByRecruiter,
                     'referencesByStake' => $referencesByStake,
-                    'references' => $references
+                    'countries' => $countries,
+                    'canViewAll' => $all
                 ]
             ]);
         } catch (\Exception $e) {

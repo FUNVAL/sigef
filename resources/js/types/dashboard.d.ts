@@ -33,6 +33,15 @@ export interface ByStake {
 }
 
 /**
+ * Distribución por reclutador para preinscripciones pendientes
+ */
+export interface ByRecruiter {
+    recruiter: string;
+    quantity: number;
+    percentage: number;
+}
+
+/**
  * Entidad básica con relaciones comunes (país y estaca)
  */
 export interface BaseEntity {
@@ -73,3 +82,5 @@ export type ReferenceByCountry = ByCountry;
 export type PreInscriptionByCountry = ByCountry;
 export type ReferenceByStake = ByStake;
 export type PreInscriptionByStake = ByStake;
+export type ReferenceByRecruiter = ByRecruiter;
+export type PreInscriptionByRecruiter = ByRecruiter;

@@ -4,16 +4,18 @@ import { Progress } from '@/components/ui/progress';
 import AccessControlLayout from '@/layouts/access-control/layout';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { type BaseStats, type ByCountry, type ByStake } from '@/types/dashboard';
+import { type BaseStats, type ByCountry, type ByStake, type ByRecruiter } from '@/types/dashboard';
+import { type Country } from '@/types/country';
 import { Head } from '@inertiajs/react';
-import { Briefcase, CheckCircle, Clock, MapPin, TrendingUp, Users, XCircle } from 'lucide-react';
+import { Briefcase, CheckCircle, Clock, MapPin, TrendingUp, Users, XCircle, User } from 'lucide-react';
 import { type MenuOption } from '@/components/globals/appbar';
 import { type ReactNode } from 'react';
+import { CountryFilter } from './country-filter';
 
 interface GenericDashboardData {
     stats: BaseStats;
     byCountry: ByCountry[];
-    byStake: ByStake[];
+    byStake: ByStake[] | ByRecruiter[];
 }
 
 interface GenericDashboardProps {
@@ -65,9 +67,36 @@ interface GenericDashboardProps {
             acceptanceDescription: string; // "Preinscripciones aprobadas"/"Referencias aceptadas"
         };
     };
+    // Propiedades opcionales para el filtro de país
+    showCountryFilter?: boolean;
+    countries?: Country[];
+    selectedCountryId?: string;
+    onCountryChange?: (countryId: string | undefined) => void;
 }
 
-function DashboardContent({ data, config }: GenericDashboardProps): ReactNode {
+// Helper function para obtener el texto y el icono correcto según el tipo de item
+function getItemDisplayInfo(item: ByStake | ByRecruiter) {
+    if ('stake' in item) {
+        return {
+            text: item.stake,
+            Icon: Briefcase
+        };
+    } else {
+        return {
+            text: item.recruiter,
+            Icon: User
+        };
+    }
+}
+
+function DashboardContent({
+    data,
+    config,
+    showCountryFilter,
+    countries,
+    selectedCountryId,
+    onCountryChange
+}: GenericDashboardProps): ReactNode {
     return (
         <>
             {/* Tarjetas de estadísticas principales */}
@@ -217,27 +246,45 @@ function DashboardContent({ data, config }: GenericDashboardProps): ReactNode {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-primary">{config.sectionTitles.byStake}</CardTitle>
-                        <CardDescription>{config.sectionTitles.byStakeDescription}</CardDescription>
+                        <div className="flex flex-col lg:items-start lg:justify-between gap-4">
+                            <div className="flex-1 min-w-0">
+                                <CardTitle className="text-primary">{config.sectionTitles.byStake}</CardTitle>
+                                <CardDescription>{config.sectionTitles.byStakeDescription}</CardDescription>
+                            </div>
+                            {/* Mostrar filtro solo si está habilitado */}
+                            {showCountryFilter && countries && onCountryChange && (
+                                <div className="flex-shrink-0 w-full lg:w-auto">
+                                    <CountryFilter
+                                        countries={countries}
+                                        selectedCountryId={selectedCountryId}
+                                        onCountryChange={onCountryChange}
+                                        className="lg:ml-4"
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
                             {data.byStake.length > 0 ? (
-                                data.byStake.map((item, index) => (
-                                    <div key={index} className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-2">
-                                            <Briefcase className="text-primary h-4 w-4" />
-                                            <span className="text-sm font-medium">{item.stake}</span>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <span className="text-muted-foreground text-sm">{item.quantity}</span>
-                                            <div className="w-16">
-                                                <Progress value={item.percentage} className="h-2" />
+                                data.byStake.map((item, index) => {
+                                    const { text, Icon } = getItemDisplayInfo(item);
+                                    return (
+                                        <div key={index} className="flex items-center justify-between">
+                                            <div className="flex items-center space-x-2">
+                                                <Icon className="text-primary h-4 w-4" />
+                                                <span className="text-sm font-medium">{text}</span>
                                             </div>
-                                            <span className="text-muted-foreground w-10 text-xs">{item.percentage}%</span>
+                                            <div className="flex items-center space-x-2">
+                                                <span className="text-muted-foreground text-sm">{item.quantity}</span>
+                                                <div className="w-16">
+                                                    <Progress value={item.percentage} className="h-2" />
+                                                </div>
+                                                <span className="text-muted-foreground w-10 text-xs">{item.percentage}%</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))
+                                    );
+                                })
                             ) : (
                                 <p className="text-muted-foreground py-4 text-center text-sm">No hay datos disponibles</p>
                             )}
@@ -285,7 +332,14 @@ function DashboardContent({ data, config }: GenericDashboardProps): ReactNode {
     );
 }
 
-export default function GenericDashboard({ data, config }: GenericDashboardProps) {
+export default function GenericDashboard({
+    data,
+    config,
+    showCountryFilter,
+    countries,
+    selectedCountryId,
+    onCountryChange
+}: GenericDashboardProps) {
     const useAccessControl = config.useAccessControlLayout !== false; // Por defecto true
 
     return (
@@ -298,7 +352,14 @@ export default function GenericDashboard({ data, config }: GenericDashboardProps
                         description: config.description,
                     }}
                 >
-                    <DashboardContent data={data} config={config} />
+                    <DashboardContent
+                        data={data}
+                        config={config}
+                        showCountryFilter={showCountryFilter}
+                        countries={countries}
+                        selectedCountryId={selectedCountryId}
+                        onCountryChange={onCountryChange}
+                    />
                 </AccessControlLayout>
             ) : (
                 <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
@@ -308,7 +369,14 @@ export default function GenericDashboard({ data, config }: GenericDashboardProps
                             <p className="text-muted-foreground">{config.description}</p>
                         </div>
                     </div>
-                    <DashboardContent data={data} config={config} />
+                    <DashboardContent
+                        data={data}
+                        config={config}
+                        showCountryFilter={showCountryFilter}
+                        countries={countries}
+                        selectedCountryId={selectedCountryId}
+                        onCountryChange={onCountryChange}
+                    />
                 </div>
             )}
         </AppLayout>
