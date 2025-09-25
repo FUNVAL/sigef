@@ -145,6 +145,11 @@ type StudentRegistrationFormData = Omit<
         utility_bill_photo_file?: File;
         formal_photo_file?: File;
 
+        // Agreement Information
+        agreement_terms_accepted: boolean;
+        agreement_privacy_accepted: boolean;
+        agreement_conduct_accepted: boolean;
+
         // Index signature for Inertia compatibility
         [key: string]: any;
     };
