@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Exception;
 use Illuminate\Validation\ValidationException;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PreInscriptionController extends Controller
 {
@@ -454,6 +456,108 @@ class PreInscriptionController extends Controller
                 'message' => 'Error al obtener el dashboard de preinscripciones',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Export pending pre-inscriptions to Excel using template
+     */
+    public function exportPendingToExcel()
+    {
+        try {
+            $user = Auth::user();
+            $all = $user->can('ver todas las preinscripciones');
+            $own = $user->can('ver preinscripciones propias');
+            $staff = $user->can('ver preinscripciones del personal');
+
+            if (!$all && !$own && !$staff) {
+                return back()->with('forbidden', 'No tienes permiso para realizar esta acción.');
+            }
+
+            // Obtener preinscripciones pendientes
+            $query = PreInscription::query()
+                ->with(['country', 'stake', 'course'])
+                ->where('status', RequestStatusEnum::PENDING->value);
+
+            if ($own && !$all) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $preInscriptions = $query->orderBy('created_at', 'desc')->get();
+
+            // Cargar el template específico para preinscripciones
+            $templatePath = base_path('statics/template-preinscription.xlsx');
+            if (!file_exists($templatePath)) {
+                return back()->withErrors(['error' => 'Template de preinscripciones no encontrado.']);
+            }
+
+            $spreadsheet = IOFactory::load($templatePath);
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            // Agregar datos a partir de la fila 5 (después de los headers del template)
+            $row = 5;
+            foreach ($preInscriptions as $preInscription) {
+                // Columna B: Nombre completo (Candidato)
+                $fullName = trim($preInscription->first_name . ' ' .
+                           ($preInscription->middle_name ? $preInscription->middle_name . ' ' : '') .
+                           $preInscription->last_name . ' ' .
+                           ($preInscription->second_last_name ? $preInscription->second_last_name : ''));
+                $worksheet->setCellValue('B' . $row, $fullName);
+
+                // Columna C: Género
+                $worksheet->setCellValue('C' . $row, $preInscription->gender['name'] ?? 'N/A');
+
+                // Columna D: Edad
+                $worksheet->setCellValue('D' . $row, $preInscription->age);
+
+                // Columna E: Correo
+                $worksheet->setCellValue('E' . $row, $preInscription->email);
+
+                // Columna F: Número de teléfono
+                $phoneNumbers = $preInscription->phone;
+                if ($preInscription->additional_phone) {
+                    $phoneNumbers .= ' / ' . $preInscription->additional_phone;
+                }
+                $worksheet->setCellValue('F' . $row, $phoneNumbers);
+
+                // Columna G: País
+                $worksheet->setCellValue('G' . $row, $preInscription->country->name ?? 'N/A');
+
+                // Columna H: Estaca o distrito
+                $worksheet->setCellValue('H' . $row, $preInscription->stake->name ?? 'N/A');
+
+                // Columna I: Estado Civil
+                $worksheet->setCellValue('I' . $row, $preInscription->marital_status['name'] ?? 'N/A');
+
+                // Columna J: Sirvió misión
+                $worksheet->setCellValue('J' . $row, $preInscription->served_mission['name'] ?? 'N/A');
+
+                // Columna K: Curso
+                $worksheet->setCellValue('K' . $row, $preInscription->course->name ?? 'N/A');
+
+                // Columna L: Fecha de registro
+                $worksheet->setCellValue('L' . $row, $preInscription->created_at->format('d/m/Y'));
+
+                $row++;
+            }
+
+            // Generar el archivo
+            $writer = new Xlsx($spreadsheet);
+            $filename = 'preinscripciones_pendientes_' . date('Y-m-d_H-i-s') . '.xlsx';
+            $tempPath = storage_path('app/temp/' . $filename);
+
+            // Crear directorio si no existe
+            if (!file_exists(dirname($tempPath))) {
+                mkdir(dirname($tempPath), 0755, true);
+            }
+
+            $writer->save($tempPath);
+
+            return response()->download($tempPath, $filename)->deleteFileAfterSend(true);
+
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Error al generar el archivo Excel: ' . $e->getMessage()]);
         }
     }
 
