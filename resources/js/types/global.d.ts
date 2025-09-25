@@ -237,6 +237,17 @@ type Translation = {
             birth_gender: string;
             location: string;
             contact_info: string;
+            document_info: string;
+            document_photos: string;
+            additional_documents: string;
+            formal_photo: string;
+            church_membership: string;
+            missionary_service: string;
+            temple_ordinances: string;
+            ecclesiastical_info: string;
+            education_background: string;
+            course_selection: string;
+            english_proficiency: string;
         };
         fields: {
             first_name: string;
@@ -252,6 +263,26 @@ type Translation = {
             phone: string;
             recruiter_name: string;
             home_location_link: string;
+            document_type: string;
+            document_number: string;
+            id_front_photo: string;
+            id_back_photo: string;
+            driver_license: string;
+            utility_bill_photo: string;
+            formal_photo: string;
+            is_active_member: string;
+            member_certificate_number: string;
+            baptism_year: string;
+            is_returned_missionary: string;
+            mission_served: string;
+            mission_end_year: string;
+            temple_status: string;
+            current_calling: string;
+            stake: string;
+            ward_branch: string;
+            education_level: string;
+            course: string;
+            english_connect_level: string;
         };
         placeholders: {
             first_name: string;
@@ -266,6 +297,24 @@ type Translation = {
             recruiter_name: string;
             home_location_link: string;
             age_automatic: string;
+            select_document_type: string;
+            document_number: string;
+            upload_id_front: string;
+            upload_id_back: string;
+            upload_driver_license: string;
+            upload_utility_bill: string;
+            upload_formal_photo: string;
+            member_certificate_number: string;
+            baptism_year: string;
+            mission_served: string;
+            mission_end_year: string;
+            select_temple_status: string;
+            current_calling: string;
+            select_stake: string;
+            ward_branch: string;
+            select_education_level: string;
+            select_course: string;
+            select_english_level: string;
         };
         validation: {
             first_name_required: string;
@@ -276,9 +325,44 @@ type Translation = {
             marital_status_required: string;
             email_required: string;
             phone_required: string;
+            document_type_required: string;
+            document_number_required: string;
+            id_front_photo_required: string;
+            id_back_photo_required: string;
+            utility_bill_photo_required: string;
+            formal_photo_required: string;
+            is_active_member_required: string;
+            is_returned_missionary_required: string;
+            temple_status_required: string;
+            stake_required: string;
+            education_level_required: string;
+            course_required: string;
+            english_connect_level_required: string;
         };
         required: string;
         optional: string;
+        info_text: {
+            upload_requirements: string;
+            formal_photo_requirements: string;
+            document_security: string;
+            age_calculation: string;
+            optional_fields: string;
+        };
+        file_upload: {
+            drag_drop: string;
+            browse_files: string;
+            file_selected: string;
+            remove_file: string;
+            upload_progress: string;
+            upload_success: string;
+            upload_error: string;
+        };
+        confirmation: {
+            verify_info: string;
+            terms_acceptance: string;
+            submit_form: string;
+            processing: string;
+        };
     };
 };
 

@@ -21,9 +21,29 @@ interface StudentRegistrationOverviewStepProps {
 export function StudentRegistrationOverviewStep({ data, countries, courses, enums, onSubmit, processing }: StudentRegistrationOverviewStepProps) {
     const { previousStep } = useContext(StepperContext);
 
-    const getCountryName = (id: number) => countries.find((c) => c.id === id)?.name || 'No especificado';
-    const getCourseName = (id: number) => courses.find((c) => c.id === id)?.name || 'No especificado';
-    const getEnumName = (enumArray: any[], id: number) => enumArray?.find((e) => e.id === id)?.name || 'No especificado';
+    const getCountryName = (id: number | undefined) => {
+        console.log('Getting country name for ID:', id);
+        if (!id || id === 0) return 'No especificado';
+        const country = countries.find((c) => c.id === id);
+        console.log('Found country:', country);
+        return country?.name || 'No especificado';
+    };
+
+    const getCourseName = (id: number | undefined) => {
+        console.log('Getting course name for ID:', id);
+        if (!id || id === 0) return 'No especificado';
+        const course = courses.find((c) => c.id === id);
+        console.log('Found course:', course);
+        return course?.name || 'No especificado';
+    };
+
+    const getEnumName = (enumArray: any[] | undefined, id: number | undefined) => {
+        console.log('Getting enum name for ID:', id, 'from array:', enumArray);
+        if (!id || id === 0 || !enumArray) return 'No especificado';
+        const enumItem = enumArray.find((e) => e.id === id);
+        console.log('Found enum item:', enumItem);
+        return enumItem?.name || 'No especificado';
+    };
 
     const InfoSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
         <div className="space-y-3">
@@ -57,10 +77,10 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                 <div className="space-y-6">
                     {/* Información Personal */}
                     <InfoSection title="Información Personal">
-                        <InfoItem label="Nombres" value={`${data.first_name} ${data.middle_name || ''}`.trim()} />
-                        <InfoItem label="Apellidos" value={`${data.last_name} ${data.second_last_name || ''}`.trim()} />
+                        <InfoItem label="Nombres" value={`${data.first_name || ''} ${data.middle_name || ''}`.trim()} />
+                        <InfoItem label="Apellidos" value={`${data.last_name || ''} ${data.second_last_name || ''}`.trim()} />
                         <InfoItem label="Fecha de Nacimiento" value={data.birth_date} />
-                        <InfoItem label="Edad" value={data.age} />
+                        <InfoItem label="Edad" value={data.age && data.age > 0 ? data.age : 'No calculada'} />
                         <InfoItem label="Género" value={getEnumName(enums.gender, data.gender)} />
                         <InfoItem label="País" value={getCountryName(data.country_id)} />
                         <InfoItem label="Estado Civil" value={getEnumName(enums.maritalStatus, data.marital_status)} />
@@ -74,24 +94,33 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                     <InfoSection title="Documentos Requeridos">
                         <InfoItem label="Tipo de Documento" value={getEnumName(enums.documentType, data.document_type)} />
                         <InfoItem label="Número de Documento" value={data.document_number} />
-                        <FileItem label="Foto Frontal ID" file={data.id_front_photo_file} />
-                        <FileItem label="Foto Posterior ID" file={data.id_back_photo_file} />
-                        <FileItem label="Licencia de Conducir" file={data.driver_license_file} />
-                        <FileItem label="Recibo de Servicios" file={data.utility_bill_photo_file} />
-                        <FileItem label="Foto Formal" file={data.formal_photo_file} />
+                        <FileItem label="Foto Frontal ID" file={data.id_front_photo_file as File} />
+                        <FileItem label="Foto Posterior ID" file={data.id_back_photo_file as File} />
+                        <FileItem label="Licencia de Conducir" file={data.driver_license_file as File} />
+                        <FileItem label="Recibo de Servicios" file={data.utility_bill_photo_file as File} />
+                        <FileItem label="Foto Formal" file={data.formal_photo_file as File} />
                     </InfoSection>
 
                     {/* Información Religiosa */}
                     <InfoSection title="Información Religiosa">
                         <InfoItem label="Miembro Activo" value={data.is_active_member ? 'Sí' : 'No'} />
                         <InfoItem label="Número de Cédula de Miembro" value={data.member_certificate_number} />
-                        <InfoItem label="Año de Bautismo" value={data.baptism_year} />
+                        <InfoItem
+                            label="Año de Bautismo"
+                            value={data.baptism_year && data.baptism_year > 0 ? data.baptism_year : 'No especificado'}
+                        />
                         <InfoItem label="Misionero Retornado" value={data.is_returned_missionary ? 'Sí' : 'No'} />
                         <InfoItem label="Misión Servida" value={data.mission_served} />
-                        <InfoItem label="Año Fin de Misión" value={data.mission_end_year} />
+                        <InfoItem
+                            label="Año Fin de Misión"
+                            value={data.mission_end_year && data.mission_end_year > 0 ? data.mission_end_year : 'No especificado'}
+                        />
                         <InfoItem label="Estado del Templo" value={getEnumName(enums.templeStatus, data.temple_status)} />
                         <InfoItem label="Llamamiento Actual" value={data.current_calling} />
                         <InfoItem label="Barrio/Rama" value={data.ward_branch} />
+                        <InfoItem label="Número de Miembro" value={(data as any).member_number} />
+                        <InfoItem label="Presidente Auxiliar" value={(data as any).auxiliar_president} />
+                        <InfoItem label="Teléfono Presidente Auxiliar" value={(data as any).auxiliary_president_phone} />
                     </InfoSection>
 
                     {/* Información Académica */}

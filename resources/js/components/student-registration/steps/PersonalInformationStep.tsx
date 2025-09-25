@@ -11,10 +11,9 @@ import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
 import { StudentRegistrationFormData, StudentRegistrationRequest } from '@/types/student-registration';
 import { usePage } from '@inertiajs/react';
-import { ArrowLeft, Calendar, HelpCircle, Mail, MapPin, Phone, User } from 'lucide-react';
+import { ArrowLeft, Calendar, Mail, MapPin, Phone, User } from 'lucide-react';
 import { useCallback, useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface PersonalInformationStepProps {
     countries: Country[];
@@ -26,6 +25,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
     const { data, setData } = request;
     const { enums, translations } = usePage<{ enums: Enums; translations: Translation }>().props;
     const { ui } = usePage<Translation>().props;
+    const t = translations.student_registration;
     const [errors, setErrors] = useState<Record<string, string>>({});
     const { stakes } = useFilteredStakes(data.country_id);
 
@@ -35,14 +35,14 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
         // Validación básica
         const validationErrors: Record<string, string> = {};
 
-        if (!data.first_name?.trim()) validationErrors.first_name = 'El nombre es obligatorio';
-        if (!data.last_name?.trim()) validationErrors.last_name = 'El apellido es obligatorio';
-        if (!data.birth_date) validationErrors.birth_date = 'La fecha de nacimiento es obligatoria';
-        if (!data.gender) validationErrors.gender = 'El género es obligatorio';
-        if (!data.country_id) validationErrors.country_id = 'El país es obligatorio';
-        if (!data.marital_status) validationErrors.marital_status = 'El estado civil es obligatorio';
-        if (!data.email?.trim()) validationErrors.email = 'El correo electrónico es obligatorio';
-        if (!data.phone?.trim()) validationErrors.phone = 'El teléfono es obligatorio';
+        if (!data.first_name?.trim()) validationErrors.first_name = t.validation.first_name_required;
+        if (!data.last_name?.trim()) validationErrors.last_name = t.validation.last_name_required;
+        if (!data.birth_date) validationErrors.birth_date = t.validation.birth_date_required;
+        if (!data.gender) validationErrors.gender = t.validation.gender_required;
+        if (!data.country_id) validationErrors.country_id = t.validation.country_required;
+        if (!data.marital_status) validationErrors.marital_status = t.validation.marital_status_required;
+        if (!data.email?.trim()) validationErrors.email = t.validation.email_required;
+        if (!data.phone?.trim()) validationErrors.phone = t.validation.phone_required;
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -134,7 +134,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Primer Nombre */}
                             <div>
-                                <Label htmlFor="first_name">Primer Nombre *</Label>
+                                <Label htmlFor="first_name">{t.fields.first_name} *</Label>
                                 <Input
                                     id="first_name"
                                     name="first_name"
@@ -163,7 +163,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
 
                             {/* Primer Apellido */}
                             <div>
-                                <Label htmlFor="last_name">Primer Apellido *</Label>
+                                <Label htmlFor="last_name">{t.fields.last_name} *</Label>
                                 <Input
                                     id="last_name"
                                     name="last_name"
@@ -202,7 +202,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                             {/* Fecha de nacimiento */}
                             <div>
-                                <Label htmlFor="birth_date">Fecha de Nacimiento *</Label>
+                                <Label htmlFor="birth_date">{t.fields.birth_date} *</Label>
                                 <Input
                                     id="birth_date"
                                     name="birth_date"
@@ -232,7 +232,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
 
                             {/* Género */}
                             <div>
-                                <Label htmlFor="gender">Género *</Label>
+                                <Label htmlFor="gender">{t.fields.gender} *</Label>
                                 <Select
                                     value={data.gender?.toString() || ''}
                                     onValueChange={(value) => setData('gender', Number(value))}
@@ -257,29 +257,30 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
 
                     {/* Ubicación */}
                     <div className="space-y-4">
-                        {/* <div className="mb-4 flex items-center gap-2">
+                        <div className="mb-4 flex items-center gap-2">
                             <MapPin className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
-                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Ubicación</h3>
+                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">{t.sections.location}</h3>
                         </div>
 
-                        {/* País */}
-                           {/*  <div>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            {/* País */}
+                            <div>
                                 <SearchableSelect
                                     data={countries}
                                     name="country_id"
                                     id="country_id"
                                     value={data.country_id?.toString() || ''}
                                     onValueChange={(value) => setData('country_id', Number(value))}
-                                    label="País *"
+                                    label={`${t.fields.country} *`}
                                     required
                                     placeholder={t.placeholders.select_country}
                                 />
-                                {errors.country_id && <p className="text-sm text-red-500">{errors.country_id}</p>}
+                                {errors?.country_id && <p className="text-sm text-red-500">{errors.country_id}</p>}
                             </div>
 
                             {/* Estado civil */}
                             <div>
-                                <Label htmlFor="marital_status">Estado Civil *</Label>
+                                <Label htmlFor="marital_status">{t.fields.marital_status} *</Label>
                                 <Select
                                     value={data.marital_status?.toString() || ''}
                                     onValueChange={(value) => setData('marital_status', Number(value))}
@@ -303,16 +304,16 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                     </div>
 
                     {/* Información de contacto */}
-                    
-                        {/* <div className="mb-4 flex items-center gap-2">
+                    <div className="space-y-4">
+                        <div className="mb-4 flex items-center gap-2">
                             <Phone className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
-                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Información de Contacto</h3>
+                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">{t.sections.contact_info}</h3>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Correo electrónico */}
                             <div>
-                                <Label htmlFor="email">Correo Electrónico *</Label>
+                                <Label htmlFor="email">{t.fields.email} *</Label>
                                 <div className="relative">
                                     <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                                     <Input
@@ -329,11 +330,9 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                 {errors?.email && <p className="text-sm text-red-500">{errors.email}</p>}
                             </div>
 
-                            
-
                             {/* Teléfono */}
                             <div>
-                                <Label htmlFor="phone">Teléfono de Contacto *</Label>
+                                <Label htmlFor="phone">{t.fields.phone} *</Label>
                                 <PhoneInput
                                     id="phone"
                                     name="phone"
@@ -348,38 +347,37 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                     minLength={3}
                                     maxLength={18}
                                 />
-                                {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
+                                {errors?.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Reclutador/responsable */}
                             <div>
-                                <Label htmlFor="recruiter_name">Reclutador/Responsable</Label>
+                                <Label htmlFor="recruiter_name">{t.fields.recruiter_name}</Label>
                                 <Input
                                     id="recruiter_name"
                                     name="recruiter_name"
                                     value={data.recruiter_name || ''}
                                     onChange={(e) => cleanSpaces('recruiter_name', e.target.value)}
-                                    placeholder="Nombre del reclutador (opcional)"
+                                    placeholder={t.placeholders.recruiter_name}
                                 />
                             </div>
 
                             {/* Link de ubicación */}
                             <div>
-                                <Label htmlFor="home_location_link">Link de Ubicación de Casa</Label>
+                                <Label htmlFor="home_location_link">{t.fields.home_location_link}</Label>
                                 <Input
                                     id="home_location_link"
                                     name="home_location_link"
                                     type="url"
                                     value={data.home_location_link || ''}
                                     onChange={(e) => setData('home_location_link', e.target.value)}
-                                    placeholder="https://maps.google.com/... (opcional)"
+                                    placeholder={t.placeholders.home_location_link}
                                 />
                             </div>
                         </div>
                     </div>
-
 
                     {/* Botones */}
                     <div className="flex justify-between pt-4">

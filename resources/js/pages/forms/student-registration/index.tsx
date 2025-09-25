@@ -78,6 +78,7 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
     };
 
     const handleSubmit = () => {
+        console.log('Enviando datos del formulario:', data);
         post(route('student-registration.store'), {
             onSuccess: () => {
                 // La página se redirigirá automáticamente al paso de confirmación
