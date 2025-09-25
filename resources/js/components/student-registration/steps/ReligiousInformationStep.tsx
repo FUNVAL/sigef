@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PhoneInput } from '@/components/ui/phone-input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -14,7 +15,6 @@ import { usePage } from '@inertiajs/react';
 import { ArrowLeft, Church, Heart, Users } from 'lucide-react';
 import { useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
-import { PhoneInput } from '@/components/ui/phone-input';
 
 interface ReligiousInformationStepProps {
     countries: Country[];
@@ -30,10 +30,10 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
     const { stakes } = useFilteredStakes(data.country_id);
 
     const formatMemberNumber = (value: string) => {
-        // Remove all non-alphanumeric characters (keep letters and numbers)
-        const alphanumeric = value.replace(/[^a-zA-Z0-9]/g, '');
+        // Remove all non-alphanumeric characters (keep letters and numbers only)
+        const alphanumeric = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 
-        // Apply formatting: 000-0000-0000 (but now accepting letters too)
+        // Apply formatting: XXX-XXXX-XXXX (3-4-4 structure)
         if (alphanumeric.length <= 3) {
             return alphanumeric;
         } else if (alphanumeric.length <= 7) {
@@ -41,6 +41,12 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
         } else {
             return `${alphanumeric.slice(0, 3)}-${alphanumeric.slice(3, 7)}-${alphanumeric.slice(7, 11)}`;
         }
+    };
+
+    // Validate member number format (3-4-4 alphanumeric)
+    const isValidMemberNumber = (value: string) => {
+        const memberNumberRegex = /^[A-Z0-9]{3}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+        return memberNumberRegex.test(value);
     };
 
     // Validate member number format
@@ -54,8 +60,6 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
         setData('member_number', formattedValue);
     };
 
-
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -67,10 +71,14 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
         if (!data.temple_status) validationErrors.temple_status = 'Debe especificar su estado del templo';
         if (!data.stake_id) validationErrors.stake_id = 'Debe seleccionar su estaca/distrito/misión';
 
-        // Validaciones condicionales
-        if (data.is_active_member && !data.member_number?.trim()) {
-            validationErrors.member_number = 'El número de cédula de miembro es requerido para miembros activos';
+        // Validación de cédula de miembro (siempre obligatoria)
+        if (!data.member_number?.trim()) {
+            validationErrors.member_number = 'El número de cédula de miembro es obligatorio';
+        } else if (!isValidMemberNumber(data.member_number)) {
+            validationErrors.member_number = 'El número de cédula debe tener el formato completo: XXX-XXXX-XXXX (3-4-4 caracteres)';
         }
+
+        // Validaciones condicionales
 
         if (data.is_returned_missionary) {
             if (!data.mission_served?.trim()) {
@@ -129,21 +137,25 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                         {/* Número de cédula de miembro - Always shown */}
                         <div>
-                            <Label htmlFor="member_number">Número de Cédula de Miembro</Label>
+                            <Label htmlFor="member_number">
+                                Número de Cédula de Miembro <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                                 id="member_number"
                                 name="member_number"
                                 value={data.member_number || ''}
                                 onChange={handleMemberNumberChange}
-                                placeholder="000-0000-0000"
+                                placeholder="ABC-1234-WXYZ"
                                 maxLength={13}
+                                className={`font-mono ${data.member_number && !isValidMemberNumber(data.member_number) ? 'border-orange-300' : ''}`}
                                 required
                             />
-                            {/* <p className="mt-1 text-xs text-gray-500">Formato: 000-0000-0000</p> */}
+                            <p className="mt-1 text-xs text-gray-500">Formato: 3-4-4 dígitos (letras y números, ej: ABC-1234-WXYZ)</p>
+                            {data.member_number && !isValidMemberNumber(data.member_number) && (
+                                <p className="text-sm text-orange-600">El formato debe ser 3-4-4 caracteres (letras y números)</p>
+                            )}
                             {errors.member_number && <p className="text-sm text-red-500">{errors.member_number}</p>}
                         </div>
-
-
 
                         {/* Año de bautismo */}
                         <div>
@@ -237,25 +249,23 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                         )}
 
                         {/* Estado del templo */}
-                        <div>
-                            <Label htmlFor="temple_status">Sellado en el Templo</Label>
-                            <Select
+                        <div className="space-y-3">
+                            <Label className="text-base font-medium">Sellado en el Templo *</Label>
+                            <RadioGroup
                                 value={data.temple_status?.toString() || ''}
                                 onValueChange={(value) => setData('temple_status', Number(value))}
-                                name="temple_status"
+                                className="grid grid-cols-1 gap-3 sm:grid-cols-2"
                                 required
                             >
-                                <SelectTrigger id="temple_status">
-                                    <SelectValue placeholder="Seleccione su estado del templo" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {enums.templeStatus?.map((status) => (
-                                        <SelectItem key={status.id} value={status.id.toString()}>
+                                {enums.templeStatus?.map((status) => (
+                                    <div key={status.id} className="flex items-center space-x-2">
+                                        <RadioGroupItem value={status.id.toString()} id={`temple-${status.id}`} />
+                                        <Label htmlFor={`temple-${status.id}`} className="cursor-pointer">
                                             {status.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                        </Label>
+                                    </div>
+                                ))}
+                            </RadioGroup>
                             {errors.temple_status && <p className="text-sm text-red-500">{errors.temple_status}</p>}
                         </div>
                     </div>
@@ -296,7 +306,6 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                             {/* Barrio o rama */}
 
-
                             {/* Estaca */}
                             <div>
                                 <SearchableSelect
@@ -307,9 +316,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                     onValueChange={(value) => setData('stake_id', Number(value))}
                                     label="Estaca, distrito o misión a la que pertenece"
                                     disabled={!data.country_id}
-                                    placeholder={
-                                        data.country_id ? 'Seleccione su estaca/distrito/misión' : 'Primero seleccione un país'
-                                    }
+                                    placeholder={data.country_id ? 'Seleccione su estaca/distrito/misión' : 'Primero seleccione un país'}
                                     required
                                 />
                                 {errors.stake_id && <p className="text-sm text-red-500">{errors.stake_id}</p>}
@@ -333,7 +340,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                     id="auxiliar_president"
                                     name="auxiliar_president"
                                     value={data.auxiliar_president || ''}
-                                    onChange={(e) => setData('auxiliar_president', e.target.value)} 
+                                    onChange={(e) => setData('auxiliar_president', e.target.value)}
                                     placeholder="Nombre del Presidente(a) de Cuorum / SOC"
                                     autoComplete="given-name"
                                     required
@@ -351,7 +358,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                     value={data.auxiliary_president_phone?.toString() || ''}
                                     onInputChange={(value: string) => setData('auxiliary_president_phone', value)}
                                     placeholder={`Tu número de teléfono`}
-                                    className="rounded-l-none max-w-[25rem]"
+                                    className="max-w-[25rem] rounded-l-none"
                                     countries={countries}
                                     selectedCountryId={data.country_id}
                                     required
@@ -361,10 +368,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                 />
                                 {errors.auxiliary_president_phone && <p className="text-sm text-red-500">{errors.auxiliar_president_phone}</p>}
                             </div>
-
                         </div>
-
-
                     </div>
 
                     {/* Botones */}
