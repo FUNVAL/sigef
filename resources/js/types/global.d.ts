@@ -208,6 +208,78 @@ type Translation = {
         confirmation_subtitle: string;
         back_to_home: string;
     };
+
+    student_registration: {
+        form: {
+            title: string;
+            subtitle: string;
+        };
+        steps: {
+            personal_information: {
+                title: string;
+                subtitle: string;
+            };
+            required_documents: {
+                title: string;
+                subtitle: string;
+            };
+            religious_information: {
+                title: string;
+                subtitle: string;
+            };
+            academic_information: {
+                title: string;
+                subtitle: string;
+            };
+        };
+        sections: {
+            names_surnames: string;
+            birth_gender: string;
+            location: string;
+            contact_info: string;
+        };
+        fields: {
+            first_name: string;
+            middle_name: string;
+            last_name: string;
+            second_last_name: string;
+            birth_date: string;
+            age: string;
+            gender: string;
+            country: string;
+            marital_status: string;
+            email: string;
+            phone: string;
+            recruiter_name: string;
+            home_location_link: string;
+        };
+        placeholders: {
+            first_name: string;
+            middle_name: string;
+            last_name: string;
+            second_last_name: string;
+            select_gender: string;
+            select_country: string;
+            select_marital_status: string;
+            email: string;
+            phone: string;
+            recruiter_name: string;
+            home_location_link: string;
+            age_automatic: string;
+        };
+        validation: {
+            first_name_required: string;
+            last_name_required: string;
+            birth_date_required: string;
+            gender_required: string;
+            country_required: string;
+            marital_status_required: string;
+            email_required: string;
+            phone_required: string;
+        };
+        required: string;
+        optional: string;
+    };
 };
 
 type PaginationData = {

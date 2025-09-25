@@ -23,9 +23,10 @@ interface PersonalInformationStepProps {
 export function PersonalInformationStep({ countries, request }: PersonalInformationStepProps) {
     const { nextStep, previousStep } = useContext(StepperContext);
     const { data, setData } = request;
-    const { enums } = usePage<{ enums: Enums }>().props;
+    const { enums, translations } = usePage<{ enums: Enums; translations: Translation }>().props;
     const { ui } = usePage<Translation>().props;
-    const [errors, setErrors] = useState<Record<string, string>>({});
+    const t = translations.student_registration;
+    const [errors, setErrors] = useState<Record<string, string>>();
     const { stakes } = useFilteredStakes(data.country_id);
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -34,14 +35,14 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
         // Validación básica
         const validationErrors: Record<string, string> = {};
 
-        if (!data.first_name?.trim()) validationErrors.first_name = 'El nombre es obligatorio';
-        if (!data.last_name?.trim()) validationErrors.last_name = 'El apellido es obligatorio';
-        if (!data.birth_date) validationErrors.birth_date = 'La fecha de nacimiento es obligatoria';
-        if (!data.gender) validationErrors.gender = 'El género es obligatorio';
-        if (!data.country_id) validationErrors.country_id = 'El país es obligatorio';
-        if (!data.marital_status) validationErrors.marital_status = 'El estado civil es obligatorio';
-        if (!data.email?.trim()) validationErrors.email = 'El correo electrónico es obligatorio';
-        if (!data.phone?.trim()) validationErrors.phone = 'El teléfono es obligatorio';
+        if (!data.first_name?.trim()) validationErrors.first_name = t.validation.first_name_required;
+        if (!data.last_name?.trim()) validationErrors.last_name = t.validation.last_name_required;
+        if (!data.birth_date) validationErrors.birth_date = t.validation.birth_date_required;
+        if (!data.gender) validationErrors.gender = t.validation.gender_required;
+        if (!data.country_id) validationErrors.country_id = t.validation.country_required;
+        if (!data.marital_status) validationErrors.marital_status = t.validation.marital_status_required;
+        if (!data.email?.trim()) validationErrors.email = t.validation.email_required;
+        if (!data.phone?.trim()) validationErrors.phone = t.validation.phone_required;
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -119,7 +120,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
 
     return (
         <Card className="mx-auto w-full max-w-4xl overflow-hidden border-0 pt-0 shadow-2xl">
-            <StepsHeader title="Información Personal" subtitle="Complete sus datos personales básicos" />
+            <StepsHeader title={t.steps.personal_information.title} subtitle={t.steps.personal_information.subtitle} />
 
             <CardContent className="space-y-6 p-3 sm:space-y-8 sm:p-6 md:p-8">
                 <form className="space-y-6" onSubmit={handleSubmit} noValidate>
@@ -127,66 +128,66 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                     <div className="space-y-4">
                         <div className="mb-4 flex items-center gap-2">
                             <User className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
-                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Nombres y Apellidos</h3>
+                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">{t.sections.names_surnames}</h3>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Primer Nombre */}
                             <div>
-                                <Label htmlFor="first_name">Primer Nombre *</Label>
+                                <Label htmlFor="first_name">{t.fields.first_name} </Label>
                                 <Input
                                     id="first_name"
                                     name="first_name"
                                     value={data.first_name || ''}
                                     onChange={(e) => cleanSpaces('first_name', e.target.value)}
-                                    placeholder="Ingrese su primer nombre"
+                                    placeholder={t.placeholders.first_name}
                                     autoComplete="given-name"
                                     required
                                 />
-                                {errors.first_name && <p className="text-sm text-red-500">{errors.first_name}</p>}
+                                {errors?.first_name && <p className="text-sm text-red-500">{errors.first_name}</p>}
                             </div>
 
                             {/* Segundo Nombre */}
                             <div>
-                                <Label htmlFor="middle_name">Segundo Nombre</Label>
+                                <Label htmlFor="middle_name">{t.fields.middle_name}</Label>
                                 <Input
                                     id="middle_name"
                                     name="middle_name"
                                     autoComplete="additional-name"
                                     value={data.middle_name || ''}
                                     onChange={(e) => cleanSpaces('middle_name', e.target.value)}
-                                    placeholder="Ingrese su segundo nombre (opcional)"
+                                    placeholder={t.placeholders.middle_name}
                                 />
-                                {errors.middle_name && <p className="text-sm text-red-500">{errors.middle_name}</p>}
+                                {errors?.middle_name && <p className="text-sm text-red-500">{errors.middle_name}</p>}
                             </div>
 
                             {/* Primer Apellido */}
                             <div>
-                                <Label htmlFor="last_name">Primer Apellido *</Label>
+                                <Label htmlFor="last_name">{t.fields.last_name} </Label>
                                 <Input
                                     id="last_name"
                                     name="last_name"
                                     autoComplete="family-name"
                                     value={data.last_name || ''}
                                     onChange={(e) => cleanSpaces('last_name', e.target.value)}
-                                    placeholder="Ingrese su primer apellido"
+                                    placeholder={t.placeholders.last_name}
                                     required
                                 />
-                                {errors.last_name && <p className="text-sm text-red-500">{errors.last_name}</p>}
+                                {errors?.last_name && <p className="text-sm text-red-500">{errors.last_name}</p>}
                             </div>
 
                             {/* Segundo Apellido */}
                             <div>
-                                <Label htmlFor="second_last_name">Segundo Apellido</Label>
+                                <Label htmlFor="second_last_name">{t.fields.second_last_name}</Label>
                                 <Input
                                     id="second_last_name"
                                     name="second_last_name"
                                     autoComplete="family-name"
                                     value={data.second_last_name || ''}
                                     onChange={(e) => cleanSpaces('second_last_name', e.target.value)}
-                                    placeholder="Ingrese su segundo apellido (opcional)"
+                                    placeholder={t.placeholders.second_last_name}
                                 />
-                                {errors.second_last_name && <p className="text-sm text-red-500">{errors.second_last_name}</p>}
+                                {errors?.second_last_name && <p className="text-sm text-red-500">{errors.second_last_name}</p>}
                             </div>
                         </div>
                     </div>
@@ -195,13 +196,13 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                     <div className="space-y-4">
                         <div className="mb-4 flex items-center gap-2">
                             <Calendar className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
-                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Fecha de Nacimiento y Género</h3>
+                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">{t.sections.birth_gender}</h3>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                             {/* Fecha de nacimiento */}
                             <div>
-                                <Label htmlFor="birth_date">Fecha de Nacimiento *</Label>
+                                <Label htmlFor="birth_date">{t.fields.birth_date}</Label>
                                 <Input
                                     id="birth_date"
                                     name="birth_date"
@@ -211,26 +212,26 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                     max={new Date().toISOString().split('T')[0]} // No permitir fechas futuras
                                     required
                                 />
-                                {errors.birth_date && <p className="text-sm text-red-500">{errors.birth_date}</p>}
+                                {errors?.birth_date && <p className="text-sm text-red-500">{errors.birth_date}</p>}
                             </div>
 
                             {/* Edad (calculada automáticamente) */}
                             <div>
-                                <Label htmlFor="age">Edad</Label>
+                                <Label htmlFor="age">{t.fields.age}</Label>
                                 <Input
                                     id="age"
                                     name="age"
                                     type="number"
                                     value={data.age || ''}
                                     readOnly
-                                    placeholder="Se calcula automáticamente"
+                                    placeholder={t.placeholders.age_automatic}
                                     className="bg-gray-50"
                                 />
                             </div>
 
                             {/* Género */}
                             <div>
-                                <Label htmlFor="gender">Género *</Label>
+                                <Label htmlFor="gender">{t.fields.gender} </Label>
                                 <Select
                                     value={data.gender?.toString() || ''}
                                     onValueChange={(value) => setData('gender', Number(value))}
@@ -238,7 +239,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                     required
                                 >
                                     <SelectTrigger id="gender">
-                                        <SelectValue placeholder="Seleccione su género" />
+                                        <SelectValue placeholder={t.placeholders.select_gender} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {enums.gender?.map((gender) => (
@@ -248,7 +249,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                {errors.gender && <p className="text-sm text-red-500">{errors.gender}</p>}
+                                {errors?.gender && <p className="text-sm text-red-500">{errors.gender}</p>}
                             </div>
                         </div>
                     </div>
@@ -257,7 +258,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                     <div className="space-y-4">
                         <div className="mb-4 flex items-center gap-2">
                             <MapPin className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
-                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Ubicación</h3>
+                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">{t.sections.location}</h3>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -269,16 +270,16 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                     id="country_id"
                                     value={data.country_id?.toString() || ''}
                                     onValueChange={(value) => setData('country_id', Number(value))}
-                                    label="País *"
+                                    label={`${t.fields.country}`}
                                     required
-                                    placeholder="Seleccione su país"
+                                    placeholder={t.placeholders.select_country}
                                 />
-                                {errors.country_id && <p className="text-sm text-red-500">{errors.country_id}</p>}
+                                {errors?.country_id && <p className="text-sm text-red-500">{errors.country_id}</p>}
                             </div>
 
                             {/* Estado civil */}
                             <div>
-                                <Label htmlFor="marital_status">Estado Civil *</Label>
+                                <Label htmlFor="marital_status">{t.fields.marital_status} </Label>
                                 <Select
                                     value={data.marital_status?.toString() || ''}
                                     onValueChange={(value) => setData('marital_status', Number(value))}
@@ -286,7 +287,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                     name="marital_status"
                                 >
                                     <SelectTrigger id="marital_status">
-                                        <SelectValue placeholder="Seleccione su estado civil" />
+                                        <SelectValue placeholder={t.placeholders.select_marital_status} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {enums.maritalStatus?.map((status) => (
@@ -296,7 +297,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                {errors.marital_status && <p className="text-sm text-red-500">{errors.marital_status}</p>}
+                                {errors?.marital_status && <p className="text-sm text-red-500">{errors.marital_status}</p>}
                             </div>
                         </div>
                     </div>
@@ -305,13 +306,13 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                     <div className="space-y-4">
                         <div className="mb-4 flex items-center gap-2">
                             <Phone className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
-                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Información de Contacto</h3>
+                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">{t.sections.contact_info}</h3>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Correo electrónico */}
                             <div>
-                                <Label htmlFor="email">Correo Electrónico *</Label>
+                                <Label htmlFor="email">{t.fields.email} </Label>
                                 <div className="relative">
                                     <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                                     <Input
@@ -320,17 +321,17 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                         type="email"
                                         value={data.email || ''}
                                         onChange={(e) => setData('email', e.target.value)}
-                                        placeholder="ejemplo@correo.com"
+                                        placeholder={t.placeholders.email}
                                         className="pl-10"
                                         required
                                     />
                                 </div>
-                                {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+                                {errors?.email && <p className="text-sm text-red-500">{errors.email}</p>}
                             </div>
 
                             {/* Teléfono */}
                             <div>
-                                <Label htmlFor="phone">Teléfono de Contacto *</Label>
+                                <Label htmlFor="phone">{t.fields.phone} </Label>
                                 <PhoneInput
                                     id="phone"
                                     name="phone"
@@ -338,40 +339,40 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                     type="tel"
                                     value={data.phone || ''}
                                     onInputChange={(value: string) => setData('phone', value)}
-                                    placeholder="Ingrese su número de teléfono"
+                                    placeholder={t.placeholders.phone}
                                     countries={countries}
                                     selectedCountryId={data.country_id}
                                     required
                                     minLength={3}
                                     maxLength={18}
                                 />
-                                {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
+                                {errors?.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Reclutador/responsable */}
                             <div>
-                                <Label htmlFor="recruiter_name">Reclutador/Responsable</Label>
+                                <Label htmlFor="recruiter_name">{t.fields.recruiter_name}</Label>
                                 <Input
                                     id="recruiter_name"
                                     name="recruiter_name"
                                     value={data.recruiter_name || ''}
                                     onChange={(e) => cleanSpaces('recruiter_name', e.target.value)}
-                                    placeholder="Nombre del reclutador (opcional)"
+                                    placeholder={t.placeholders.recruiter_name}
                                 />
                             </div>
 
                             {/* Link de ubicación */}
                             <div>
-                                <Label htmlFor="home_location_link">Link de Ubicación de Casa</Label>
+                                <Label htmlFor="home_location_link">{t.fields.home_location_link}</Label>
                                 <Input
                                     id="home_location_link"
                                     name="home_location_link"
                                     type="url"
                                     value={data.home_location_link || ''}
                                     onChange={(e) => setData('home_location_link', e.target.value)}
-                                    placeholder="https://maps.google.com/... (opcional)"
+                                    placeholder={t.placeholders.home_location_link}
                                 />
                             </div>
                         </div>

@@ -39,6 +39,9 @@ class StudentRegistrationController extends Controller
                     'templeStatus' => TempleStatusEnum::toArray(),
                     'educationLevel' => EducationLevelEnum::toArray(),
                     'englishConnectLevel' => EnglishConnectLevelEnum::toArray(),
+                ],
+                'translations' => [
+                    'student_registration' => __('student_registration'),
                 ]
             ]);
         } catch (\Throwable $th) {
