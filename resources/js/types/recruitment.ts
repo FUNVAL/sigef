@@ -2,6 +2,7 @@ export interface HouseholdMember {
     name: string;
     phone?: string;
     relationship: number;
+    income_contribution?: number;
 }
 
 export interface BonusInfo {
@@ -10,6 +11,9 @@ export interface BonusInfo {
 }
 
 export interface RecruitmentFormData {
+    // Datos básicos
+    country_id?: number;
+    
     // Socio-económico
     household_members: HouseholdMember[];
     monthly_income: number;

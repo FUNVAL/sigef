@@ -4,20 +4,25 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { PhoneInput } from '@/components/ui/phone-input';
+import SearchableSelect from '@/components/ui/searchable-select';
 import { StepperContext } from '@/pages/forms/stepper-provider';
+import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
 import { RecruitmentRequest, HouseholdMember } from '@/types/recruitment';
 import { usePage } from '@inertiajs/react';
-import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase } from 'lucide-react';
+import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase, MapPin } from 'lucide-react';
 import { useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
 interface SocioEconomicStepProps {
     request: RecruitmentRequest;
     enums: Enums;
+    countries?: Country[];
+    t?: Translation;
 }
 
-export function SocioEconomicStep({ request, enums }: SocioEconomicStepProps) {
+export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEconomicStepProps) {
     const { nextStep } = useContext(StepperContext);
     const { data, setData } = request;
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -39,7 +44,8 @@ export function SocioEconomicStep({ request, enums }: SocioEconomicStepProps) {
         const newMember: HouseholdMember = {
             name: '',
             phone: '',
-            relationship: 0
+            relationship: 0,
+            income_contribution: 0
         };
         setData('household_members', [...data.household_members, newMember]);
     };
@@ -83,6 +89,11 @@ export function SocioEconomicStep({ request, enums }: SocioEconomicStepProps) {
 
         // Validación básica
         const validationErrors: Record<string, string> = {};
+
+        // Only validate country if countries are available
+        if (countries && countries.length > 0 && !data.country_id) {
+            validationErrors.country_id = 'El país es requerido';
+        }
 
         if (data.household_members.length === 0) {
             validationErrors.household_members = 'Debe agregar al menos una persona';
@@ -142,6 +153,32 @@ export function SocioEconomicStep({ request, enums }: SocioEconomicStepProps) {
             />
 
             <form onSubmit={handleSubmit} className="space-y-6">
+                {/* País de residencia - Temporarily commented out until countries prop is properly set up */}
+                {countries && countries.length > 0 && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <MapPin className="h-5 w-5" />
+                                País de Residencia
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div>
+                                <Label htmlFor="country_id">País *</Label>
+                                <SearchableSelect
+                                    data={countries}
+                                    name="country_id"
+                                    id="country_id"
+                                    value={data.country_id?.toString() || ''}
+                                    onValueChange={(value) => setData('country_id', Number(value))}
+                                    placeholder="Seleccionar país"
+                                />
+                                {errors?.country_id && <p className="text-sm text-red-500 mt-1">{errors.country_id}</p>}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {/* Miembros del hogar */}
                 <Card>
                     <CardHeader>
@@ -152,60 +189,93 @@ export function SocioEconomicStep({ request, enums }: SocioEconomicStepProps) {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         {data.household_members.map((member, index) => (
-                            <div key={index} className="flex gap-4 items-end p-4 border rounded-lg">
-                                <div className="flex-1">
-                                    <Label htmlFor={`member-name-${index}`}>Nombre</Label>
-                                    <Input
-                                        id={`member-name-${index}`}
-                                        value={member.name}
-                                        onChange={(e) => updateHouseholdMember(index, 'name', e.target.value)}
-                                        placeholder="Nombre completo"
-                                        className={errors[`household_member_${index}_name`] ? 'border-red-500' : ''}
-                                    />
-                                    {errors[`household_member_${index}_name`] && (
-                                        <p className="text-sm text-red-500 mt-1">{errors[`household_member_${index}_name`]}</p>
-                                    )}
+                            <div key={index} className="p-4 border rounded-lg space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <Label htmlFor={`member-name-${index}`}>Nombre</Label>
+                                        <Input
+                                            id={`member-name-${index}`}
+                                            value={member.name}
+                                            onChange={(e) => updateHouseholdMember(index, 'name', e.target.value)}
+                                            placeholder="Nombre completo"
+                                            className={errors[`household_member_${index}_name`] ? 'border-red-500' : ''}
+                                        />
+                                        {errors[`household_member_${index}_name`] && (
+                                            <p className="text-sm text-red-500 mt-1">{errors[`household_member_${index}_name`]}</p>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <Label htmlFor={`member-phone-${index}`}>Teléfono</Label>
+                                        {countries && countries.length > 0 ? (
+                                            <PhoneInput
+                                                id={`member-phone-${index}`}
+                                                name={`member-phone-${index}`}
+                                                autoComplete="tel"
+                                                type="tel"
+                                                value={member.phone || ''}
+                                                onInputChange={(value: string) => updateHouseholdMember(index, 'phone', value)}
+                                                placeholder="Ingrese el número de teléfono"
+                                                countries={countries}
+                                                selectedCountryId={data.country_id}
+                                                minLength={3}
+                                                maxLength={18}
+                                            />
+                                        ) : (
+                                            <Input
+                                                id={`member-phone-${index}`}
+                                                type="tel"
+                                                value={member.phone || ''}
+                                                onChange={(e) => updateHouseholdMember(index, 'phone', e.target.value)}
+                                                placeholder="Ingrese el número de teléfono"
+                                            />
+                                        )}
+                                    </div>
+                                    <div>
+                                        <Label htmlFor={`member-relationship-${index}`}>Relación</Label>
+                                        <Select
+                                            value={member.relationship.toString()}
+                                            onValueChange={(value: string) => updateHouseholdMember(index, 'relationship', parseInt(value))}
+                                        >
+                                            <SelectTrigger className={errors[`household_member_${index}_relationship`] ? 'border-red-500' : ''}>
+                                                <SelectValue placeholder="Seleccionar relación" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {enums.familyRelationship?.map((item) => (
+                                                    <SelectItem key={item.id} value={item.id.toString()}>
+                                                        {item.name}
+                                                    </SelectItem>
+                                                )) || []}
+                                            </SelectContent>
+                                        </Select>
+                                        {errors[`household_member_${index}_relationship`] && (
+                                            <p className="text-sm text-red-500 mt-1">{errors[`household_member_${index}_relationship`]}</p>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <Label htmlFor={`member-income-${index}`}>Ingresos que aporta (USD)</Label>
+                                        <Input
+                                            id={`member-income-${index}`}
+                                            type="number"
+                                            value={member.income_contribution || ''}
+                                            onChange={(e) => updateHouseholdMember(index, 'income_contribution', parseFloat(e.target.value) || 0)}
+                                            placeholder="0.00"
+                                            min="0"
+                                            step="0.01"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="flex-1">
-                                    <Label htmlFor={`member-phone-${index}`}>Teléfono (opcional)</Label>
-                                    <Input
-                                        id={`member-phone-${index}`}
-                                        value={member.phone || ''}
-                                        onChange={(e) => updateHouseholdMember(index, 'phone', e.target.value)}
-                                        placeholder="Número de teléfono"
-                                        type="tel"
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <Label htmlFor={`member-relationship-${index}`}>Relación</Label>
-                                    <Select
-                                        value={member.relationship.toString()}
-                                        onValueChange={(value: string) => updateHouseholdMember(index, 'relationship', parseInt(value))}
+                                <div className="flex justify-end">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => removeHouseholdMember(index)}
+                                        className="text-red-600 hover:text-red-700"
                                     >
-                                        <SelectTrigger className={errors[`household_member_${index}_relationship`] ? 'border-red-500' : ''}>
-                                            <SelectValue placeholder="Seleccionar relación" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {enums.familyRelationship?.map((item) => (
-                                                <SelectItem key={item.id} value={item.id.toString()}>
-                                                    {item.name}
-                                                </SelectItem>
-                                            )) || []}
-                                        </SelectContent>
-                                    </Select>
-                                    {errors[`household_member_${index}_relationship`] && (
-                                        <p className="text-sm text-red-500 mt-1">{errors[`household_member_${index}_relationship`]}</p>
-                                    )}
+                                        <Trash2 className="h-4 w-4" />
+                                        Eliminar
+                                    </Button>
                                 </div>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => removeHouseholdMember(index)}
-                                    className="text-red-600 hover:text-red-700"
-                                >
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
                             </div>
                         ))}
                         <Button
