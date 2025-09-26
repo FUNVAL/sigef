@@ -30,6 +30,7 @@ type Enums = {
     employmentType: EnumItem[];
     jobPosition: EnumItem[];
     bonusCategory: EnumItem[];
+    expenseType: EnumItem[];
 };
 
 type Stepper = {

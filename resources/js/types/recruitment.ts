@@ -1,3 +1,8 @@
+export interface HouseholdExpense {
+    type: number;
+    amount: number;
+}
+
 export interface HouseholdMember {
     name: string;
     phone?: string;
