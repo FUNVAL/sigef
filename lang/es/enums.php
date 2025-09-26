@@ -137,4 +137,16 @@ return [
         'single' => 'Soltero',
         'internet' => 'Internet',
     ],
+    'expense_type' => [
+        'electricity' => 'Factura de electricidad',
+        'water' => 'Factura de agua',
+        'rent' => 'Alquiler',
+        'internet' => 'Internet',
+        'food' => 'Alimentación',
+        'transportation' => 'Transporte',
+        'phone' => 'Teléfono',
+        'gas' => 'Gas',
+        'education' => 'Educación',
+        'healthcare' => 'Salud',
+    ],
 ];
