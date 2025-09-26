@@ -172,7 +172,10 @@ class PreInscriptionController extends Controller
                 ]);
             }
 
-            $this->sendNotificationToResponsible($preInscription);
+            # if APP_ENV is production, send notification to the stake responsible
+            if (config('app.env') === 'production') {
+                $this->sendNotificationToResponsible($preInscription);
+            }
 
             return back()->with('success', $filterResult['message']);
         } catch (Exception $e) {
@@ -500,9 +503,9 @@ class PreInscriptionController extends Controller
             foreach ($preInscriptions as $preInscription) {
                 // Columna B: Nombre completo (Candidato)
                 $fullName = trim($preInscription->first_name . ' ' .
-                           ($preInscription->middle_name ? $preInscription->middle_name . ' ' : '') .
-                           $preInscription->last_name . ' ' .
-                           ($preInscription->second_last_name ? $preInscription->second_last_name : ''));
+                    ($preInscription->middle_name ? $preInscription->middle_name . ' ' : '') .
+                    $preInscription->last_name . ' ' .
+                    ($preInscription->second_last_name ? $preInscription->second_last_name : ''));
                 $worksheet->setCellValue('B' . $row, $fullName);
 
                 // Columna C: Género
@@ -555,7 +558,6 @@ class PreInscriptionController extends Controller
             $writer->save($tempPath);
 
             return response()->download($tempPath, $filename)->deleteFileAfterSend(true);
-
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Error al generar el archivo Excel: ' . $e->getMessage()]);
         }

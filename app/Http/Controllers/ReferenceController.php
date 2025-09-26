@@ -155,7 +155,10 @@ class ReferenceController extends Controller
 
             $stake = Stake::find($validated['stake_id']);
             $user = $stake->user;
-            $user->notify(new RequestNotification($this->buildReferenceNotification($user, $reference)));
+            # if APP_ENV is production, send notification to the stake responsible
+            if (config('app.env') === 'production') {
+                $user->notify(new RequestNotification($this->buildReferenceNotification($user, $reference)));
+            }
 
             return  back()->with('success', $message);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -525,7 +528,6 @@ class ReferenceController extends Controller
             $writer->save($tempPath);
 
             return response()->download($tempPath, $filename)->deleteFileAfterSend(true);
-
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Error al generar el archivo Excel: ' . $e->getMessage()]);
         }
