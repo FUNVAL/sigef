@@ -9,6 +9,7 @@ use App\Enums\HousingTypeEnum;
 use App\Enums\EmploymentTypeEnum;
 use App\Enums\JobPositionEnum;
 use App\Enums\BonusCategoryEnum;
+use App\Enums\ExpenseTypeEnum;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Exception;
@@ -32,6 +33,7 @@ class RecruitmentController extends Controller
                     'employmentType' => EmploymentTypeEnum::toArray(),
                     'jobPosition' => JobPositionEnum::toArray(),
                     'bonusCategory' => BonusCategoryEnum::toArray(),
+                    'expenseType' => ExpenseTypeEnum::toArray(),
                 ],
                 'translations' => [
                     'recruitment_form' => __('recruitment_form'),
@@ -140,6 +142,7 @@ class RecruitmentController extends Controller
                 'employmentType' => EmploymentTypeEnum::toArray(),
                 'jobPosition' => JobPositionEnum::toArray(),
                 'bonusCategory' => BonusCategoryEnum::toArray(),
+                'expenseType' => ExpenseTypeEnum::toArray(),
             ]
         ]);
     }
