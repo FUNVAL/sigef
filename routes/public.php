@@ -3,6 +3,7 @@
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PreInscriptionController;
 use App\Http\Controllers\ReferenceController;
+use App\Http\Controllers\RecruitmentController;
 use App\Http\Controllers\StakeController;
 use App\Http\Controllers\StudentRegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,26 @@ Route::get('student-registration', [StudentRegistrationController::class, 'creat
 
 Route::post('/student-registration', [StudentRegistrationController::class, 'store'])
     ->name('student-registration.store');
+
+# formulario publico de reclutamiento
+Route::get('recruitment-form', [RecruitmentController::class, 'create'])
+    ->name('recruitment-form');
+
+Route::post('/recruitment', [RecruitmentController::class, 'store'])
+    ->name('recruitment.store');
+
+# ruta de test para verificar enums
+Route::get('recruitment-test-enums', function () {
+    $enums = [
+        'familyRelationship' => \App\Enums\FamilyRelationshipEnum::toArray(),
+        'deviceType' => \App\Enums\DeviceTypeEnum::toArray(),
+        'housingType' => \App\Enums\HousingTypeEnum::toArray(),
+        'employmentType' => \App\Enums\EmploymentTypeEnum::toArray(),
+        'jobPosition' => \App\Enums\JobPositionEnum::toArray(),
+        'bonusCategory' => \App\Enums\BonusCategoryEnum::toArray(),
+    ];
+    return response()->json($enums);
+})->name('recruitment-test-enums');
 
 Route::get('language/{locale}', [LanguageController::class, 'switchLang'])->name('language.switch');
 

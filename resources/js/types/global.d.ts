@@ -24,6 +24,12 @@ type Enums = {
     templeStatus: EnumItem[];
     educationLevel: EnumItem[];
     englishConnectLevel: EnumItem[];
+    familyRelationship: EnumItem[];
+    deviceType: EnumItem[];
+    housingType: EnumItem[];
+    employmentType: EnumItem[];
+    jobPosition: EnumItem[];
+    bonusCategory: EnumItem[];
 };
 
 type Stepper = {
