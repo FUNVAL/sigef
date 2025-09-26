@@ -148,5 +148,6 @@ return [
         'gas' => 'Gas',
         'education' => 'Educación',
         'healthcare' => 'Salud',
+        'others' => 'Otros',
     ],
 ];

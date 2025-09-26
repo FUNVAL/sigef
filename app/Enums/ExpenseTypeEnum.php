@@ -18,6 +18,7 @@ enum ExpenseTypeEnum: int
     case GAS = 8;
     case EDUCATION = 9;
     case HEALTHCARE = 10;
+    case OTHERS = 11;
 
     public function name(): string
     {
@@ -32,6 +33,7 @@ enum ExpenseTypeEnum: int
             self::GAS => __('common.enums.expense_type.gas'),
             self::EDUCATION => __('common.enums.expense_type.education'),
             self::HEALTHCARE => __('common.enums.expense_type.healthcare'),
+            self::OTHERS => __('common.enums.expense_type.others'),
         };
     }
 }
