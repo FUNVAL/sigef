@@ -65,12 +65,10 @@ class StakeController extends Controller
 
     public function store(Request $request)
     {
-
         $stake = Stake::where('name', $request->name)->first();
 
         if ($stake && $stake->status->value == StatusEnum::DELETED->value) {
             // Si la estaca existe pero está eliminada, restaurarla
-
             $stake->status = $request->status ?? StatusEnum::ACTIVE->value;
             $stake->country_id = $request->country_id ?? $stake->country_id;
             $stake->user_id = $request->user_id ?? null;
@@ -80,12 +78,25 @@ class StakeController extends Controller
                 ->with('success', 'Estaca creada exitosamente');
         }
 
-
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:stakes',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($request) {
+                    $exists = Stake::where('name', $value)
+                        ->where('country_id', $request->country_id)
+                        ->where('user_id', $request->user_id)
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('Ya existe una estaca con este nombre para el país y usuario seleccionados.');
+                    }
+                }
+            ],
             'country_id' => 'required|exists:countries,id',
             'user_id' => 'nullable|exists:users,id',
-            'status' => 'required|integer|in:' . StatusEnum::ACTIVE->value . ',' . StatusEnum::INACTIVE->value, // Solo permitir active/inactive en creación
+            'status' => 'required|integer|in:' . StatusEnum::ACTIVE->value . ',' . StatusEnum::INACTIVE->value,
         ]);
 
         // Asegurar que el status sea entero
@@ -102,10 +113,25 @@ class StakeController extends Controller
     public function update(Request $request, Stake $stake)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:stakes,name,' . $stake->id,
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($request, $stake) {
+                    $exists = Stake::where('name', $value)
+                        ->where('country_id', $request->country_id)
+                        ->where('user_id', $request->user_id)
+                        ->where('id', '!=', $stake->id)
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('Ya existe una estaca con este nombre para el país y usuario seleccionados.');
+                    }
+                }
+            ],
             'country_id' => 'required|exists:countries,id',
             'user_id' => 'nullable|exists:users,id',
-            'status' => 'required|integer|in:' . StatusEnum::ACTIVE->value . ',' . StatusEnum::INACTIVE->value // Solo permitir cambios entre active/inactive
+            'status' => 'required|integer|in:' . StatusEnum::ACTIVE->value . ',' . StatusEnum::INACTIVE->value
         ]);
 
         // Asegurar que el status sea entero
