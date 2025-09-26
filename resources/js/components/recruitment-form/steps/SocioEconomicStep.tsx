@@ -9,10 +9,10 @@ import SearchableSelect from '@/components/ui/searchable-select';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
-import { RecruitmentRequest, HouseholdMember } from '@/types/recruitment';
+import { RecruitmentRequest, HouseholdMember, HouseholdExpense } from '@/types/recruitment';
 import { usePage } from '@inertiajs/react';
 import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase, MapPin } from 'lucide-react';
-import { useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
 interface SocioEconomicStepProps {
@@ -28,6 +28,9 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [selectedBonusCategories, setSelectedBonusCategories] = useState<number[]>([]);
     const [bonusAmounts, setBonusAmounts] = useState<Record<number, number>>({});
+    const [monthlyExpenses, setMonthlyExpenses] = useState<HouseholdExpense[]>([]);
+
+
 
     // Add defensive checks for enums
     if (!enums) {
@@ -59,6 +62,31 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         const updatedMembers = [...data.household_members];
         updatedMembers[index] = { ...updatedMembers[index], [field]: value };
         setData('household_members', updatedMembers);
+    };
+
+
+
+    // Monthly expenses functions
+    const addMonthlyExpense = () => {
+        const newExpense: HouseholdExpense = {
+            type: 1, // Default to first expense type
+            amount: 0
+        };
+        setMonthlyExpenses([...monthlyExpenses, newExpense]);
+    };
+
+    const removeMonthlyExpense = (index: number) => {
+        const updatedExpenses = monthlyExpenses.filter((_, i) => i !== index);
+        setMonthlyExpenses(updatedExpenses);
+    };
+
+    const updateMonthlyExpense = (index: number, field: keyof HouseholdExpense, value: any) => {
+        const updatedExpenses = [...monthlyExpenses];
+        updatedExpenses[index] = {
+            ...updatedExpenses[index],
+            [field]: field === 'amount' ? parseFloat(value) || 0 : value
+        };
+        setMonthlyExpenses(updatedExpenses);
     };
 
     const handleBonusCategoryChange = (categoryId: number, checked: boolean) => {
@@ -108,9 +136,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             }
         });
 
-        if (!data.monthly_income || data.monthly_income <= 0) {
-            validationErrors.monthly_income = 'Los ingresos mensuales son requeridos';
-        }
+        // Note: Removed monthly income validation as we're now tracking expenses instead
 
         if (!data.device_type) {
             validationErrors.device_type = 'El tipo de dispositivo es requerido';
@@ -293,26 +319,70 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     </CardContent>
                 </Card>
 
-                {/* Ingresos mensuales */}
+                {/* Egresos mensuales */}
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <DollarSign className="h-5 w-5" />
-                            Ingresos mensuales (USD)
+                            Egresos mensuales del hogar (USD)
                         </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <Input
-                            type="number"
-                            value={data.monthly_income}
-                            onChange={(e) => setData('monthly_income', parseFloat(e.target.value) || 0)}
-                            placeholder="0.00"
-                            min="0"
-                            step="0.01"
-                            className={errors.monthly_income ? 'border-red-500' : ''}
-                        />
-                        {errors.monthly_income && (
-                            <p className="text-sm text-red-500 mt-1">{errors.monthly_income}</p>
+                    <CardContent className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <Label>Gastos mensuales</Label>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={addMonthlyExpense}
+                            >
+                                <Plus className="h-4 w-4 mr-1" />
+                                Agregar gasto
+                            </Button>
+                        </div>
+
+                        {monthlyExpenses.map((expense, index) => (
+                            <div key={index} className="flex gap-2 p-3 border rounded">
+                                <Select
+                                    value={expense.type.toString()}
+                                    onValueChange={(value) => updateMonthlyExpense(index, 'type', parseInt(value))}
+                                >
+                                    <SelectTrigger className="flex-1">
+                                        <SelectValue placeholder="Tipo de gasto" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {enums.expenseType?.map((item) => (
+                                            <SelectItem key={item.id} value={item.id.toString()}>
+                                                {item.name}
+                                            </SelectItem>
+                                        )) || []}
+                                    </SelectContent>
+                                </Select>
+                                <Input
+                                    type="number"
+                                    placeholder="Monto USD"
+                                    value={expense.amount || ''}
+                                    onChange={(e) => updateMonthlyExpense(index, 'amount', e.target.value)}
+                                    min="0"
+                                    step="0.01"
+                                    className="w-32"
+                                />
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => removeMonthlyExpense(index)}
+                                    className="text-red-600 hover:text-red-700"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        ))}
+
+                        {monthlyExpenses.length === 0 && (
+                            <p className="text-sm text-gray-500 text-center py-4">
+                                No se han agregado gastos mensuales. Haga clic en "Agregar gasto" para comenzar.
+                            </p>
                         )}
                     </CardContent>
                 </Card>
