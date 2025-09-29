@@ -28,7 +28,7 @@ const RecruitmentForm = ({ enums }: RecruitmentFormProps) => {
     }
 
     // Initialize form with default values
-    const { data, setData, post, processing, errors } = useForm<RecruitmentFormData>({
+    const { data, setData, post, processing, errors } = useForm<RecruitmentFormData & Record<string, any>>({
         // Socio-económico
         household_members: [],
         monthly_income: 0,
@@ -71,7 +71,7 @@ const RecruitmentForm = ({ enums }: RecruitmentFormProps) => {
         setData,
         post,
         processing,
-        errors,
+        errors: errors as Record<string, string>,
     };
 
     const handleSubmit = () => {
