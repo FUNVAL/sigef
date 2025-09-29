@@ -92,6 +92,11 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         let updatedAmounts = { ...bonusAmounts };
 
         if (checked) {
+            // Validar que no se seleccionen más de 2 bonos
+            if (updatedCategories.length >= 2) {
+                // Mostrar mensaje de error o simplemente no permitir más selecciones
+                return;
+            }
             updatedCategories.push(categoryId);
         } else {
             updatedCategories = updatedCategories.filter(id => id !== categoryId);
@@ -158,6 +163,11 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             if (!data.employment_income || data.employment_income <= 0) {
                 validationErrors.employment_income = 'El salario es requerido';
             }
+        }
+
+        // Validar bonos (máximo 2)
+        if (data.needs_bonus && selectedBonusCategories.length > 2) {
+            validationErrors.bonus_categories = 'Solo se pueden seleccionar máximo 2 categorías de bono';
         }
 
         if (Object.keys(validationErrors).length > 0) {
@@ -607,13 +617,27 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
                         {data.needs_bonus && (
                             <div className="space-y-4">
-                                <Label>Categorías de bono (puede seleccionar múltiples opciones)</Label>
-                                {enums.bonusCategory?.map((item) => (
-                                    <div key={item.id} className="flex items-center gap-4 p-4 border rounded-lg">
-                                        <Checkbox
-                                            checked={selectedBonusCategories.includes(item.id)}
-                                            onCheckedChange={(checked) => handleBonusCategoryChange(item.id, checked as boolean)}
-                                        />
+                                <Label>Categorías de bono (máximo 2 opciones)</Label>
+                                {selectedBonusCategories.length >= 2 && (
+                                    <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+                                        <p className="text-blue-800 text-sm">
+                                            <strong>Límite alcanzado:</strong> Ya has seleccionado {selectedBonusCategories.length} categorías de bono.
+                                        </p>
+                                    </div>
+                                )}
+                                {enums.bonusCategory?.map((item) => {
+                                    const isSelected = selectedBonusCategories.includes(item.id);
+                                    const isDisabled = !isSelected && selectedBonusCategories.length >= 2;
+                                    
+                                    return (
+                                        <div key={item.id} className={`flex items-center gap-4 p-4 border rounded-lg ${
+                                            isDisabled ? 'opacity-50 bg-gray-50' : ''
+                                        }`}>
+                                            <Checkbox
+                                                checked={isSelected}
+                                                disabled={isDisabled}
+                                                onCheckedChange={(checked) => handleBonusCategoryChange(item.id, checked as boolean)}
+                                            />
                                         <span className="flex-1">{item.name}</span>
                                         {selectedBonusCategories.includes(item.id) && (
                                             <Input
@@ -626,8 +650,12 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                                 onChange={(e) => handleBonusAmountChange(item.id, parseFloat(e.target.value) || 0)}
                                             />
                                         )}
-                                    </div>
-                                )) || []}
+                                        </div>
+                                    );
+                                }) || []}
+                                {errors.bonus_categories && (
+                                    <p className="text-sm text-red-500 mt-2">{errors.bonus_categories}</p>
+                                )}
                             </div>
                         )}
                     </CardContent>
