@@ -112,7 +112,7 @@ return [
     'housing_type' => [
         'own_house' => 'Casa propia',
         'rented' => 'Alquilada',
-        'anticretico' => 'Anticrético',
+        'cedida' => 'Vivienda Cedida',
     ],
     'employment_type' => [
         'entrepreneurship' => 'Emprendimiento',

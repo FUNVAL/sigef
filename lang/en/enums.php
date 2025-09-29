@@ -111,7 +111,7 @@ return [
     'housing_type' => [
         'own_house' => 'Own house',
         'rented' => 'Rented',
-        'anticretico' => 'Anticretico',
+        'cedida' => 'Granted Housing',
     ],
     'employment_type' => [
         'entrepreneurship' => 'Entrepreneurship',
