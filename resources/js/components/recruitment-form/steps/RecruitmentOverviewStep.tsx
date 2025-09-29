@@ -165,57 +165,6 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                     </CardContent>
                 </Card>
 
-                {/* Información de Salud */}
-               {/*  <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Heart className="h-5 w-5" />
-                            Información de Salud
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div>
-                                <p className="text-sm font-medium text-gray-500">Seguro médico</p>
-                                <p className="text-sm">{data.has_health_insurance ? 'Sí' : 'No'}</p>
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium text-gray-500">Padece enfermedad</p>
-                                <p className="text-sm">{data.has_illness ? 'Sí' : 'No'}</p>
-                            </div>
-                        </div>
-
-                        {data.has_illness && (
-                            <div className="mt-4 p-4 bg-yellow-50 rounded-lg">
-                                <h4 className="font-medium mb-2">Detalles de salud</h4>
-                                <div className="space-y-2">
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-500">Enfermedad</p>
-                                        <p className="text-sm">{data.illness_description || 'No especificada'}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-500">Toma medicamentos</p>
-                                        <p className="text-sm">{data.takes_medication ? 'Sí' : 'No'}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-500">Frecuencia médica</p>
-                                        <p className="text-sm">{data.medical_visit_frequency || 'No especificada'}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {!data.has_illness && data.health_declaration_accepted && (
-                            <div className="mt-4 p-4 bg-green-50 rounded-lg">
-                                <div className="flex items-center gap-2">
-                                    <Check className="h-4 w-4 text-green-600" />
-                                    <span className="text-sm text-green-700">Declaración jurada de salud aceptada</span>
-                                </div>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card> */}
-
                 {/* Acuerdos */}
                 <Card>
                     <CardHeader>
