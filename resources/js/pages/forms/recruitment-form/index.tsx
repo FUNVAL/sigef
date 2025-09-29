@@ -63,6 +63,7 @@ const RecruitmentForm = ({ enums }: RecruitmentFormProps) => {
         data_authorization_accepted: false,
         scholarship_agreement_accepted: false,
         religious_institute_accepted: false,
+        health_agreement_accepted: false,
     });
 
     const request = {
@@ -90,10 +91,10 @@ const RecruitmentForm = ({ enums }: RecruitmentFormProps) => {
             title: 'Información Socio-económica',
             component: <SocioEconomicStep request={request} enums={enums} />,
         },
-        {
+        /* {
             title: 'Información de Salud',
             component: <HealthStep request={request} />,
-        },
+        }, */
         {
             title: 'Acuerdos y Compromisos',
             component: <AgreementStep request={request} />,
