@@ -11,6 +11,7 @@ enum DeviceTypeEnum: int
     case TABLET = 1;
     case COMPUTER = 2;
     case CELLPHONE = 3;
+    case FUNVAL_EQUIPMENT = 4;
 
     public function name(): string
     {
@@ -18,6 +19,7 @@ enum DeviceTypeEnum: int
             self::TABLET => __('common.enums.device_type.tablet'),
             self::COMPUTER => __('common.enums.device_type.computer'),
             self::CELLPHONE => __('common.enums.device_type.cellphone'),
+            self::FUNVAL_EQUIPMENT => __('common.enums.device_type.funval_equipment'),
         };
     }
 }

@@ -107,6 +107,7 @@ return [
         'tablet' => 'Tablet',
         'computer' => 'Computer',
         'cellphone' => 'Cellphone',
+        'funval_equipment' => 'Equipment provided by Funval',
     ],
     'housing_type' => [
         'own_house' => 'Own house',
