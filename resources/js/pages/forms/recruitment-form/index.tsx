@@ -5,16 +5,16 @@ import { AdditionalInformationStep } from '@/components/recruitment-form/steps/A
 import { RecruitmentOverviewStep } from '@/components/recruitment-form/steps/RecruitmentOverviewStep';
 import { Enums, Stepper, Translation } from '@/types/global';
 import { RecruitmentFormData } from '@/types/recruitment';
+import { Country } from '@/types/country';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import StepperProvider from '../stepper-provider';
 
 interface RecruitmentFormProps {
     enums: Enums;
+    countries?: Country[];
 }
 
-const RecruitmentForm = ({ enums }: RecruitmentFormProps) => {
-    // Add debugging to see if enums are being passed correctly
-    console.log('Recruitment enums:', enums);
+const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
 
     // Add defensive check
     if (!enums) {
@@ -32,6 +32,7 @@ const RecruitmentForm = ({ enums }: RecruitmentFormProps) => {
         // Socio-económico
         household_members: [],
         monthly_income: 0,
+        monthly_expenses: [],
         has_residential_internet: false,
         device_type: 0,
         housing_type: 0,
@@ -89,7 +90,7 @@ const RecruitmentForm = ({ enums }: RecruitmentFormProps) => {
     const steps: Stepper[] = [
         {
             title: 'Información Socio-económica',
-            component: <SocioEconomicStep request={request} enums={enums} />,
+            component: <SocioEconomicStep request={request} enums={enums} countries={countries} />,
         },
         /* {
             title: 'Información de Salud',

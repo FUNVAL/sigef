@@ -11,7 +11,7 @@ import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
 import { RecruitmentRequest, HouseholdMember, HouseholdExpense } from '@/types/recruitment';
 import { usePage } from '@inertiajs/react';
-import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase, MapPin } from 'lucide-react';
+import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase } from 'lucide-react';
 import React, { useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
@@ -118,10 +118,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         // Validación básica
         const validationErrors: Record<string, string> = {};
 
-        // Only validate country if countries are available
-        if (countries && countries.length > 0 && !data.country_id) {
-            validationErrors.country_id = 'El país es requerido';
-        }
+
 
         if (data.household_members.length === 0) {
             validationErrors.household_members = 'Debe agregar al menos una persona';
@@ -133,6 +130,9 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             }
             if (!member.relationship) {
                 validationErrors[`household_member_${index}_relationship`] = 'La relación es requerida';
+            }
+            if (member.phone && member.phone.length < 3) {
+                validationErrors[`household_member_${index}_phone`] = 'El teléfono debe tener al menos 3 dígitos';
             }
         });
 
@@ -174,36 +174,12 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     return (
         <div className="mx-auto max-w-4xl space-y-6 p-4">
             <StepsHeader
-                title="Información Socio-económica"
+                title="Información Socioeconómica"
                 subtitle="Proporcione información sobre su situación económica y familiar"
             />
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* País de residencia - Temporarily commented out until countries prop is properly set up */}
-                {countries && countries.length > 0 && (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <MapPin className="h-5 w-5" />
-                                País de Residencia
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div>
-                                <Label htmlFor="country_id">País *</Label>
-                                <SearchableSelect
-                                    data={countries}
-                                    name="country_id"
-                                    id="country_id"
-                                    value={data.country_id?.toString() || ''}
-                                    onValueChange={(value) => setData('country_id', Number(value))}
-                                    placeholder="Seleccionar país"
-                                />
-                                {errors?.country_id && <p className="text-sm text-red-500 mt-1">{errors.country_id}</p>}
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
+
 
                 {/* Miembros del hogar */}
                 <Card>
@@ -240,9 +216,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                                 type="tel"
                                                 value={member.phone || ''}
                                                 onInputChange={(value: string) => updateHouseholdMember(index, 'phone', value)}
-                                                placeholder="Ingrese el número de teléfono"
+                                                placeholder="Número de teléfono del familiar"
+                                                className="rounded-l-none"
                                                 countries={countries}
-                                                selectedCountryId={data.country_id}
+                                                enableDropdown={true}
                                                 minLength={3}
                                                 maxLength={18}
                                             />
@@ -254,6 +231,9 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                                 onChange={(e) => updateHouseholdMember(index, 'phone', e.target.value)}
                                                 placeholder="Ingrese el número de teléfono"
                                             />
+                                        )}
+                                        {errors[`household_member_${index}_phone`] && (
+                                            <p className="text-sm text-red-500 mt-1">{errors[`household_member_${index}_phone`]}</p>
                                         )}
                                     </div>
                                     <div>

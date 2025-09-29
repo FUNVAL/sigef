@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Recruitment;
+use App\Models\Country;
 use App\Enums\FamilyRelationshipEnum;
 use App\Enums\DeviceTypeEnum;
 use App\Enums\HousingTypeEnum;
@@ -26,6 +27,7 @@ class RecruitmentController extends Controller
         try {
             return inertia('forms/recruitment-form/index', [
                 'step' => request()->input('step', 0),
+                'countries' => Country::orderBy('name')->get(),
                 'enums' => [
                     'familyRelationship' => FamilyRelationshipEnum::toArray(),
                     'deviceType' => DeviceTypeEnum::toArray(),
