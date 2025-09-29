@@ -84,11 +84,11 @@ return [
         'subtitle' => 'Selecciona una de las siguientes opciones para continuar',
         'referral' => [
             'title' => 'Referir a un amigo',
-            'description' => 'Recomienda a alguien que conozcas para que participe de nuestros programas de capacitación para el empleo.',
+            'description' => 'Comparte esta oportunidad y ayuda a que alguien más pueda dar su primer paso hacia la capacitación para el empleo.',
         ],
         'pre_inscription' => [
             'title' => 'Preinscribirme al curso',
-            'description' => 'Completa tu preinscripción para participar en nuestros programas de capacitación para el empleo.',
+            'description' => 'Da tu primer paso y regístrate para acceder a la posibilidad de participar en nuestros programas de capacitación para el empleo.',
         ],
     ],
 
