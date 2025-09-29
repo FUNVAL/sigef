@@ -5,12 +5,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { PhoneInput } from '@/components/ui/phone-input';
-import SearchableSelect from '@/components/ui/searchable-select';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
 import { RecruitmentRequest, HouseholdMember, HouseholdExpense } from '@/types/recruitment';
-import { usePage } from '@inertiajs/react';
 import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase } from 'lucide-react';
 import React, { useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
@@ -230,6 +228,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                                 value={member.phone || ''}
                                                 onChange={(e) => updateHouseholdMember(index, 'phone', e.target.value)}
                                                 placeholder="Ingrese el número de teléfono"
+                                                required
                                             />
                                         )}
                                         {errors[`household_member_${index}_phone`] && (
@@ -241,6 +240,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         <Select
                                             value={member.relationship.toString()}
                                             onValueChange={(value: string) => updateHouseholdMember(index, 'relationship', parseInt(value))}
+                                            
                                         >
                                             <SelectTrigger className={errors[`household_member_${index}_relationship`] ? 'border-red-500' : ''}>
                                                 <SelectValue placeholder="Seleccionar relación" />
