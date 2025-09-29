@@ -13,7 +13,7 @@ interface AgreementStepProps {
 }
 
 interface AgreementQuestion {
-    id: keyof Pick<RecruitmentRequest['data'], 'mutual_understanding_accepted' | 'work_commitment_accepted' | 'data_authorization_accepted' | 'scholarship_agreement_accepted' | 'religious_institute_accepted' | 'health_agreement_accepted'>;
+    id: string;
     title: string;
     content: string;
     icon: React.ElementType;
