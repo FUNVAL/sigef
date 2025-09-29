@@ -44,6 +44,7 @@ class Recruitment extends Model
         'data_authorization_accepted',
         'scholarship_agreement_accepted',
         'religious_institute_accepted',
+        'health_agreement_accepted',
     ];
 
     protected $casts = [
@@ -61,5 +62,6 @@ class Recruitment extends Model
         'data_authorization_accepted' => 'boolean',
         'scholarship_agreement_accepted' => 'boolean',
         'religious_institute_accepted' => 'boolean',
+        'health_agreement_accepted' => 'boolean',
     ];
 }

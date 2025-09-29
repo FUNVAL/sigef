@@ -92,6 +92,7 @@ class RecruitmentController extends Controller
                 'data_authorization_accepted' => 'required|boolean',
                 'scholarship_agreement_accepted' => 'required|boolean',
                 'religious_institute_accepted' => 'required|boolean',
+                'health_agreement_accepted' => 'required|boolean',
             ]);
 
             // Handle file upload
@@ -185,6 +186,7 @@ class RecruitmentController extends Controller
                 'data_authorization_accepted' => 'required|boolean',
                 'scholarship_agreement_accepted' => 'required|boolean',
                 'religious_institute_accepted' => 'required|boolean',
+                'health_agreement_accepted' => 'required|boolean',
             ]);
 
             // Handle file upload if new file is provided
