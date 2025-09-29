@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Enums } from '@/types/global';
-import { RecruitmentFormData } from '@/types/recruitment';
+import { RecruitmentFormData, HouseholdExpense } from '@/types/recruitment';
 import { ArrowLeft, Check, Users, Heart, FileText, Calendar, Camera } from 'lucide-react';
 import { useContext } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
@@ -74,6 +74,53 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                             </div>
                         </div>
 
+                        {data.household_members && data.household_members.length > 0 && (
+                            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                                <h4 className="font-medium mb-2">Detalles de miembros del hogar</h4>
+                                <div className="space-y-2">
+                                    {data.household_members.map((member, index) => (
+                                        <div key={index} className="flex justify-between items-center p-2 bg-white rounded">
+                                            <div className="flex-1">
+                                                <p className="text-sm font-medium">{member.name}</p>
+                                                <p className="text-xs text-gray-500">
+                                                    {getEnumLabel(enums.familyRelationship, member.relationship)}
+                                                    {member.phone && ` • ${member.phone}`}
+                                                </p>
+                                            </div>
+                                            {member.income_contribution && member.income_contribution > 0 && (
+                                                <div className="text-right">
+                                                    <p className="text-sm font-medium text-green-600">
+                                                        ${member.income_contribution} USD
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">Contribución</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {data.monthly_expenses && data.monthly_expenses.length > 0 && (
+                            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                                <h4 className="font-medium mb-2">Gastos mensuales del hogar</h4>
+                                <div className="space-y-1">
+                                    {data.monthly_expenses.map((expense, index) => (
+                                        <div key={index} className="flex justify-between">
+                                            <span className="text-sm">{getEnumLabel(enums.expenseType, expense.type)}</span>
+                                            <span className="text-sm font-medium">${expense.amount} USD</span>
+                                        </div>
+                                    ))}
+                                    <div className="border-t pt-1 mt-2">
+                                        <div className="flex justify-between font-medium">
+                                            <span className="text-sm">Total gastos mensuales:</span>
+                                            <span className="text-sm">${data.monthly_expenses.reduce((total, expense) => total + expense.amount, 0)} USD</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {data.has_employment && (
                             <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                                 <h4 className="font-medium mb-2">Detalles de empleo</h4>
@@ -119,7 +166,7 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                 </Card>
 
                 {/* Información de Salud */}
-                <Card>
+               {/*  <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Heart className="h-5 w-5" />
@@ -158,7 +205,7 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                             </div>
                         )}
 
-                        {!data.has_illness && (
+                        {!data.has_illness && data.health_declaration_accepted && (
                             <div className="mt-4 p-4 bg-green-50 rounded-lg">
                                 <div className="flex items-center gap-2">
                                     <Check className="h-4 w-4 text-green-600" />
@@ -167,7 +214,7 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                             </div>
                         )}
                     </CardContent>
-                </Card>
+                </Card> */}
 
                 {/* Acuerdos */}
                 <Card>
@@ -184,7 +231,8 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                 { key: 'work_commitment_accepted', label: 'Compromiso Laboral' },
                                 { key: 'data_authorization_accepted', label: 'Autorización de Datos Personales' },
                                 { key: 'scholarship_agreement_accepted', label: 'Convenio de Beca' },
-                                { key: 'religious_institute_accepted', label: 'Convenio de Instituto de Religión' }
+                                { key: 'religious_institute_accepted', label: 'Convenio de Instituto de Religión' },
+                                { key: 'health_agreement_accepted', label: 'Convenio de Condiciones de Salud' }
                             ].map(agreement => (
                                 <div key={agreement.key} className="flex items-center gap-2">
                                     <Check className="h-4 w-4 text-green-600" />

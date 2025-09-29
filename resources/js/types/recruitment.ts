@@ -21,6 +21,7 @@ export interface RecruitmentFormData {
     
     // Socio-económico
     household_members: HouseholdMember[];
+    monthly_expenses: HouseholdExpense[];
     monthly_income: number;
     has_residential_internet: boolean;
     device_type: number;
@@ -53,6 +54,7 @@ export interface RecruitmentFormData {
     data_authorization_accepted: boolean;
     scholarship_agreement_accepted: boolean;
     religious_institute_accepted: boolean;
+    health_agreement_accepted: boolean;
 }
 
 export interface RecruitmentRequest {
