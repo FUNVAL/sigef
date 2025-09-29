@@ -41,7 +41,7 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                 {/* Información Socio-económica */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Users className="h-5 w-5" />
                             Información Socio-económica
                         </CardTitle>
@@ -168,7 +168,7 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                 {/* Acuerdos */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <FileText className="h-5 w-5" />
                             Acuerdos Aceptados
                         </CardTitle>
@@ -195,7 +195,7 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                 {/* Información Adicional */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Calendar className="h-5 w-5" />
                             Información Adicional
                         </CardTitle>
@@ -225,7 +225,12 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Anterior
                     </Button>
-                    <Button onClick={onSubmit} size="lg" disabled={processing}>
+                    <Button 
+                        onClick={onSubmit} 
+                        size="lg" 
+                        disabled={processing}
+                        className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                    >
                         {processing ? 'Enviando...' : 'Enviar Aplicación'}
                     </Button>
                 </div>

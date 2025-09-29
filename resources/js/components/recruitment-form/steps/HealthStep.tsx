@@ -60,7 +60,7 @@ export function HealthStep({ request }: HealthStepProps) {
                 {/* Seguro médico */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Shield className="h-5 w-5" />
                             ¿Cuenta con seguro médico?
                         </CardTitle>
@@ -92,7 +92,7 @@ export function HealthStep({ request }: HealthStepProps) {
                 {/* Enfermedad */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Heart className="h-5 w-5" />
                             ¿Padece de alguna enfermedad?
                         </CardTitle>
@@ -213,7 +213,11 @@ export function HealthStep({ request }: HealthStepProps) {
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Anterior
                     </Button>
-                    <Button type="submit" size="lg">
+                    <Button 
+                        type="submit" 
+                        size="lg"
+                        className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                    >
                         Siguiente
                     </Button>
                 </div>

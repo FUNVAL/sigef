@@ -151,7 +151,7 @@ export function AgreementStep({ request }: AgreementStepProps) {
                     return (
                         <Card key={question.id} className={`${isAccepted ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-lg">
+                                <CardTitle className="flex items-center gap-2 text-lg text-[rgb(46_131_242_/_1)]">
                                     <Icon className={`h-5 w-5 ${isAccepted ? 'text-green-600' : 'text-blue-600'}`} />
                                     {question.title}
                                 </CardTitle>
@@ -185,7 +185,11 @@ export function AgreementStep({ request }: AgreementStepProps) {
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Anterior
                     </Button>
-                    <Button type="submit" size="lg">
+                    <Button 
+                        type="submit" 
+                        size="lg"
+                        className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                    >
                         Siguiente
                     </Button>
                 </div>

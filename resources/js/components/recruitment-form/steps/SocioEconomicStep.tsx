@@ -192,7 +192,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 {/* Miembros del hogar */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Users className="h-5 w-5" />
                             Número de personas que viven en su casa
                         </CardTitle>
@@ -312,7 +312,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 {/* Egresos mensuales */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <DollarSign className="h-5 w-5" />
                             Egresos mensuales del hogar (USD)
                         </CardTitle>
@@ -380,7 +380,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 {/* Internet residencial */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Wifi className="h-5 w-5" />
                             ¿Cuenta con servicio de Internet Residencial o WIFI?
                         </CardTitle>
@@ -412,7 +412,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 {/* Tipo de dispositivo */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Monitor className="h-5 w-5" />
                             ¿Qué tipo de dispositivo usará para conectarse a clases?
                         </CardTitle>
@@ -442,7 +442,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 {/* Tipo de vivienda */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Home className="h-5 w-5" />
                             Tipo de Vivienda
                         </CardTitle>
@@ -472,7 +472,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 {/* Empleo */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Briefcase className="h-5 w-5" />
                             Al día de hoy, ¿tiene un empleo?
                         </CardTitle>
@@ -585,7 +585,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 {/* Bono */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>¿Necesita bono?</CardTitle>
+                        <CardTitle className="text-[rgb(46_131_242_/_1)]">¿Necesita bono?</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex gap-4">
@@ -621,7 +621,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 {selectedBonusCategories.length >= 2 && (
                                     <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
                                         <p className="text-blue-800 text-sm">
-                                            <strong>Límite alcanzado:</strong> Ya has seleccionado {selectedBonusCategories.length} categorías de bono.
+                                            Ya has seleccionado {selectedBonusCategories.length} categorías de bono.
                                         </p>
                                     </div>
                                 )}
@@ -662,7 +662,11 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 </Card>
 
                 <div className="flex justify-end">
-                    <Button type="submit" size="lg">
+                    <Button 
+                        type="submit" 
+                        size="lg"
+                        className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                    >
                         Siguiente
                     </Button>
                 </div>

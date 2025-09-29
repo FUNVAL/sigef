@@ -95,7 +95,7 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                 {/* Fecha de inicio */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Calendar className="h-5 w-5" />
                             Fecha de inicio preferida
                         </CardTitle>
@@ -152,7 +152,7 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                 {/* Foto de entrevista */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Camera className="h-5 w-5" />
                             Foto de entrevista
                         </CardTitle>
@@ -184,16 +184,7 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                                 </div>
                             )}
 
-                            <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-                                <p className="font-medium mb-2">Recomendaciones para la foto:</p>
-                                <ul className="list-disc list-inside space-y-1">
-                                    <li>Usar vestimenta formal y apropiada</li>
-                                    <li>Fondo neutro y buena iluminación</li>
-                                    <li>Foto reciente (máximo 6 meses)</li>
-                                    <li>Rostro claramente visible, sin lentes oscuros</li>
-                                    <li>Formato vertical (tipo documento)</li>
-                                </ul>
-                            </div>
+                            
                         </div>
                     </CardContent>
                 </Card>
@@ -203,7 +194,11 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Anterior
                     </Button>
-                    <Button type="submit" size="lg">
+                    <Button 
+                        type="submit" 
+                        size="lg"
+                        className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                    >
                         Siguiente
                     </Button>
                 </div>
