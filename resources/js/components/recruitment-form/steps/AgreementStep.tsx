@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { RecruitmentRequest } from '@/types/recruitment';
-import { useEffect, useState, useContext } from 'react';
-import { ArrowLeft, FileText, Shield, Users, BookOpen, Church } from 'lucide-react';
+import { useState, useContext } from 'react';
+import { ArrowLeft, FileText, Shield, Users, BookOpen, Church, Heart } from 'lucide-react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
 interface AgreementStepProps {
@@ -13,10 +13,9 @@ interface AgreementStepProps {
 }
 
 interface AgreementQuestion {
-    id: keyof Pick<RecruitmentRequest['data'], 'mutual_understanding_accepted' | 'work_commitment_accepted' | 'data_authorization_accepted' | 'scholarship_agreement_accepted' | 'religious_institute_accepted'>;
+    id: keyof Pick<RecruitmentRequest['data'], 'mutual_understanding_accepted' | 'work_commitment_accepted' | 'data_authorization_accepted' | 'scholarship_agreement_accepted' | 'religious_institute_accepted' | 'health_agreement_accepted'>;
     title: string;
     content: string;
-    minReadTime: number;
     icon: React.ElementType;
 }
 
@@ -32,7 +31,6 @@ const agreementQuestions: AgreementQuestion[] = [
 • Cumpliré con el horario establecido y las normas de asistencia del programa.
 • Utilizaré de manera responsable todos los recursos y materiales proporcionados.
 • Este programa está diseñado para mi desarrollo profesional y personal integral.`,
-        minReadTime: 30,
         icon: FileText
     },
     {
@@ -46,7 +44,6 @@ const agreementQuestions: AgreementQuestion[] = [
 • Colaborar con FUNVAL en el seguimiento post-programa por un período determinado.
 • Compartir información sobre mi progreso laboral cuando sea requerido para fines estadísticos.
 • Considerar oportunidades de mentoría con futuros participantes del programa.`,
-        minReadTime: 25,
         icon: Users
     },
     {
@@ -62,7 +59,6 @@ const agreementQuestions: AgreementQuestion[] = [
 • Utilizar testimonios o casos de éxito (previa autorización específica).
 
 Entiendo que puedo solicitar la corrección o eliminación de mis datos en cualquier momento.`,
-        minReadTime: 35,
         icon: Shield
     },
     {
@@ -76,7 +72,6 @@ Entiendo que puedo solicitar la corrección o eliminación de mis datos en cualq
 • En caso de abandono del programa sin causa justificada, podría ser requerido el reembolso parcial.
 • Los materiales y recursos proporcionados son para uso exclusivo del programa.
 • Me comprometo a completar el programa en los tiempos establecidos.`,
-        minReadTime: 30,
         icon: BookOpen
     },
     {
@@ -92,8 +87,23 @@ Entiendo que puedo solicitar la corrección o eliminación de mis datos en cualq
 • Entender que la participación en el instituto es un componente esencial del programa integral.
 
 Este compromiso forma parte del desarrollo holístico que caracteriza nuestro programa.`,
-        minReadTime: 35,
         icon: Church
+    },
+    {
+        id: 'health_agreement_accepted',
+        title: 'CONVENIO DE CONDICIONES DE SALUD',
+        content: `En relación a mi estado de salud y participación en el programa, declaro y acepto:
+
+• Proporcionar información veraz y completa sobre mi estado de salud actual.
+• Informar inmediatamente cualquier cambio en mi condición de salud que pueda afectar mi participación.
+• Seguir las recomendaciones médicas y mantener un seguimiento adecuado de mi salud.
+• No participar en actividades del programa si mi condición de salud lo desaconseja.
+• Entender que FUNVAL no se hace responsable por condiciones de salud preexistentes.
+• Mantener actualizada mi información de contacto de emergencia médica.
+• Cumplir con los protocolos de salud y seguridad establecidos por la institución.
+
+Este acuerdo garantiza un ambiente seguro y saludable para todos los participantes.`,
+        icon: Heart
     }
 ];
 
@@ -101,55 +111,9 @@ export function AgreementStep({ request }: AgreementStepProps) {
     const { nextStep, previousStep } = useContext(StepperContext);
     const { data, setData } = request;
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [readTimers, setReadTimers] = useState<Record<string, number>>({});
-    const [timeSpent, setTimeSpent] = useState<Record<string, number>>({});
-
-    // Initialize timers for each agreement
-    useEffect(() => {
-        const timers: Record<string, number> = {};
-        agreementQuestions.forEach(question => {
-            timers[question.id] = 0;
-        });
-        setTimeSpent(timers);
-    }, []);
-
-    // Timer effect for tracking reading time
-    useEffect(() => {
-        const intervals: Record<string, NodeJS.Timeout> = {};
-
-        agreementQuestions.forEach(question => {
-            if (readTimers[question.id]) {
-                intervals[question.id] = setInterval(() => {
-                    setTimeSpent(prev => ({
-                        ...prev,
-                        [question.id]: prev[question.id] + 1
-                    }));
-                }, 1000);
-            }
-        });
-
-        return () => {
-            Object.values(intervals).forEach(interval => clearInterval(interval));
-        };
-    }, [readTimers]);
-
-    const startReadingTimer = (questionId: string) => {
-        setReadTimers(prev => ({ ...prev, [questionId]: Date.now() }));
-    };
-
-    const stopReadingTimer = (questionId: string) => {
-        setReadTimers(prev => ({ ...prev, [questionId]: 0 }));
-    };
-
-    const canAcceptAgreement = (question: AgreementQuestion) => {
-        return timeSpent[question.id] >= question.minReadTime;
-    };
 
     const handleAgreementChange = (questionId: string, accepted: boolean) => {
         setData(questionId, accepted);
-        if (!accepted) {
-            stopReadingTimer(questionId);
-        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -183,8 +147,6 @@ export function AgreementStep({ request }: AgreementStepProps) {
                 {agreementQuestions.map((question) => {
                     const Icon = question.icon;
                     const isAccepted = (data as any)[question.id];
-                    const canAccept = canAcceptAgreement(question);
-                    const isReading = readTimers[question.id] > 0;
 
                     return (
                         <Card key={question.id} className={`${isAccepted ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
@@ -195,52 +157,18 @@ export function AgreementStep({ request }: AgreementStepProps) {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="relative">
-                                    <div className="max-h-48 overflow-y-auto rounded border bg-gray-50 p-4">
-                                        <pre className="whitespace-pre-wrap text-sm font-sans">{question.content}</pre>
-                                    </div>
-
-                                    {/* Reading progress */}
-                                    <div className="mt-2 flex items-center justify-between text-sm text-gray-600">
-                                        <div className="flex items-center gap-2">
-                                            <div className={`h-2 w-2 rounded-full ${canAccept ? 'bg-green-500' : 'bg-yellow-500'}`} />
-                                            <span>
-                                                Tiempo de lectura: {timeSpent[question.id]}s / {question.minReadTime}s mínimo
-                                            </span>
-                                        </div>
-                                        {!isReading && !canAccept && (
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => startReadingTimer(question.id)}
-                                            >
-                                                Comenzar lectura
-                                            </Button>
-                                        )}
-                                        {isReading && (
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => stopReadingTimer(question.id)}
-                                            >
-                                                Detener lectura
-                                            </Button>
-                                        )}
-                                    </div>
+                                <div className="max-h-48 overflow-y-auto rounded border bg-gray-50 p-4">
+                                    <pre className="whitespace-pre-wrap text-sm font-sans">{question.content}</pre>
                                 </div>
 
                                 {/* Agreement checkbox */}
                                 <div className="flex items-center gap-3 p-4 rounded-lg border bg-white">
                                     <Checkbox
                                         checked={isAccepted}
-                                        disabled={!canAccept}
                                         onCheckedChange={(checked) => handleAgreementChange(question.id, checked as boolean)}
                                     />
-                                    <Label className={`text-sm ${!canAccept ? 'text-gray-400' : ''}`}>
-                                        He leído y acepto los términos de este acuerdo
-                                        {!canAccept && ' (debe completar el tiempo de lectura mínimo)'}
+                                    <Label className="text-sm">
+                                        He verificado nuevamente con el estudiante el convenio de {question.title.toLowerCase()}
                                     </Label>
                                 </div>
 
