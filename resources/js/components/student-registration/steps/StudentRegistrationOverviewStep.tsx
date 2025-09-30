@@ -22,27 +22,35 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
     const { previousStep } = useContext(StepperContext);
 
     const getCountryName = (id: number | undefined) => {
-        console.log('Getting country name for ID:', id);
         if (!id || id === 0) return 'No especificado';
         const country = countries.find((c) => c.id === id);
-        console.log('Found country:', country);
         return country?.name || 'No especificado';
     };
 
     const getCourseName = (id: number | undefined) => {
-        console.log('Getting course name for ID:', id);
         if (!id || id === 0) return 'No especificado';
         const course = courses.find((c) => c.id === id);
-        console.log('Found course:', course);
         return course?.name || 'No especificado';
     };
 
     const getEnumName = (enumArray: any[] | undefined, id: number | undefined) => {
-        console.log('Getting enum name for ID:', id, 'from array:', enumArray);
         if (!id || id === 0 || !enumArray) return 'No especificado';
         const enumItem = enumArray.find((e) => e.id === id);
-        console.log('Found enum item:', enumItem);
         return enumItem?.name || 'No especificado';
+    };
+
+    const getMedicalFrequencyName = (frequency: string | undefined) => {
+        if (!frequency) return 'No especificado';
+        const frequencies: Record<string, string> = {
+            semanal: 'Semanal',
+            quincenal: 'Quincenal',
+            mensual: 'Mensual',
+            trimestral: 'Cada 3 meses',
+            semestral: 'Cada 6 meses',
+            anual: 'Anualmente',
+            cuando_necesario: 'Solo cuando es necesario',
+        };
+        return frequencies[frequency] || frequency;
     };
 
     const InfoSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
@@ -101,8 +109,8 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                         <FileItem label="Foto Formal" file={data.formal_photo_file as File} />
                     </InfoSection>
 
-                    {/* Información Religiosa */}
-                    <InfoSection title="Información Religiosa">
+                    {/* Información Eclesiástica */}
+                    <InfoSection title="Información Eclesiástica">
                         <InfoItem label="Miembro Activo" value={data.is_active_member ? 'Sí' : 'No'} />
                         <InfoItem label="Número de Cédula de Miembro" value={data.member_certificate_number} />
                         <InfoItem
@@ -115,7 +123,7 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                             label="Año Fin de Misión"
                             value={data.mission_end_year && data.mission_end_year > 0 ? data.mission_end_year : 'No especificado'}
                         />
-                        <InfoItem label="Estado del Templo" value={getEnumName(enums.templeStatus, data.temple_status)} />
+                        <InfoItem label="Sellado en el Templo" value={data.temple_status ? 'Sí' : 'No'} />
                         <InfoItem label="Llamamiento Actual" value={data.current_calling} />
                         <InfoItem label="Barrio/Rama" value={data.ward_branch} />
                         <InfoItem label="Número de Miembro" value={(data as any).member_number} />
@@ -128,6 +136,27 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                         <InfoItem label="Nivel Educativo" value={getEnumName(enums.educationLevel, data.education_level)} />
                         <InfoItem label="Curso" value={getCourseName(data.course_id)} />
                         <InfoItem label="Nivel English Connect" value={getEnumName(enums.englishConnectLevel, data.english_connect_level)} />
+                    </InfoSection>
+
+                    {/* Información de Salud */}
+                    <InfoSection title="Información de Salud">
+                        <InfoItem label="Cuenta con Seguro Médico" value={data.has_health_insurance ? 'Sí' : 'No'} />
+                        <InfoItem label="Padece Alguna Enfermedad" value={data.has_medical_condition ? 'Sí' : 'No'} />
+                        {data.has_medical_condition && (
+                            <>
+                                <InfoItem label="Descripción de la Condición" value={data.medical_condition_description} />
+                                <InfoItem label="Toma Medicamentos" value={data.takes_medication ? 'Sí' : 'No'} />
+                                <InfoItem label="Frecuencia de Visitas Médicas" value={getMedicalFrequencyName(data.medical_visit_frequency)} />
+                            </>
+                        )}
+                    </InfoSection>
+
+                    {/* Acuerdos y Compromisos */}
+                    <InfoSection title="Acuerdos y Compromisos">
+                        <InfoItem label="Términos y Condiciones" value={data.agreement_terms_accepted ? 'Aceptado' : 'Pendiente'} />
+                        <InfoItem label="Política de Privacidad" value={data.agreement_privacy_accepted ? 'Aceptado' : 'Pendiente'} />
+                        <InfoItem label="Código de Conducta" value={data.agreement_conduct_accepted ? 'Aceptado' : 'Pendiente'} />
+                        <InfoItem label="Declaración de Salud" value={data.agreement_health_accepted ? 'Aceptado' : 'Pendiente'} />
                     </InfoSection>
                 </div>
 

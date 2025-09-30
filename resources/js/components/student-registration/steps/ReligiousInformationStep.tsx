@@ -68,7 +68,8 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
         if (data.is_active_member === undefined) validationErrors.is_active_member = 'Debe especificar si es miembro activo';
         if (data.is_returned_missionary === undefined) validationErrors.is_returned_missionary = 'Debe especificar si es misionero retornado';
-        if (!data.temple_status) validationErrors.temple_status = 'Debe especificar su estado del templo';
+        if (data.temple_status === null || data.temple_status === undefined)
+            validationErrors.temple_status = 'Debe especificar si está sellado en el templo';
         if (!data.stake_id) validationErrors.stake_id = 'Debe seleccionar su estaca/distrito/misión';
 
         // Validación de cédula de miembro (siempre obligatoria)
@@ -106,7 +107,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
             <StepsHeader title="Información Eclesiástica" subtitle="Complete su información de membresía" />
 
             <CardContent className="space-y-6 p-3 sm:space-y-8 sm:p-6 md:p-8">
-                <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+                <form className="space-y-8" onSubmit={handleSubmit} noValidate>
                     {/* Membresía activa */}
                     <div className="space-y-4">
                         <div className="mb-4 flex items-center gap-2">
@@ -116,7 +117,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                         {/* ¿Es miembro activo? */}
                         <div className="space-y-3">
-                            <Label className="text-base font-medium">¿Es un miembro activo en su iglesia?</Label>
+                            <Label className="text-base font-medium">¿Es un miembro activo en su iglesia? *</Label>
                             <RadioGroup
                                 value={data.is_active_member !== undefined ? data.is_active_member.toString() : ''}
                                 onValueChange={(value) => setData('is_active_member', value === 'true')}
@@ -135,48 +136,51 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                             {errors.is_active_member && <p className="text-sm text-red-500">{errors.is_active_member}</p>}
                         </div>
 
-                        {/* Número de cédula de miembro - Always shown */}
-                        <div>
-                            <Label htmlFor="member_number">
-                                Número de Cédula de Miembro <span className="text-red-500">*</span>
-                            </Label>
-                            <Input
-                                id="member_number"
-                                name="member_number"
-                                value={data.member_number || ''}
-                                onChange={handleMemberNumberChange}
-                                placeholder="ABC-1234-WXYZ"
-                                maxLength={13}
-                                className={`font-mono ${data.member_number && !isValidMemberNumber(data.member_number) ? 'border-orange-300' : ''}`}
-                                required
-                            />
-                            <p className="mt-1 text-xs text-gray-500">Formato: 3-4-4 dígitos (letras y números, ej: ABC-1234-WXYZ)</p>
-                            {data.member_number && !isValidMemberNumber(data.member_number) && (
-                                <p className="text-sm text-orange-600">El formato debe ser 3-4-4 caracteres (letras y números)</p>
-                            )}
-                            {errors.member_number && <p className="text-sm text-red-500">{errors.member_number}</p>}
-                        </div>
+                        {/* Campos en grid: Cédula de miembro y Año de bautismo */}
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            {/* Número de cédula de miembro */}
+                            <div>
+                                <Label htmlFor="member_number">
+                                    Número de Cédula de Miembro <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="member_number"
+                                    name="member_number"
+                                    value={data.member_number || ''}
+                                    onChange={handleMemberNumberChange}
+                                    placeholder="ABC-1234-WXYZ"
+                                    maxLength={13}
+                                    className={`font-mono ${data.member_number && !isValidMemberNumber(data.member_number) ? 'border-orange-300' : ''}`}
+                                    required
+                                />
+                                <p className="mt-1 text-xs text-gray-500">Formato: 3-4-4 dígitos (letras y números, ej: ABC-1234-WXYZ)</p>
+                                {data.member_number && !isValidMemberNumber(data.member_number) && (
+                                    <p className="text-sm text-orange-600">El formato debe ser 3-4-4 caracteres (letras y números)</p>
+                                )}
+                                {errors.member_number && <p className="text-sm text-red-500">{errors.member_number}</p>}
+                            </div>
 
-                        {/* Año de bautismo */}
-                        <div>
-                            <Label htmlFor="baptism_year">¿En qué año se bautizó?</Label>
-                            <Select
-                                value={data.baptism_year?.toString() || ''}
-                                onValueChange={(value) => setData('baptism_year', Number(value))}
-                                name="baptism_year"
-                            >
-                                <SelectTrigger id="baptism_year">
-                                    <SelectValue placeholder="Seleccione el año de bautismo" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="0">No recuerdo</SelectItem>
-                                    {years.map((year) => (
-                                        <SelectItem key={year} value={year.toString()}>
-                                            {year}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            {/* Año de bautismo */}
+                            <div>
+                                <Label htmlFor="baptism_year">¿En qué año se bautizó?</Label>
+                                <Select
+                                    value={data.baptism_year?.toString() || ''}
+                                    onValueChange={(value) => setData('baptism_year', Number(value))}
+                                    name="baptism_year"
+                                >
+                                    <SelectTrigger id="baptism_year">
+                                        <SelectValue placeholder="Seleccione el año de bautismo" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="0">No recuerdo</SelectItem>
+                                        {years.map((year) => (
+                                            <SelectItem key={year} value={year.toString()}>
+                                                {year}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                     </div>
 
@@ -189,7 +193,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                         {/* ¿Es misionero retornado? */}
                         <div className="space-y-3">
-                            <Label className="text-base font-medium">Misionero retornado</Label>
+                            <Label className="text-base font-medium">¿Es misionero retornado? *</Label>
                             <RadioGroup
                                 value={data.is_returned_missionary !== undefined ? data.is_returned_missionary.toString() : ''}
                                 onValueChange={(value) => setData('is_returned_missionary', value === 'true')}
@@ -253,18 +257,22 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                             <Label className="text-base font-medium">Sellado en el Templo *</Label>
                             <RadioGroup
                                 value={data.temple_status?.toString() || ''}
-                                onValueChange={(value) => setData('temple_status', Number(value))}
-                                className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+                                onValueChange={(value) => setData('temple_status', value === 'true')}
+                                className="flex gap-6"
                                 required
                             >
-                                {enums.templeStatus?.map((status) => (
-                                    <div key={status.id} className="flex items-center space-x-2">
-                                        <RadioGroupItem value={status.id.toString()} id={`temple-${status.id}`} />
-                                        <Label htmlFor={`temple-${status.id}`} className="cursor-pointer">
-                                            {status.name}
-                                        </Label>
-                                    </div>
-                                ))}
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="true" id="temple-yes" />
+                                    <Label htmlFor="temple-yes" className="cursor-pointer">
+                                        Sí
+                                    </Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="false" id="temple-no" />
+                                    <Label htmlFor="temple-no" className="cursor-pointer">
+                                        No
+                                    </Label>
+                                </div>
                             </RadioGroup>
                             {errors.temple_status && <p className="text-sm text-red-500">{errors.temple_status}</p>}
                         </div>

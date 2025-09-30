@@ -1,4 +1,3 @@
-import { AcademicInformationStep } from '@/components/student-registration/steps/AcademicInformationStep';
 import { AgreementStep } from '@/components/student-registration/steps/AgreementStep';
 import { PersonalInformationStep } from '@/components/student-registration/steps/PersonalInformationStep';
 import { ReligiousInformationStep } from '@/components/student-registration/steps/ReligiousInformationStep';
@@ -53,7 +52,7 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
         is_returned_missionary: false,
         mission_served: '',
         mission_end_year: undefined,
-        temple_status: 0,
+        temple_status: false,
         current_calling: '',
         stake_id: 0,
         ward_branch: '',
@@ -67,6 +66,14 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
         agreement_terms_accepted: false,
         agreement_privacy_accepted: false,
         agreement_conduct_accepted: false,
+        agreement_health_accepted: false,
+
+        // Health Information
+        has_health_insurance: false,
+        has_medical_condition: false,
+        medical_condition_description: '',
+        takes_medication: false,
+        medical_visit_frequency: '',
     });
 
     const request = {
@@ -92,15 +99,11 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
     const steps: Stepper[] = [
         {
             title: 'Información Personal',
-            component: <PersonalInformationStep countries={countries} request={request} />,
+            component: <PersonalInformationStep countries={countries} courses={courses} enums={enums} request={request} />,
         },
         {
             title: 'Información Eleclesiástica',
             component: <ReligiousInformationStep countries={countries} request={request} />,
-        },
-        {
-            title: 'Información Académica',
-            component: <AcademicInformationStep courses={courses} request={request} />,
         },
         {
             title: 'Documentos Requeridos',
@@ -114,6 +117,12 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
                         agreement_terms_accepted: data.agreement_terms_accepted,
                         agreement_privacy_accepted: data.agreement_privacy_accepted,
                         agreement_conduct_accepted: data.agreement_conduct_accepted,
+                        agreement_health_accepted: data.agreement_health_accepted,
+                        has_health_insurance: data.has_health_insurance,
+                        has_medical_condition: data.has_medical_condition,
+                        medical_condition_description: data.medical_condition_description,
+                        takes_medication: data.takes_medication,
+                        medical_visit_frequency: data.medical_visit_frequency,
                     }}
                     onDataChange={(field, value) => setData(field, value)}
                     errors={errors as Record<string, string>}
