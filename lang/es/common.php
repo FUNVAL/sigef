@@ -63,9 +63,10 @@ return [
         'subtitle' => 'Nos alegra recibir tu aplicación o la referencia de tu amigo(a).',
 
         'program_description' => [
-            'title' => '¿Estas buscando empleo?&nbsp;&nbsp;¡Este Programa es para Ti! ',
+            'title' => '¿Estás buscando trabajo o conoces a alguien que lo necesite?',
 
-            'description' => 'Este programa está dirigido a personas que buscan empleo y están dispuestas a comprometerse con un proceso intensivo de formación, dedicando entre <span class="font-bold text-blue-700">10 y 12 horas diarias de lunes a viernes.<span>'
+            'description' => 'Funval, proporciona la oportunidad perfecta para prepararte y destacar en el mercado laboral. Nuestros cursos intensivos, a partir de solo 5 semanas, están diseñados para brindar las competencias necesarias para obtener un empleo formal. Con un enfoque práctico y un acompañamiento constante, aumentarás tus posibilidades de crecer en el mundo laboral.<br>
+            <span class="text-xl font-bold ">¡Ven y transforma el futuro con Funval!</span> '
         ],
 
         'motivation' => 'Si tú o la persona referida tienen la motivación y el compromiso para alcanzar este objetivo, ¡adelante! Estamos entusiasmados por acompañarlos en la búsqueda de empleo.',
