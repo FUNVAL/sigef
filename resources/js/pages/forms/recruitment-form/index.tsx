@@ -1,12 +1,11 @@
 import { SocioEconomicStep } from '@/components/recruitment-form/steps/SocioEconomicStep';
-import { HealthStep } from '@/components/recruitment-form/steps/HealthStep';
 import { AgreementStep } from '@/components/recruitment-form/steps/AgreementStep';
 import { AdditionalInformationStep } from '@/components/recruitment-form/steps/AdditionalInformationStep';
 import { RecruitmentOverviewStep } from '@/components/recruitment-form/steps/RecruitmentOverviewStep';
-import { Enums, Stepper, Translation } from '@/types/global';
+import { Enums, Stepper,  } from '@/types/global';
 import { RecruitmentFormData } from '@/types/recruitment';
 import { Country } from '@/types/country';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm,  } from '@inertiajs/react';
 import StepperProvider from '../stepper-provider';
 
 interface RecruitmentFormProps {
@@ -48,9 +47,6 @@ const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
         // Salud
         has_health_insurance: false,
         has_illness: false,
-        illness_description: '',
-        takes_medication: false,
-        medical_visit_frequency: '',
         health_declaration_accepted: false,
 
         // Información adicional
@@ -92,10 +88,6 @@ const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
             title: 'Información Socio-económica',
             component: <SocioEconomicStep request={request} enums={enums} countries={countries} />,
         },
-        /* {
-            title: 'Información de Salud',
-            component: <HealthStep request={request} />,
-        }, */
         {
             title: 'Acuerdos y Compromisos',
             component: <AgreementStep request={request} />,
