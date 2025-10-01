@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { PhoneInput } from '@/components/ui/phone-input';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import useFilteredStakes from '@/hooks/use-filtered-stakes';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Country } from '@/types/country';
@@ -12,7 +13,7 @@ import { Course } from '@/types/course';
 import { Enums, Translation } from '@/types/global';
 import { StudentRegistrationFormData, StudentRegistrationRequest } from '@/types/student-registration';
 import { usePage } from '@inertiajs/react';
-import { ArrowLeft, Calendar, GraduationCap, Loader2, Mail, MapPin, Navigation, Phone, User } from 'lucide-react';
+import { ArrowLeft, Calendar, GraduationCap, HelpCircle, Loader2, Mail, MapPin, Navigation, Phone, User } from 'lucide-react';
 import { useCallback, useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
@@ -164,6 +165,11 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
         },
         [setData],
     );
+
+    // Función para abrir el video de ayuda de Facebook
+    const openFacebookHelp = useCallback(() => {
+        window.open('https://www.youtube.com/watch?v=uNJgSZYER0s', '_blank');
+    }, []);
 
     // Función para manejar el cambio de fecha de nacimiento
     const handleBirthDateChange = useCallback(
@@ -448,6 +454,41 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                                 </p>
                             </div>
                         </div>
+
+                    {/* Red Social facebook */}
+                    <div>
+                        <div className="flex items-center gap-2 mb-2">
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <button
+                                            type="button"
+                                            onClick={openFacebookHelp}
+                                            className="inline-flex items-center justify-center rounded-full p-1 text-gray-400 hover:text-[rgb(46_131_242_/_1)] hover:bg-gray-100 transition-colors"
+                                        >
+                                            <HelpCircle className="h-4 w-4" />
+                                        </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p className="text-sm">Si tienes dudas de cómo ingresar tu perfil, haz click al icono de ayuda</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+
+                            <Label htmlFor="facebook_profile">Perfil de Facebook (URL)</Label>
+                        </div>
+                        <Input
+                            id="facebook_profile"
+                            name="facebook_profile"
+                            value={data.facebook_profile || ''}
+                            onChange={(e) => setData('facebook_profile', e.target.value)}
+                            placeholder="Ingrese su enlace de perfil de Facebook"
+                            className="flex-1"
+                            required
+                        />
+                        {errors?.facebook_profile && <p className="text-sm text-red-500">{errors.facebook_profile}</p>}
+                    </div>
+
                     </div>
 
                     {/* Información Académica */}
