@@ -1,21 +1,21 @@
-export interface HouseholdExpense {
+export type HouseholdExpense = {
     type: number;
     amount: number;
-}
+};
 
-export interface HouseholdMember {
+export type HouseholdMember = {
     name: string;
     phone?: string;
     relationship: number;
     income_contribution?: number;
-}
+};
 
-export interface BonusInfo {
+export type BonusInfo = {
     category: number;
     amount: number;
-}
+};
 
-export interface RecruitmentFormData {
+export type RecruitmentFormData = {
     // Datos básicos
     country_id?: number;
     
@@ -55,12 +55,12 @@ export interface RecruitmentFormData {
     scholarship_agreement_accepted: boolean;
     religious_institute_accepted: boolean;
     health_agreement_accepted: boolean;
-}
+};
 
-export interface RecruitmentRequest {
+export type RecruitmentRequest = {
     data: RecruitmentFormData;
     setData: (field: keyof RecruitmentFormData | string, value: any) => void;
     post: (url: string, options?: any) => void;
     processing: boolean;
     errors: Record<string, string>;
-}
+};
