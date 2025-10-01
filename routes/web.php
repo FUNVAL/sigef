@@ -126,6 +126,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::put('{id}', 'updateReference')
                 ->name('update-reference')
                 ->middleware('can:actualizar referencias');
+            Route::get('/export-pending', 'exportPendingToExcel')
+                ->name('export-pending')
+                ->middleware('can:ver referencias propias');
         });
 
     Route::prefix('pre-inscription')->name('pre-inscription.')
@@ -134,6 +137,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->name('dashboard');
             Route::get('/', 'index')
                 ->name('index');
+            Route::get('/export-pending', 'exportPendingToExcel')
+                ->name('export-pending')
+                ->middleware('can:ver preinscripciones propias');
             Route::get('{id}/edit', 'edit')
                 ->name('edit')
                 ->middleware('can:actualizar preinscripciones');
