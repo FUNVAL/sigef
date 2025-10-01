@@ -150,7 +150,6 @@ class StudentRegistrationController extends Controller
             'education_level' => 'required|numeric|in:' . implode(',', EducationLevelEnum::values()),
             'course_id' => 'required|exists:courses,id',
             'english_connect_level' => 'required|numeric|in:' . implode(',', EnglishConnectLevelEnum::values()),
-
             // Acuerdos y Compromisos
             'agreement_terms_accepted' => 'required|boolean|accepted',
             'agreement_privacy_accepted' => 'required|boolean|accepted',
@@ -193,6 +192,7 @@ class StudentRegistrationController extends Controller
             'takes_medication.required_if' => 'Debe especificar si toma medicamentos.',
             'medical_visit_frequency.required_if' => 'Debe especificar la frecuencia de visitas médicas.',
             'medical_visit_frequency.in' => 'La frecuencia de visitas médicas no es válida.',
+
         ];
 
         return $request->validate($rules, $messages);

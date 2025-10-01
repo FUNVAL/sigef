@@ -32,6 +32,7 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
     const t = translations.student_registration;
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isGettingLocation, setIsGettingLocation] = useState(false);
+
     const { stakes } = useFilteredStakes(data.country_id);
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -54,6 +55,7 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
         if (!data.education_level) validationErrors.education_level = 'El grado académico es obligatorio';
         if (!data.course_id) validationErrors.course_id = 'Debe seleccionar un curso';
         if (!data.english_connect_level) validationErrors.english_connect_level = 'Debe especificar su nivel de English Connect';
+
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -136,6 +138,7 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
             options,
         );
     }, [setData, setErrors]);
+
 
     // Función para calcular la edad automáticamente
     const calculateAge = useCallback(
@@ -422,6 +425,7 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
                             {/* Ubicación del hogar */}
                             <div>
                                 <div className="flex items-center gap-2 mb-2">
@@ -600,6 +604,7 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                                     value={data.recruiter_name || ''}
                                     onChange={(e) => cleanSpaces('recruiter_name', e.target.value)}
                                     placeholder="Nombre del reclutador (opcional)"
+
                                 />
                             </div>
                         </div>

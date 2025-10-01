@@ -3,6 +3,7 @@
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PreInscriptionController;
 use App\Http\Controllers\ReferenceController;
+use App\Http\Controllers\RecruitmentController;
 use App\Http\Controllers\StakeController;
 use App\Http\Controllers\StudentRegistrationController;
 use Illuminate\Support\Facades\Route;

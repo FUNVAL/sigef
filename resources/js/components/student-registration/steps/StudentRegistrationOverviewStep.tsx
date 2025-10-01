@@ -22,7 +22,6 @@ interface StudentRegistrationOverviewStepProps {
 export function StudentRegistrationOverviewStep({ data, countries, courses, enums, onSubmit, processing }: StudentRegistrationOverviewStepProps) {
     const { previousStep } = useContext(StepperContext);
     const { stakes } = useFilteredStakes(data.country_id);
-
     const getCountryName = (id: number | undefined) => {
         if (!id || id === 0) return 'No especificado';
         const country = countries.find((c) => c.id === id);
@@ -68,7 +67,6 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
         // Si tiene algún contenido (ya sea coordenadas o cualquier formato de ubicación)
         return '✓ Ubicación guardada correctamente';
     };
-
     const InfoSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
         <div className="space-y-3">
             <h3 className="border-b border-gray-200 pb-2 text-lg font-semibold text-[rgb(46_131_242_/_1)]">{title}</h3>
@@ -154,7 +152,6 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                         <InfoItem label="Curso" value={getCourseName(data.course_id)} />
                         <InfoItem label="Nivel English Connect" value={getEnumName(enums.englishConnectLevel, data.english_connect_level)} />
                     </InfoSection>
-
                     {/* Información de Salud */}
                     <InfoSection title="Información de Salud">
                         <InfoItem label="Cuenta con Seguro Médico" value={data.has_health_insurance ? 'Sí' : 'No'} />

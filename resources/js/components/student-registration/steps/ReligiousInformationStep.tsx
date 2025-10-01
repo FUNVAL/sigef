@@ -135,7 +135,6 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                             </RadioGroup>
                             {errors.is_active_member && <p className="text-sm text-red-500">{errors.is_active_member}</p>}
                         </div>
-
                         {/* Campos en grid: Cédula de miembro y Año de bautismo */}
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Número de cédula de miembro */}
@@ -182,6 +181,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                     </SelectContent>
                                 </Select>
                             </div>
+
                         </div>
                     </div>
 

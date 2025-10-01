@@ -106,6 +106,7 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
             component: <ReligiousInformationStep countries={countries} request={request} />,
         },
         {
+
             title: 'Documentos Requeridos',
             component: <RequiredDocumentsStep request={request} />,
         },
@@ -117,12 +118,6 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
                         agreement_terms_accepted: data.agreement_terms_accepted,
                         agreement_privacy_accepted: data.agreement_privacy_accepted,
                         agreement_conduct_accepted: data.agreement_conduct_accepted,
-                        agreement_health_accepted: data.agreement_health_accepted,
-                        has_health_insurance: data.has_health_insurance,
-                        has_medical_condition: data.has_medical_condition,
-                        medical_condition_description: data.medical_condition_description,
-                        takes_medication: data.takes_medication,
-                        medical_visit_frequency: data.medical_visit_frequency,
                     }}
                     onDataChange={(field, value) => setData(field, value)}
                     errors={errors as Record<string, string>}

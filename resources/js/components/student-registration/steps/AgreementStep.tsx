@@ -177,6 +177,7 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
     };
 
     const handleFinalSubmit = (e: React.FormEvent) => {
+
         e.preventDefault();
 
         // Validation
@@ -211,6 +212,7 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
         if (data.has_medical_condition && !data.medical_visit_frequency) {
             newValidationErrors.medical_visit_frequency = 'Debe especificar la frecuencia de visitas médicas';
         }
+
 
         if (Object.keys(newValidationErrors).length > 0) {
             setValidationErrors(newValidationErrors);
@@ -463,6 +465,7 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
                                 ? '✅ Todos los acuerdos han sido aceptados'
                                 : `Progreso: ${[data.agreement_terms_accepted, data.agreement_privacy_accepted, data.agreement_conduct_accepted, data.agreement_health_accepted].filter(Boolean).length} de ${agreementQuestions.length} acuerdos aceptados`}
                         </p>
+
                     </div>
                 </form>
             </CardContent>
