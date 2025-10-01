@@ -117,7 +117,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                         {/* ¿Es miembro activo? */}
                         <div className="space-y-3">
-                            <Label className="text-base font-medium">¿Es un miembro activo en su iglesia? *</Label>
+                            <Label className="text-base font-medium">¿Es un miembro activo en su iglesia?</Label>
                             <RadioGroup
                                 value={data.is_active_member !== undefined ? data.is_active_member.toString() : ''}
                                 onValueChange={(value) => setData('is_active_member', value === 'true')}
@@ -141,7 +141,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                             {/* Número de cédula de miembro */}
                             <div>
                                 <Label htmlFor="member_number">
-                                    Número de Cédula de Miembro <span className="text-red-500">*</span>
+                                    Número de Cédula de Miembro
                                 </Label>
                                 <Input
                                     id="member_number"
@@ -167,6 +167,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                     value={data.baptism_year?.toString() || ''}
                                     onValueChange={(value) => setData('baptism_year', Number(value))}
                                     name="baptism_year"
+                                    required
                                 >
                                     <SelectTrigger id="baptism_year">
                                         <SelectValue placeholder="Seleccione el año de bautismo" />
@@ -193,7 +194,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                         {/* ¿Es misionero retornado? */}
                         <div className="space-y-3">
-                            <Label className="text-base font-medium">¿Es misionero retornado? *</Label>
+                            <Label className="text-base font-medium">¿Es misionero retornado? </Label>
                             <RadioGroup
                                 value={data.is_returned_missionary !== undefined ? data.is_returned_missionary.toString() : ''}
                                 onValueChange={(value) => setData('is_returned_missionary', value === 'true')}
@@ -254,7 +255,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                         {/* Estado del templo */}
                         <div className="space-y-3">
-                            <Label className="text-base font-medium">Sellado en el Templo *</Label>
+                            <Label className="text-base font-medium">Sellado en el Templo</Label>
                             <RadioGroup
                                 value={data.temple_status?.toString() || ''}
                                 onValueChange={(value) => setData('temple_status', value === 'true')}
@@ -338,6 +339,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                     value={data.ward_branch || ''}
                                     onChange={(e) => setData('ward_branch', e.target.value)}
                                     placeholder="Ej: Barrio Centro, Rama San Juan"
+                                    required
                                 />
                             </div>
 
