@@ -20,19 +20,7 @@ interface AgreementQuestion {
 }
 
 const agreementQuestions: AgreementQuestion[] = [
-    {
-        id: 'mutual_understanding_accepted',
-        title: 'CONVENIO DE ENTENDIMIENTO MUTUO PROGRAMA "BENEFICIARIO INTENSIVO"',
-        content: `Al participar en el programa "Beneficiario Intensivo", entiendo y acepto que:
 
-• Me comprometo a completar todas las fases del programa de capacitación intensiva.
-• Debo mantener un rendimiento académico satisfactorio durante todo el programa.
-• Participaré activamente en todas las actividades, talleres y proyectos asignados.
-• Cumpliré con el horario establecido y las normas de asistencia del programa.
-• Utilizaré de manera responsable todos los recursos y materiales proporcionados.
-• Este programa está diseñado para mi desarrollo profesional y personal integral.`,
-        icon: FileText
-    },
     {
         id: 'work_commitment_accepted',
         title: 'COMPROMISO LABORAL',
@@ -89,22 +77,7 @@ Entiendo que puedo solicitar la corrección o eliminación de mis datos en cualq
 Este compromiso forma parte del desarrollo holístico que caracteriza nuestro programa.`,
         icon: Church
     },
-    {
-        id: 'health_agreement_accepted',
-        title: 'CONVENIO DE CONDICIONES DE SALUD',
-        content: `En relación a mi estado de salud y participación en el programa, declaro y acepto:
 
-• Proporcionar información veraz y completa sobre mi estado de salud actual.
-• Informar inmediatamente cualquier cambio en mi condición de salud que pueda afectar mi participación.
-• Seguir las recomendaciones médicas y mantener un seguimiento adecuado de mi salud.
-• No participar en actividades del programa si mi condición de salud lo desaconseja.
-• Entender que FUNVAL no se hace responsable por condiciones de salud preexistentes.
-• Mantener actualizada mi información de contacto de emergencia médica.
-• Cumplir con los protocolos de salud y seguridad establecidos por la institución.
-
-Este acuerdo garantiza un ambiente seguro y saludable para todos los participantes.`,
-        icon: Heart
-    }
 ];
 
 export function AgreementStep({ request }: AgreementStepProps) {
@@ -162,15 +135,23 @@ export function AgreementStep({ request }: AgreementStepProps) {
                                 </div>
 
                                 {/* Agreement checkbox */}
-                                <div className="flex items-center gap-3 p-4 rounded-lg border bg-white">
+                                <Label
+                                    htmlFor={`checkbox-${question.id}`}
+                                    className="flex items-center gap-3 p-4 rounded-lg border bg-white cursor-pointer select-none"
+                                >
                                     <Checkbox
+                                        id={`checkbox-${question.id}`}
                                         checked={isAccepted}
-                                        onCheckedChange={(checked) => handleAgreementChange(question.id, checked as boolean)}
+                                        onCheckedChange={(checked) =>
+                                            handleAgreementChange(question.id, checked as boolean)
+                                        }
+                                        onClick={(e) => e.stopPropagation()} // evita doble toggle si necesario
                                     />
-                                    <Label className="text-sm">
+                                    <span className="text-sm">
                                         He verificado nuevamente con el estudiante el convenio de {question.title.toLowerCase()}
-                                    </Label>
-                                </div>
+                                    </span>
+                                </Label>
+
 
                                 {errors[question.id] && (
                                     <p className="text-sm text-red-500">{errors[question.id]}</p>
@@ -185,8 +166,8 @@ export function AgreementStep({ request }: AgreementStepProps) {
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Anterior
                     </Button>
-                    <Button 
-                        type="submit" 
+                    <Button
+                        type="submit"
                         size="lg"
                         className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
                     >
