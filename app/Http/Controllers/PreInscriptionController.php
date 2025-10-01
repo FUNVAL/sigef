@@ -621,7 +621,8 @@ class PreInscriptionController extends Controller
         if (!$womanEligibilityCheck['eligible']) {
             return [
                 'shouldReject' => true,
-                'message' => $womanEligibilityCheck['message']
+                'message' => $womanEligibilityCheck['message'],
+                'reason' => ReferenceStatusEnum::FILTERED->value
             ];
         }
 
@@ -637,7 +638,8 @@ class PreInscriptionController extends Controller
         if (!$missionEligibilityCheck['eligible']) {
             return [
                 'shouldReject' => true,
-                'message' => $missionEligibilityCheck['message']
+                'message' => $missionEligibilityCheck['message'],
+                'reason' => ReferenceStatusEnum::FUTURE_MISSIONARY->value
             ];
         }
 
