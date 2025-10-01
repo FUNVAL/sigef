@@ -141,7 +141,7 @@ class StudentRegistrationController extends Controller
             'is_returned_missionary' => 'required|boolean',
             'mission_served' => 'nullable|string|max:100',
             'mission_end_year' => 'nullable|numeric|min:1950|max:' . date('Y'),
-            'temple_status' => 'required|numeric|in:' . implode(',', TempleStatusEnum::values()),
+            'temple_status' => 'required|boolean',
             'current_calling' => 'nullable|string|max:100',
             'stake_id' => 'required|exists:stakes,id',
             'ward_branch' => 'nullable|string|max:100',
@@ -150,6 +150,18 @@ class StudentRegistrationController extends Controller
             'education_level' => 'required|numeric|in:' . implode(',', EducationLevelEnum::values()),
             'course_id' => 'required|exists:courses,id',
             'english_connect_level' => 'required|numeric|in:' . implode(',', EnglishConnectLevelEnum::values()),
+            // Acuerdos y Compromisos
+            'agreement_terms_accepted' => 'required|boolean|accepted',
+            'agreement_privacy_accepted' => 'required|boolean|accepted',
+            'agreement_conduct_accepted' => 'required|boolean|accepted',
+            'agreement_health_accepted' => 'required|boolean|accepted',
+
+            // Información de Salud
+            'has_health_insurance' => 'required|boolean',
+            'has_medical_condition' => 'required|boolean',
+            'medical_condition_description' => 'required_if:has_medical_condition,true|nullable|string|max:500',
+            'takes_medication' => 'required_if:has_medical_condition,true|nullable|boolean',
+            'medical_visit_frequency' => 'required_if:has_medical_condition,true|nullable|string|in:semanal,quincenal,mensual,trimestral,semestral,anual,cuando_necesario',
         ];
 
         $messages = [
@@ -162,9 +174,25 @@ class StudentRegistrationController extends Controller
             'document_number.required' => 'El número de documento de identificación es obligatorio.',
             'is_active_member.required' => 'Debe especificar si es un miembro activo de la iglesia.',
             'is_returned_missionary.required' => 'Debe especificar si es un misionero retornado.',
-            'temple_status.required' => 'Debe especificar su estado del templo.',
+            'temple_status.required' => 'Debe especificar si está sellado en el templo.',
+            'temple_status.boolean' => 'El estado del templo debe ser verdadero o falso.',
             'education_level.required' => 'Debe especificar su nivel educativo.',
             'english_connect_level.required' => 'Debe especificar su nivel de English Connect.',
+
+            // Mensajes para acuerdos
+            'agreement_terms_accepted.accepted' => 'Debe aceptar los términos y condiciones.',
+            'agreement_privacy_accepted.accepted' => 'Debe aceptar la política de privacidad.',
+            'agreement_conduct_accepted.accepted' => 'Debe aceptar el código de conducta.',
+            'agreement_health_accepted.accepted' => 'Debe aceptar la declaración de salud.',
+
+            // Mensajes para información de salud
+            'has_health_insurance.required' => 'Debe especificar si cuenta con seguro médico.',
+            'has_medical_condition.required' => 'Debe especificar si padece alguna enfermedad.',
+            'medical_condition_description.required_if' => 'Debe describir su condición médica.',
+            'takes_medication.required_if' => 'Debe especificar si toma medicamentos.',
+            'medical_visit_frequency.required_if' => 'Debe especificar la frecuencia de visitas médicas.',
+            'medical_visit_frequency.in' => 'La frecuencia de visitas médicas no es válida.',
+
         ];
 
         return $request->validate($rules, $messages);

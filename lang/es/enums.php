@@ -76,6 +76,13 @@ return [
         'yes' => 'Sí',
         'currently_serving' => 'Aún sirviendo',
     ],
+    'english_connect_level' => [
+        'none' => 'Ninguno',
+        'level_1' => 'Nivel 1',
+        'level_2' => 'Nivel 2',
+        'level_3' => 'Nivel 3',
+        'completed' => 'Completado',
+      ],
     'family_relationship' => [
         'father' => 'Padre',
         'mother' => 'Madre',

@@ -117,7 +117,7 @@ export function RequiredDocumentsStep({ request }: RequiredDocumentsStepProps) {
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Tipo de documento */}
                             <div>
-                                <Label htmlFor="document_type">{t.fields.document_type} *</Label>
+                                <Label htmlFor="document_type">{t.fields.document_type} </Label>
                                 <Select
                                     value={data.document_type?.toString() || ''}
                                     onValueChange={(value) => setData('document_type', Number(value))}
@@ -140,7 +140,7 @@ export function RequiredDocumentsStep({ request }: RequiredDocumentsStepProps) {
 
                             {/* Número de documento */}
                             <div>
-                                <Label htmlFor="document_number">{t.fields.document_number} *</Label>
+                                <Label htmlFor="document_number">{t.fields.document_number} </Label>
                                 <Input
                                     id="document_number"
                                     name="document_number"
@@ -192,7 +192,7 @@ export function RequiredDocumentsStep({ request }: RequiredDocumentsStepProps) {
                                 label={t.fields.driver_license}
                                 field="driver_license_file"
                                 accept="image/jpeg,image/png,image/jpg"
-                                required={false}
+                                required={true}
                                 description={t.placeholders.upload_driver_license}
                             />
 

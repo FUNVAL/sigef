@@ -5,28 +5,34 @@ import { Label } from '@/components/ui/label';
 import { PhoneInput } from '@/components/ui/phone-input';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import useFilteredStakes from '@/hooks/use-filtered-stakes';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Country } from '@/types/country';
+import { Course } from '@/types/course';
 import { Enums, Translation } from '@/types/global';
 import { StudentRegistrationFormData, StudentRegistrationRequest } from '@/types/student-registration';
 import { usePage } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Mail, MapPin, Phone, User } from 'lucide-react';
+import { ArrowLeft, Calendar, GraduationCap, HelpCircle, Loader2, Mail, MapPin, Navigation, Phone, User } from 'lucide-react';
 import { useCallback, useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
 interface PersonalInformationStepProps {
     countries: Country[];
+    courses: Course[];
+    enums: Enums;
     request: StudentRegistrationRequest;
 }
 
-export function PersonalInformationStep({ countries, request }: PersonalInformationStepProps) {
+export function PersonalInformationStep({ countries, courses, enums, request }: PersonalInformationStepProps) {
     const { nextStep, previousStep } = useContext(StepperContext);
     const { data, setData } = request;
-    const { enums, translations } = usePage<{ enums: Enums; translations: Translation }>().props;
+    const { translations } = usePage<{ translations: Translation }>().props;
     const { ui } = usePage<Translation>().props;
     const t = translations.student_registration;
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [isGettingLocation, setIsGettingLocation] = useState(false);
+
     const { stakes } = useFilteredStakes(data.country_id);
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -43,6 +49,13 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
         if (!data.marital_status) validationErrors.marital_status = t.validation.marital_status_required;
         if (!data.email?.trim()) validationErrors.email = t.validation.email_required;
         if (!data.phone?.trim()) validationErrors.phone = t.validation.phone_required;
+        if (!data.home_location_link?.trim()) validationErrors.home_location_link = 'La ubicación es obligatoria';
+
+        // Validaciones académicas
+        if (!data.education_level) validationErrors.education_level = 'El grado académico es obligatorio';
+        if (!data.course_id) validationErrors.course_id = 'Debe seleccionar un curso';
+        if (!data.english_connect_level) validationErrors.english_connect_level = 'Debe especificar su nivel de English Connect';
+
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -71,6 +84,61 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
         },
         [setData],
     );
+
+    // Función para obtener la ubicación del usuario
+    const getCurrentLocation = useCallback(() => {
+        if (!navigator.geolocation) {
+            alert('La geolocalización no está soportada por este navegador.');
+            return;
+        }
+
+        setIsGettingLocation(true);
+        setErrors((prev) => ({ ...prev, home_location_link: '' }));
+
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
+        };
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                // Crear un string con formato "lat,lng" que el backend pueda usar
+                const locationString = `${latitude.toFixed(6)},${longitude.toFixed(6)}`;
+                setData('home_location_link', locationString);
+                setIsGettingLocation(false);
+                
+                // Mostrar mensaje de confirmación al usuario sin mostrar las coordenadas
+                setErrors((prev) => ({ 
+                    ...prev, 
+                    home_location_link: '' 
+                }));
+                // Podrías agregar aquí una notificación toast si tienes el sistema implementado
+                // toast.success('Ubicación capturada correctamente');
+            },
+            (error) => {
+                setIsGettingLocation(false);
+                let errorMessage = 'Error al obtener la ubicación.';
+
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = 'Acceso a la ubicación denegado. Por favor, permita el acceso a la ubicación.';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = 'Información de ubicación no disponible.';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = 'Tiempo de espera agotado al obtener la ubicación.';
+                        break;
+                }
+
+                setErrors((prev) => ({ ...prev, home_location_link: errorMessage }));
+            },
+            options,
+        );
+    }, [setData, setErrors]);
+
 
     // Función para calcular la edad automáticamente
     const calculateAge = useCallback(
@@ -109,6 +177,11 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
         [setData],
     );
 
+    // Función para abrir el video de ayuda de Facebook
+    const openFacebookHelp = useCallback(() => {
+        window.open('https://www.youtube.com/watch?v=uNJgSZYER0s', '_blank');
+    }, []);
+
     // Función para manejar el cambio de fecha de nacimiento
     const handleBirthDateChange = useCallback(
         (value: string) => {
@@ -134,7 +207,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Primer Nombre */}
                             <div>
-                                <Label htmlFor="first_name">{t.fields.first_name} *</Label>
+                                <Label htmlFor="first_name">{t.fields.first_name} </Label>
                                 <Input
                                     id="first_name"
                                     name="first_name"
@@ -163,7 +236,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
 
                             {/* Primer Apellido */}
                             <div>
-                                <Label htmlFor="last_name">{t.fields.last_name} *</Label>
+                                <Label htmlFor="last_name">{t.fields.last_name} </Label>
                                 <Input
                                     id="last_name"
                                     name="last_name"
@@ -202,7 +275,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                             {/* Fecha de nacimiento */}
                             <div>
-                                <Label htmlFor="birth_date">{t.fields.birth_date} *</Label>
+                                <Label htmlFor="birth_date">{t.fields.birth_date} </Label>
                                 <Input
                                     id="birth_date"
                                     name="birth_date"
@@ -232,7 +305,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
 
                             {/* Género */}
                             <div>
-                                <Label htmlFor="gender">{t.fields.gender} *</Label>
+                                <Label htmlFor="gender">{t.fields.gender} </Label>
                                 <Select
                                     value={data.gender?.toString() || ''}
                                     onValueChange={(value) => setData('gender', Number(value))}
@@ -271,7 +344,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                                     id="country_id"
                                     value={data.country_id?.toString() || ''}
                                     onValueChange={(value) => setData('country_id', Number(value))}
-                                    label={`${t.fields.country} *`}
+                                    label={`${t.fields.country}`}
                                     required
                                     placeholder={t.placeholders.select_country}
                                 />
@@ -280,7 +353,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
 
                             {/* Estado civil */}
                             <div>
-                                <Label htmlFor="marital_status">{t.fields.marital_status} *</Label>
+                                <Label htmlFor="marital_status">{t.fields.marital_status} </Label>
                                 <Select
                                     value={data.marital_status?.toString() || ''}
                                     onValueChange={(value) => setData('marital_status', Number(value))}
@@ -313,7 +386,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Correo electrónico */}
                             <div>
-                                <Label htmlFor="email">{t.fields.email} *</Label>
+                                <Label htmlFor="email">{t.fields.email} </Label>
                                 <div className="relative">
                                     <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                                     <Input
@@ -332,7 +405,7 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
 
                             {/* Teléfono */}
                             <div>
-                                <Label htmlFor="phone">{t.fields.phone} *</Label>
+                                <Label htmlFor="phone">{t.fields.phone} </Label>
                                 <PhoneInput
                                     id="phone"
                                     name="phone"
@@ -352,28 +425,186 @@ export function PersonalInformationStep({ countries, request }: PersonalInformat
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            {/* Reclutador/responsable */}
+
+                            {/* Ubicación del hogar */}
                             <div>
-                                <Label htmlFor="recruiter_name">{t.fields.recruiter_name}</Label>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <MapPin className="h-4 w-4 text-[rgb(46_131_242_/_1)]" />
+                                    <Label htmlFor="home_location_link">Ubicación de su Casa</Label>
+                                </div>
+                                <div className="flex gap-2">
+                                    <Input
+                                        id="home_location_link"
+                                        name="home_location_link"
+                                        value={data.home_location_link ? '✓ Ubicación obtenida' : ''}
+                                        onChange={(e) => setData('home_location_link', e.target.value)}
+                                        placeholder=""
+                                        className="flex-1"
+                                        readOnly
+                                        required
+                                    />
+                                    <Button
+                                        type="button"
+                                        onClick={getCurrentLocation}
+                                        disabled={isGettingLocation}
+                                        variant="outline"
+                                        size="default"
+                                        className="min-w-[100px] border-[rgb(46_131_242_/_1)] text-[rgb(46_131_242_/_1)] hover:bg-[rgb(46_131_242_/_1)] hover:text-white"
+                                    >
+                                        {isGettingLocation ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                Obteniendo...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Navigation className="mr-2 h-4 w-2" />
+                                                
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
+                                {errors?.home_location_link && <p className="text-sm text-red-500">{errors.home_location_link}</p>}
+                                {data.home_location_link && (
+                                    <p className="mt-1 text-xs text-green-600">
+                                        ✓ Ubicación registrada correctamente
+                                    </p>
+                                )}
+                                {!data.home_location_link && (
+                                    <p className="mt-1 text-xs text-gray-500">
+                                        Has clic en el "Icono" para mandar tu ubicación actual
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Red Social facebook */}
+                            <div>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <button
+                                                    type="button"
+                                                    onClick={openFacebookHelp}
+                                                    className="inline-flex items-center justify-center rounded-full p-1 text-gray-400 hover:text-[rgb(46_131_242_/_1)] hover:bg-gray-100 transition-colors"
+                                                >
+                                                    <HelpCircle className="h-4 w-4" />
+                                                </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p className="text-sm">Si tienes dudas de cómo ingresar tu perfil, haz click al icono de ayuda</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+
+                                    <Label htmlFor="facebook_profile">Perfil de Facebook (URL)</Label>
+                                </div>
+                                <Input
+                                    id="facebook_profile"
+                                    name="facebook_profile"
+                                    value={data.facebook_profile || ''}
+                                    onChange={(e) => setData('facebook_profile', e.target.value)}
+                                    placeholder="Ingrese su enlace de perfil de Facebook"
+                                    className="flex-1"
+                                    required
+                                />
+                                {errors?.facebook_profile && <p className="text-sm text-red-500">{errors.facebook_profile}</p>}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {/* Información Académica */}
+                    <div className="space-y-4">
+                        <div className="mb-4 flex items-center gap-2">
+                            <GraduationCap className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
+                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Información Académica</h3>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            {/* Nivel educativo */}
+                            <div>
+                                <Label htmlFor="education_level">Grado Académico Alcanzado </Label>
+                                <Select
+                                    value={data.education_level?.toString() || ''}
+                                    onValueChange={(value) => setData('education_level', Number(value))}
+                                    name="education_level"
+                                    required
+                                >
+                                    <SelectTrigger id="education_level">
+                                        <SelectValue placeholder="Seleccione su nivel educativo más alto" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {enums.educationLevel?.map((level: any) => (
+                                            <SelectItem key={level.id} value={level.id.toString()}>
+                                                {level.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.education_level && <p className="text-sm text-red-500">{errors.education_level}</p>}
+                            </div>
+
+                            {/* Curso */}
+                            <div>
+                                <Label htmlFor="course_id">Curso al que se Inscribe </Label>
+                                <Select
+                                    value={data.course_id?.toString() || ''}
+                                    onValueChange={(value) => setData('course_id', Number(value))}
+                                    name="course_id"
+                                    required
+                                >
+                                    <SelectTrigger id="course_id">
+                                        <SelectValue placeholder="Seleccione el curso de su interés" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {courses.map((course) => (
+                                            <SelectItem key={course.id} value={course.id.toString()}>
+                                                <div className="flex gap-2">
+                                                    <span className="font-medium">{course.name}</span>
+                                                </div>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.course_id && <p className="text-sm text-red-500">{errors.course_id}</p>}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            {/* English Connect Level */}
+                            <div>
+                                <Label htmlFor="english_connect_level">Nivel de English Connect </Label>
+                                <Select
+                                    value={data.english_connect_level?.toString() || ''}
+                                    onValueChange={(value) => setData('english_connect_level', Number(value))}
+                                    name="english_connect_level"
+                                    required
+                                >
+                                    <SelectTrigger id="english_connect_level">
+                                        <SelectValue placeholder="Seleccione su nivel de English Connect" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {enums.englishConnectLevel?.map((level: any) => (
+                                            <SelectItem key={level.id} value={level.id.toString()}>
+                                                {level.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.english_connect_level && <p className="text-sm text-red-500">{errors.english_connect_level}</p>}
+                            </div>
+
+                            {/* Reclutador */}
+                            <div>
+                                <Label htmlFor="recruiter_name">Reclutador/Responsable</Label>
                                 <Input
                                     id="recruiter_name"
                                     name="recruiter_name"
                                     value={data.recruiter_name || ''}
                                     onChange={(e) => cleanSpaces('recruiter_name', e.target.value)}
-                                    placeholder={t.placeholders.recruiter_name}
-                                />
-                            </div>
+                                    placeholder="Nombre del reclutador (opcional)"
 
-                            {/* Link de ubicación */}
-                            <div>
-                                <Label htmlFor="home_location_link">{t.fields.home_location_link}</Label>
-                                <Input
-                                    id="home_location_link"
-                                    name="home_location_link"
-                                    type="url"
-                                    value={data.home_location_link || ''}
-                                    onChange={(e) => setData('home_location_link', e.target.value)}
-                                    placeholder={t.placeholders.home_location_link}
                                 />
                             </div>
                         </div>

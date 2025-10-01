@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import useFilteredStakes from '@/hooks/use-filtered-stakes';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Country } from '@/types/country';
 import { Course } from '@/types/course';
@@ -20,31 +21,52 @@ interface StudentRegistrationOverviewStepProps {
 
 export function StudentRegistrationOverviewStep({ data, countries, courses, enums, onSubmit, processing }: StudentRegistrationOverviewStepProps) {
     const { previousStep } = useContext(StepperContext);
-
+    const { stakes } = useFilteredStakes(data.country_id);
     const getCountryName = (id: number | undefined) => {
-        console.log('Getting country name for ID:', id);
         if (!id || id === 0) return 'No especificado';
         const country = countries.find((c) => c.id === id);
-        console.log('Found country:', country);
         return country?.name || 'No especificado';
     };
 
+    const getStakeName = (id: number | undefined) => {
+        if (!id || id === 0) return 'No especificado';
+        const stake = stakes.find((s) => s.id === id);
+        return stake?.name || 'No especificado';
+    };
+
     const getCourseName = (id: number | undefined) => {
-        console.log('Getting course name for ID:', id);
         if (!id || id === 0) return 'No especificado';
         const course = courses.find((c) => c.id === id);
-        console.log('Found course:', course);
         return course?.name || 'No especificado';
     };
 
     const getEnumName = (enumArray: any[] | undefined, id: number | undefined) => {
-        console.log('Getting enum name for ID:', id, 'from array:', enumArray);
         if (!id || id === 0 || !enumArray) return 'No especificado';
         const enumItem = enumArray.find((e) => e.id === id);
-        console.log('Found enum item:', enumItem);
         return enumItem?.name || 'No especificado';
     };
 
+    const getMedicalFrequencyName = (frequency: string | undefined) => {
+        if (!frequency) return 'No especificado';
+        const frequencies: Record<string, string> = {
+            semanal: 'Semanal',
+            quincenal: 'Quincenal',
+            mensual: 'Mensual',
+            trimestral: 'Cada 3 meses',
+            semestral: 'Cada 6 meses',
+            anual: 'Anualmente',
+            cuando_necesario: 'Solo cuando es necesario',
+        };
+        return frequencies[frequency] || frequency;
+    };
+
+    const getLocationStatus = (locationLink: string | undefined) => {
+        if (!locationLink || locationLink.trim() === '') {
+            return 'No proporcionada';
+        }
+        // Si tiene algún contenido (ya sea coordenadas o cualquier formato de ubicación)
+        return '✓ Ubicación guardada correctamente';
+    };
     const InfoSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
         <div className="space-y-3">
             <h3 className="border-b border-gray-200 pb-2 text-lg font-semibold text-[rgb(46_131_242_/_1)]">{title}</h3>
@@ -86,8 +108,9 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                         <InfoItem label="Estado Civil" value={getEnumName(enums.maritalStatus, data.marital_status)} />
                         <InfoItem label="Correo Electrónico" value={data.email} />
                         <InfoItem label="Teléfono" value={data.phone} />
+                        <InfoItem label="Perfil de Facebook" value={data.facebook_profile} />
                         <InfoItem label="Reclutador" value={data.recruiter_name} />
-                        <InfoItem label="Ubicación de Casa" value={data.home_location_link} />
+                        <InfoItem label="Ubicación de Casa" value={getLocationStatus(data.home_location_link)} />
                     </InfoSection>
 
                     {/* Documentos */}
@@ -101,10 +124,10 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                         <FileItem label="Foto Formal" file={data.formal_photo_file as File} />
                     </InfoSection>
 
-                    {/* Información Religiosa */}
-                    <InfoSection title="Información Religiosa">
+                    {/* Información Eclesiástica */}
+                    <InfoSection title="Información Eclesiástica">
                         <InfoItem label="Miembro Activo" value={data.is_active_member ? 'Sí' : 'No'} />
-                        <InfoItem label="Número de Cédula de Miembro" value={data.member_certificate_number} />
+                        <InfoItem label="Número de Cédula de Miembro" value={data.member_number} />
                         <InfoItem
                             label="Año de Bautismo"
                             value={data.baptism_year && data.baptism_year > 0 ? data.baptism_year : 'No especificado'}
@@ -115,12 +138,12 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                             label="Año Fin de Misión"
                             value={data.mission_end_year && data.mission_end_year > 0 ? data.mission_end_year : 'No especificado'}
                         />
-                        <InfoItem label="Estado del Templo" value={getEnumName(enums.templeStatus, data.temple_status)} />
+                        <InfoItem label="Sellado en el Templo" value={data.temple_status ? 'Sí' : 'No'} />
                         <InfoItem label="Llamamiento Actual" value={data.current_calling} />
+                        <InfoItem label="Estaca/Distrito/Misión" value={getStakeName(data.stake_id)} />
                         <InfoItem label="Barrio/Rama" value={data.ward_branch} />
-                        <InfoItem label="Número de Miembro" value={(data as any).member_number} />
-                        <InfoItem label="Presidente Auxiliar" value={(data as any).auxiliar_president} />
-                        <InfoItem label="Teléfono Presidente Auxiliar" value={(data as any).auxiliary_president_phone} />
+                        <InfoItem label="Presidente Auxiliar" value={data.auxiliar_president} />
+                        <InfoItem label="Teléfono Presidente Auxiliar" value={data.auxiliary_president_phone} />
                     </InfoSection>
 
                     {/* Información Académica */}
@@ -128,6 +151,26 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                         <InfoItem label="Nivel Educativo" value={getEnumName(enums.educationLevel, data.education_level)} />
                         <InfoItem label="Curso" value={getCourseName(data.course_id)} />
                         <InfoItem label="Nivel English Connect" value={getEnumName(enums.englishConnectLevel, data.english_connect_level)} />
+                    </InfoSection>
+                    {/* Información de Salud */}
+                    <InfoSection title="Información de Salud">
+                        <InfoItem label="Cuenta con Seguro Médico" value={data.has_health_insurance ? 'Sí' : 'No'} />
+                        <InfoItem label="Padece Alguna Enfermedad" value={data.has_medical_condition ? 'Sí' : 'No'} />
+                        {data.has_medical_condition && (
+                            <>
+                                <InfoItem label="Descripción de la Condición" value={data.medical_condition_description} />
+                                <InfoItem label="Toma Medicamentos" value={data.takes_medication ? 'Sí' : 'No'} />
+                                <InfoItem label="Frecuencia de Visitas Médicas" value={getMedicalFrequencyName(data.medical_visit_frequency)} />
+                            </>
+                        )}
+                    </InfoSection>
+
+                    {/* Acuerdos y Compromisos */}
+                    <InfoSection title="Acuerdos y Compromisos">
+                        <InfoItem label="Términos y Condiciones" value={data.agreement_terms_accepted ? 'Aceptado' : 'Pendiente'} />
+                        <InfoItem label="Política de Privacidad" value={data.agreement_privacy_accepted ? 'Aceptado' : 'Pendiente'} />
+                        <InfoItem label="Código de Conducta" value={data.agreement_conduct_accepted ? 'Aceptado' : 'Pendiente'} />
+                        <InfoItem label="Declaración de Salud" value={data.agreement_health_accepted ? 'Aceptado' : 'Pendiente'} />
                     </InfoSection>
                 </div>
 

@@ -86,7 +86,7 @@ type StudentRegistration = BaseEntity & {
     is_returned_missionary: boolean;
     mission_served?: string;
     mission_end_year?: number;
-    temple_status: TempleStatusInfo;
+    temple_status: boolean;
     current_calling?: string;
     stake: Stake;
     ward_branch?: string;
@@ -133,7 +133,7 @@ type StudentRegistrationFormData = Omit<
         gender: number;
         marital_status: number;
         document_type: number;
-        temple_status: number;
+        temple_status: boolean;
         education_level: number;
         english_connect_level: number;
         status?: number;
@@ -149,6 +149,14 @@ type StudentRegistrationFormData = Omit<
         agreement_terms_accepted: boolean;
         agreement_privacy_accepted: boolean;
         agreement_conduct_accepted: boolean;
+        agreement_health_accepted: boolean;
+
+        // Health Information
+        has_health_insurance: boolean;
+        has_medical_condition: boolean;
+        medical_condition_description?: string;
+        takes_medication: boolean;
+        medical_visit_frequency?: string;
 
         // Index signature for Inertia compatibility
         [key: string]: any;
@@ -182,7 +190,7 @@ type StudentRegistrationFilters = BaseFilters & {
     document_type?: number;
     is_active_member?: boolean;
     is_returned_missionary?: boolean;
-    temple_status?: number;
+    temple_status?: boolean;
     education_level?: number;
     english_connect_level?: number;
     course_id?: number;
