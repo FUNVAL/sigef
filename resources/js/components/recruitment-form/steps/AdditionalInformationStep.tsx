@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { RecruitmentRequest } from '@/types/recruitment';
+
 import { ArrowLeft, Calendar, Camera } from 'lucide-react';
 import { useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
@@ -13,12 +14,13 @@ interface AdditionalInformationStepProps {
     request: RecruitmentRequest;
 }
 
-export function AdditionalInformationStep({ request }: AdditionalInformationStepProps) {
-    const { nextStep, previousStep } = useContext(StepperContext);
-    const { data, setData } = request;
-    const [errors, setErrors] = useState<Record<string, string>>({});
+export interface MonthOption {
+    value: number;
+    label: string;
+}
 
-    const months = [
+export function getMonthOptions(): MonthOption[] {
+    return [
         { value: 1, label: 'Enero' },
         { value: 2, label: 'Febrero' },
         { value: 3, label: 'Marzo' },
@@ -30,8 +32,16 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
         { value: 9, label: 'Septiembre' },
         { value: 10, label: 'Octubre' },
         { value: 11, label: 'Noviembre' },
-        { value: 12, label: 'Diciembre' }
+        { value: 12, label: 'Diciembre' },
     ];
+}
+
+export function AdditionalInformationStep({ request }: AdditionalInformationStepProps) {
+    const { nextStep, previousStep } = useContext(StepperContext);
+    const { data, setData } = request;
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const months = getMonthOptions();
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 5 }, (_, i) => currentYear + i);
@@ -112,7 +122,7 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                                         <SelectValue placeholder="Seleccionar mes" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {months.map(month => (
+                                        {months.map((month: { value: number; label: string }) => (
                                             <SelectItem key={month.value} value={month.value.toString()}>
                                                 {month.label}
                                             </SelectItem>
