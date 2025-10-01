@@ -44,11 +44,13 @@ class PreInscription extends Model
         'country_id',
         'stake_id',
         'course_id',
+        'has_children',
     ];
 
     protected $casts = [
         'currently_working' => 'boolean',
         'available_full_time' => 'boolean',
+        'has_children' => 'boolean',
     ];
 
     public function country(): BelongsTo
