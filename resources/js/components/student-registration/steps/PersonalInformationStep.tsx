@@ -106,6 +106,14 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                 const locationString = `${latitude.toFixed(6)},${longitude.toFixed(6)}`;
                 setData('home_location_link', locationString);
                 setIsGettingLocation(false);
+                
+                // Mostrar mensaje de confirmación al usuario sin mostrar las coordenadas
+                setErrors((prev) => ({ 
+                    ...prev, 
+                    home_location_link: '' 
+                }));
+                // Podrías agregar aquí una notificación toast si tienes el sistema implementado
+                // toast.success('Ubicación capturada correctamente');
             },
             (error) => {
                 setIsGettingLocation(false);
@@ -413,18 +421,22 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Ubicación del hogar */}
                             <div>
-                                <Label htmlFor="home_location_link">Ubicación de su Casa</Label>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <MapPin className="h-4 w-4 text-[rgb(46_131_242_/_1)]" />
+                                    <Label htmlFor="home_location_link">Ubicación de su Casa</Label>
+                                </div>
                                 <div className="flex gap-2">
                                     <Input
                                         id="home_location_link"
                                         name="home_location_link"
-                                        value={data.home_location_link || ''}
+                                        value={data.home_location_link ? '✓ Ubicación obtenida' : ''}
                                         onChange={(e) => setData('home_location_link', e.target.value)}
-                                        placeholder="Latitud, Longitud (ej: 18.4861,-69.9312)"
+                                        placeholder=""
                                         className="flex-1"
+                                        readOnly
                                         required
                                     />
                                     <Button
@@ -433,7 +445,7 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                                         disabled={isGettingLocation}
                                         variant="outline"
                                         size="default"
-                                        className="min-w-[140px] border-[rgb(46_131_242_/_1)] text-[rgb(46_131_242_/_1)] hover:bg-[rgb(46_131_242_/_1)] hover:text-white"
+                                        className="min-w-[100px] border-[rgb(46_131_242_/_1)] text-[rgb(46_131_242_/_1)] hover:bg-[rgb(46_131_242_/_1)] hover:text-white"
                                     >
                                         {isGettingLocation ? (
                                             <>
@@ -442,52 +454,59 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                                             </>
                                         ) : (
                                             <>
-                                                <Navigation className="mr-2 h-4 w-4" />
-                                                Mi Ubicación
+                                                <Navigation className="mr-2 h-4 w-2" />
+                                                
                                             </>
                                         )}
                                     </Button>
                                 </div>
                                 {errors?.home_location_link && <p className="text-sm text-red-500">{errors.home_location_link}</p>}
-                                <p className="mt-1 text-xs text-gray-500">
-                                    Haga clic en "Mi Ubicación" para detectar automáticamente sus coordenadas
-                                </p>
+                                {data.home_location_link && (
+                                    <p className="mt-1 text-xs text-green-600">
+                                        ✓ Ubicación registrada correctamente
+                                    </p>
+                                )}
+                                {!data.home_location_link && (
+                                    <p className="mt-1 text-xs text-gray-500">
+                                        Has clic en el "Icono" para mandar tu ubicación actual
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Red Social facebook */}
+                            <div>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <button
+                                                    type="button"
+                                                    onClick={openFacebookHelp}
+                                                    className="inline-flex items-center justify-center rounded-full p-1 text-gray-400 hover:text-[rgb(46_131_242_/_1)] hover:bg-gray-100 transition-colors"
+                                                >
+                                                    <HelpCircle className="h-4 w-4" />
+                                                </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p className="text-sm">Si tienes dudas de cómo ingresar tu perfil, haz click al icono de ayuda</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+
+                                    <Label htmlFor="facebook_profile">Perfil de Facebook (URL)</Label>
+                                </div>
+                                <Input
+                                    id="facebook_profile"
+                                    name="facebook_profile"
+                                    value={data.facebook_profile || ''}
+                                    onChange={(e) => setData('facebook_profile', e.target.value)}
+                                    placeholder="Ingrese su enlace de perfil de Facebook"
+                                    className="flex-1"
+                                    required
+                                />
+                                {errors?.facebook_profile && <p className="text-sm text-red-500">{errors.facebook_profile}</p>}
                             </div>
                         </div>
-
-                    {/* Red Social facebook */}
-                    <div>
-                        <div className="flex items-center gap-2 mb-2">
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <button
-                                            type="button"
-                                            onClick={openFacebookHelp}
-                                            className="inline-flex items-center justify-center rounded-full p-1 text-gray-400 hover:text-[rgb(46_131_242_/_1)] hover:bg-gray-100 transition-colors"
-                                        >
-                                            <HelpCircle className="h-4 w-4" />
-                                        </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p className="text-sm">Si tienes dudas de cómo ingresar tu perfil, haz click al icono de ayuda</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-
-                            <Label htmlFor="facebook_profile">Perfil de Facebook (URL)</Label>
-                        </div>
-                        <Input
-                            id="facebook_profile"
-                            name="facebook_profile"
-                            value={data.facebook_profile || ''}
-                            onChange={(e) => setData('facebook_profile', e.target.value)}
-                            placeholder="Ingrese su enlace de perfil de Facebook"
-                            className="flex-1"
-                            required
-                        />
-                        {errors?.facebook_profile && <p className="text-sm text-red-500">{errors.facebook_profile}</p>}
-                    </div>
 
                     </div>
 
