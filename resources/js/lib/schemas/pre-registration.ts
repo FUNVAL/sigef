@@ -33,6 +33,10 @@ export const preRegistrationSchema = z.object({
     email: z.string().email('Correo inválido.'),
     marital_status: z.number().min(1, 'El estado civil es obligatorio.'),
     served_mission: z.number().min(1, 'Este campo es obligatorio.'),
+    has_children: z.boolean({
+        required_error: 'Este campo es obligatorio.',
+        invalid_type_error: 'Debe seleccionar una opción.'
+    }),
 });
 
 export const femaleValidationSchema = z

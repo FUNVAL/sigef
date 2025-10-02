@@ -166,7 +166,7 @@ class PreInscriptionController extends Controller
             if ($filterResult['shouldReject']) {
                 $preInscription->update([
                     'status' => RequestStatusEnum::REJECTED->value,
-                    'declined_reason' => ReferenceStatusEnum::FILTERED->value,
+                    'declined_reason' => $filterResult['reason'],
                     'declined_description' => 'Preinscripción filtrada automáticamente, no cumple con los requisitos.',
                     'modified_by' => 0
                 ]);
@@ -868,11 +868,18 @@ class PreInscriptionController extends Controller
 
     /**
      * Verifica elegibilidad para misión según edad, estado civil y otros criterios
-     * 
+     *
      * Reglas:
-     * - Hombres: < 25 años
-     * - Mujeres: < 29 años  
-     * - Deben ser solteros SIN hijos O haber servido misión O estar sirviendo actualmente
+     * - Hombres: < 25 años son elegibles para misión
+     * - Mujeres: < 29 años son elegibles para misión
+     *
+     * Para MENORES al límite de edad, son ELEGIBLES si:
+     * 1. Ya sirvieron misión O están sirviendo actualmente, O
+     * 2. Son solteros Y tienen hijos (no pueden servir por responsabilidades familiares)
+     *
+     * Para MAYORES al límite de edad: Son elegibles automáticamente
+     *
+     * NO ELEGIBLES: Menores al límite, solteros sin hijos que no han servido misión
      */
     private function missionEligibility(
         $age,
@@ -889,7 +896,7 @@ class PreInscriptionController extends Controller
                 'eligible' => true,
                 'message' => [
                     'type' => 'success',
-                    'message' => __('common.messages.success.mission_eligible')
+                    'message' => __('messages.success.preinscription_success')
                 ]
             ];
         }
@@ -901,23 +908,25 @@ class PreInscriptionController extends Controller
         $hasServedMission = $servedMission === MissionStatusEnum::YES->value ||
             $servedMission === MissionStatusEnum::CURRENTLY_SERVING->value;
 
-        // Es elegible si: es soltero sin hijos O ya sirvió/está sirviendo misión
-        if (($isSingle && !$hasChildren) || $hasServedMission) {
+        // Es elegible si:
+        // 1. Ya sirvió misión o está sirviendo actualmente, O
+        // 2. Es soltero Y tiene hijos (no puede servir misión por responsabilidades familiares)
+        if ($hasServedMission || ($isSingle && $hasChildren)) {
             return [
                 'eligible' => true,
                 'message' => [
                     'type' => 'success',
-                    'message' => __('common.messages.success.mission_eligible')
+                    'message' => __('messages.success.preinscription_success')
                 ]
             ];
         }
 
-        // No cumple los requisitos
+        // No cumple los requisitos - no ha servido misión y puede servirla (soltero sin hijos)
         return [
             'eligible' => false,
             'message' => [
                 'type' => 'rejected',
-                'message' => __('common.messages.rejections.mission_not_eligible')
+                'message' => __('messages.rejections.mission_eligible')
             ]
         ];
     }
