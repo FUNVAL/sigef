@@ -84,6 +84,11 @@ class PreInscriptionController extends Controller
                 $query->where('stake_id', $stake);
             }
 
+            $course = $request->input('course') ?? 0;
+            if ($course != 0) {
+                $query->where('course_id', $course);
+            }
+
             $perPage = $request->input('per_page', 10);
             $page = $request->input('page', 1);
             $preInscriptions = $query->paginate($perPage, ['*'], 'page', $page);
@@ -100,6 +105,7 @@ class PreInscriptionController extends Controller
                 ->toArray();
 
             $countries = Country::where('status', StatusEnum::ACTIVE->value)->get();
+            $courses = Course::where('status', StatusEnum::ACTIVE->value)->get();
 
 
             return Inertia::render('pre-registration/pre-inscription', [
@@ -107,13 +113,14 @@ class PreInscriptionController extends Controller
                 'responsables' => $responsables,
                 'countries' => $countries,
                 'stakes' => $stakes,
+                'courses' => $courses,
                 'pagination' => [
                     'current_page' => $preInscriptions->currentPage(),
                     'per_page' => $preInscriptions->perPage(),
                     'total' => $preInscriptions->total(),
                     'last_page' => $preInscriptions->lastPage(),
                 ],
-                'filters' => $request->only(['search', 'status', 'responsable', 'country', 'stake']),
+                'filters' => $request->only(['search', 'status', 'responsable', 'country', 'stake', 'course']),
             ]);
         } catch (\Exception $e) {
             return response()->json([
