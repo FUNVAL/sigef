@@ -99,4 +99,5 @@ const initialData: PreRegistrationFormData = {
     currently_working: null,
     job_type_preference: null,
     available_full_time: null,
+    has_children: undefined as any, // Forzar selección del usuario
 };

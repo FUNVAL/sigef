@@ -42,7 +42,7 @@ class PreInscriptionController extends Controller
 
             $query = PreInscription::query()->with(['country', 'stake', 'course'])->orderBy('created_at', 'desc');
 
-            if ($request->has('search')) {
+            if ($request->has('search') && $request->input('search') !== '') {
                 $search = $request->input('search');
                 $query->where(function ($q) use ($search) {
                     $q->where('first_name', 'like', '%' . $search . '%')
@@ -166,7 +166,7 @@ class PreInscriptionController extends Controller
             if ($filterResult['shouldReject']) {
                 $preInscription->update([
                     'status' => RequestStatusEnum::REJECTED->value,
-                    'declined_reason' => ReferenceStatusEnum::FILTERED->value,
+                    'declined_reason' => $filterResult['reason'],
                     'declined_description' => 'Preinscripción filtrada automáticamente, no cumple con los requisitos.',
                     'modified_by' => 0
                 ]);
@@ -296,6 +296,7 @@ class PreInscriptionController extends Controller
                 'job_type_preference' => 'nullable|numeric|in:' . implode(',', JobTypeEnum::values()),
                 'available_full_time' => 'nullable|boolean',
                 'course_id' => 'required|exists:courses,id',
+                'has_children' => 'required|boolean', // ✅ AGREGAR esta línea
             ];
 
             $validated = $request->validate($rules);
@@ -586,6 +587,7 @@ class PreInscriptionController extends Controller
             'country_id' => 'required|exists:countries,id',
             'stake_id' => 'required|exists:stakes,id',
             'course_id' => 'required|exists:courses,id',
+            'has_children' => 'required|boolean',
         ];
 
         if ($isWoman) {
@@ -608,16 +610,42 @@ class PreInscriptionController extends Controller
      */
     private function applyAutomaticFilters($preInscription, Request $request): array
     {
-        $eligibilityCheck = $this->checkWomanEligibility(
+        // Verificar elegibilidad de mujeres
+        $womanEligibilityCheck = $this->checkWomanEligibility(
             $request->input('gender'),
             $request->input('currently_working'),
             $request->input('job_type_preference'),
             $request->input('available_full_time')
         );
 
+        if (!$womanEligibilityCheck['eligible']) {
+            return [
+                'shouldReject' => true,
+                'message' => $womanEligibilityCheck['message'],
+                'reason' => ReferenceStatusEnum::FILTERED->value
+            ];
+        }
+
+        // ✅ AGREGAR: Verificar elegibilidad para misión
+        $missionEligibilityCheck = $this->missionEligibility(
+            $request->input('age'),
+            $request->input('marital_status'),
+            $request->input('served_mission'),
+            $request->input('has_children', false),
+            $request->input('gender')
+        );
+
+        if (!$missionEligibilityCheck['eligible']) {
+            return [
+                'shouldReject' => true,
+                'message' => $missionEligibilityCheck['message'],
+                'reason' => ReferenceStatusEnum::FUTURE_MISSIONARY->value
+            ];
+        }
+
         return [
-            'shouldReject' => !$eligibilityCheck['eligible'],
-            'message' => $eligibilityCheck['message']
+            'shouldReject' => false,
+            'message' => $womanEligibilityCheck['message']
         ];
     }
 
@@ -827,14 +855,79 @@ class PreInscriptionController extends Controller
             'greeting' => 'Estimado ' . $user->full_name,
             'subject' => 'Nueva Preinscripción: ' . $reference->name,
             'mensaje' => <<<'EOT'
-Te informamos que tienes un nuevo preinscrito pendiente de revisión.
-Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.
-EOT,
+            Te informamos que tienes un nuevo preinscrito pendiente de revisión.
+            Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.
+            EOT,
             'salutation' =>  'Atentamente: Sistema Integral de Gestión Educativa FUNVAL',
             'action' => [
                 'text' => '👉 Ver Preinscripción',
                 'url' => route('pre-inscription.index'),
             ],
+        ];
+    }
+
+    /**
+     * Verifica elegibilidad para misión según edad, estado civil y otros criterios
+     *
+     * Reglas:
+     * - Hombres: < 25 años son elegibles para misión
+     * - Mujeres: < 29 años son elegibles para misión
+     *
+     * Para MENORES al límite de edad, son ELEGIBLES si:
+     * 1. Ya sirvieron misión O están sirviendo actualmente, O
+     * 2. Son solteros Y tienen hijos (no pueden servir por responsabilidades familiares)
+     *
+     * Para MAYORES al límite de edad: Son elegibles automáticamente
+     *
+     * NO ELEGIBLES: Menores al límite, solteros sin hijos que no han servido misión
+     */
+    private function missionEligibility(
+        $age,
+        $maritalStatus,
+        $servedMission,
+        $hasChildren,
+        $gender
+    ): array {
+        $ageLimit = $gender == GenderEnum::FEMALE->value ? 29 : 25;
+
+        // Si es mayor al límite de edad, es elegible
+        if ($age >= $ageLimit) {
+            return [
+                'eligible' => true,
+                'message' => [
+                    'type' => 'success',
+                    'message' => __('messages.success.preinscription_success')
+                ]
+            ];
+        }
+
+        // Si es menor al límite de edad, verificar condiciones adicionales
+        $isSingle = $maritalStatus === MaritalStatusEnum::SINGLE->value;
+
+        // Verificar si ya sirvió misión O está sirviendo actualmente
+        $hasServedMission = $servedMission === MissionStatusEnum::YES->value ||
+            $servedMission === MissionStatusEnum::CURRENTLY_SERVING->value;
+
+        // Es elegible si:
+        // 1. Ya sirvió misión o está sirviendo actualmente, O
+        // 2. Es soltero Y tiene hijos (no puede servir misión por responsabilidades familiares)
+        if ($hasServedMission || ($isSingle && $hasChildren)) {
+            return [
+                'eligible' => true,
+                'message' => [
+                    'type' => 'success',
+                    'message' => __('messages.success.preinscription_success')
+                ]
+            ];
+        }
+
+        // No cumple los requisitos - no ha servido misión y puede servirla (soltero sin hijos)
+        return [
+            'eligible' => false,
+            'message' => [
+                'type' => 'rejected',
+                'message' => __('messages.rejections.mission_eligible')
+            ]
         ];
     }
 }

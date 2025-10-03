@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PhoneInput } from '@/components/ui/phone-input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import SearchableSelect from '@/components/ui/searchable-select';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import useFilteredStakes from '@/hooks/use-filtered-stakes';
@@ -303,6 +304,26 @@ export function PreRegistrationFormStep({ countries, request }: PreRegistrationF
                                     </SelectContent>
                                 </Select>
                                 {errors.served_mission && <p className="text-sm text-red-500">{errors.served_mission}</p>}
+                            </div>
+                            {/* ¿Tienes hijos? */}
+                            <div>
+                                <Label htmlFor="has_children">{forms.pre_inscription.fields.has_children}</Label>
+                                <RadioGroup
+                                    value={data.has_children !== undefined ? data.has_children.toString() : ''}
+                                    onValueChange={(value) => setData('has_children', value === 'true')}
+                                    className="flex flex-row space-x-6 mt-2"
+                                    required
+                                >
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="true" id="has_children_yes" />
+                                        <Label htmlFor="has_children_yes" className="font-normal">{forms.pre_inscription.options.yes}</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="false" id="has_children_no" />
+                                        <Label htmlFor="has_children_no" className="font-normal">{forms.pre_inscription.options.no}</Label>
+                                    </div>
+                                </RadioGroup>
+                                {errors.has_children && <p className="text-sm text-red-500">{errors.has_children}</p>}
                             </div>
                         </div>
 

@@ -62,9 +62,10 @@ return [
         'subtitle' => 'Ficamos felizes em receber sua inscrição ou a referência de seu amigo.',
 
         'program_description' => [
-            'title' => 'Você está procurando emprego?&nbsp;&nbsp;Este Programa é para Você!',
+            'title' => 'Você está procurando emprego ou conhece alguém que precisa?',
 
-            'description' => 'Este programa é destinado a candidatos a emprego que estejam dispostos a se comprometer com um processo de treinamento intensivo, dedicando de <span class="font-bold text-blue-700">10 a 12 horas por dia, de segunda a sexta-feira.</span>'
+            'description' => 'A Funval oferece a oportunidade perfeita para você se preparar e se destacar no mercado de trabalho. Nossos cursos intensivos, com duração a partir de apenas 5 semanas, são projetados para fornecer as competências necessárias para conseguir um emprego formal. Com uma abordagem prática e acompanhamento constante, você aumentará suas chances de crescer no mundo do trabalho.<br>
+            <span class="text-xl font-bold ">Venha transformar o futuro com a Funval!</span>'
         ],
 
         'motivation' => 'Se você ou a pessoa indicada tiver a motivação e o compromisso de atingir essa meta, vá em frente! Estamos entusiasmados em acompanhá-los em sua busca de emprego.',
@@ -81,11 +82,11 @@ return [
         'subtitle' => 'Selecione uma das seguintes opções para continuar',
         'referral' => [
             'title' => 'Indicar um amigo',
-            'description' => 'Recomende alguém que você conhece para participar dos nossos programas de capacitação para o emprego.',
+            'description' => 'Compartilhe essa oportunidade e ajude outra pessoa a dar o primeiro passo rumo à capacitação profissional.',
         ],
         'pre_inscription' => [
             'title' => 'Pré-inscrever-me no curso',
-            'description' => 'Complete sua pré-inscrição para participar dos nossos programas de capacitação para o emprego.',
+            'description' => 'Dê o primeiro passo e inscreva-se para ter a chance de participar dos nossos programas de capacitação profissional.',
         ],
     ],
 

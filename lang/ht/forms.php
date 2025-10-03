@@ -63,6 +63,7 @@ return [
             'email' => 'Imel',
             'marital_status' => 'Estati Sivil',
             'served_mission' => 'Ou te sèvi yon misyon?',
+            'has_children' => 'Ou gen timoun?',
             'country' => 'Peyi rezidans',
             'stake' => 'Poto/Distri/Misyon',
             'currently_working' => 'K ap travay kounye a?',
@@ -76,6 +77,10 @@ return [
             'min_age' => 'Dwe pi gran pase :min ane',
             'max_age' => 'Dwe pi piti pase :max ane',
             'unique' => 'Imel sa a deja anrejistre',
+        ],
+        'options' => [
+            'yes' => 'Wi',
+            'no' => 'Non',
         ],
     ],
     'referral' => [
