@@ -14,10 +14,11 @@ type PageProps = {
     responsables: EnumItem[] | null;
     countries: EnumItem[] | null;
     stakes: EnumItem[] | null;
+    courses: EnumItem[] | null;
 }
 
 export default function TableFilters() {
-    const { enums, responsables,countries, stakes } = usePage<PageProps>().props;
+    const { enums, responsables,countries, stakes, courses } = usePage<PageProps>().props;
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     const { getValue, applyFilter, clearFilter, clearAllFilters, activeFiltersCount, getName } = useFilters([
@@ -40,6 +41,11 @@ export default function TableFilters() {
             key: "stake",
             defaultValue: "0",
             getName: (v: string) => stakes?.find(s => s.id.toString() === v)?.name ?? v,
+        },
+        {
+            key: "course",
+            defaultValue: "0",
+            getName: (v: string) => courses?.find(c => c.id.toString() === v)?.name ?? v,
         }
 
     ]);
@@ -48,6 +54,7 @@ export default function TableFilters() {
     const currentResponsable = getValue("responsable");
     const currentCountry = getValue("country");
     const currentStake = getValue("stake");
+    const currentCourse = getValue("course");
 
     return (
         <div className="flex items-center gap-4">
@@ -130,6 +137,22 @@ export default function TableFilters() {
                             </div>
                         )}
 
+                        <div className="space-y-3">
+                            <Label htmlFor="course-filter" className="text-sm font-medium">
+                                Curso
+                            </Label>
+                            <SheetSearchableSelect
+                                id="course-filter"
+                                data={courses || []}
+                                value={currentCourse === "0" ? "" : currentCourse ?? undefined}
+                                onValueChange={(value) => applyFilter("course", value || "0")}
+                                placeholder="Selecciona un curso"
+                                searchPlaceholder="Buscar curso..."
+                                emptyMessage="No se encontraron cursos."
+                                className="w-full"
+                            />
+                        </div>
+
                         {stakes && currentCountry && currentCountry !== "0" && (
                             <div className="space-y-3">
                                 <Label htmlFor="stake-filter" className="text-sm font-medium">
@@ -148,7 +171,7 @@ export default function TableFilters() {
                             </div>
                         )}
 
-                        
+
 
                         {activeFiltersCount > 0 && (
                             <>
@@ -240,6 +263,24 @@ export default function TableFilters() {
                                 size="sm"
                                 onClick={() => clearFilter("stake")}
                                 className="h-4 w-4 p-0 hover:bg-purple-200 rounded-full ml-1"
+                            >
+                                <X className="h-3 w-3" />
+                            </Button>
+                        </Badge>
+                    )}
+
+                    {currentCourse && currentCourse !== "0" && (
+                        <Badge
+                            variant="secondary"
+                            className="gap-1 pr-1 bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100"
+                        >
+                            <span className="text-xs">Curso:</span>
+                            <span className="font-medium">{getName("course", currentCourse)}</span>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearFilter("course")}
+                                className="h-4 w-4 p-0 hover:bg-orange-200 rounded-full ml-1"
                             >
                                 <X className="h-3 w-3" />
                             </Button>
