@@ -498,7 +498,7 @@ class PreInscriptionController extends Controller
             $preInscriptions = $query->orderBy('created_at', 'desc')->get();
 
             // Cargar el template específico para preinscripciones
-            $templatePath = base_path('statics/template-preinscription.xlsx');
+            $templatePath = base_path('statics/formato-preinscritos.xlsx');
             if (!file_exists($templatePath)) {
                 return back()->withErrors(['error' => 'Template de preinscripciones no encontrado.']);
             }
@@ -506,10 +506,10 @@ class PreInscriptionController extends Controller
             $spreadsheet = IOFactory::load($templatePath);
             $worksheet = $spreadsheet->getActiveSheet();
 
-            // Agregar datos a partir de la fila 5 (después de los headers del template)
-            $row = 5;
+            // Agregar datos a partir de la fila 10 (después de los headers del template)
+            $row = 10;
             foreach ($preInscriptions as $preInscription) {
-                // Columna B: Nombre completo (Candidato)
+                // Columna B: Nombre completo
                 $fullName = trim($preInscription->first_name . ' ' .
                     ($preInscription->middle_name ? $preInscription->middle_name . ' ' : '') .
                     $preInscription->last_name . ' ' .
@@ -525,7 +525,7 @@ class PreInscriptionController extends Controller
                 // Columna E: Correo
                 $worksheet->setCellValue('E' . $row, $preInscription->email);
 
-                // Columna F: Número de teléfono
+                // Columna F: Número (teléfono)
                 $phoneNumbers = $preInscription->phone;
                 if ($preInscription->additional_phone) {
                     $phoneNumbers .= ' / ' . $preInscription->additional_phone;
@@ -547,7 +547,7 @@ class PreInscriptionController extends Controller
                 // Columna K: Curso
                 $worksheet->setCellValue('K' . $row, $preInscription->course->name ?? 'N/A');
 
-                // Columna L: Fecha de registro
+                // Columna L: Fecha
                 $worksheet->setCellValue('L' . $row, $preInscription->created_at->format('d/m/Y'));
 
                 $row++;
