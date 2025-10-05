@@ -6,8 +6,9 @@ import { Country } from '@/types/country';
 import { Course } from '@/types/course';
 import { Enums } from '@/types/global';
 import { StudentRegistrationFormData } from '@/types/student-registration';
-import { ArrowLeft, CheckCircle2, FileText, Loader2 } from 'lucide-react';
-import { useContext } from 'react';
+import { generateStudentRegistrationPDF } from '@/utils/pdfGenerator';
+import { ArrowLeft, CheckCircle2, Download, FileText, Loader2 } from 'lucide-react';
+import { useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
 interface StudentRegistrationOverviewStepProps {
@@ -22,6 +23,30 @@ interface StudentRegistrationOverviewStepProps {
 export function StudentRegistrationOverviewStep({ data, countries, courses, enums, onSubmit, processing }: StudentRegistrationOverviewStepProps) {
     const { previousStep } = useContext(StepperContext);
     const { stakes } = useFilteredStakes(data.country_id);
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+    const handleGeneratePDF = async () => {
+        setIsGeneratingPDF(true);
+        try {
+            await generateStudentRegistrationPDF({
+                data,
+                enums: {
+                    gender: enums.gender,
+                    maritalStatus: enums.maritalStatus,
+                    documentType: enums.documentType,
+                    educationLevel: enums.educationLevel,
+                    englishConnectLevel: enums.englishConnectLevel,
+                    countries: countries,
+                    stakes: stakes,
+                },
+            });
+        } catch (error) {
+            console.error('Error generando PDF:', error);
+            alert('Error al generar el PDF. Por favor intente nuevamente.');
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    };
     const getCountryName = (id: number | undefined) => {
         if (!id || id === 0) return 'No especificado';
         const country = countries.find((c) => c.id === id);
@@ -46,15 +71,27 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
         return enumItem?.name || 'No especificado';
     };
 
+    const getMedicationTypeName = (medicationType: string | undefined) => {
+        if (!medicationType) return 'No especificado';
+        const types: Record<string, string> = {
+            no_medication: 'No toma ningún medicamento actualmente',
+            physical_chronic: 'Para condición física crónica',
+            emotional: 'Para condición emocional',
+            mental_neurological: 'Para condición mental o neurológica',
+            other: 'Otro tipo de medicamento',
+        };
+        return types[medicationType] || medicationType;
+    };
+
     const getMedicalFrequencyName = (frequency: string | undefined) => {
         if (!frequency) return 'No especificado';
         const frequencies: Record<string, string> = {
+            diaria: 'Diariamente',
             semanal: 'Semanal',
             quincenal: 'Quincenal',
             mensual: 'Mensual',
             trimestral: 'Cada 3 meses',
             semestral: 'Cada 6 meses',
-            anual: 'Anualmente',
             cuando_necesario: 'Solo cuando es necesario',
         };
         return frequencies[frequency] || frequency;
@@ -105,6 +142,7 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                         <InfoItem label="Edad" value={data.age && data.age > 0 ? data.age : 'No calculada'} />
                         <InfoItem label="Género" value={getEnumName(enums.gender, data.gender)} />
                         <InfoItem label="País" value={getCountryName(data.country_id)} />
+                        <InfoItem label="Provincia/Estado/Departamento" value={data.province_state || 'No especificado'} />
                         <InfoItem label="Estado Civil" value={getEnumName(enums.maritalStatus, data.marital_status)} />
                         <InfoItem label="Correo Electrónico" value={data.email} />
                         <InfoItem label="Teléfono" value={data.phone} />
@@ -117,9 +155,10 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                     <InfoSection title="Documentos Requeridos">
                         <InfoItem label="Tipo de Documento" value={getEnumName(enums.documentType, data.document_type)} />
                         <InfoItem label="Número de Documento" value={data.document_number} />
+                        <InfoItem label="¿Cuenta con Licencia de Conducir?" value={data.has_driver_license ? 'Sí' : 'No'} />
                         <FileItem label="Foto Frontal ID" file={data.id_front_photo_file as File} />
                         <FileItem label="Foto Posterior ID" file={data.id_back_photo_file as File} />
-                        <FileItem label="Licencia de Conducir" file={data.driver_license_file as File} />
+                        {data.has_driver_license && <FileItem label="Licencia de Conducir" file={data.driver_license_file as File} />}
                         <FileItem label="Recibo de Servicios" file={data.utility_bill_photo_file as File} />
                         <FileItem label="Foto Formal" file={data.formal_photo_file as File} />
                     </InfoSection>
@@ -153,14 +192,20 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                         <InfoItem label="Nivel English Connect" value={getEnumName(enums.englishConnectLevel, data.english_connect_level)} />
                     </InfoSection>
                     {/* Información de Salud */}
-                    <InfoSection title="Información de Salud">
-                        <InfoItem label="Cuenta con Seguro Médico" value={data.has_health_insurance ? 'Sí' : 'No'} />
-                        <InfoItem label="Padece Alguna Enfermedad" value={data.has_medical_condition ? 'Sí' : 'No'} />
-                        {data.has_medical_condition && (
+                    <InfoSection title="Declaración de Salud">
+                        <InfoItem
+                            label="¿Tiene dificultades de salud para estudios intensivos?"
+                            value={data.has_health_difficulties === undefined ? 'No especificado' : data.has_health_difficulties ? 'Sí' : 'No'}
+                        />
+                        {data.has_health_difficulties === true && (
                             <>
-                                <InfoItem label="Descripción de la Condición" value={data.medical_condition_description} />
-                                <InfoItem label="Toma Medicamentos" value={data.takes_medication ? 'Sí' : 'No'} />
-                                <InfoItem label="Frecuencia de Visitas Médicas" value={getMedicalFrequencyName(data.medical_visit_frequency)} />
+                                <InfoItem label="Tipo de Medicamento" value={getMedicationTypeName(data.medication_type)} />
+                                {data.medication_type === 'other' && (
+                                    <InfoItem label="Especificación del Medicamento" value={data.medication_other_description} />
+                                )}
+                                {data.medication_type && data.medication_type !== 'no_medication' && (
+                                    <InfoItem label="Frecuencia del Medicamento" value={getMedicalFrequencyName(data.medication_frequency)} />
+                                )}
                             </>
                         )}
                     </InfoSection>
@@ -180,10 +225,13 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                         <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600" />
                         <div>
                             <h4 className="mb-2 font-semibold text-blue-900">Confirmación de Envío</h4>
-                            <p className="text-sm text-blue-800">
+                            <p className="mb-2 text-sm text-blue-800">
                                 Al hacer clic en "Enviar Registro", confirma que toda la información proporcionada es correcta y autoriza el
                                 procesamiento de sus datos para fines educativos. Recibirá una confirmación por correo electrónico una vez que se
                                 procese su inscripción.
+                            </p>
+                            <p className="text-sm font-medium text-blue-700">
+                                💡 Puede descargar un PDF con toda su información antes de enviar el registro para sus archivos personales.
                             </p>
                         </div>
                     </div>
@@ -196,22 +244,45 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                         Anterior
                     </Button>
 
-                    <Button
-                        type="button"
-                        onClick={onSubmit}
-                        size="lg"
-                        className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
-                        disabled={processing}
-                    >
-                        {processing ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Enviando...
-                            </>
-                        ) : (
-                            'Enviar Registro'
-                        )}
-                    </Button>
+                    <div className="flex gap-3">
+                        <Button
+                            type="button"
+                            onClick={handleGeneratePDF}
+                            variant="outline"
+                            size="lg"
+                            className="min-w-[160px] border-green-600 text-green-600 hover:bg-green-50"
+                            disabled={processing || isGeneratingPDF}
+                        >
+                            {isGeneratingPDF ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Generando PDF...
+                                </>
+                            ) : (
+                                <>
+                                    <Download className="mr-2 h-4 w-4" />
+                                    Descargar PDF
+                                </>
+                            )}
+                        </Button>
+
+                        <Button
+                            type="button"
+                            onClick={onSubmit}
+                            size="lg"
+                            className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                            disabled={processing}
+                        >
+                            {processing ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Enviando...
+                                </>
+                            ) : (
+                                'Enviar Registro'
+                            )}
+                        </Button>
+                    </div>
                 </div>
             </CardContent>
         </Card>

@@ -32,8 +32,33 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
     const t = translations.student_registration;
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isGettingLocation, setIsGettingLocation] = useState(false);
+    const [facebookValidation, setFacebookValidation] = useState({ isValid: true, message: '' });
 
     const { stakes } = useFilteredStakes(data.country_id);
+
+    // Función para validar el URL de Facebook
+    const validateFacebookUrl = useCallback((url: string) => {
+        if (!url.trim()) {
+            return { isValid: false, message: 'El perfil de Facebook es obligatorio' };
+        }
+
+        const facebookRegex = /^https:\/\/www\.facebook\.com\/.+/i;
+        if (!facebookRegex.test(url)) {
+            return { isValid: false, message: 'El URL debe comenzar con https://www.facebook.com/' };
+        }
+
+        return { isValid: true, message: '' };
+    }, []);
+
+    // Función para manejar el cambio del campo Facebook
+    const handleFacebookChange = useCallback(
+        (value: string) => {
+            setData('facebook_profile', value);
+            const validation = validateFacebookUrl(value);
+            setFacebookValidation(validation);
+        },
+        [setData, validateFacebookUrl],
+    );
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -51,11 +76,22 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
         if (!data.phone?.trim()) validationErrors.phone = t.validation.phone_required;
         if (!data.home_location_link?.trim()) validationErrors.home_location_link = 'La ubicación es obligatoria';
 
+        // Validación de Facebook
+        const facebookValidation = validateFacebookUrl(data.facebook_profile || '');
+        if (!facebookValidation.isValid) {
+            validationErrors.facebook_profile = facebookValidation.message;
+        }
+
         // Validaciones académicas
         if (!data.education_level) validationErrors.education_level = 'El grado académico es obligatorio';
         if (!data.course_id) validationErrors.course_id = 'Debe seleccionar un curso';
         if (!data.english_connect_level) validationErrors.english_connect_level = 'Debe especificar su nivel de English Connect';
-
+        if (data.pathway_level === undefined || data.pathway_level === null) {
+            validationErrors.pathway_level = 'Debe especificar su nivel de Pathway';
+        }
+        if (data.pathway_level === 2 && (data.byu_pathway_level === undefined || data.byu_pathway_level === null)) {
+            validationErrors.byu_pathway_level = 'Debe especificar su nivel de BYU Pathway';
+        }
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -108,11 +144,11 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                 const locationString = `${latitude.toFixed(6)},${longitude.toFixed(6)}`;
                 setData('home_location_link', locationString);
                 setIsGettingLocation(false);
-                
+
                 // Mostrar mensaje de confirmación al usuario sin mostrar las coordenadas
-                setErrors((prev) => ({ 
-                    ...prev, 
-                    home_location_link: '' 
+                setErrors((prev) => ({
+                    ...prev,
+                    home_location_link: '',
                 }));
                 // Podrías agregar aquí una notificación toast si tienes el sistema implementado
                 // toast.success('Ubicación capturada correctamente');
@@ -138,7 +174,6 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
             options,
         );
     }, [setData, setErrors]);
-
 
     // Función para calcular la edad automáticamente
     const calculateAge = useCallback(
@@ -351,6 +386,21 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                                 {errors?.country_id && <p className="text-sm text-red-500">{errors.country_id}</p>}
                             </div>
 
+                            {/* Provincia/Estado/Departamento */}
+                            <div>
+                                <Label htmlFor="province_state">Provincia/Estado/Departamento</Label>
+                                <Input
+                                    type="text"
+                                    id="province_state"
+                                    name="province_state"
+                                    value={data.province_state || ''}
+                                    onChange={(e) => setData('province_state', e.target.value)}
+                                    placeholder="Ingrese su provincia, estado o departamento"
+                                    className="mt-1"
+                                />
+                                {errors?.province_state && <p className="text-sm text-red-500">{errors.province_state}</p>}
+                            </div>
+
                             {/* Estado civil */}
                             <div>
                                 <Label htmlFor="marital_status">{t.fields.marital_status} </Label>
@@ -425,10 +475,9 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-
                             {/* Ubicación del hogar */}
                             <div>
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="mb-2 flex items-center gap-2">
                                     <MapPin className="h-4 w-4 text-[rgb(46_131_242_/_1)]" />
                                     <Label htmlFor="home_location_link">Ubicación de su Casa</Label>
                                 </div>
@@ -459,34 +508,27 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                                         ) : (
                                             <>
                                                 <Navigation className="mr-2 h-4 w-2" />
-                                                
                                             </>
                                         )}
                                     </Button>
                                 </div>
                                 {errors?.home_location_link && <p className="text-sm text-red-500">{errors.home_location_link}</p>}
-                                {data.home_location_link && (
-                                    <p className="mt-1 text-xs text-green-600">
-                                        ✓ Ubicación registrada correctamente
-                                    </p>
-                                )}
+                                {data.home_location_link && <p className="mt-1 text-xs text-green-600">✓ Ubicación registrada correctamente</p>}
                                 {!data.home_location_link && (
-                                    <p className="mt-1 text-xs text-gray-500">
-                                        Has clic en el "Icono" para mandar tu ubicación actual
-                                    </p>
+                                    <p className="mt-1 text-xs text-gray-500">Has clic en el "Icono" para mandar tu ubicación actual</p>
                                 )}
                             </div>
 
                             {/* Red Social facebook */}
                             <div>
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="mb-2 flex items-center gap-2">
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <button
                                                     type="button"
                                                     onClick={openFacebookHelp}
-                                                    className="inline-flex items-center justify-center rounded-full p-1 text-gray-400 hover:text-[rgb(46_131_242_/_1)] hover:bg-gray-100 transition-colors"
+                                                    className="inline-flex items-center justify-center rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-[rgb(46_131_242_/_1)]"
                                                 >
                                                     <HelpCircle className="h-4 w-4" />
                                                 </button>
@@ -503,15 +545,16 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                                     id="facebook_profile"
                                     name="facebook_profile"
                                     value={data.facebook_profile || ''}
-                                    onChange={(e) => setData('facebook_profile', e.target.value)}
-                                    placeholder="Ingrese su enlace de perfil de Facebook"
-                                    className="flex-1"
+                                    onChange={(e) => handleFacebookChange(e.target.value)}
+                                    placeholder="https://www.facebook.com/tu.nombre.usuario"
+                                    className={`flex-1 ${!facebookValidation.isValid ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                                     required
                                 />
-                                {errors?.facebook_profile && <p className="text-sm text-red-500">{errors.facebook_profile}</p>}
+                                {(!facebookValidation.isValid || errors?.facebook_profile) && (
+                                    <p className="text-sm text-red-500">{errors?.facebook_profile || facebookValidation.message}</p>
+                                )}
                             </div>
                         </div>
-
                     </div>
 
                     {/* Información Académica */}
@@ -520,7 +563,6 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                             <GraduationCap className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
                             <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Información Académica</h3>
                         </div>
-
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Nivel educativo */}
                             <div>
@@ -535,11 +577,17 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                                         <SelectValue placeholder="Seleccione su nivel educativo más alto" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {enums.educationLevel?.map((level: any) => (
-                                            <SelectItem key={level.id} value={level.id.toString()}>
-                                                {level.name}
-                                            </SelectItem>
-                                        ))}
+                                        {enums.educationLevel
+                                            ?.filter(
+                                                (level: any) =>
+                                                    !level.name.toLowerCase().includes('primaria incompleta') &&
+                                                    !level.name.toLowerCase().includes('postgrado'),
+                                            )
+                                            .map((level: any) => (
+                                                <SelectItem key={level.id} value={level.id.toString()}>
+                                                    {level.name}
+                                                </SelectItem>
+                                            ))}
                                     </SelectContent>
                                 </Select>
                                 {errors.education_level && <p className="text-sm text-red-500">{errors.education_level}</p>}
@@ -570,7 +618,6 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                                 {errors.course_id && <p className="text-sm text-red-500">{errors.course_id}</p>}
                             </div>
                         </div>
-
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* English Connect Level */}
                             <div>
@@ -595,6 +642,29 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                                 {errors.english_connect_level && <p className="text-sm text-red-500">{errors.english_connect_level}</p>}
                             </div>
 
+                            {/* Pathway Level */}
+                            <div>
+                                <Label htmlFor="pathway_level">¿En qué nivel de Pathway está? </Label>
+                                <Select
+                                    value={data.pathway_level?.toString() || '0'}
+                                    onValueChange={(value) => setData('pathway_level', Number(value))}
+                                    name="pathway_level"
+                                    required
+                                >
+                                    <SelectTrigger id="pathway_level">
+                                        <SelectValue placeholder="Seleccione su nivel de Pathway" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="0">Ninguno</SelectItem>
+                                        <SelectItem value="1">Cursando</SelectItem>
+                                        <SelectItem value="2">Completado</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                {errors.pathway_level && <p className="text-sm text-red-500">{errors.pathway_level}</p>}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Reclutador */}
                             <div>
                                 <Label htmlFor="recruiter_name">Reclutador/Responsable</Label>
@@ -604,9 +674,33 @@ export function PersonalInformationStep({ countries, courses, enums, request }: 
                                     value={data.recruiter_name || ''}
                                     onChange={(e) => cleanSpaces('recruiter_name', e.target.value)}
                                     placeholder="Nombre del reclutador (opcional)"
-
                                 />
                             </div>
+
+                            {/* BYU Pathway - Solo si completó Pathway */}
+                            {data.pathway_level === 2 ? (
+                                <div>
+                                    <Label htmlFor="byu_pathway_level">¿Qué nivel de BYU Pathway? </Label>
+                                    <Select
+                                        value={data.byu_pathway_level?.toString() || '0'}
+                                        onValueChange={(value) => setData('byu_pathway_level', Number(value))}
+                                        name="byu_pathway_level"
+                                        required
+                                    >
+                                        <SelectTrigger id="byu_pathway_level">
+                                            <SelectValue placeholder="Seleccione su nivel de BYU Pathway" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="0">Ninguno</SelectItem>
+                                            <SelectItem value="1">Cursando</SelectItem>
+                                            <SelectItem value="2">Completado</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    {errors.byu_pathway_level && <p className="text-sm text-red-500">{errors.byu_pathway_level}</p>}
+                                </div>
+                            ) : (
+                                <div></div>
+                            )}
                         </div>
                     </div>
 

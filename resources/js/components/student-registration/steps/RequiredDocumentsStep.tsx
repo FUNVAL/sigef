@@ -36,6 +36,14 @@ export function RequiredDocumentsStep({ request }: RequiredDocumentsStepProps) {
         if (!data.utility_bill_photo_file) validationErrors.utility_bill_photo_file = t.validation.utility_bill_photo_required;
         if (!data.formal_photo_file) validationErrors.formal_photo_file = t.validation.formal_photo_required;
 
+        // Validación de licencia de conducir
+        if (data.has_driver_license === undefined) {
+            validationErrors.has_driver_license = 'Debe especificar si cuenta con licencia de conducir';
+        }
+        if (data.has_driver_license === true && !data.driver_license_file) {
+            validationErrors.driver_license_file = 'Debe subir una foto de su licencia de conducir';
+        }
+
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
@@ -188,13 +196,46 @@ export function RequiredDocumentsStep({ request }: RequiredDocumentsStepProps) {
                         </div>
 
                         <div className="space-y-6">
-                            <FileUploadField
-                                label={t.fields.driver_license}
-                                field="driver_license_file"
-                                accept="image/jpeg,image/png,image/jpg"
-                                required={true}
-                                description={t.placeholders.upload_driver_license}
-                            />
+                            {/* Pregunta sobre licencia de conducir */}
+                            <div className="space-y-3">
+                                <Label className="text-base font-medium">¿Cuenta con licencia de conducir? *</Label>
+                                <div className="flex gap-4">
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="has_driver_license"
+                                            value="true"
+                                            checked={data.has_driver_license === true}
+                                            onChange={() => setData('has_driver_license', true)}
+                                            className="form-radio text-primary"
+                                        />
+                                        <span className="text-sm">Sí</span>
+                                    </label>
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="has_driver_license"
+                                            value="false"
+                                            checked={data.has_driver_license === false}
+                                            onChange={() => setData('has_driver_license', false)}
+                                            className="form-radio text-primary"
+                                        />
+                                        <span className="text-sm">No</span>
+                                    </label>
+                                </div>
+                                {errors?.has_driver_license && <p className="text-sm text-red-500">{errors.has_driver_license}</p>}
+                            </div>
+
+                            {/* Upload de licencia de conducir - solo si tiene licencia */}
+                            {data.has_driver_license && (
+                                <FileUploadField
+                                    label={t.fields.driver_license}
+                                    field="driver_license_file"
+                                    accept="image/jpeg,image/png,image/jpg"
+                                    required={true}
+                                    description={t.placeholders.upload_driver_license}
+                                />
+                            )}
 
                             <FileUploadField
                                 label={t.fields.utility_bill_photo}

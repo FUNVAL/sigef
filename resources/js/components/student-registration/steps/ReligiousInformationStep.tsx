@@ -66,17 +66,21 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
         // Validación básica
         const validationErrors: Record<string, string> = {};
 
-        if (data.is_active_member === undefined) validationErrors.is_active_member = 'Debe especificar si es miembro activo';
+        if (data.member_status === undefined || data.member_status === null) {
+            validationErrors.member_status = 'Debe especificar su estado de membresía';
+        }
         if (data.is_returned_missionary === undefined) validationErrors.is_returned_missionary = 'Debe especificar si es misionero retornado';
         if (data.temple_status === null || data.temple_status === undefined)
             validationErrors.temple_status = 'Debe especificar si está sellado en el templo';
         if (!data.stake_id) validationErrors.stake_id = 'Debe seleccionar su estaca/distrito/misión';
 
-        // Validación de cédula de miembro (siempre obligatoria)
-        if (!data.member_number?.trim()) {
-            validationErrors.member_number = 'El número de cédula de miembro es obligatorio';
-        } else if (!isValidMemberNumber(data.member_number)) {
-            validationErrors.member_number = 'El número de cédula debe tener el formato completo: XXX-XXXX-XXXX (3-4-4 caracteres)';
+        // Validación de cédula de miembro (solo si es miembro)
+        if (data.member_status !== 0) {
+            if (!data.member_number?.trim()) {
+                validationErrors.member_number = 'El número de cédula de miembro es obligatorio';
+            } else if (!isValidMemberNumber(data.member_number)) {
+                validationErrors.member_number = 'El número de cédula debe tener el formato completo: XXX-XXXX-XXXX (3-4-4 caracteres)';
+            }
         }
 
         // Validaciones condicionales
@@ -117,72 +121,81 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                         {/* ¿Es miembro activo? */}
                         <div className="space-y-3">
-                            <Label className="text-base font-medium">¿Es un miembro activo en su iglesia?</Label>
+                            <Label className="text-base font-medium">¿Es un miembro activo de la iglesia?</Label>
                             <RadioGroup
-                                value={data.is_active_member !== undefined ? data.is_active_member.toString() : ''}
-                                onValueChange={(value) => setData('is_active_member', value === 'true')}
+                                value={data.member_status?.toString() || ''}
+                                onValueChange={(value) => {
+                                    const memberStatus = Number(value);
+                                    setData('member_status', memberStatus);
+                                    // Actualizar is_active_member basado en la selección
+                                    setData('is_active_member', memberStatus === 2);
+                                }}
                                 className="flex gap-6"
                                 required
                             >
                                 <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="true" id="active-yes" />
-                                    <Label htmlFor="active-yes">Sí</Label>
+                                    <RadioGroupItem value="2" id="member-active" />
+                                    <Label htmlFor="member-active">Sí</Label>
                                 </div>
                                 <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="false" id="active-no" />
-                                    <Label htmlFor="active-no">No</Label>
+                                    <RadioGroupItem value="1" id="member-inactive" />
+                                    <Label htmlFor="member-inactive">No</Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="0" id="not-member" />
+                                    <Label htmlFor="not-member">No soy miembro</Label>
                                 </div>
                             </RadioGroup>
-                            {errors.is_active_member && <p className="text-sm text-red-500">{errors.is_active_member}</p>}
+                            {errors.member_status && <p className="text-sm text-red-500">{errors.member_status}</p>}
                         </div>
-                        {/* Campos en grid: Cédula de miembro y Año de bautismo */}
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            {/* Número de cédula de miembro */}
-                            <div>
-                                <Label htmlFor="member_number">
-                                    Número de Cédula de Miembro
-                                </Label>
-                                <Input
-                                    id="member_number"
-                                    name="member_number"
-                                    value={data.member_number || ''}
-                                    onChange={handleMemberNumberChange}
-                                    placeholder="ABC-1234-WXYZ"
-                                    maxLength={13}
-                                    className={`font-mono ${data.member_number && !isValidMemberNumber(data.member_number) ? 'border-orange-300' : ''}`}
-                                    required
-                                />
-                                <p className="mt-1 text-xs text-gray-500">Formato: 3-4-4 dígitos (letras y números, ej: ABC-1234-WXYZ)</p>
-                                {data.member_number && !isValidMemberNumber(data.member_number) && (
-                                    <p className="text-sm text-orange-600">El formato debe ser 3-4-4 caracteres (letras y números)</p>
-                                )}
-                                {errors.member_number && <p className="text-sm text-red-500">{errors.member_number}</p>}
-                            </div>
 
-                            {/* Año de bautismo */}
-                            <div>
-                                <Label htmlFor="baptism_year">¿En qué año se bautizó?</Label>
-                                <Select
-                                    value={data.baptism_year?.toString() || ''}
-                                    onValueChange={(value) => setData('baptism_year', Number(value))}
-                                    name="baptism_year"
-                                    required
-                                >
-                                    <SelectTrigger id="baptism_year">
-                                        <SelectValue placeholder="Seleccione el año de bautismo" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="0">No recuerdo</SelectItem>
-                                        {years.map((year) => (
-                                            <SelectItem key={year} value={year.toString()}>
-                                                {year}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                        {/* Campos de membresía - Solo si es miembro */}
+                        {data.member_status !== 0 && (
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                {/* Número de cédula de miembro */}
+                                <div>
+                                    <Label htmlFor="member_number">Número de Cédula de Miembro</Label>
+                                    <Input
+                                        id="member_number"
+                                        name="member_number"
+                                        value={data.member_number || ''}
+                                        onChange={handleMemberNumberChange}
+                                        placeholder="ABC-1234-WXYZ"
+                                        maxLength={13}
+                                        className={`font-mono ${data.member_number && !isValidMemberNumber(data.member_number) ? 'border-orange-300' : ''}`}
+                                        required={data.member_status !== 0}
+                                    />
+                                    <p className="mt-1 text-xs text-gray-500">Formato: 3-4-4 dígitos (letras y números, ej: ABC-1234-WXYZ)</p>
+                                    {data.member_number && !isValidMemberNumber(data.member_number) && (
+                                        <p className="text-sm text-orange-600">El formato debe ser 3-4-4 caracteres (letras y números)</p>
+                                    )}
+                                    {errors.member_number && <p className="text-sm text-red-500">{errors.member_number}</p>}
+                                </div>
 
-                        </div>
+                                {/* Año de bautismo */}
+                                <div>
+                                    <Label htmlFor="baptism_year">¿En qué año se bautizó?</Label>
+                                    <Select
+                                        value={data.baptism_year?.toString() || ''}
+                                        onValueChange={(value) => setData('baptism_year', Number(value))}
+                                        name="baptism_year"
+                                        required={data.member_status !== 0}
+                                    >
+                                        <SelectTrigger id="baptism_year">
+                                            <SelectValue placeholder="Seleccione el año de bautismo" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="0">No recuerdo</SelectItem>
+                                            {years.map((year) => (
+                                                <SelectItem key={year} value={year.toString()}>
+                                                    {year}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Información misional */}

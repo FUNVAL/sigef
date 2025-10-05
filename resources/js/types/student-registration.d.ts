@@ -90,8 +90,7 @@ type StudentRegistration = BaseEntity & {
     current_calling?: string;
     stake: Stake;
     ward_branch?: string;
-
-    // Información Académica y Profesional
+    member_status?: number; // 0: No soy miembro, 1: No (miembro inactivo), 2: Sí (miembro activo)    // Información Académica y Profesional
     education_level: EducationLevelInfo;
     course_id: number;
     english_connect_level: EnglishConnectLevelInfo;
@@ -152,11 +151,23 @@ type StudentRegistrationFormData = Omit<
         agreement_health_accepted: boolean;
 
         // Health Information
-        has_health_insurance: boolean;
-        has_medical_condition: boolean;
-        medical_condition_description?: string;
-        takes_medication: boolean;
-        medical_visit_frequency?: string;
+        has_health_difficulties?: boolean | undefined; // ¿Tiene dificultades de salud para estudios intensivos?
+        medication_type?: string; // Tipo de medicamento que toma
+        medication_frequency?: string; // Frecuencia con que toma medicamento
+        medication_other_description?: string; // Descripción si es "otro" tipo de medicamento
+
+        // Pathway Information
+        pathway_level?: number; // 0: Ninguno, 1: Cursando, 2: Completado
+        byu_pathway_level?: number; // 0: Ninguno, 1: Cursando, 2: Completado
+
+        // Member Status
+        member_status?: number; // 0: No soy miembro, 1: No (miembro inactivo), 2: Sí (miembro activo)
+
+        // Geographic Information
+        province_state?: string; // Provincia/Estado/Departamento
+
+        // Driver License Information
+        has_driver_license?: boolean; // ¿Cuenta con licencia de conducir?
 
         // Index signature for Inertia compatibility
         [key: string]: any;

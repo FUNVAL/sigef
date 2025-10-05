@@ -18,11 +18,10 @@ interface AgreementStepProps {
         agreement_privacy_accepted: boolean;
         agreement_conduct_accepted: boolean;
         agreement_health_accepted: boolean;
-        has_health_insurance: boolean;
-        has_medical_condition: boolean;
-        medical_condition_description?: string;
-        takes_medication: boolean;
-        medical_visit_frequency?: string;
+        has_health_difficulties?: boolean;
+        medication_type?: string;
+        medication_frequency?: string;
+        medication_other_description?: string;
     };
     onDataChange: (field: string, value: any) => void;
     errors?: Record<string, string>;
@@ -177,7 +176,6 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
     };
 
     const handleFinalSubmit = (e: React.FormEvent) => {
-
         e.preventDefault();
 
         // Validation
@@ -197,22 +195,18 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
         }
 
         // Validaciones específicas del formulario de salud
-        if (data.has_health_insurance === undefined) {
-            newValidationErrors.has_health_insurance = 'Debe especificar si cuenta con seguro médico';
+        if (data.has_health_difficulties === undefined || data.has_health_difficulties === null) {
+            newValidationErrors.has_health_difficulties = 'Debe especificar si tiene dificultades de salud para estudios intensivos';
         }
-        if (data.has_medical_condition === undefined) {
-            newValidationErrors.has_medical_condition = 'Debe especificar si padece alguna enfermedad';
+        if (data.has_health_difficulties && !data.medication_type) {
+            newValidationErrors.medication_type = 'Debe especificar el tipo de medicamento que toma';
         }
-        if (data.has_medical_condition && !data.medical_condition_description?.trim()) {
-            newValidationErrors.medical_condition_description = 'Debe describir su condición médica';
+        if (data.medication_type && data.medication_type !== 'no_medication' && data.medication_type !== 'other' && !data.medication_frequency) {
+            newValidationErrors.medication_frequency = 'Debe especificar la frecuencia del medicamento';
         }
-        if (data.has_medical_condition && data.takes_medication === undefined) {
-            newValidationErrors.takes_medication = 'Debe especificar si toma medicamentos';
+        if (data.medication_type === 'other' && !data.medication_other_description?.trim()) {
+            newValidationErrors.medication_other_description = 'Debe especificar el tipo de medicamento';
         }
-        if (data.has_medical_condition && !data.medical_visit_frequency) {
-            newValidationErrors.medical_visit_frequency = 'Debe especificar la frecuencia de visitas médicas';
-        }
-
 
         if (Object.keys(newValidationErrors).length > 0) {
             setValidationErrors(newValidationErrors);
@@ -292,106 +286,147 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
                         {/* Formulario de salud - Solo para acuerdo de salud */}
                         {currentAgreement.id === 'agreement_health_accepted' && readingProgress[currentAgreement.id]?.canAgree && (
                             <div className="space-y-6 rounded-lg border border-blue-200 bg-blue-50 p-6">
-                                <h4 className="text-lg font-semibold text-blue-900">Información de Salud</h4>
+                                <h4 className="text-lg font-semibold text-blue-900">Declaración de Salud</h4>
 
-                                {/* ¿Cuenta con seguro médico? */}
+                                {/* Pregunta principal sobre dificultades de salud */}
                                 <div className="space-y-3">
-                                    <Label className="text-base font-medium">¿Cuenta con seguro médico? *</Label>
+                                    <Label className="text-base font-medium">
+                                        ¿Tiene en la actualidad o ha tenido alguna vez enfermedades físicas, mentales o emocionales que le
+                                        dificultarían mantener un horario intensivo de estudio, que requiere entre 8 y 10 horas diarias de
+                                        concentración, lectura, análisis, trabajo en computadora y otras actividades similares? *
+                                    </Label>
                                     <RadioGroup
-                                        value={data.has_health_insurance?.toString() || ''}
-                                        onValueChange={(value) => onDataChange('has_health_insurance', value === 'true')}
+                                        value={data.has_health_difficulties !== undefined ? data.has_health_difficulties.toString() : ''}
+                                        onValueChange={(value) => {
+                                            const hasHealthDifficulties = value === 'true';
+                                            onDataChange('has_health_difficulties', hasHealthDifficulties);
+                                            // Limpiar campos si responde "No"
+                                            if (!hasHealthDifficulties) {
+                                                onDataChange('medication_type', '');
+                                                onDataChange('medication_frequency', '');
+                                                onDataChange('medication_other_description', '');
+                                            }
+                                        }}
                                         className="flex gap-6"
                                         required
                                     >
                                         <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="true" id="insurance-yes" />
-                                            <Label htmlFor="insurance-yes">Sí</Label>
+                                            <RadioGroupItem value="true" id="health-difficulties-yes" />
+                                            <Label htmlFor="health-difficulties-yes">Sí</Label>
                                         </div>
                                         <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="false" id="insurance-no" />
-                                            <Label htmlFor="insurance-no">No</Label>
+                                            <RadioGroupItem value="false" id="health-difficulties-no" />
+                                            <Label htmlFor="health-difficulties-no">No</Label>
                                         </div>
                                     </RadioGroup>
+                                    {validationErrors.has_health_difficulties && (
+                                        <p className="text-sm text-red-500">{validationErrors.has_health_difficulties}</p>
+                                    )}
                                 </div>
 
-                                {/* ¿Padece alguna enfermedad? */}
-                                <div className="space-y-3">
-                                    <Label className="text-base font-medium">¿Padece alguna enfermedad o condición médica? *</Label>
-                                    <RadioGroup
-                                        value={data.has_medical_condition?.toString() || ''}
-                                        onValueChange={(value) => onDataChange('has_medical_condition', value === 'true')}
-                                        className="flex gap-6"
-                                        required
-                                    >
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="true" id="condition-yes" />
-                                            <Label htmlFor="condition-yes">Sí</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="false" id="condition-no" />
-                                            <Label htmlFor="condition-no">No</Label>
-                                        </div>
-                                    </RadioGroup>
-                                </div>
-
-                                {/* Campos condicionales si tiene enfermedad */}
-                                {data.has_medical_condition && (
+                                {/* Preguntas condicionales si tiene dificultades de salud */}
+                                {data.has_health_difficulties && (
                                     <div className="space-y-4 rounded-lg border border-orange-200 bg-orange-50 p-4">
-                                        <h5 className="font-medium text-orange-900">Detalles de la condición médica</h5>
+                                        <h5 className="font-medium text-orange-900">Información sobre Medicamentos</h5>
 
-                                        {/* Descripción de la enfermedad */}
-                                        <div className="space-y-2">
-                                            <Label htmlFor="medical_condition_description">Describa su condición médica *</Label>
-                                            <Input
-                                                id="medical_condition_description"
-                                                value={data.medical_condition_description || ''}
-                                                onChange={(e) => onDataChange('medical_condition_description', e.target.value)}
-                                                placeholder="Ej: Diabetes, Hipertensión, Asma, etc."
-                                                required={data.has_medical_condition}
-                                            />
-                                        </div>
-
-                                        {/* ¿Toma medicamento? */}
+                                        {/* Tipo de medicamento */}
                                         <div className="space-y-3">
-                                            <Label className="text-base font-medium">¿Toma algún medicamento? *</Label>
+                                            <Label className="text-base font-medium">
+                                                ¿Actualmente toma algún tipo de medicamento relacionado con alguna de las siguientes condiciones? *
+                                            </Label>
                                             <RadioGroup
-                                                value={data.takes_medication?.toString() || ''}
-                                                onValueChange={(value) => onDataChange('takes_medication', value === 'true')}
-                                                className="flex gap-6"
+                                                value={data.medication_type || ''}
+                                                onValueChange={(value) => {
+                                                    onDataChange('medication_type', value);
+                                                    // Limpiar frecuencia si cambia el tipo
+                                                    if (value === 'no_medication') {
+                                                        onDataChange('medication_frequency', '');
+                                                        onDataChange('medication_other_description', '');
+                                                    }
+                                                }}
+                                                className="space-y-2"
                                                 required
                                             >
                                                 <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value="true" id="medication-yes" />
-                                                    <Label htmlFor="medication-yes">Sí</Label>
+                                                    <RadioGroupItem value="no_medication" id="no-medication" />
+                                                    <Label htmlFor="no-medication">No tomo ningún medicamento actualmente</Label>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value="false" id="medication-no" />
-                                                    <Label htmlFor="medication-no">No</Label>
+                                                    <RadioGroupItem value="physical_chronic" id="physical-chronic" />
+                                                    <Label htmlFor="physical-chronic">
+                                                        Sí, para una condición física crónica (ej. diabetes, hipertensión, epilepsia, problemas
+                                                        respiratorios, etc.)
+                                                    </Label>
+                                                </div>
+                                                <div className="flex items-center space-x-2">
+                                                    <RadioGroupItem value="emotional" id="emotional" />
+                                                    <Label htmlFor="emotional">
+                                                        Sí, para una condición emocional (ej. ansiedad, depresión, trastornos del estado de ánimo,
+                                                        etc.)
+                                                    </Label>
+                                                </div>
+                                                <div className="flex items-center space-x-2">
+                                                    <RadioGroupItem value="mental_neurological" id="mental-neurological" />
+                                                    <Label htmlFor="mental-neurological">
+                                                        Sí, para una condición mental o neurológica (ej. TDAH, trastornos del sueño, bipolaridad,
+                                                        etc.)
+                                                    </Label>
+                                                </div>
+                                                <div className="flex items-center space-x-2">
+                                                    <RadioGroupItem value="other" id="other-medication" />
+                                                    <Label htmlFor="other-medication">
+                                                        Sí, pero no relacionada con ninguna de las categorías anteriores
+                                                    </Label>
                                                 </div>
                                             </RadioGroup>
+                                            {validationErrors.medication_type && (
+                                                <p className="text-sm text-red-500">{validationErrors.medication_type}</p>
+                                            )}
                                         </div>
 
-                                        {/* Frecuencia de visitas médicas */}
-                                        <div className="space-y-2">
-                                            <Label htmlFor="medical_visit_frequency">¿Con qué frecuencia asiste al médico por su enfermedad? *</Label>
-                                            <Select
-                                                value={data.medical_visit_frequency || ''}
-                                                onValueChange={(value) => onDataChange('medical_visit_frequency', value)}
-                                            >
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Seleccione la frecuencia" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="semanal">Semanal</SelectItem>
-                                                    <SelectItem value="quincenal">Quincenal</SelectItem>
-                                                    <SelectItem value="mensual">Mensual</SelectItem>
-                                                    <SelectItem value="trimestral">Cada 3 meses</SelectItem>
-                                                    <SelectItem value="semestral">Cada 6 meses</SelectItem>
-                                                    <SelectItem value="anual">Anualmente</SelectItem>
-                                                    <SelectItem value="cuando_necesario">Solo cuando es necesario</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                        {/* Campo de especificación si selecciona "other" */}
+                                        {data.medication_type === 'other' && (
+                                            <div className="space-y-2">
+                                                <Label htmlFor="medication_other_description">Especifique el tipo de medicamento *</Label>
+                                                <Input
+                                                    id="medication_other_description"
+                                                    value={data.medication_other_description || ''}
+                                                    onChange={(e) => onDataChange('medication_other_description', e.target.value)}
+                                                    placeholder="Describa el tipo de medicamento que toma"
+                                                    required={data.medication_type === 'other'}
+                                                />
+                                                {validationErrors.medication_other_description && (
+                                                    <p className="text-sm text-red-500">{validationErrors.medication_other_description}</p>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* Frecuencia de medicamento - Solo si toma medicamento */}
+                                        {data.medication_type && data.medication_type !== 'no_medication' && (
+                                            <div className="space-y-2">
+                                                <Label htmlFor="medication_frequency">¿Con qué frecuencia toma el medicamento? *</Label>
+                                                <Select
+                                                    value={data.medication_frequency || ''}
+                                                    onValueChange={(value) => onDataChange('medication_frequency', value)}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Seleccione la frecuencia" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="diaria">Diariamente</SelectItem>
+                                                        <SelectItem value="semanal">Semanal</SelectItem>
+                                                        <SelectItem value="quincenal">Quincenal</SelectItem>
+                                                        <SelectItem value="mensual">Mensual</SelectItem>
+                                                        <SelectItem value="trimestral">Cada 3 meses</SelectItem>
+                                                        <SelectItem value="semestral">Cada 6 meses</SelectItem>
+                                                        <SelectItem value="cuando_necesario">Solo cuando es necesario</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                {validationErrors.medication_frequency && (
+                                                    <p className="text-sm text-red-500">{validationErrors.medication_frequency}</p>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -465,7 +500,6 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
                                 ? '✅ Todos los acuerdos han sido aceptados'
                                 : `Progreso: ${[data.agreement_terms_accepted, data.agreement_privacy_accepted, data.agreement_conduct_accepted, data.agreement_health_accepted].filter(Boolean).length} de ${agreementQuestions.length} acuerdos aceptados`}
                         </p>
-
                     </div>
                 </form>
             </CardContent>

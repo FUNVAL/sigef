@@ -69,11 +69,23 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
         agreement_health_accepted: false,
 
         // Health Information
-        has_health_insurance: false,
-        has_medical_condition: false,
-        medical_condition_description: '',
-        takes_medication: false,
-        medical_visit_frequency: '',
+        has_health_difficulties: undefined,
+        medication_type: '',
+        medication_frequency: '',
+        medication_other_description: '',
+
+        // Pathway Information
+        pathway_level: 0,
+        byu_pathway_level: 0,
+
+        // Member Status
+        member_status: undefined,
+
+        // Geographic Information
+        province_state: '',
+
+        // Driver License Information
+        has_driver_license: false,
     });
 
     const request = {
@@ -106,7 +118,6 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
             component: <ReligiousInformationStep countries={countries} request={request} />,
         },
         {
-
             title: 'Documentos Requeridos',
             component: <RequiredDocumentsStep request={request} />,
         },
@@ -118,6 +129,11 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
                         agreement_terms_accepted: data.agreement_terms_accepted,
                         agreement_privacy_accepted: data.agreement_privacy_accepted,
                         agreement_conduct_accepted: data.agreement_conduct_accepted,
+                        agreement_health_accepted: data.agreement_health_accepted,
+                        has_health_difficulties: data.has_health_difficulties,
+                        medication_type: data.medication_type,
+                        medication_frequency: data.medication_frequency,
+                        medication_other_description: data.medication_other_description,
                     }}
                     onDataChange={(field, value) => setData(field, value)}
                     errors={errors as Record<string, string>}
