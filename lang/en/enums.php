@@ -112,7 +112,7 @@ return [
     'housing_type' => [
         'own_house' => 'Own house',
         'rented' => 'Rented',
-        'cedida' => 'Granted Housing',
+        'family_house' => 'Family home',
     ],
     'employment_type' => [
         'entrepreneurship' => 'Entrepreneurship',

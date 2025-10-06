@@ -119,7 +119,7 @@ return [
     'housing_type' => [
         'own_house' => 'Casa própria',
         'rented' => 'Alugada',
-        'cedida' => 'Habitação Cedida',
+        'family_house' => 'Casa da família',
     ],
     'employment_type' => [
         'entrepreneurship' => 'Empreendedorismo',

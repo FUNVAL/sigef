@@ -119,7 +119,7 @@ return [
     'housing_type' => [
         'own_house' => 'Kay pwòp',
         'rented' => 'Kay lwe',
-        'cedida' => 'Kay yo bay',
+        'family_house' => 'Kay fanmi',
     ],
     'employment_type' => [
         'entrepreneurship' => 'Antreprenè',

@@ -10,14 +10,14 @@ enum HousingTypeEnum: int
 
     case OWN_HOUSE = 1;
     case RENTED = 2;
-    case CEDIDA = 3;
+    case FAMILY_HOUSE = 3;
 
     public function name(): string
     {
         return match ($this) {
             self::OWN_HOUSE => __('common.enums.housing_type.own_house'),
             self::RENTED => __('common.enums.housing_type.rented'),
-            self::CEDIDA => __('common.enums.housing_type.cedida'),
+            self::FAMILY_HOUSE => __('common.enums.housing_type.family_house'),
         };
     }
 }
