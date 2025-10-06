@@ -10,6 +10,7 @@ use App\Enums\HousingTypeEnum;
 use App\Enums\EmploymentTypeEnum;
 use App\Enums\JobPositionEnum;
 use App\Enums\BonusCategoryEnum;
+use App\Enums\PracticeBonusCategoryEnum;
 use App\Enums\ExpenseTypeEnum;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -35,6 +36,7 @@ class RecruitmentController extends Controller
                     'employmentType' => EmploymentTypeEnum::toArray(),
                     'jobPosition' => JobPositionEnum::toArray(),
                     'bonusCategory' => BonusCategoryEnum::toArray(),
+                    'practiceBonusCategory' => PracticeBonusCategoryEnum::toArray(),
                     'expenseType' => ExpenseTypeEnum::toArray(),
                 ],
                 'translations' => [
@@ -74,6 +76,9 @@ class RecruitmentController extends Controller
                 'needs_bonus' => 'required|boolean',
                 'bonus_categories' => 'nullable|array',
                 'bonus_amounts' => 'nullable|array',
+                'needs_practice_bonus' => 'required|boolean',
+                'practice_bonus_categories' => 'nullable|array',
+                'practice_bonus_amounts' => 'nullable|array',
                 
                 // Salud
                 'has_health_insurance' => 'required|boolean',
@@ -145,6 +150,7 @@ class RecruitmentController extends Controller
                 'employmentType' => EmploymentTypeEnum::toArray(),
                 'jobPosition' => JobPositionEnum::toArray(),
                 'bonusCategory' => BonusCategoryEnum::toArray(),
+                'practiceBonusCategory' => PracticeBonusCategoryEnum::toArray(),
                 'expenseType' => ExpenseTypeEnum::toArray(),
             ]
         ]);
@@ -174,6 +180,9 @@ class RecruitmentController extends Controller
                 'needs_bonus' => 'required|boolean',
                 'bonus_categories' => 'nullable|array',
                 'bonus_amounts' => 'nullable|array',
+                'needs_practice_bonus' => 'required|boolean',
+                'practice_bonus_categories' => 'nullable|array',
+                'practice_bonus_amounts' => 'nullable|array',
                 'has_health_insurance' => 'required|boolean',
                 'has_illness' => 'required|boolean',
                 'illness_description' => 'nullable|string|max:500',

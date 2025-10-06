@@ -144,6 +144,11 @@ return [
         'single' => 'Selibatè',
         'internet' => 'Entènèt',
     ],
+    'practice_bonus_category' => [
+        'local_transport' => 'Transpò Lokal',
+        'provincial_transport' => 'Transpò Pwovens/Lòt Depo',
+        'food' => 'Manje',
+    ],
     'expense_type' => [
         'electricity' => 'Bil kouran',
         'water' => 'Bil dlo',

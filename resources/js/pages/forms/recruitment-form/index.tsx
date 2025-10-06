@@ -43,6 +43,9 @@ const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
         needs_bonus: false,
         bonus_categories: [],
         bonus_amounts: [],
+        needs_practice_bonus: false,
+        practice_bonus_categories: [],
+        practice_bonus_amounts: [],
 
         // Salud
         has_health_insurance: false,

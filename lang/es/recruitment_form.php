@@ -45,6 +45,8 @@ return [
         'employment_income' => 'Salario (USD)',
         'needs_bonus' => '¿Necesita bono?',
         'bonus_categories' => 'Categorías de bono',
+        'needs_practice_bonus' => '¿Necesita bono para prácticas o bootcamp?',
+        'practice_bonus_categories' => 'Categorías de bono para prácticas',
         'has_health_insurance' => '¿Cuenta con seguro médico?',
         'has_illness' => '¿Padece de alguna enfermedad?',
         'illness_description' => 'Describa la enfermedad',

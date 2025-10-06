@@ -151,12 +151,26 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
 
                         {data.needs_bonus && data.bonus_categories.length > 0 && (
                             <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                                <h4 className="font-medium mb-2">Bonos solicitados</h4>
+                                <h4 className="font-medium mb-2">Bonos solicitados para clases online</h4>
                                 <div className="space-y-1">
                                     {data.bonus_categories.map((categoryId, index) => (
                                         <div key={categoryId} className="flex justify-between">
                                             <span className="text-sm">{getEnumLabel(enums.bonusCategory, categoryId)}</span>
                                             <span className="text-sm font-medium">${data.bonus_amounts[index]} USD</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {data.needs_practice_bonus && data.practice_bonus_categories.length > 0 && (
+                            <div className="mt-4 p-4 bg-green-50 rounded-lg">
+                                <h4 className="font-medium mb-2">Bonos solicitados para prácticas/bootcamp</h4>
+                                <div className="space-y-1">
+                                    {data.practice_bonus_categories.map((categoryId, index) => (
+                                        <div key={categoryId} className="flex justify-between">
+                                            <span className="text-sm">{getEnumLabel(enums.practiceBonusCategory, categoryId)}</span>
+                                            <span className="text-sm font-medium">${data.practice_bonus_amounts[index]} USD</span>
                                         </div>
                                     ))}
                                 </div>

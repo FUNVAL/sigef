@@ -30,6 +30,7 @@ type Enums = {
     employmentType: EnumItem[];
     jobPosition: EnumItem[];
     bonusCategory: EnumItem[];
+    practiceBonusCategory: EnumItem[];
     expenseType: EnumItem[];
 };
 

@@ -35,6 +35,9 @@ export type RecruitmentFormData = {
     needs_bonus: boolean;
     bonus_categories: number[];
     bonus_amounts: number[];
+    needs_practice_bonus: boolean;
+    practice_bonus_categories: number[];
+    practice_bonus_amounts: number[];
 
     // Salud
     has_health_insurance: boolean;

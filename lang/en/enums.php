@@ -137,6 +137,11 @@ return [
         'single' => 'Single',
         'internet' => 'Internet',
     ],
+    'practice_bonus_category' => [
+        'local_transport' => 'Local Transportation',
+        'provincial_transport' => 'Provincial/Interstate Transportation',
+        'food' => 'Food',
+    ],
     'expense_type' => [
         'electricity' => 'Electricity bill',
         'water' => 'Water bill',

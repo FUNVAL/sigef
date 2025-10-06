@@ -26,6 +26,8 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [selectedBonusCategories, setSelectedBonusCategories] = useState<number[]>([]);
     const [bonusAmounts, setBonusAmounts] = useState<Record<number, number>>({});
+    const [selectedPracticeBonusCategories, setSelectedPracticeBonusCategories] = useState<number[]>([]);
+    const [practiceBonusAmounts, setPracticeBonusAmounts] = useState<Record<number, number>>({});
     const [monthlyExpenses, setMonthlyExpenses] = useState<HouseholdExpense[]>([]);
 
 
@@ -116,6 +118,34 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         setData('bonus_amounts', Object.values(updatedAmounts));
     };
 
+    const handlePracticeBonusCategoryChange = (categoryId: number, checked: boolean) => {
+        let updatedCategories = [...selectedPracticeBonusCategories];
+        let updatedAmounts = { ...practiceBonusAmounts };
+
+        if (checked) {
+            // Validar que no se seleccionen más de 2 bonos
+            if (updatedCategories.length >= 2) {
+                // Mostrar mensaje de error o simplemente no permitir más selecciones
+                return;
+            }
+            updatedCategories.push(categoryId);
+        } else {
+            updatedCategories = updatedCategories.filter(id => id !== categoryId);
+            delete updatedAmounts[categoryId];
+        }
+
+        setSelectedPracticeBonusCategories(updatedCategories);
+        setPracticeBonusAmounts(updatedAmounts);
+        setData('practice_bonus_categories', updatedCategories);
+        setData('practice_bonus_amounts', Object.values(updatedAmounts));
+    };
+
+    const handlePracticeBonusAmountChange = (categoryId: number, amount: number) => {
+        const updatedAmounts = { ...practiceBonusAmounts, [categoryId]: amount };
+        setPracticeBonusAmounts(updatedAmounts);
+        setData('practice_bonus_amounts', Object.values(updatedAmounts));
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -169,6 +199,11 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         // Validar bonos (máximo 2)
         if (data.needs_bonus && selectedBonusCategories.length > 2) {
             validationErrors.bonus_categories = 'Solo se pueden seleccionar máximo 2 categorías de bono';
+        }
+
+        // Validar bonos de prácticas (máximo 2)
+        if (data.needs_practice_bonus && selectedPracticeBonusCategories.length > 2) {
+            validationErrors.practice_bonus_categories = 'Solo se pueden seleccionar máximo 2 categorías de bono para prácticas';
         }
 
         if (Object.keys(validationErrors).length > 0) {
@@ -629,7 +664,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 {/* Bono */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-[rgb(46_131_242_/_1)]">¿Necesita bono?</CardTitle>
+                        <CardTitle className="text-[rgb(46_131_242_/_1)]">¿Necesita bono durante el tiempo de clases online?</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex gap-4">
@@ -699,6 +734,85 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 }) || []}
                                 {errors.bonus_categories && (
                                     <p className="text-sm text-red-500 mt-2">{errors.bonus_categories}</p>
+                                )}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* Bono durante prácticas o bootcamps */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-[rgb(46_131_242_/_1)]">¿Necesita bono durante prácticas o bootcamp?</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="flex gap-4">
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="radio"
+                                    name="needs_practice_bonus"
+                                    checked={data.needs_practice_bonus === true}
+                                    onChange={() => setData('needs_practice_bonus', true)}
+                                />
+                                Sí
+                            </label>
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="radio"
+                                    name="needs_practice_bonus"
+                                    checked={data.needs_practice_bonus === false}
+                                    onChange={() => {
+                                        setData('needs_practice_bonus', false);
+                                        setSelectedPracticeBonusCategories([]);
+                                        setPracticeBonusAmounts({});
+                                        setData('practice_bonus_categories', []);
+                                        setData('practice_bonus_amounts', []);
+                                    }}
+                                />
+                                No
+                            </label>
+                        </div>
+
+                        {data.needs_practice_bonus && (
+                            <div className="space-y-4">
+                                <Label>Categorías de bono para prácticas (máximo 2 opciones)</Label>
+                                {selectedPracticeBonusCategories.length >= 2 && (
+                                    <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+                                        <p className="text-blue-800 text-sm">
+                                            Ya has seleccionado {selectedPracticeBonusCategories.length} categorías de bono para prácticas.
+                                        </p>
+                                    </div>
+                                )}
+                                {enums.practiceBonusCategory?.map((item) => {
+                                    const isSelected = selectedPracticeBonusCategories.includes(item.id);
+                                    const isDisabled = !isSelected && selectedPracticeBonusCategories.length >= 2;
+                                    
+                                    return (
+                                        <div key={item.id} className={`flex items-center gap-4 p-4 border rounded-lg ${
+                                            isDisabled ? 'opacity-50 bg-gray-50' : ''
+                                        }`}>
+                                            <Checkbox
+                                                checked={isSelected}
+                                                disabled={isDisabled}
+                                                onCheckedChange={(checked) => handlePracticeBonusCategoryChange(item.id, checked as boolean)}
+                                            />
+                                        <span className="flex-1">{item.name}</span>
+                                        {selectedPracticeBonusCategories.includes(item.id) && (
+                                            <Input
+                                                type="number"
+                                                placeholder="Monto USD"
+                                                min="0"
+                                                step="0.01"
+                                                className="w-32"
+                                                value={practiceBonusAmounts[item.id] || ''}
+                                                onChange={(e) => handlePracticeBonusAmountChange(item.id, parseFloat(e.target.value) || 0)}
+                                            />
+                                        )}
+                                        </div>
+                                    );
+                                }) || []}
+                                {errors.practice_bonus_categories && (
+                                    <p className="text-sm text-red-500 mt-2">{errors.practice_bonus_categories}</p>
                                 )}
                             </div>
                         )}

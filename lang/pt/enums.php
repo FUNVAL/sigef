@@ -144,6 +144,11 @@ return [
         'single' => 'Solteiro',
         'internet' => 'Internet',
     ],
+    'practice_bonus_category' => [
+        'local_transport' => 'Transporte Local',
+        'provincial_transport' => 'Transporte Provincial/Interestadual',
+        'food' => 'Alimentação',
+    ],
     'expense_type' => [
         'electricity' => 'Conta de luz',
         'water' => 'Conta de água',

@@ -24,6 +24,9 @@ class Recruitment extends Model
         'needs_bonus',
         'bonus_categories',
         'bonus_amounts',
+        'needs_practice_bonus',
+        'practice_bonus_categories',
+        'practice_bonus_amounts',
         
         // Salud
         'has_health_insurance',
@@ -51,9 +54,12 @@ class Recruitment extends Model
         'household_members' => 'array',
         'bonus_categories' => 'array',
         'bonus_amounts' => 'array',
+        'practice_bonus_categories' => 'array',
+        'practice_bonus_amounts' => 'array',
         'has_residential_internet' => 'boolean',
         'has_employment' => 'boolean',
         'needs_bonus' => 'boolean',
+        'needs_practice_bonus' => 'boolean',
         'has_health_insurance' => 'boolean',
         'has_illness' => 'boolean',
         'health_declaration_accepted' => 'boolean',
