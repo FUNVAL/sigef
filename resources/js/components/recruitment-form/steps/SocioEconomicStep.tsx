@@ -426,7 +426,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Wifi className="h-5 w-5" />
-                            ¿Cuenta con servicio de Internet Residencial o WIFI?
+                            ¿Cuenta con servicio de Internet en su casa?
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
