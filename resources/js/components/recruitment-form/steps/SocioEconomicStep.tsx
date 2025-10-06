@@ -68,7 +68,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     // Monthly expenses functions
     const addMonthlyExpense = () => {
         const newExpense: HouseholdExpense = {
-            type: 1, // Default to first expense type
+            type: 0, // Default to blank (no selection)
             amount: 0
         };
         setMonthlyExpenses([...monthlyExpenses, newExpense]);

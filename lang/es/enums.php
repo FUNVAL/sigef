@@ -157,5 +157,8 @@ return [
         'education' => 'Educación',
         'healthcare' => 'Salud',
         'others' => 'Otros',
+        'medicine' => 'Medicina',
+        'debt_payment' => 'Pago de deuda',
+        'insurance' => 'Seguro',
     ],
 ];

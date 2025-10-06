@@ -19,6 +19,9 @@ enum ExpenseTypeEnum: int
     case EDUCATION = 9;
     case HEALTHCARE = 10;
     case OTHERS = 11;
+    case MEDICINE = 12;
+    case DEBT_PAYMENT = 13;
+    case INSURANCE = 14;
 
     public function name(): string
     {
@@ -34,6 +37,9 @@ enum ExpenseTypeEnum: int
             self::EDUCATION => __('common.enums.expense_type.education'),
             self::HEALTHCARE => __('common.enums.expense_type.healthcare'),
             self::OTHERS => __('common.enums.expense_type.others'),
+            self::MEDICINE => __('common.enums.expense_type.medicine'),
+            self::DEBT_PAYMENT => __('common.enums.expense_type.debt_payment'),
+            self::INSURANCE => __('common.enums.expense_type.insurance'),
         };
     }
 }
