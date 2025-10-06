@@ -53,9 +53,20 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                 <p className="text-sm">{data.household_members.length} personas</p>
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-gray-500">Ingresos mensuales</p>
-                                <p className="text-sm">${data.monthly_income} USD</p>
+                                <p className="text-sm font-medium text-gray-500">Ingresos mensuales del hogar</p>
+                                <p className="text-sm text-green-600 font-medium">
+                                    ${data.household_members.reduce((total, member) => total + (member.income_contribution || 0), 0).toFixed(2)} USD
+                                </p>
                             </div>
+                            {data.monthly_expenses && data.monthly_expenses.length > 0 && (
+                                <div>
+                                    <p className="text-sm font-medium text-gray-500">Egresos mensuales del hogar</p>
+                                    <p className="text-sm text-red-600 font-medium">
+                                        ${data.monthly_expenses.reduce((total, expense) => total + (expense.amount || 0), 0).toFixed(2)} USD
+                                    </p>
+                                </div>
+                            )}
+                            
                             <div>
                                 <p className="text-sm font-medium text-gray-500">Internet residencial</p>
                                 <p className="text-sm">{data.has_residential_internet ? 'Sí' : 'No'}</p>
@@ -84,6 +95,7 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                                 <p className="text-sm font-medium">{member.name}</p>
                                                 <p className="text-xs text-gray-500">
                                                     {getEnumLabel(enums.familyRelationship, member.relationship)}
+                                                    {member.age && ` • ${member.age} años`}
                                                     {member.phone && ` • ${member.phone}`}
                                                 </p>
                                             </div>
@@ -108,13 +120,13 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                     {data.monthly_expenses.map((expense, index) => (
                                         <div key={index} className="flex justify-between">
                                             <span className="text-sm">{getEnumLabel(enums.expenseType, expense.type)}</span>
-                                            <span className="text-sm font-medium">${expense.amount} USD</span>
+                                            <span className="text-sm font-medium">${(expense.amount || 0).toFixed(2)} USD</span>
                                         </div>
                                     ))}
                                     <div className="border-t pt-1 mt-2">
                                         <div className="flex justify-between font-medium">
                                             <span className="text-sm">Total gastos mensuales:</span>
-                                            <span className="text-sm">${data.monthly_expenses.reduce((total, expense) => total + expense.amount, 0)} USD</span>
+                                            <span className="text-sm">${data.monthly_expenses.reduce((total, expense) => total + (expense.amount || 0), 0).toFixed(2)} USD</span>
                                         </div>
                                     </div>
                                 </div>
@@ -156,9 +168,15 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                     {data.bonus_categories.map((categoryId, index) => (
                                         <div key={categoryId} className="flex justify-between">
                                             <span className="text-sm">{getEnumLabel(enums.bonusCategory, categoryId)}</span>
-                                            <span className="text-sm font-medium">${data.bonus_amounts[index]} USD</span>
+                                            <span className="text-sm font-medium">${(data.bonus_amounts[index] || 0).toFixed(2)} USD</span>
                                         </div>
                                     ))}
+                                    <div className="border-t pt-1 mt-2">
+                                        <div className="flex justify-between font-medium">
+                                            <span className="text-sm text-blue-800">Total bonos clases online:</span>
+                                            <span className="text-sm text-blue-900">${data.bonus_amounts.reduce((total, amount) => total + (amount || 0), 0).toFixed(2)} USD</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -170,9 +188,15 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                     {data.practice_bonus_categories.map((categoryId, index) => (
                                         <div key={categoryId} className="flex justify-between">
                                             <span className="text-sm">{getEnumLabel(enums.practiceBonusCategory, categoryId)}</span>
-                                            <span className="text-sm font-medium">${data.practice_bonus_amounts[index]} USD</span>
+                                            <span className="text-sm font-medium">${(data.practice_bonus_amounts[index] || 0).toFixed(2)} USD</span>
                                         </div>
                                     ))}
+                                    <div className="border-t pt-1 mt-2">
+                                        <div className="flex justify-between font-medium">
+                                            <span className="text-sm text-green-800">Total bonos prácticas/bootcamp:</span>
+                                            <span className="text-sm text-green-900">${data.practice_bonus_amounts.reduce((total, amount) => total + (amount || 0), 0).toFixed(2)} USD</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}

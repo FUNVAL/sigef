@@ -10,7 +10,7 @@ import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
 import { RecruitmentRequest, HouseholdMember, HouseholdExpense } from '@/types/recruitment';
 import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase } from 'lucide-react';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
 interface SocioEconomicStepProps {
@@ -30,7 +30,16 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     const [practiceBonusAmounts, setPracticeBonusAmounts] = useState<Record<number, number>>({});
     const [monthlyExpenses, setMonthlyExpenses] = useState<HouseholdExpense[]>([]);
 
+    // Sincronizar monthlyExpenses con data.monthly_expenses
+    useEffect(() => {
+        if (data.monthly_expenses && data.monthly_expenses.length > 0) {
+            setMonthlyExpenses(data.monthly_expenses);
+        }
+    }, []);
 
+    useEffect(() => {
+        setData('monthly_expenses', monthlyExpenses);
+    }, [monthlyExpenses]);
 
     // Add defensive checks for enums
     if (!enums) {
@@ -73,12 +82,15 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             type: 0, // Default to blank (no selection)
             amount: 0
         };
-        setMonthlyExpenses([...monthlyExpenses, newExpense]);
+        const updatedExpenses = [...monthlyExpenses, newExpense];
+        setMonthlyExpenses(updatedExpenses);
+        setData('monthly_expenses', updatedExpenses);
     };
 
     const removeMonthlyExpense = (index: number) => {
         const updatedExpenses = monthlyExpenses.filter((_, i) => i !== index);
         setMonthlyExpenses(updatedExpenses);
+        setData('monthly_expenses', updatedExpenses);
     };
 
     const updateMonthlyExpense = (index: number, field: keyof HouseholdExpense, value: any) => {
@@ -88,6 +100,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             [field]: field === 'amount' ? parseFloat(value) || 0 : value
         };
         setMonthlyExpenses(updatedExpenses);
+        setData('monthly_expenses', updatedExpenses);
     };
 
     const handleBonusCategoryChange = (categoryId: number, checked: boolean) => {
@@ -732,6 +745,19 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         </div>
                                     );
                                 }) || []}
+                                
+                                {/* Total de bonos durante clases */}
+                                {selectedBonusCategories.length > 0 && (
+                                    <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                        <div className="flex justify-between items-center">
+                                            <span className="font-semibold text-green-800">Total de bonos durante clases:</span>
+                                            <span className="text-lg font-bold text-green-900">
+                                                ${Object.values(bonusAmounts).reduce((total, amount) => total + (amount || 0), 0).toFixed(2)} USD
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+                                
                                 {errors.bonus_categories && (
                                     <p className="text-sm text-red-500 mt-2">{errors.bonus_categories}</p>
                                 )}
@@ -811,6 +837,19 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         </div>
                                     );
                                 }) || []}
+                                
+                                {/* Total de bonos durante prácticas */}
+                                {selectedPracticeBonusCategories.length > 0 && (
+                                    <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                        <div className="flex justify-between items-center">
+                                            <span className="font-semibold text-green-800">Total de bonos durante prácticas:</span>
+                                            <span className="text-lg font-bold text-green-900">
+                                                ${Object.values(practiceBonusAmounts).reduce((total, amount) => total + (amount || 0), 0).toFixed(2)} USD
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+                                
                                 {errors.practice_bonus_categories && (
                                     <p className="text-sm text-red-500 mt-2">{errors.practice_bonus_categories}</p>
                                 )}
