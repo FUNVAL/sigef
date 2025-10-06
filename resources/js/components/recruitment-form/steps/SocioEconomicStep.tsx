@@ -46,6 +46,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             name: '',
             phone: '',
             relationship: 0,
+            age: '',
             income_contribution: 0
         };
         setData('household_members', [...data.household_members, newMember]);
@@ -267,6 +268,23 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             <p className="text-sm text-red-500 mt-1">{errors[`household_member_${index}_relationship`]}</p>
                                         )}
                                     </div>
+
+                                    <div>
+                                        {/* Edad */}
+                                        <Label htmlFor={`member-age-${index}`}>Edad</Label>
+                                        <Input
+                                            id={`member-age-${index}`}
+                                            type="number"
+                                            value={member.age || ''}
+                                            onChange={(e) => updateHouseholdMember(index, 'age', parseInt(e.target.value) || 0)}
+                                            placeholder="Ingrese la edad"
+                                            min="0"
+                                        />
+                                        {errors[`household_member_${index}_age`] && (
+                                            <p className="text-sm text-red-500 mt-1">{errors[`household_member_${index}_age`]}</p>
+                                        )}
+                                    </div>
+
                                     <div>
                                         <Label htmlFor={`member-income-${index}`}>Ingresos que aporta (USD)</Label>
                                         <Input

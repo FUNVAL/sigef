@@ -43,19 +43,6 @@ Route::get('recruitment-form', [RecruitmentController::class, 'create'])
 Route::post('/recruitment', [RecruitmentController::class, 'store'])
     ->name('recruitment.store');
 
-# ruta de test para verificar enums
-Route::get('recruitment-test-enums', function () {
-    $enums = [
-        'familyRelationship' => \App\Enums\FamilyRelationshipEnum::toArray(),
-        'deviceType' => \App\Enums\DeviceTypeEnum::toArray(),
-        'housingType' => \App\Enums\HousingTypeEnum::toArray(),
-        'employmentType' => \App\Enums\EmploymentTypeEnum::toArray(),
-        'jobPosition' => \App\Enums\JobPositionEnum::toArray(),
-        'bonusCategory' => \App\Enums\BonusCategoryEnum::toArray(),
-    ];
-    return response()->json($enums);
-})->name('recruitment-test-enums');
-
 Route::get('language/{locale}', [LanguageController::class, 'switchLang'])->name('language.switch');
 
 Route::get('api/stakes/{country_id}', [StakeController::class, 'filterByCountryId'])

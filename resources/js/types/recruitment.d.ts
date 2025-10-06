@@ -4,6 +4,7 @@ export type HouseholdExpense = {
 };
 
 export type HouseholdMember = {
+    age: string;
     name: string;
     phone?: string;
     relationship: number;
