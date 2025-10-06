@@ -156,9 +156,9 @@ return [
         'gas' => 'Gas',
         'education' => 'Educación',
         'healthcare' => 'Salud',
-        'others' => 'Otros',
+        'insurance' => 'Seguro',
         'medicine' => 'Medicina',
         'debt_payment' => 'Pago de deuda',
-        'insurance' => 'Seguro',
+        'others' => 'Otros',
     ],
 ];

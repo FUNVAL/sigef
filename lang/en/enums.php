@@ -148,9 +148,9 @@ return [
         'gas' => 'Gas',
         'education' => 'Education',
         'healthcare' => 'Healthcare',
-        'others' => 'Others',
+        'insurance' => 'Insurance',
         'medicine' => 'Medicine',
         'debt_payment' => 'Debt payment',
-        'insurance' => 'Insurance',
+        'others' => 'Others',
     ],
 ];

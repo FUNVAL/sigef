@@ -155,9 +155,9 @@ return [
         'gas' => 'Gaz',
         'education' => 'Edikasyon',
         'healthcare' => 'Sante',
-        'others' => 'Lòt bagay',
+        'insurance' => 'Asirans',
         'medicine' => 'Medikaman',
         'debt_payment' => 'Peye dèt',
-        'insurance' => 'Asirans',
+        'others' => 'Lòt bagay',
     ],
 ];
