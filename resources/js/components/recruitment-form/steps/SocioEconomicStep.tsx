@@ -279,6 +279,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             onChange={(e) => updateHouseholdMember(index, 'age', parseInt(e.target.value) || 0)}
                                             placeholder="Ingrese la edad"
                                             min="0"
+                                            required
                                         />
                                         {errors[`household_member_${index}_age`] && (
                                             <p className="text-sm text-red-500 mt-1">{errors[`household_member_${index}_age`]}</p>
@@ -321,6 +322,19 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                             <Plus className="h-4 w-4 mr-2" />
                             Agregar persona
                         </Button>
+                        
+                        {/* Total de ingresos */}
+                        {data.household_members.length > 0 && (
+                            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <div className="flex justify-between items-center">
+                                    <span className="font-semibold text-blue-800">Total de ingresos del hogar:</span>
+                                    <span className="text-lg font-bold text-blue-900">
+                                        ${data.household_members.reduce((total, member) => total + (member.income_contribution || 0), 0).toFixed(2)} USD
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+                        
                         {errors.household_members && (
                             <p className="text-sm text-red-500">{errors.household_members}</p>
                         )}
@@ -391,6 +405,18 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                             <p className="text-sm text-gray-500 text-center py-4">
                                 No se han agregado gastos mensuales. Haga clic en "Agregar gasto" para comenzar.
                             </p>
+                        )}
+                        
+                        {/* Total de egresos */}
+                        {monthlyExpenses.length > 0 && (
+                            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                <div className="flex justify-between items-center">
+                                    <span className="font-semibold text-red-800">Total de egresos mensuales:</span>
+                                    <span className="text-lg font-bold text-red-900">
+                                        ${monthlyExpenses.reduce((total, expense) => total + (expense.amount || 0), 0).toFixed(2)} USD
+                                    </span>
+                                </div>
+                            </div>
                         )}
                     </CardContent>
                 </Card>
