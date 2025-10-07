@@ -27,7 +27,7 @@ class StudentRegistrationController extends Controller
     public function create()
     {
         try {
-            return inertia('forms/student-registration/index', [
+            return inertia('forms/student-registration/registration', [
                 'step' => request()->input('step', 0),
                 'countries' => Country::where('status', StatusEnum::ACTIVE->value)->get(),
                 'courses' => Course::where('status', StatusEnum::ACTIVE->value)->get(),
