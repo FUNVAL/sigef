@@ -88,7 +88,7 @@ const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
 
     const steps: Stepper[] = [
         {
-            title: 'Información Socio-económica',
+            title: 'Información Socioeconómica',
             component: <SocioEconomicStep request={request} enums={enums} countries={countries} />,
         },
         {

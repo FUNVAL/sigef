@@ -43,7 +43,7 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
                             <Users className="h-5 w-5" />
-                            Información Socio-económica
+                            Información Socioeconómica
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">

@@ -11,7 +11,7 @@ return [
     
     'steps' => [
         'socio_economic' => [
-            'title' => 'Información Socio-económica',
+            'title' => 'Información Socioeconómica',
             'subtitle' => 'Proporcione información sobre su situación económica y familiar',
         ],
         'health' => [
