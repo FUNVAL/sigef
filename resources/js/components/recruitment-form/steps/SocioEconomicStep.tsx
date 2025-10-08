@@ -297,12 +297,12 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                     <div>
                                         <Label htmlFor={`member-relationship-${index}`}>Relación</Label>
                                         <Select
-                                            value={member.relationship.toString()}
+                                            value={member.relationship && member.relationship > 0 ? member.relationship.toString() : ''}
                                             onValueChange={(value: string) => updateHouseholdMember(index, 'relationship', parseInt(value))}
-                                            
+
                                         >
                                             <SelectTrigger className={errors[`household_member_${index}_relationship`] ? 'border-red-500' : ''}>
-                                                <SelectValue placeholder="Seleccionar relación" />
+                                                <SelectValue placeholder="--- Seleccione una relación ---" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {enums.familyRelationship?.map((item) => (
@@ -370,7 +370,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                             <Plus className="h-4 w-4 mr-2" />
                             Agregar persona
                         </Button>
-                        
+
                         {/* Total de ingresos */}
                         {data.household_members.length > 0 && (
                             <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -382,7 +382,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 </div>
                             </div>
                         )}
-                        
+
                         {errors.household_members && (
                             <p className="text-sm text-red-500">{errors.household_members}</p>
                         )}
@@ -414,11 +414,11 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                         {monthlyExpenses.map((expense, index) => (
                             <div key={index} className="flex gap-2 p-3 border rounded">
                                 <Select
-                                    value={expense.type.toString()}
+                                    value={expense.type && expense.type > 0 ? expense.type.toString() : ''}
                                     onValueChange={(value) => updateMonthlyExpense(index, 'type', parseInt(value))}
                                 >
                                     <SelectTrigger className="flex-1">
-                                        <SelectValue placeholder="Tipo de gasto" />
+                                        <SelectValue placeholder="--- Seleccione un tipo de gasto ---" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {enums.expenseType?.map((item) => (
@@ -454,7 +454,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 No se han agregado gastos mensuales. Haga clic en "Agregar gasto" para comenzar.
                             </p>
                         )}
-                        
+
                         {/* Total de egresos */}
                         {monthlyExpenses.length > 0 && (
                             <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -511,11 +511,11 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     </CardHeader>
                     <CardContent>
                         <Select
-                            value={data.device_type.toString()}
+                            value={data.device_type && data.device_type > 0 ? data.device_type.toString() : ''}
                             onValueChange={(value: string) => setData('device_type', parseInt(value))}
                         >
                             <SelectTrigger className={errors.device_type ? 'border-red-500' : ''}>
-                                <SelectValue placeholder="Seleccionar dispositivo" />
+                                <SelectValue placeholder="--- Seleccione un dispositivo ---" />
                             </SelectTrigger>
                             <SelectContent>
                                 {enums.deviceType?.map((item) => (
@@ -541,11 +541,11 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     </CardHeader>
                     <CardContent>
                         <Select
-                            value={data.housing_type.toString()}
+                            value={data.housing_type && data.housing_type > 0 ? data.housing_type.toString() : ''}
                             onValueChange={(value: string) => setData('housing_type', parseInt(value))}
                         >
                             <SelectTrigger className={errors.housing_type ? 'border-red-500' : ''}>
-                                <SelectValue placeholder="Seleccionar tipo de vivienda" />
+                                <SelectValue placeholder="--- Seleccione un tipo de vivienda ---" />
                             </SelectTrigger>
                             <SelectContent>
                                 {enums.housingType?.map((item) => (
@@ -600,7 +600,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         onValueChange={(value: string) => setData('employment_type', parseInt(value))}
                                     >
                                         <SelectTrigger className={errors.employment_type ? 'border-red-500' : ''}>
-                                            <SelectValue placeholder="Seleccionar tipo de empleo" />
+                                            <SelectValue placeholder="--- Seleccione un tipo de empleo ---" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {enums.employmentType?.map((item) => (
@@ -637,7 +637,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                                 onValueChange={(value: string) => setData('job_position', parseInt(value))}
                                             >
                                                 <SelectTrigger className={errors.job_position ? 'border-red-500' : ''}>
-                                                    <SelectValue placeholder="Seleccionar puesto" />
+                                                    <SelectValue placeholder="--- Seleccione un puesto ---" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {enums.jobPosition?.map((item) => (
@@ -720,32 +720,31 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 {enums.bonusCategory?.map((item) => {
                                     const isSelected = selectedBonusCategories.includes(item.id);
                                     const isDisabled = !isSelected && selectedBonusCategories.length >= 2;
-                                    
+
                                     return (
-                                        <div key={item.id} className={`flex items-center gap-4 p-4 border rounded-lg ${
-                                            isDisabled ? 'opacity-50 bg-gray-50' : ''
-                                        }`}>
+                                        <div key={item.id} className={`flex items-center gap-4 p-4 border rounded-lg ${isDisabled ? 'opacity-50 bg-gray-50' : ''
+                                            }`}>
                                             <Checkbox
                                                 checked={isSelected}
                                                 disabled={isDisabled}
                                                 onCheckedChange={(checked) => handleBonusCategoryChange(item.id, checked as boolean)}
                                             />
-                                        <span className="flex-1">{item.name}</span>
-                                        {selectedBonusCategories.includes(item.id) && (
-                                            <Input
-                                                type="number"
-                                                placeholder="Monto USD"
-                                                min="0"
-                                                step="0.01"
-                                                className="w-32"
-                                                value={bonusAmounts[item.id] || ''}
-                                                onChange={(e) => handleBonusAmountChange(item.id, parseFloat(e.target.value) || 0)}
-                                            />
-                                        )}
+                                            <span className="flex-1">{item.name}</span>
+                                            {selectedBonusCategories.includes(item.id) && (
+                                                <Input
+                                                    type="number"
+                                                    placeholder="Monto USD"
+                                                    min="0"
+                                                    step="0.01"
+                                                    className="w-32"
+                                                    value={bonusAmounts[item.id] || ''}
+                                                    onChange={(e) => handleBonusAmountChange(item.id, parseFloat(e.target.value) || 0)}
+                                                />
+                                            )}
                                         </div>
                                     );
                                 }) || []}
-                                
+
                                 {/* Total de bonos durante clases */}
                                 {selectedBonusCategories.length > 0 && (
                                     <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -757,7 +756,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         </div>
                                     </div>
                                 )}
-                                
+
                                 {errors.bonus_categories && (
                                     <p className="text-sm text-red-500 mt-2">{errors.bonus_categories}</p>
                                 )}
@@ -812,32 +811,31 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 {enums.practiceBonusCategory?.map((item) => {
                                     const isSelected = selectedPracticeBonusCategories.includes(item.id);
                                     const isDisabled = !isSelected && selectedPracticeBonusCategories.length >= 2;
-                                    
+
                                     return (
-                                        <div key={item.id} className={`flex items-center gap-4 p-4 border rounded-lg ${
-                                            isDisabled ? 'opacity-50 bg-gray-50' : ''
-                                        }`}>
+                                        <div key={item.id} className={`flex items-center gap-4 p-4 border rounded-lg ${isDisabled ? 'opacity-50 bg-gray-50' : ''
+                                            }`}>
                                             <Checkbox
                                                 checked={isSelected}
                                                 disabled={isDisabled}
                                                 onCheckedChange={(checked) => handlePracticeBonusCategoryChange(item.id, checked as boolean)}
                                             />
-                                        <span className="flex-1">{item.name}</span>
-                                        {selectedPracticeBonusCategories.includes(item.id) && (
-                                            <Input
-                                                type="number"
-                                                placeholder="Monto USD"
-                                                min="0"
-                                                step="0.01"
-                                                className="w-32"
-                                                value={practiceBonusAmounts[item.id] || ''}
-                                                onChange={(e) => handlePracticeBonusAmountChange(item.id, parseFloat(e.target.value) || 0)}
-                                            />
-                                        )}
+                                            <span className="flex-1">{item.name}</span>
+                                            {selectedPracticeBonusCategories.includes(item.id) && (
+                                                <Input
+                                                    type="number"
+                                                    placeholder="Monto USD"
+                                                    min="0"
+                                                    step="0.01"
+                                                    className="w-32"
+                                                    value={practiceBonusAmounts[item.id] || ''}
+                                                    onChange={(e) => handlePracticeBonusAmountChange(item.id, parseFloat(e.target.value) || 0)}
+                                                />
+                                            )}
                                         </div>
                                     );
                                 }) || []}
-                                
+
                                 {/* Total de bonos durante prácticas */}
                                 {selectedPracticeBonusCategories.length > 0 && (
                                     <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -849,7 +847,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         </div>
                                     </div>
                                 )}
-                                
+
                                 {errors.practice_bonus_categories && (
                                     <p className="text-sm text-red-500 mt-2">{errors.practice_bonus_categories}</p>
                                 )}
@@ -859,8 +857,8 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 </Card>
 
                 <div className="flex justify-end">
-                    <Button 
-                        type="submit" 
+                    <Button
+                        type="submit"
                         size="lg"
                         className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
                     >
