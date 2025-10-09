@@ -12,6 +12,7 @@ use App\Enums\JobPositionEnum;
 use App\Enums\BonusCategoryEnum;
 use App\Enums\PracticeBonusCategoryEnum;
 use App\Enums\ExpenseTypeEnum;
+use App\Enums\InternetAccessPlanEnum;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Exception;
@@ -38,6 +39,7 @@ class RecruitmentController extends Controller
                     'bonusCategory' => BonusCategoryEnum::toArray(),
                     'practiceBonusCategory' => PracticeBonusCategoryEnum::toArray(),
                     'expenseType' => ExpenseTypeEnum::toArray(),
+                    'internetAccessPlan' => InternetAccessPlanEnum::toArray(),
                 ],
                 'translations' => [
                     'recruitment_form' => __('recruitment_form'),
@@ -66,6 +68,7 @@ class RecruitmentController extends Controller
                 'household_members.*.relationship' => 'required|integer',
                 'monthly_income' => 'required|numeric|min:0',
                 'has_residential_internet' => 'required|boolean',
+                'internet_access_plan' => 'nullable|integer|required_if:has_residential_internet,false',
                 'device_type' => 'required|integer',
                 'housing_type' => 'required|integer',
                 'has_employment' => 'required|boolean',
@@ -152,6 +155,7 @@ class RecruitmentController extends Controller
                 'bonusCategory' => BonusCategoryEnum::toArray(),
                 'practiceBonusCategory' => PracticeBonusCategoryEnum::toArray(),
                 'expenseType' => ExpenseTypeEnum::toArray(),
+                'internetAccessPlan' => InternetAccessPlanEnum::toArray(),
             ]
         ]);
     }
@@ -170,6 +174,7 @@ class RecruitmentController extends Controller
                 'household_members.*.relationship' => 'required|integer',
                 'monthly_income' => 'required|numeric|min:0',
                 'has_residential_internet' => 'required|boolean',
+                'internet_access_plan' => 'nullable|integer|required_if:has_residential_internet,false',
                 'device_type' => 'required|integer',
                 'housing_type' => 'required|integer',
                 'has_employment' => 'required|boolean',

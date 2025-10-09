@@ -573,7 +573,13 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                     type="radio"
                                     name="has_residential_internet"
                                     checked={data.has_residential_internet === true}
-                                    onChange={() => setData('has_residential_internet', true)}
+                                    onChange={() => {
+                                        setData('has_residential_internet', true);
+                                        // Limpiar la pregunta de seguimiento si cambia a "Sí"
+                                        if (data.internet_access_plan) {
+                                            setData('internet_access_plan', undefined);
+                                        }
+                                    }}
                                 />
                                 Sí
                             </label>
@@ -589,6 +595,33 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Pregunta de seguimiento para internet */}
+                {data.has_residential_internet === false && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
+                                <Wifi className="h-5 w-5" />
+                                Entendemos que el acceso a internet es importante. ¿Tiene algún plan o idea sobre cómo podría resolver esta situación?
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-3">
+                                {enums.internetAccessPlan?.map((option) => (
+                                    <label key={option.id} className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="internet_access_plan"
+                                            checked={data.internet_access_plan === option.id}
+                                            onChange={() => setData('internet_access_plan', option.id)}
+                                        />
+                                        {option.name}
+                                    </label>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Tipo de dispositivo */}
                 <Card>

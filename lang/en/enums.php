@@ -148,4 +148,9 @@ return [
         'debt_payment' => 'Debt payment',
         'others' => 'Others',
     ],
+    'internet_access_plan' => [
+        'chapel' => 'I will attend classes at the chapel',
+        'family_friend_house' => 'I will attend classes at a family member/friend\'s house',
+        'hire_internet_plan' => 'I will hire an internet plan for my home',
+    ],
 ];

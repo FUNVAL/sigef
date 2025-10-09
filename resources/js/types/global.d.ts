@@ -32,6 +32,7 @@ type Enums = {
     bonusCategory: EnumItem[];
     practiceBonusCategory: EnumItem[];
     expenseType: EnumItem[];
+    internetAccessPlan: EnumItem[];
 };
 
 type Stepper = {

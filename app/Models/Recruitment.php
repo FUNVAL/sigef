@@ -14,6 +14,7 @@ class Recruitment extends Model
         'household_members',
         'monthly_income',
         'has_residential_internet',
+        'internet_access_plan',
         'device_type',
         'housing_type',
         'has_employment',

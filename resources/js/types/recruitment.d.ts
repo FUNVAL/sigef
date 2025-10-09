@@ -30,6 +30,7 @@ export type RecruitmentFormData = {
     monthly_expenses: HouseholdExpense[];
     monthly_income: number;
     has_residential_internet: boolean;
+    internet_access_plan?: number;
     device_type: number;
     housing_type: number;
     has_employment: boolean;
