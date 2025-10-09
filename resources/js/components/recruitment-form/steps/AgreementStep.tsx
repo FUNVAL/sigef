@@ -77,6 +77,32 @@ Entiendo que puedo solicitar la corrección o eliminación de mis datos en cualq
 Este compromiso forma parte del desarrollo holístico que caracteriza nuestro programa.`,
         icon: Church
     },
+    {
+        id: 'mutual_understanding_accepted',
+        title: 'COMPROMISO DE ENTENDIMIENTO MUTUO',
+        content: `Declaro que:
+
+• He leído y entendido completamente todos los términos y condiciones del programa.
+• Acepto las responsabilidades y compromisos establecidos en este convenio.
+• Entiendo los objetivos y metodología del programa de capacitación.
+• Me comprometo a mantener una comunicación abierta y honesta con los coordinadores del programa.
+• Acepto participar en las evaluaciones y seguimientos requeridos durante y después del programa.
+• Entiendo que el incumplimiento de estos acuerdos puede resultar en la suspensión del programa.`,
+        icon: FileText
+    },
+    {
+        id: 'health_agreement_accepted',
+        title: 'CONVENIO DE CONDICIONES DE SALUD',
+        content: `En relación a mi estado de salud, declaro que:
+
+• He proporcionado información veraz y completa sobre mi estado de salud actual.
+• Me comprometo a informar cualquier cambio significativo en mi condición de salud durante el programa.
+• Entiendo que ciertas condiciones de salud pueden requerir adaptaciones especiales en el programa.
+• Acepto seguir las recomendaciones médicas necesarias para participar seguramente en el programa.
+• Eximo de responsabilidad a FUNVAL por complicaciones de salud preexistentes no declaradas.
+• Me comprometo a mantener un estado de salud adecuado que me permita completar el programa.`,
+        icon: Heart
+    },
 
 ];
 
@@ -141,6 +167,7 @@ export function AgreementStep({ request }: AgreementStepProps) {
                                 >
                                     <Checkbox
                                         id={`checkbox-${question.id}`}
+                                        name={question.id}
                                         checked={isAccepted}
                                         onCheckedChange={(checked) =>
                                             handleAgreementChange(question.id, checked as boolean)

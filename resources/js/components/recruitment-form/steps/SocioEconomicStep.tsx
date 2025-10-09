@@ -280,6 +280,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         <Label htmlFor={`member-name-${index}`}>Nombre</Label>
                                         <Input
                                             id={`member-name-${index}`}
+                                            name={`member-name-${index}`}
                                             value={member.name}
                                             onChange={(e) => updateHouseholdMember(index, 'name', e.target.value)}
                                             placeholder="Nombre completo"
@@ -323,6 +324,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                     <div>
                                         <Label htmlFor={`member-relationship-${index}`}>Relación</Label>
                                         <Select
+                                            name={`member-relationship-${index}`}
                                             value={member.relationship && member.relationship > 0 ? member.relationship.toString() : ''}
                                             onValueChange={(value: string) => updateHouseholdMember(index, 'relationship', parseInt(value))}
 
@@ -348,6 +350,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         <Label htmlFor={`member-age-${index}`}>Edad</Label>
                                         <Input
                                             id={`member-age-${index}`}
+                                            name={`member-age-${index}`}
                                             type="number"
                                             value={member.age || ''}
                                             onChange={(e) => updateHouseholdMember(index, 'age', parseInt(e.target.value) || 0)}
@@ -364,6 +367,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         <Label htmlFor={`member-income-${index}`}>Ingresos que aporta (USD)</Label>
                                         <Input
                                             id={`member-income-${index}`}
+                                            name={`member-income-${index}`}
                                             type="number"
                                             value={member.income_contribution || ''}
                                             onChange={(e) => updateHouseholdMember(index, 'income_contribution', parseFloat(e.target.value) || 0)}
@@ -440,6 +444,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                         {monthlyExpenses.map((expense, index) => (
                             <div key={index} className="flex gap-2 p-3 border rounded">
                                 <Select
+                                    name={`expense-type-${index}`}
                                     value={expense.type && expense.type > 0 ? expense.type.toString() : ''}
                                     onValueChange={(value) => updateMonthlyExpense(index, 'type', parseInt(value))}
                                 >
@@ -455,6 +460,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                     </SelectContent>
                                 </Select>
                                 <Input
+                                    name={`expense-amount-${index}`}
                                     type="number"
                                     placeholder="Monto USD"
                                     value={expense.amount || ''}
@@ -537,6 +543,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     </CardHeader>
                     <CardContent>
                         <Select
+                            name="device_type"
                             value={data.device_type && data.device_type > 0 ? data.device_type.toString() : ''}
                             onValueChange={(value: string) => setData('device_type', parseInt(value))}
                         >
@@ -567,6 +574,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     </CardHeader>
                     <CardContent>
                         <Select
+                            name="housing_type"
                             value={data.housing_type && data.housing_type > 0 ? data.housing_type.toString() : ''}
                             onValueChange={(value: string) => setData('housing_type', parseInt(value))}
                         >
@@ -622,6 +630,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 <div>
                                     <Label>Tipo de empleo</Label>
                                     <Select
+                                        name="employment_type"
                                         value={data.employment_type?.toString() || ''}
                                         onValueChange={(value: string) => setData('employment_type', parseInt(value))}
                                     >
@@ -646,6 +655,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         <div>
                                             <Label>Nombre de la empresa</Label>
                                             <Input
+                                                name="company_name"
                                                 value={data.company_name || ''}
                                                 onChange={(e) => setData('company_name', e.target.value)}
                                                 placeholder="Nombre de la empresa"
@@ -659,6 +669,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         <div>
                                             <Label>Puesto</Label>
                                             <Select
+                                                name="job_position"
                                                 value={data.job_position?.toString() || ''}
                                                 onValueChange={(value: string) => setData('job_position', parseInt(value))}
                                             >
@@ -681,6 +692,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         <div>
                                             <Label>Salario (USD)</Label>
                                             <Input
+                                                name="employment_income"
                                                 type="number"
                                                 value={data.employment_income || ''}
                                                 onChange={(e) => setData('employment_income', parseFloat(e.target.value) || 0)}
@@ -765,6 +777,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             <span className="flex-1">{item.name}</span>
                                             {selectedBonusCategories.includes(item.id) && (
                                                 <Input
+                                                    name={`bonus-amount-${item.id}`}
                                                     type="number"
                                                     placeholder="Monto USD"
                                                     min="0"
@@ -864,6 +877,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             <span className="flex-1">{item.name}</span>
                                             {selectedPracticeBonusCategories.includes(item.id) && (
                                                 <Input
+                                                    name={`practice-bonus-amount-${item.id}`}
                                                     type="number"
                                                     placeholder="Monto USD"
                                                     min="0"

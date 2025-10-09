@@ -115,6 +115,7 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                             <div>
                                 <Label htmlFor="start_month">Mes de inicio</Label>
                                 <Select
+                                    name="start_month"
                                     value={data.start_month.toString()}
                                     onValueChange={(value) => setData('start_month', parseInt(value))}
                                 >
@@ -137,6 +138,7 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                             <div>
                                 <Label htmlFor="start_year">Año</Label>
                                 <Select
+                                    name="start_year"
                                     value={data.start_year.toString()}
                                     onValueChange={(value) => setData('start_year', parseInt(value))}
                                 >
@@ -176,6 +178,7 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                                     </Label>
                                     <Input
                                         id="interview_photo"
+                                        name="interview_photo"
                                         type="file"
                                         accept="image/jpeg,image/jpg,image/png"
                                         onChange={handleFileChange}
