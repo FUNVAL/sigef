@@ -631,7 +631,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                     <Label>Tipo de empleo</Label>
                                     <Select
                                         name="employment_type"
-                                        value={data.employment_type?.toString() || ''}
+                                        value={ data.employment_type && data.employment_type > 0 ? data.employment_type?.toString() : ''}
                                         onValueChange={(value: string) => setData('employment_type', parseInt(value))}
                                     >
                                         <SelectTrigger className={errors.employment_type ? 'border-red-500' : ''}>
@@ -670,7 +670,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             <Label>Puesto</Label>
                                             <Select
                                                 name="job_position"
-                                                value={data.job_position?.toString() || ''}
+                                                value={data.job_position && data.job_position > 0 ? data.job_position?.toString() : ''}
                                                 onValueChange={(value: string) => setData('job_position', parseInt(value))}
                                             >
                                                 <SelectTrigger className={errors.job_position ? 'border-red-500' : ''}>
