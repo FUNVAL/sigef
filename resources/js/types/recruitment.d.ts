@@ -32,12 +32,17 @@ export type RecruitmentFormData = {
     company_name?: string;
     job_position?: number;
     employment_income?: number;
+    has_work_experience?: boolean;
+    experience_job_position?: number;
+    years_of_experience?: number;
     needs_bonus: boolean;
     bonus_categories: number[];
     bonus_amounts: number[];
     needs_practice_bonus: boolean;
     practice_bonus_categories: number[];
     practice_bonus_amounts: number[];
+    job_offer_company?: string;
+    salary_expectation?: number;
 
     // Salud
     has_health_insurance: boolean;

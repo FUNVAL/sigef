@@ -9,7 +9,7 @@ import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
 import { RecruitmentRequest, HouseholdMember, HouseholdExpense } from '@/types/recruitment';
-import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase } from 'lucide-react';
+import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase, Activity, Building } from 'lucide-react';
 import React, { useContext, useState, useEffect } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
@@ -244,6 +244,16 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         // Validar bonos de prácticas (máximo 2)
         if (data.needs_practice_bonus && selectedPracticeBonusCategories.length > 2) {
             validationErrors.practice_bonus_categories = 'Solo se pueden seleccionar máximo 2 categorías de bono para prácticas';
+        }
+
+        // Validar experiencia laboral
+        if (data.has_work_experience) {
+            if (!data.experience_job_position) {
+                validationErrors.experience_job_position = 'El puesto de experiencia es requerido';
+            }
+            if (!data.years_of_experience || data.years_of_experience <= 0) {
+                validationErrors.years_of_experience = 'Los años de experiencia son requeridos';
+            }
         }
 
         if (Object.keys(validationErrors).length > 0) {
@@ -711,6 +721,83 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                         )}
                     </CardContent>
                 </Card>
+                {/* Cuentas con alguna experiencia laboral */}
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
+                            <Activity className="h-5 w-5" />
+                            ¿Cuenta con alguna experiencia laboral?
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="flex gap-4">
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="radio"
+                                    name="has_work_experience"
+                                    checked={data.has_work_experience === true}
+                                    onChange={() => setData('has_work_experience', true)}
+                                />
+                                Sí
+                            </label>
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="radio"
+                                    name="has_work_experience"
+                                    checked={data.has_work_experience === false}
+                                    onChange={() => setData('has_work_experience', false)}
+                                />
+                                No
+                            </label>
+                        </div>
+
+                        {data.has_work_experience && (
+                            <div className="space-y-4 grid-cols-2 gap-4 md:grid">
+                                <div>
+                                    <Label htmlFor="experience_job_position">Puesto o área de experiencia</Label>
+                                    <Select
+                                        name="experience_job_position"
+                                        value={data.experience_job_position && data.experience_job_position > 0 ? data.experience_job_position.toString() : ''}
+                                        onValueChange={(value: string) => setData('experience_job_position', parseInt(value))}
+                                    >
+                                        <SelectTrigger className={errors.experience_job_position ? 'border-red-500' : ''}>
+                                            <SelectValue placeholder="--- Seleccione un puesto ---" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {enums.jobPosition?.map((item) => (
+                                                <SelectItem key={item.id} value={item.id.toString()}>
+                                                    {item.name}
+                                                </SelectItem>
+                                            )) || []}
+                                        </SelectContent>
+                                    </Select>
+                                    {errors.experience_job_position && (
+                                        <p className="text-sm text-red-500 mt-1">{errors.experience_job_position}</p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <Label htmlFor="years_of_experience">Años de experiencia</Label>
+                                    <Input
+                                        id="years_of_experience"
+                                        name="years_of_experience"
+                                        type="number"
+                                        value={data.years_of_experience || ''}
+                                        onChange={(e) => setData('years_of_experience', parseFloat(e.target.value) || 0)}
+                                        placeholder="Ingrese los años de experiencia"
+                                        min="0"
+                                        step="0.5"
+                                        className={errors.years_of_experience ? 'border-red-500' : ''} 
+                                    />
+                                    {errors.years_of_experience && (
+                                        <p className="text-sm text-red-500 mt-1">{errors.years_of_experience}</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
 
                 {/* Bono */}
                 <Card>
@@ -908,6 +995,52 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 )}
                             </div>
                         )}
+                    </CardContent>
+                </Card>
+
+                {/* Ofertas laborales para el estudiante */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
+                            <Building className="h-5 w-5" />
+                            Ofertas laborales para el estudiante
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <Label htmlFor="job_offer_company">Nombre de la empresa de interés</Label>
+                                <Input
+                                    id="job_offer_company"
+                                    name="job_offer_company"
+                                    value={data.job_offer_company || ''}
+                                    onChange={(e) => setData('job_offer_company', e.target.value)}
+                                    placeholder="Ingrese el nombre de la empresa"
+                                    className={errors.job_offer_company ? 'border-red-500' : ''}
+                                />
+                                {errors.job_offer_company && (
+                                    <p className="text-sm text-red-500 mt-1">{errors.job_offer_company}</p>
+                                )}
+                            </div>
+
+                            <div>
+                                <Label htmlFor="salary_expectation">Pretensión salarial (USD)</Label>
+                                <Input
+                                    id="salary_expectation"
+                                    name="salary_expectation"
+                                    type="number"
+                                    value={data.salary_expectation || ''}
+                                    onChange={(e) => setData('salary_expectation', parseFloat(e.target.value) || 0)}
+                                    placeholder="Ingrese su expectativa salarial"
+                                    min="0"
+                                    step="0.01"
+                                    className={errors.salary_expectation ? 'border-red-500' : ''}
+                                />
+                                {errors.salary_expectation && (
+                                    <p className="text-sm text-red-500 mt-1">{errors.salary_expectation}</p>
+                                )}
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
 
