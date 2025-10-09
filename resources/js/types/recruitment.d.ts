@@ -16,6 +16,11 @@ export type BonusInfo = {
     amount: number;
 };
 
+export type JobOffer = {
+    company_name: string;
+    salary_expectation: number;
+};
+
 export type RecruitmentFormData = {
     // Datos básicos
     country_id?: number;
@@ -41,8 +46,7 @@ export type RecruitmentFormData = {
     needs_practice_bonus: boolean;
     practice_bonus_categories: number[];
     practice_bonus_amounts: number[];
-    job_offer_company?: string;
-    salary_expectation?: number;
+    job_offers: JobOffer[];
 
     // Salud
     has_health_insurance: boolean;

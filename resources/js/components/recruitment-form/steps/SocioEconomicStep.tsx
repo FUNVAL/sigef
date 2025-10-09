@@ -8,7 +8,7 @@ import { PhoneInput } from '@/components/ui/phone-input';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
-import { RecruitmentRequest, HouseholdMember, HouseholdExpense } from '@/types/recruitment';
+import { RecruitmentRequest, HouseholdMember, HouseholdExpense, JobOffer } from '@/types/recruitment';
 import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase, Activity, Building } from 'lucide-react';
 import React, { useContext, useState, useEffect } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
@@ -29,6 +29,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     const [selectedPracticeBonusCategories, setSelectedPracticeBonusCategories] = useState<number[]>([]);
     const [practiceBonusAmounts, setPracticeBonusAmounts] = useState<Record<number, number>>({});
     const [monthlyExpenses, setMonthlyExpenses] = useState<HouseholdExpense[]>([]);
+    const [jobOffers, setJobOffers] = useState<JobOffer[]>([]);
 
     // Sincronizar monthlyExpenses con data.monthly_expenses
     useEffect(() => {
@@ -40,6 +41,25 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     useEffect(() => {
         setData('monthly_expenses', monthlyExpenses);
     }, [monthlyExpenses]);
+
+    // Sincronizar jobOffers con data.job_offers
+    useEffect(() => {
+        if (data.job_offers && data.job_offers.length > 0) {
+            setJobOffers(data.job_offers);
+        } else {
+            // Inicializar con 2 ofertas vacías por defecto
+            const defaultOffers: JobOffer[] = [
+                { company_name: '', salary_expectation: 0 },
+                { company_name: '', salary_expectation: 0 }
+            ];
+            setJobOffers(defaultOffers);
+            setData('job_offers', defaultOffers);
+        }
+    }, []);
+
+    useEffect(() => {
+        setData('job_offers', jobOffers);
+    }, [jobOffers]);
 
     // Add defensive checks for enums
     if (!enums) {
@@ -101,6 +121,33 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         };
         setMonthlyExpenses(updatedExpenses);
         setData('monthly_expenses', updatedExpenses);
+    };
+
+    // Job offers functions
+    const addJobOffer = () => {
+        const newOffer: JobOffer = {
+            company_name: '',
+            salary_expectation: 0
+        };
+        const updatedOffers = [...jobOffers, newOffer];
+        setJobOffers(updatedOffers);
+        setData('job_offers', updatedOffers);
+    };
+
+    const removeJobOffer = (index: number) => {
+        const updatedOffers = jobOffers.filter((_, i) => i !== index);
+        setJobOffers(updatedOffers);
+        setData('job_offers', updatedOffers);
+    };
+
+    const updateJobOffer = (index: number, field: keyof JobOffer, value: any) => {
+        const updatedOffers = [...jobOffers];
+        updatedOffers[index] = {
+            ...updatedOffers[index],
+            [field]: field === 'salary_expectation' ? parseFloat(value) || 0 : value
+        };
+        setJobOffers(updatedOffers);
+        setData('job_offers', updatedOffers);
     };
 
     const handleBonusCategoryChange = (categoryId: number, checked: boolean) => {
@@ -1007,40 +1054,78 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <Label htmlFor="job_offer_company">Nombre de la empresa de interés</Label>
-                                <Input
-                                    id="job_offer_company"
-                                    name="job_offer_company"
-                                    value={data.job_offer_company || ''}
-                                    onChange={(e) => setData('job_offer_company', e.target.value)}
-                                    placeholder="Ingrese el nombre de la empresa"
-                                    className={errors.job_offer_company ? 'border-red-500' : ''}
-                                />
-                                {errors.job_offer_company && (
-                                    <p className="text-sm text-red-500 mt-1">{errors.job_offer_company}</p>
-                                )}
-                            </div>
-
-                            <div>
-                                <Label htmlFor="salary_expectation">Pretensión salarial (USD)</Label>
-                                <Input
-                                    id="salary_expectation"
-                                    name="salary_expectation"
-                                    type="number"
-                                    value={data.salary_expectation || ''}
-                                    onChange={(e) => setData('salary_expectation', parseFloat(e.target.value) || 0)}
-                                    placeholder="Ingrese su expectativa salarial"
-                                    min="0"
-                                    step="0.01"
-                                    className={errors.salary_expectation ? 'border-red-500' : ''}
-                                />
-                                {errors.salary_expectation && (
-                                    <p className="text-sm text-red-500 mt-1">{errors.salary_expectation}</p>
-                                )}
-                            </div>
+                        <div className="flex items-center justify-between">
+                            <Label>Empresas de interés</Label>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={addJobOffer}
+                            >
+                                <Plus className="h-4 w-4 mr-1" />
+                                Agregar empresa
+                            </Button>
                         </div>
+
+                        {jobOffers.map((offer, index) => (
+                            <div key={index} className="p-4 border rounded-lg space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <Label htmlFor={`job-offer-company-${index}`}>Nombre de la empresa</Label>
+                                        <Input
+                                            id={`job-offer-company-${index}`}
+                                            name={`job-offer-company-${index}`}
+                                            value={offer.company_name}
+                                            onChange={(e) => updateJobOffer(index, 'company_name', e.target.value)}
+                                            placeholder="Ingrese el nombre de la empresa"
+                                            className={errors[`job_offer_${index}_company_name`] ? 'border-red-500' : ''}
+                                        />
+                                        {errors[`job_offer_${index}_company_name`] && (
+                                            <p className="text-sm text-red-500 mt-1">{errors[`job_offer_${index}_company_name`]}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label htmlFor={`salary-expectation-${index}`}>Pretensión salarial (USD)</Label>
+                                        <Input
+                                            id={`salary-expectation-${index}`}
+                                            name={`salary-expectation-${index}`}
+                                            type="number"
+                                            value={offer.salary_expectation || ''}
+                                            onChange={(e) => updateJobOffer(index, 'salary_expectation', e.target.value)}
+                                            placeholder="Ingrese su expectativa salarial"
+                                            min="0"
+                                            step="0.01"
+                                            className={errors[`job_offer_${index}_salary_expectation`] ? 'border-red-500' : ''}
+                                        />
+                                        {errors[`job_offer_${index}_salary_expectation`] && (
+                                            <p className="text-sm text-red-500 mt-1">{errors[`job_offer_${index}_salary_expectation`]}</p>
+                                        )}
+                                    </div>
+                                </div>
+                                
+                                {jobOffers.length > 2 && (
+                                    <div className="flex justify-end">
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => removeJobOffer(index)}
+                                            className="text-red-600 hover:text-red-700"
+                                        >
+                                            <Trash2 className="h-4 w-4 mr-1" />
+                                            Eliminar empresa
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+
+                        {jobOffers.length === 0 && (
+                            <p className="text-sm text-gray-500 text-center py-4">
+                                No se han agregado empresas. Haga clic en "Agregar empresa" para comenzar.
+                            </p>
+                        )}
                     </CardContent>
                 </Card>
 
