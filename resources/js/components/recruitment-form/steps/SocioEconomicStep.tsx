@@ -113,6 +113,18 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 // Mostrar mensaje de error o simplemente no permitir más selecciones
                 return;
             }
+
+            // Lógica de exclusión mutua entre Familiar (1) y Soltero (2)
+            if (categoryId === 1) { // FAMILY
+                // Si selecciona Familiar, remover Soltero si está seleccionado
+                updatedCategories = updatedCategories.filter(id => id !== 2);
+                delete updatedAmounts[2];
+            } else if (categoryId === 2) { // SINGLE
+                // Si selecciona Soltero, remover Familiar si está seleccionado
+                updatedCategories = updatedCategories.filter(id => id !== 1);
+                delete updatedAmounts[1];
+            }
+
             updatedCategories.push(categoryId);
         } else {
             updatedCategories = updatedCategories.filter(id => id !== categoryId);
@@ -141,6 +153,23 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 // Mostrar mensaje de error o simplemente no permitir más selecciones
                 return;
             }
+
+            // Lógica de exclusión mutua para bonos de prácticas
+            if (categoryId === 2) { // PROVINCIAL_TRANSPORT (Foráneo)
+                // Si selecciona Foráneo, remover Local y Alimentación
+                updatedCategories = updatedCategories.filter(id => id !== 1 && id !== 3);
+                delete updatedAmounts[1]; // LOCAL_TRANSPORT
+                delete updatedAmounts[3]; // FOOD
+            } else if (categoryId === 3) { // FOOD (Alimentación)
+                // Si selecciona Alimentación, remover Foráneo
+                updatedCategories = updatedCategories.filter(id => id !== 2);
+                delete updatedAmounts[2]; // PROVINCIAL_TRANSPORT
+            } else if (categoryId === 1) { // LOCAL_TRANSPORT (Local)
+                // Si selecciona Local, remover Foráneo (puede coexistir con Alimentación)
+                updatedCategories = updatedCategories.filter(id => id !== 2);
+                delete updatedAmounts[2]; // PROVINCIAL_TRANSPORT
+            }
+
             updatedCategories.push(categoryId);
         } else {
             updatedCategories = updatedCategories.filter(id => id !== categoryId);
@@ -164,8 +193,6 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
         // Validación básica
         const validationErrors: Record<string, string> = {};
-
-
 
         if (data.household_members.length === 0) {
             validationErrors.household_members = 'Debe agregar al menos una persona';
@@ -236,7 +263,6 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             />
 
             <form onSubmit={handleSubmit} className="space-y-6">
-
 
                 {/* Miembros del hogar */}
                 <Card>
@@ -709,17 +735,24 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
                         {data.needs_bonus && (
                             <div className="space-y-4">
-                                <Label>Categorías de bono (máximo 2 opciones)</Label>
-                                {selectedBonusCategories.length >= 2 && (
-                                    <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
-                                        <p className="text-blue-800 text-sm">
-                                            Ya has seleccionado {selectedBonusCategories.length} categorías de bono.
-                                        </p>
-                                    </div>
-                                )}
                                 {enums.bonusCategory?.map((item) => {
                                     const isSelected = selectedBonusCategories.includes(item.id);
-                                    const isDisabled = !isSelected && selectedBonusCategories.length >= 2;
+
+                                    // Lógica de deshabilitación
+                                    let isDisabled = false;
+                                    if (!isSelected) {
+                                        // Deshabilitar si ya se alcanzó el máximo (2)
+                                        if (selectedBonusCategories.length >= 2) {
+                                            isDisabled = true;
+                                        }
+                                        // Exclusión mutua: Familiar (1) y Soltero (2)
+                                        else if (item.id === 1 && selectedBonusCategories.includes(2)) { // Familiar deshabilitado si Soltero está seleccionado
+                                            isDisabled = true;
+                                        }
+                                        else if (item.id === 2 && selectedBonusCategories.includes(1)) { // Soltero deshabilitado si Familiar está seleccionado
+                                            isDisabled = true;
+                                        }
+                                    }
 
                                     return (
                                         <div key={item.id} className={`flex items-center gap-4 p-4 border rounded-lg ${isDisabled ? 'opacity-50 bg-gray-50' : ''
@@ -800,17 +833,25 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
                         {data.needs_practice_bonus && (
                             <div className="space-y-4">
-                                <Label>Categorías de bono para prácticas (máximo 2 opciones)</Label>
-                                {selectedPracticeBonusCategories.length >= 2 && (
-                                    <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
-                                        <p className="text-blue-800 text-sm">
-                                            Ya has seleccionado {selectedPracticeBonusCategories.length} categorías de bono para prácticas.
-                                        </p>
-                                    </div>
-                                )}
                                 {enums.practiceBonusCategory?.map((item) => {
                                     const isSelected = selectedPracticeBonusCategories.includes(item.id);
-                                    const isDisabled = !isSelected && selectedPracticeBonusCategories.length >= 2;
+
+                                    let isDisabled = false;
+                                    if (!isSelected) {
+                                        if (selectedPracticeBonusCategories.length >= 2) {
+                                            isDisabled = true;
+                                        }
+                                        // Reglas de exclusión mutua
+                                        else if (item.id === 1 && selectedPracticeBonusCategories.includes(2)) {
+                                            isDisabled = true;
+                                        }
+                                        else if (item.id === 2 && (selectedPracticeBonusCategories.includes(1) || selectedPracticeBonusCategories.includes(3))) {
+                                            isDisabled = true;
+                                        }
+                                        else if (item.id === 3 && selectedPracticeBonusCategories.includes(2)) {
+                                            isDisabled = true;
+                                        }
+                                    }
 
                                     return (
                                         <div key={item.id} className={`flex items-center gap-4 p-4 border rounded-lg ${isDisabled ? 'opacity-50 bg-gray-50' : ''
