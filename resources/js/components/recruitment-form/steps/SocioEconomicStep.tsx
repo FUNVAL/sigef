@@ -1056,6 +1056,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     <CardContent className="space-y-4">
                         <div className="flex items-center justify-between">
                             <Label>Empresas de interés</Label>
+                            
                             <Button
                                 type="button"
                                 variant="outline"
@@ -1086,7 +1087,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                     </div>
 
                                     <div>
-                                        <Label htmlFor={`salary-expectation-${index}`}>Pretensión salarial (USD)</Label>
+                                        <Label htmlFor={`salary-expectation-${index}`}>Salario promedio(USD)</Label>
                                         <Input
                                             id={`salary-expectation-${index}`}
                                             name={`salary-expectation-${index}`}
