@@ -61,6 +61,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         setData('job_offers', jobOffers);
     }, [jobOffers]);
 
+
     // Add defensive checks for enums
     if (!enums) {
         return (
@@ -566,7 +567,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                             ¿Cuenta con servicio de Internet en su casa?
                         </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="space-y-4">
                         <div className="flex gap-4">
                             <label className="flex items-center gap-2">
                                 <input
@@ -593,35 +594,27 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 No
                             </label>
                         </div>
+
+                        {data.has_residential_internet === false && (
+                            <div className="space-y-3 py-1">
+                                <Label>Entendemos que el acceso a internet es importante. ¿Tiene algún plan o idea sobre cómo podría resolver esta situación?</Label>
+                                <div className="space-y-3 mt-1.5 py-3.5 px-4 border rounded bg-gray-50">
+                                    {enums.internetAccessPlan?.map((option) => (
+                                        <label key={option.id} className="flex items-center gap-2">
+                                            <input
+                                                type="radio"
+                                                name="internet_access_plan"
+                                                checked={data.internet_access_plan === option.id}
+                                                onChange={() => setData('internet_access_plan', option.id)}
+                                            />
+                                            {option.name}
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
-
-                {/* Pregunta de seguimiento para internet */}
-                {data.has_residential_internet === false && (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
-                                <Wifi className="h-5 w-5" />
-                                Entendemos que el acceso a internet es importante. ¿Tiene algún plan o idea sobre cómo podría resolver esta situación?
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-3">
-                                {enums.internetAccessPlan?.map((option) => (
-                                    <label key={option.id} className="flex items-center gap-2">
-                                        <input
-                                            type="radio"
-                                            name="internet_access_plan"
-                                            checked={data.internet_access_plan === option.id}
-                                            onChange={() => setData('internet_access_plan', option.id)}
-                                        />
-                                        {option.name}
-                                    </label>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
 
                 {/* Tipo de dispositivo */}
                 <Card>
