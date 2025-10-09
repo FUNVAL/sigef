@@ -55,14 +55,14 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                             <div>
                                 <p className="text-sm font-medium text-gray-500">Ingresos mensuales del hogar</p>
                                 <p className="text-sm text-green-600 font-medium">
-                                    ${data.household_members.reduce((total, member) => total + (member.income_contribution || 0), 0).toFixed(2)} USD
+                                    ${data.household_members.reduce((total, member) => total + (member?.income_contribution || 0), 0).toFixed(2)} USD
                                 </p>
                             </div>
                             {data.monthly_expenses && data.monthly_expenses.length > 0 && (
                                 <div>
                                     <p className="text-sm font-medium text-gray-500">Egresos mensuales del hogar</p>
                                     <p className="text-sm text-red-600 font-medium">
-                                        ${data.monthly_expenses.reduce((total, expense) => total + (expense.amount || 0), 0).toFixed(2)} USD
+                                        ${data.monthly_expenses.reduce((total, expense) => total + (expense?.amount || 0), 0).toFixed(2)} USD
                                     </p>
                                 </div>
                             )}
@@ -73,11 +73,11 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                             </div>
                             <div>
                                 <p className="text-sm font-medium text-gray-500">Dispositivo para clases</p>
-                                <p className="text-sm">{getEnumLabel(enums.deviceType, data.device_type)}</p>
+                                <p className="text-sm">{getEnumLabel(enums.deviceType, data.device_type || 0)}</p>
                             </div>
                             <div>
                                 <p className="text-sm font-medium text-gray-500">Tipo de vivienda</p>
-                                <p className="text-sm">{getEnumLabel(enums.housingType, data.housing_type)}</p>
+                                <p className="text-sm">{getEnumLabel(enums.housingType, data.housing_type || 0)}</p>
                             </div>
                             <div>
                                 <p className="text-sm font-medium text-gray-500">Empleo actual</p>
@@ -92,14 +92,14 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                     {data.household_members.map((member, index) => (
                                         <div key={index} className="flex justify-between items-center p-2 bg-white rounded">
                                             <div className="flex-1">
-                                                <p className="text-sm font-medium">{member.name}</p>
+                                                <p className="text-sm font-medium">{member?.name || 'No especificado'}</p>
                                                 <p className="text-xs text-gray-500">
-                                                    {getEnumLabel(enums.familyRelationship, member.relationship)}
-                                                    {member.age && ` • ${member.age} años`}
-                                                    {member.phone && ` • ${member.phone}`}
+                                                    {getEnumLabel(enums.familyRelationship, member?.relationship || 0)}
+                                                    {member?.age && ` • ${member.age} años`}
+                                                    {member?.phone && ` • ${member.phone}`}
                                                 </p>
                                             </div>
-                                            {member.income_contribution && member.income_contribution > 0 && (
+                                            {member?.income_contribution && member.income_contribution > 0 && (
                                                 <div className="text-right">
                                                     <p className="text-sm font-medium text-green-600">
                                                         ${member.income_contribution} USD
@@ -119,14 +119,14 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                 <div className="space-y-1">
                                     {data.monthly_expenses.map((expense, index) => (
                                         <div key={index} className="flex justify-between">
-                                            <span className="text-sm">{getEnumLabel(enums.expenseType, expense.type)}</span>
-                                            <span className="text-sm font-medium">${(expense.amount || 0).toFixed(2)} USD</span>
+                                            <span className="text-sm">{getEnumLabel(enums.expenseType, expense?.type || 0)}</span>
+                                            <span className="text-sm font-medium">${(expense?.amount || 0).toFixed(2)} USD</span>
                                         </div>
                                     ))}
                                     <div className="border-t pt-1 mt-2">
                                         <div className="flex justify-between font-medium">
                                             <span className="text-sm">Total gastos mensuales:</span>
-                                            <span className="text-sm">${data.monthly_expenses.reduce((total, expense) => total + (expense.amount || 0), 0).toFixed(2)} USD</span>
+                                            <span className="text-sm">${data.monthly_expenses.reduce((total, expense) => total + (expense?.amount || 0), 0).toFixed(2)} USD</span>
                                         </div>
                                     </div>
                                 </div>
@@ -139,7 +139,7 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                                     <div>
                                         <p className="text-sm font-medium text-gray-500">Tipo de empleo</p>
-                                        <p className="text-sm">{getEnumLabel(enums.employmentType, data.employment_type!)}</p>
+                                        <p className="text-sm">{getEnumLabel(enums.employmentType, data.employment_type || 0)}</p>
                                     </div>
                                     {data.employment_type === 2 && (
                                         <>
@@ -149,11 +149,11 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                             </div>
                                             <div>
                                                 <p className="text-sm font-medium text-gray-500">Puesto</p>
-                                                <p className="text-sm">{getEnumLabel(enums.jobPosition, data.job_position!)}</p>
+                                                <p className="text-sm">{getEnumLabel(enums.jobPosition, data.job_position || 0)}</p>
                                             </div>
                                             <div>
                                                 <p className="text-sm font-medium text-gray-500">Salario</p>
-                                                <p className="text-sm">${data.employment_income} USD</p>
+                                                <p className="text-sm">${data.employment_income || 0} USD</p>
                                             </div>
                                         </>
                                     )}
