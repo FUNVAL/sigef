@@ -169,32 +169,65 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            <div>
-                                <Label htmlFor="interview_photo">
-                                    Sube tu foto de entrevista (JPG, PNG, máximo 2MB)
-                                </Label>
-                                <Input
-                                    id="interview_photo"
-                                    type="file"
-                                    accept="image/jpeg,image/jpg,image/png"
-                                    onChange={handleFileChange}
-                                    className={errors.interview_photo ? 'border-red-500' : ''}
-                                />
-                                {errors.interview_photo && (
-                                    <p className="text-sm text-red-500 mt-1">{errors.interview_photo}</p>
-                                )}
-                            </div>
+                            {!data.interview_photo ? (
+                                <div>
+                                    <Label htmlFor="interview_photo">
+                                        Sube tu foto de entrevista (JPG, PNG, máximo 2MB)
+                                    </Label>
+                                    <Input
+                                        id="interview_photo"
+                                        type="file"
+                                        accept="image/jpeg,image/jpg,image/png"
+                                        onChange={handleFileChange}
+                                        className={errors.interview_photo ? 'border-red-500' : ''}
+                                    />
+                                    {errors.interview_photo && (
+                                        <p className="text-sm text-red-500 mt-1">{errors.interview_photo}</p>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                                        <div className="flex items-center gap-2">
+                                            <Camera className="h-4 w-4 text-green-600" />
+                                            <span className="text-sm text-green-700 font-medium">
+                                                ✓ Foto de entrevista subida correctamente
+                                            </span>
+                                        </div>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setData('interview_photo', null)}
+                                            className="text-xs"
+                                        >
+                                            Cambiar foto
+                                        </Button>
+                                    </div>
 
-                            {data.interview_photo && (
-                                <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                                    <Camera className="h-4 w-4 text-green-600" />
-                                    <span className="text-sm text-green-700">
-                                        Archivo seleccionado: {data.interview_photo.name}
-                                    </span>
+                                    {/* Miniatura de la imagen */}
+                                    <div className="flex items-start gap-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                                        <div className="flex-shrink-0">
+                                            <img
+                                                src={URL.createObjectURL(data.interview_photo)}
+                                                alt="Vista previa de la foto"
+                                                className="w-24 h-24 object-cover rounded-lg border border-gray-300 shadow-sm"
+                                            />
+                                        </div>
+                                        <div className="flex-1 space-y-1">
+                                            <p className="text-sm font-medium text-gray-900">
+                                                {data.interview_photo.name}
+                                            </p>
+                                            <p className="text-xs text-gray-500">
+                                                Tamaño: {(data.interview_photo.size / 1024 / 1024).toFixed(2)} MB
+                                            </p>
+                                            <p className="text-xs text-gray-500">
+                                                Tipo: {data.interview_photo.type}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
-
-                            
                         </div>
                     </CardContent>
                 </Card>
