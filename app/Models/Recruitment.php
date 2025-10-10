@@ -33,6 +33,7 @@ class Recruitment extends Model
         'needs_practice_bonus',
         'practice_bonus_categories',
         'practice_bonus_amounts',
+        'work_experiences',
         
         // Salud
         'has_health_insurance',
@@ -62,6 +63,7 @@ class Recruitment extends Model
         'bonus_amounts' => 'array',
         'practice_bonus_categories' => 'array',
         'practice_bonus_amounts' => 'array',
+        'work_experiences' => 'array',
         'has_residential_internet' => 'boolean',
         'has_employment' => 'boolean',
         'has_work_experience' => 'boolean',

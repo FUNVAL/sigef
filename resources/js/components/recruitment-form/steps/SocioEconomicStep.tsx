@@ -8,7 +8,7 @@ import { PhoneInput } from '@/components/ui/phone-input';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
-import { RecruitmentRequest, HouseholdMember, HouseholdExpense, JobOffer } from '@/types/recruitment';
+import { RecruitmentRequest, HouseholdMember, HouseholdExpense, JobOffer, WorkExperience } from '@/types/recruitment';
 import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase, Activity, Building } from 'lucide-react';
 import React, { useContext, useState, useEffect } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
@@ -30,6 +30,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     const [practiceBonusAmounts, setPracticeBonusAmounts] = useState<Record<number, number>>({});
     const [monthlyExpenses, setMonthlyExpenses] = useState<HouseholdExpense[]>([]);
     const [jobOffers, setJobOffers] = useState<JobOffer[]>([]);
+    const [workExperiences, setWorkExperiences] = useState<WorkExperience[]>([]);
 
     // Función para calcular la experiencia laboral
     const calculateWorkExperience = (startDate: string, endDate?: string) => {
@@ -55,6 +56,57 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 return `${years} ${years === 1 ? 'año' : 'años'} y ${remainingMonths} ${remainingMonths === 1 ? 'mes' : 'meses'}`;
             }
         }
+    };
+
+    // Función para calcular el tiempo total combinado de todas las experiencias
+    const calculateTotalExperience = (experiences: WorkExperience[]) => {
+        let totalMonths = 0;
+        
+        experiences.forEach(exp => {
+            if (exp.start_date) {
+                const start = new Date(exp.start_date);
+                const end = exp.end_date ? new Date(exp.end_date) : new Date();
+                const monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+                if (monthsDiff > 0) {
+                    totalMonths += monthsDiff;
+                }
+            }
+        });
+
+        if (totalMonths === 0) return 'Sin experiencia registrada';
+        
+        if (totalMonths < 12) {
+            return `${totalMonths} ${totalMonths === 1 ? 'mes' : 'meses'} total`;
+        } else {
+            const years = Math.floor(totalMonths / 12);
+            const remainingMonths = totalMonths % 12;
+            if (remainingMonths === 0) {
+                return `${years} ${years === 1 ? 'año' : 'años'} total`;
+            } else {
+                return `${years} ${years === 1 ? 'año' : 'años'} y ${remainingMonths} ${remainingMonths === 1 ? 'mes' : 'meses'} total`;
+            }
+        }
+    };
+
+    // Funciones para manejar experiencias laborales
+    const addWorkExperience = () => {
+        const newExperience: WorkExperience = {
+            job_position: 0,
+            start_date: '',
+            end_date: ''
+        };
+        setWorkExperiences([...workExperiences, newExperience]);
+    };
+
+    const removeWorkExperience = (index: number) => {
+        const updatedExperiences = workExperiences.filter((_, i) => i !== index);
+        setWorkExperiences(updatedExperiences);
+    };
+
+    const updateWorkExperience = (index: number, field: keyof WorkExperience, value: any) => {
+        const updatedExperiences = [...workExperiences];
+        updatedExperiences[index] = { ...updatedExperiences[index], [field]: value };
+        setWorkExperiences(updatedExperiences);
     };
 
     // Sincronizar monthlyExpenses con data.monthly_expenses
@@ -86,7 +138,28 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     useEffect(() => {
         setData('job_offers', jobOffers);
     }, [jobOffers]);
- 
+
+    // Sincronizar workExperiences con data.work_experiences
+    useEffect(() => {
+        if (data.work_experiences && data.work_experiences.length > 0) {
+            setWorkExperiences(data.work_experiences);
+        } else {
+            // Inicializar con una experiencia vacía por defecto si has_work_experience es true
+            if (data.has_work_experience) {
+                const defaultExperience: WorkExperience = {
+                    job_position: 0,
+                    start_date: '',
+                    end_date: ''
+                };
+                setWorkExperiences([defaultExperience]);
+                setData('work_experiences', [defaultExperience]);
+            }
+        }
+    }, [data.has_work_experience]);
+
+    useEffect(() => {
+        setData('work_experiences', workExperiences);
+    }, [workExperiences]);
 
     // Add defensive checks for enums
     if (!enums) {
@@ -320,18 +393,24 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
         // Validar experiencia laboral
         if (data.has_work_experience) {
-            if (!data.experience_job_position) {
-                validationErrors.experience_job_position = 'El puesto de experiencia es requerido';
-            }
-            if (!data.experience_start_date) {
-                validationErrors.experience_start_date = 'La fecha de inicio es requerida';
-            }
-            if (data.experience_start_date && data.experience_end_date) {
-                const startDate = new Date(data.experience_start_date);
-                const endDate = new Date(data.experience_end_date);
-                if (endDate <= startDate) {
-                    validationErrors.experience_end_date = 'La fecha de fin debe ser posterior a la fecha de inicio';
-                }
+            if (workExperiences.length === 0) {
+                validationErrors.work_experiences = 'Debe agregar al menos una experiencia laboral';
+            } else {
+                workExperiences.forEach((exp, index) => {
+                    if (!exp.job_position || exp.job_position === 0) {
+                        validationErrors[`work_experience_${index}_job_position`] = 'El puesto es requerido';
+                    }
+                    if (!exp.start_date) {
+                        validationErrors[`work_experience_${index}_start_date`] = 'La fecha de inicio es requerida';
+                    }
+                    if (exp.start_date && exp.end_date) {
+                        const startDate = new Date(exp.start_date);
+                        const endDate = new Date(exp.end_date);
+                        if (endDate <= startDate) {
+                            validationErrors[`work_experience_${index}_end_date`] = 'La fecha de fin debe ser posterior a la fecha de inicio';
+                        }
+                    }
+                });
             }
         }
 
@@ -864,80 +943,153 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                         </div>
 
                         {data.has_work_experience && (
-                            <div className="space-y-4">
-                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                                    <div>
-                                        <Label htmlFor="experience_job_position">Puesto o área de experiencia</Label>
-                                        <Select
-                                            name="experience_job_position"
-                                            value={data.experience_job_position && data.experience_job_position > 0 ? data.experience_job_position.toString() : ''}
-                                            onValueChange={(value: string) => setData('experience_job_position', parseInt(value))}
-                                        >
-                                            <SelectTrigger className={errors.experience_job_position ? 'border-red-500' : ''}>
-                                                <SelectValue placeholder="--- Seleccione un puesto ---" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {enums.jobPosition?.map((item) => (
-                                                    <SelectItem key={item.id} value={item.id.toString()}>
-                                                        {item.name}
-                                                    </SelectItem>
-                                                )) || []}
-                                            </SelectContent>
-                                        </Select>
-                                        {errors.experience_job_position && (
-                                            <p className="text-sm text-red-500 mt-1">{errors.experience_job_position}</p>
-                                        )}
-                                    </div>
-
-                                    <div>
-                                        <Label htmlFor="experience_start_date">Fecha de inicio</Label>
-                                        <Input
-                                            id="experience_start_date"
-                                            name="experience_start_date"
-                                            type="date"
-                                            value={data.experience_start_date || ''}
-                                            onChange={(e) => setData('experience_start_date', e.target.value)}
-                                            min="1970-01-01"
-                                            max={new Date().toISOString().split('T')[0]}
-                                            className={errors.experience_start_date ? 'border-red-500' : ''} 
-                                        />
-                                        {errors.experience_start_date && (
-                                            <p className="text-sm text-red-500 mt-1">{errors.experience_start_date}</p>
-                                        )}
-                                    </div>
-
-                                    <div>
-                                        <Label htmlFor="experience_end_date">Fecha de fin</Label>
-                                        <Input
-                                            id="experience_end_date"
-                                            name="experience_end_date"
-                                            type="date"
-                                            value={data.experience_end_date || ''}
-                                            onChange={(e) => setData('experience_end_date', e.target.value)}
-                                            min={data.experience_start_date || '1970-01-01'}
-                                            max={new Date().toISOString().split('T')[0]}
-                                            className={errors.experience_end_date ? 'border-red-500' : ''} 
-                                        />
-                                        {errors.experience_end_date && (
-                                            <p className="text-sm text-red-500 mt-1">{errors.experience_end_date}</p>
-                                        )}
-                                       
-                                    </div>
+                            <div className="space-y-6">
+                                {/* Botón para agregar experiencia */}
+                                <div className="flex justify-between items-center">
+                                    <h4 className="text-sm font-medium text-gray-700">Experiencias laborales</h4>
+                                    <Button 
+                                        type="button"
+                                        onClick={addWorkExperience}
+                                        variant="outline"
+                                        size="sm"
+                                        className="flex items-center gap-2"
+                                    >
+                                        <Plus className="h-4 w-4" />
+                                        Agregar experiencia
+                                    </Button>
                                 </div>
 
-                                {(data.experience_start_date) && (
-                                    <div className="bg-blue-50 p-3 rounded-lg">
+                                {errors.work_experiences && (
+                                    <p className="text-sm text-red-500">{errors.work_experiences}</p>
+                                )}
+
+                                {/* Lista de experiencias */}
+                                <div className="space-y-4">
+                                    {workExperiences.map((experience, index) => (
+                                        <div key={index} className="border border-gray-200 rounded-lg p-4 space-y-4">
+                                            {/* Header de la experiencia */}
+                                            <div className="flex justify-between items-center">
+                                                <h5 className="text-sm font-medium text-gray-800">
+                                                    Experiencia {index + 1}
+                                                </h5>
+                                                {workExperiences.length > 1 && (
+                                                    <Button
+                                                        type="button"
+                                                        onClick={() => removeWorkExperience(index)}
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                )}
+                                            </div>
+
+                                            {/* Formulario de experiencia */}
+                                            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                                                {/* Puesto */}
+                                                <div>
+                                                    <Label htmlFor={`experience_job_position_${index}`}>Puesto</Label>
+                                                    <Select
+                                                        name={`experience_job_position_${index}`}
+                                                        value={experience.job_position > 0 ? experience.job_position.toString() : ''}
+                                                        onValueChange={(value: string) => updateWorkExperience(index, 'job_position', parseInt(value))}
+                                                    >
+                                                        <SelectTrigger className={errors[`work_experience_${index}_job_position`] ? 'border-red-500' : ''}>
+                                                            <SelectValue placeholder="--- Seleccione ---" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {enums.jobPosition?.map((item) => (
+                                                                <SelectItem key={item.id} value={item.id.toString()}>
+                                                                    {item.name}
+                                                                </SelectItem>
+                                                            )) || []}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    {errors[`work_experience_${index}_job_position`] && (
+                                                        <p className="text-sm text-red-500 mt-1">{errors[`work_experience_${index}_job_position`]}</p>
+                                                    )}
+                                                </div>
+
+                                                {/* Fecha de inicio */}
+                                                <div>
+                                                    <Label htmlFor={`experience_start_date_${index}`}>Fecha de inicio</Label>
+                                                    <Input
+                                                        id={`experience_start_date_${index}`}
+                                                        name={`experience_start_date_${index}`}
+                                                        type="date"
+                                                        value={experience.start_date || ''}
+                                                        onChange={(e) => updateWorkExperience(index, 'start_date', e.target.value)}
+                                                        min="1970-01-01"
+                                                        max={new Date().toISOString().split('T')[0]}
+                                                        className={errors[`work_experience_${index}_start_date`] ? 'border-red-500' : ''} 
+                                                    />
+                                                    {errors[`work_experience_${index}_start_date`] && (
+                                                        <p className="text-sm text-red-500 mt-1">{errors[`work_experience_${index}_start_date`]}</p>
+                                                    )}
+                                                </div>
+
+                                                {/* Fecha de fin */}
+                                                <div>
+                                                    <Label htmlFor={`experience_end_date_${index}`}>Fecha de fin</Label>
+                                                    <Input
+                                                        id={`experience_end_date_${index}`}
+                                                        name={`experience_end_date_${index}`}
+                                                        type="date"
+                                                        value={experience.end_date || ''}
+                                                        onChange={(e) => updateWorkExperience(index, 'end_date', e.target.value)}
+                                                        min={experience.start_date || '1970-01-01'}
+                                                        max={new Date().toISOString().split('T')[0]}
+                                                        className={errors[`work_experience_${index}_end_date`] ? 'border-red-500' : ''} 
+                                                    />
+                                                    {errors[`work_experience_${index}_end_date`] && (
+                                                        <p className="text-sm text-red-500 mt-1">{errors[`work_experience_${index}_end_date`]}</p>
+                                                    )}
+                                                    <p className="text-xs text-gray-500 mt-1">
+                                                        Dejar en blanco si aún trabajas aquí
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Información de duración individual */}
+                                            {experience.start_date && (
+                                                <div className="bg-gray-50 p-3 rounded-lg">
+                                                    <div className="flex items-center justify-between">
+                                                        <div>
+                                                            <p className="text-sm font-medium text-gray-700">
+                                                                Duración: {calculateWorkExperience(experience.start_date, experience.end_date)}
+                                                            </p>
+                                                            <p className="text-xs text-gray-500 mt-1">
+                                                                {experience.end_date ? 'Experiencia completada' : 'Trabajando actualmente'}
+                                                            </p>
+                                                        </div>
+                                                        <Briefcase className="h-6 w-6 text-gray-500" />
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Resumen total de experiencia */}
+                                {workExperiences.length > 0 && workExperiences.some(exp => exp.start_date) && (
+                                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-sm font-medium text-blue-800">
-                                                    Tiempo de experiencia: {calculateWorkExperience(data.experience_start_date, data.experience_end_date)}
+                                                <h4 className="text-lg font-semibold text-blue-800">
+                                                    Experiencia total combinada
+                                                </h4>
+                                                <p className="text-blue-700 font-medium mt-1">
+                                                    {calculateTotalExperience(workExperiences)}
                                                 </p>
-                                                <p className="text-xs text-blue-600 mt-1">
-                                                    {data.experience_end_date ? 'Experiencia completada' : 'Trabajando actualmente'}
+                                                <p className="text-xs text-blue-600 mt-2">
+                                                    Suma de todas las experiencias laborales registradas
                                                 </p>
                                             </div>
                                             <div className="text-right">
-                                                <Briefcase className="h-8 w-8 text-blue-600" />
+                                                <div className="bg-blue-100 p-3 rounded-full">
+                                                    <Briefcase className="h-8 w-8 text-blue-600" />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

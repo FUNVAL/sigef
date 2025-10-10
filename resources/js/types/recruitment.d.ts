@@ -21,6 +21,13 @@ export type JobOffer = {
     salary_expectation: number;
 };
 
+export type WorkExperience = {
+    job_position: number;
+    start_date: string;
+    end_date?: string;
+    company_name?: string;
+};
+
 export type RecruitmentFormData = {
     // Datos básicos
     country_id?: number;
@@ -39,6 +46,8 @@ export type RecruitmentFormData = {
     job_position?: number;
     employment_income?: number;
     has_work_experience?: boolean;
+    work_experiences: WorkExperience[];
+    // Campos legacy para compatibilidad
     experience_job_position?: number;
     years_of_experience?: number;
     experience_start_date?: string;
