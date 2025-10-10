@@ -41,6 +41,8 @@ export type RecruitmentFormData = {
     has_work_experience?: boolean;
     experience_job_position?: number;
     years_of_experience?: number;
+    experience_start_date?: string;
+    experience_end_date?: string;
     needs_bonus: boolean;
     bonus_categories: number[];
     bonus_amounts: number[];

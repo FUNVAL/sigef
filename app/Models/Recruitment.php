@@ -22,6 +22,11 @@ class Recruitment extends Model
         'company_name',
         'job_position',
         'employment_income',
+        'has_work_experience',
+        'experience_job_position',
+        'years_of_experience',
+        'experience_start_date',
+        'experience_end_date',
         'needs_bonus',
         'bonus_categories',
         'bonus_amounts',
@@ -59,6 +64,7 @@ class Recruitment extends Model
         'practice_bonus_amounts' => 'array',
         'has_residential_internet' => 'boolean',
         'has_employment' => 'boolean',
+        'has_work_experience' => 'boolean',
         'needs_bonus' => 'boolean',
         'needs_practice_bonus' => 'boolean',
         'has_health_insurance' => 'boolean',
@@ -70,5 +76,7 @@ class Recruitment extends Model
         'scholarship_agreement_accepted' => 'boolean',
         'religious_institute_accepted' => 'boolean',
         'health_agreement_accepted' => 'boolean',
+        'experience_start_date' => 'date',
+        'experience_end_date' => 'date',
     ];
 }

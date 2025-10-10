@@ -30,6 +30,31 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
         return months[month - 1] || 'No especificado';
     };
 
+    const calculateWorkExperience = (startDate: string, endDate?: string) => {
+        if (!startDate) return '';
+        
+        const start = new Date(startDate);
+        const end = endDate ? new Date(endDate) : new Date();
+        
+        // Calcular la diferencia en meses
+        const monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+        
+        if (monthsDiff < 1) {
+            const daysDiff = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+            return `${daysDiff} días`;
+        } else if (monthsDiff < 12) {
+            return `${monthsDiff} ${monthsDiff === 1 ? 'mes' : 'meses'}`;
+        } else {
+            const years = Math.floor(monthsDiff / 12);
+            const remainingMonths = monthsDiff % 12;
+            if (remainingMonths === 0) {
+                return `${years} ${years === 1 ? 'año' : 'años'}`;
+            } else {
+                return `${years} ${years === 1 ? 'año' : 'años'} y ${remainingMonths} ${remainingMonths === 1 ? 'mes' : 'meses'}`;
+            }
+        }
+    };
+
     return (
         <div className="mx-auto max-w-4xl space-y-6 p-4">
             <StepsHeader
@@ -156,6 +181,38 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                                 <p className="text-sm">${data.employment_income || 0} USD</p>
                                             </div>
                                         </>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {data.has_work_experience && (
+                            <div className="mt-4 p-4 bg-yellow-50 rounded-lg">
+                                <h4 className="font-medium mb-2">Experiencia laboral</h4>
+                                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-500">Puesto o área</p>
+                                        <p className="text-sm">{getEnumLabel(enums.jobPosition, data.experience_job_position || 0)}</p>
+                                    </div>
+                                    {data.experience_start_date && (
+                                        <div>
+                                            <p className="text-sm font-medium text-gray-500">Periodo</p>
+                                            <p className="text-sm">
+                                                {new Date(data.experience_start_date).toLocaleDateString('es-ES')}
+                                                {data.experience_end_date ? 
+                                                    ` - ${new Date(data.experience_end_date).toLocaleDateString('es-ES')}` : 
+                                                    ' - Actualidad'
+                                                }
+                                            </p>
+                                        </div>
+                                    )}
+                                    {data.experience_start_date && (
+                                        <div className="md:col-span-2">
+                                            <p className="text-sm font-medium text-gray-500">Tiempo de experiencia</p>
+                                            <p className="text-sm font-medium text-yellow-700">
+                                                {calculateWorkExperience(data.experience_start_date, data.experience_end_date)}
+                                            </p>
+                                        </div>
                                     )}
                                 </div>
                             </div>

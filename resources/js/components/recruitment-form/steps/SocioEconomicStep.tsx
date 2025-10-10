@@ -31,6 +31,32 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     const [monthlyExpenses, setMonthlyExpenses] = useState<HouseholdExpense[]>([]);
     const [jobOffers, setJobOffers] = useState<JobOffer[]>([]);
 
+    // Función para calcular la experiencia laboral
+    const calculateWorkExperience = (startDate: string, endDate?: string) => {
+        if (!startDate) return '';
+        
+        const start = new Date(startDate);
+        const end = endDate ? new Date(endDate) : new Date();
+        
+        // Calcular la diferencia en meses
+        const monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+        
+        if (monthsDiff < 1) {
+            const daysDiff = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+            return `${daysDiff} días`;
+        } else if (monthsDiff < 12) {
+            return `${monthsDiff} ${monthsDiff === 1 ? 'mes' : 'meses'}`;
+        } else {
+            const years = Math.floor(monthsDiff / 12);
+            const remainingMonths = monthsDiff % 12;
+            if (remainingMonths === 0) {
+                return `${years} ${years === 1 ? 'año' : 'años'}`;
+            } else {
+                return `${years} ${years === 1 ? 'año' : 'años'} y ${remainingMonths} ${remainingMonths === 1 ? 'mes' : 'meses'}`;
+            }
+        }
+    };
+
     // Sincronizar monthlyExpenses con data.monthly_expenses
     useEffect(() => {
         if (data.monthly_expenses && data.monthly_expenses.length > 0) {
@@ -60,7 +86,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     useEffect(() => {
         setData('job_offers', jobOffers);
     }, [jobOffers]);
-
+ 
 
     // Add defensive checks for enums
     if (!enums) {
@@ -96,11 +122,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     };
 
 
-
     // Monthly expenses functions
     const addMonthlyExpense = () => {
         const newExpense: HouseholdExpense = {
-            type: 0, // Default to blank (no selection)
+            type: 0, 
             amount: 0
         };
         const updatedExpenses = [...monthlyExpenses, newExpense];
@@ -162,13 +187,12 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 return;
             }
 
-            // Lógica de exclusión mutua entre Familiar (1) y Soltero (2)
             if (categoryId === 1) { // FAMILY
-                // Si selecciona Familiar, remover Soltero si está seleccionado
+                
                 updatedCategories = updatedCategories.filter(id => id !== 2);
                 delete updatedAmounts[2];
             } else if (categoryId === 2) { // SINGLE
-                // Si selecciona Soltero, remover Familiar si está seleccionado
+                
                 updatedCategories = updatedCategories.filter(id => id !== 1);
                 delete updatedAmounts[1];
             }
@@ -203,19 +227,19 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             }
 
             // Lógica de exclusión mutua para bonos de prácticas
-            if (categoryId === 2) { // PROVINCIAL_TRANSPORT (Foráneo)
-                // Si selecciona Foráneo, remover Local y Alimentación
+            if (categoryId === 2) { 
+               
                 updatedCategories = updatedCategories.filter(id => id !== 1 && id !== 3);
-                delete updatedAmounts[1]; // LOCAL_TRANSPORT
-                delete updatedAmounts[3]; // FOOD
-            } else if (categoryId === 3) { // FOOD (Alimentación)
-                // Si selecciona Alimentación, remover Foráneo
+                delete updatedAmounts[1]; 
+                delete updatedAmounts[3]; 
+            } else if (categoryId === 3) { 
+
                 updatedCategories = updatedCategories.filter(id => id !== 2);
-                delete updatedAmounts[2]; // PROVINCIAL_TRANSPORT
-            } else if (categoryId === 1) { // LOCAL_TRANSPORT (Local)
-                // Si selecciona Local, remover Foráneo (puede coexistir con Alimentación)
+                delete updatedAmounts[2]; 
+            } else if (categoryId === 1) { 
+
                 updatedCategories = updatedCategories.filter(id => id !== 2);
-                delete updatedAmounts[2]; // PROVINCIAL_TRANSPORT
+                delete updatedAmounts[2]; 
             }
 
             updatedCategories.push(categoryId);
@@ -299,8 +323,15 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             if (!data.experience_job_position) {
                 validationErrors.experience_job_position = 'El puesto de experiencia es requerido';
             }
-            if (!data.years_of_experience || data.years_of_experience <= 0) {
-                validationErrors.years_of_experience = 'Los años de experiencia son requeridos';
+            if (!data.experience_start_date) {
+                validationErrors.experience_start_date = 'La fecha de inicio es requerida';
+            }
+            if (data.experience_start_date && data.experience_end_date) {
+                const startDate = new Date(data.experience_start_date);
+                const endDate = new Date(data.experience_end_date);
+                if (endDate <= startDate) {
+                    validationErrors.experience_end_date = 'La fecha de fin debe ser posterior a la fecha de inicio';
+                }
             }
         }
 
@@ -567,7 +598,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                             ¿Cuenta con servicio de Internet en su casa?
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent>
                         <div className="flex gap-4">
                             <label className="flex items-center gap-2">
                                 <input
@@ -594,27 +625,35 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 No
                             </label>
                         </div>
-
-                        {data.has_residential_internet === false && (
-                            <div className="space-y-3 py-1">
-                                <Label>Entendemos que el acceso a internet es importante. ¿Tiene algún plan o idea sobre cómo podría resolver esta situación?</Label>
-                                <div className="space-y-3 mt-1.5 py-3.5 px-4 border rounded bg-gray-50">
-                                    {enums.internetAccessPlan?.map((option) => (
-                                        <label key={option.id} className="flex items-center gap-2">
-                                            <input
-                                                type="radio"
-                                                name="internet_access_plan"
-                                                checked={data.internet_access_plan === option.id}
-                                                onChange={() => setData('internet_access_plan', option.id)}
-                                            />
-                                            {option.name}
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
                     </CardContent>
                 </Card>
+
+                {/* Pregunta de seguimiento para internet */}
+                {data.has_residential_internet === false && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
+                                <Wifi className="h-5 w-5" />
+                                Entendemos que el acceso a internet es importante. ¿Tiene algún plan o idea sobre cómo podría resolver esta situación?
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-3">
+                                {enums.internetAccessPlan?.map((option) => (
+                                    <label key={option.id} className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="internet_access_plan"
+                                            checked={data.internet_access_plan === option.id}
+                                            onChange={() => setData('internet_access_plan', option.id)}
+                                        />
+                                        {option.name}
+                                    </label>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Tipo de dispositivo */}
                 <Card>
@@ -799,7 +838,6 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
-                            <Activity className="h-5 w-5" />
                             ¿Cuenta con alguna experiencia laboral?
                         </CardTitle>
                     </CardHeader>
@@ -826,47 +864,84 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                         </div>
 
                         {data.has_work_experience && (
-                            <div className="space-y-4 grid-cols-2 gap-4 md:grid">
-                                <div>
-                                    <Label htmlFor="experience_job_position">Puesto o área de experiencia</Label>
-                                    <Select
-                                        name="experience_job_position"
-                                        value={data.experience_job_position && data.experience_job_position > 0 ? data.experience_job_position.toString() : ''}
-                                        onValueChange={(value: string) => setData('experience_job_position', parseInt(value))}
-                                    >
-                                        <SelectTrigger className={errors.experience_job_position ? 'border-red-500' : ''}>
-                                            <SelectValue placeholder="--- Seleccione un puesto ---" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {enums.jobPosition?.map((item) => (
-                                                <SelectItem key={item.id} value={item.id.toString()}>
-                                                    {item.name}
-                                                </SelectItem>
-                                            )) || []}
-                                        </SelectContent>
-                                    </Select>
-                                    {errors.experience_job_position && (
-                                        <p className="text-sm text-red-500 mt-1">{errors.experience_job_position}</p>
-                                    )}
+                            <div className="space-y-4">
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                    <div>
+                                        <Label htmlFor="experience_job_position">Puesto o área de experiencia</Label>
+                                        <Select
+                                            name="experience_job_position"
+                                            value={data.experience_job_position && data.experience_job_position > 0 ? data.experience_job_position.toString() : ''}
+                                            onValueChange={(value: string) => setData('experience_job_position', parseInt(value))}
+                                        >
+                                            <SelectTrigger className={errors.experience_job_position ? 'border-red-500' : ''}>
+                                                <SelectValue placeholder="--- Seleccione un puesto ---" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {enums.jobPosition?.map((item) => (
+                                                    <SelectItem key={item.id} value={item.id.toString()}>
+                                                        {item.name}
+                                                    </SelectItem>
+                                                )) || []}
+                                            </SelectContent>
+                                        </Select>
+                                        {errors.experience_job_position && (
+                                            <p className="text-sm text-red-500 mt-1">{errors.experience_job_position}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label htmlFor="experience_start_date">Fecha de inicio</Label>
+                                        <Input
+                                            id="experience_start_date"
+                                            name="experience_start_date"
+                                            type="date"
+                                            value={data.experience_start_date || ''}
+                                            onChange={(e) => setData('experience_start_date', e.target.value)}
+                                            min="1970-01-01"
+                                            max={new Date().toISOString().split('T')[0]}
+                                            className={errors.experience_start_date ? 'border-red-500' : ''} 
+                                        />
+                                        {errors.experience_start_date && (
+                                            <p className="text-sm text-red-500 mt-1">{errors.experience_start_date}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label htmlFor="experience_end_date">Fecha de fin</Label>
+                                        <Input
+                                            id="experience_end_date"
+                                            name="experience_end_date"
+                                            type="date"
+                                            value={data.experience_end_date || ''}
+                                            onChange={(e) => setData('experience_end_date', e.target.value)}
+                                            min={data.experience_start_date || '1970-01-01'}
+                                            max={new Date().toISOString().split('T')[0]}
+                                            className={errors.experience_end_date ? 'border-red-500' : ''} 
+                                        />
+                                        {errors.experience_end_date && (
+                                            <p className="text-sm text-red-500 mt-1">{errors.experience_end_date}</p>
+                                        )}
+                                       
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <Label htmlFor="years_of_experience">Años de experiencia</Label>
-                                    <Input
-                                        id="years_of_experience"
-                                        name="years_of_experience"
-                                        type="number"
-                                        value={data.years_of_experience || ''}
-                                        onChange={(e) => setData('years_of_experience', parseFloat(e.target.value) || 0)}
-                                        placeholder="Ingrese los años de experiencia"
-                                        min="0"
-                                        step="0.5"
-                                        className={errors.years_of_experience ? 'border-red-500' : ''} 
-                                    />
-                                    {errors.years_of_experience && (
-                                        <p className="text-sm text-red-500 mt-1">{errors.years_of_experience}</p>
-                                    )}
-                                </div>
+                                {(data.experience_start_date) && (
+                                    <div className="bg-blue-50 p-3 rounded-lg">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm font-medium text-blue-800">
+                                                    Tiempo de experiencia: {calculateWorkExperience(data.experience_start_date, data.experience_end_date)}
+                                                </p>
+                                                <p className="text-xs text-blue-600 mt-1">
+                                                    {data.experience_end_date ? 'Experiencia completada' : 'Trabajando actualmente'}
+                                                </p>
+                                            </div>
+                                            <div className="text-right">
+                                                <Briefcase className="h-8 w-8 text-blue-600" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </CardContent>
@@ -1120,7 +1195,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             type="number"
                                             value={offer.salary_expectation || ''}
                                             onChange={(e) => updateJobOffer(index, 'salary_expectation', e.target.value)}
-                                            placeholder="Ingrese su expectativa salarial"
+                                            placeholder="Ingrese el promedio salarial"
                                             min="0"
                                             step="0.01"
                                             className={errors[`job_offer_${index}_salary_expectation`] ? 'border-red-500' : ''}
