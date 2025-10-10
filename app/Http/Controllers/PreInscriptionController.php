@@ -898,8 +898,8 @@ class PreInscriptionController extends Controller
 
         $ageLimit = $gender == GenderEnum::FEMALE->value ? 29 : 25;
         $isSingle = $maritalStatus === MaritalStatusEnum::SINGLE->value;
-        $hasServedMission = $servedMission === MissionStatusEnum::YES->value
-            || $servedMission === MissionStatusEnum::CURRENTLY_SERVING->value;
+        $hasServedMission = $servedMission === MissionStatusEnum::YES->value ||
+            $servedMission === MissionStatusEnum::CURRENTLY_SERVING->value;
 
 
         if ($age >= $ageLimit || $hasServedMission || $hasChildren || !$isSingle) {
