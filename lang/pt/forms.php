@@ -62,6 +62,7 @@ return [
             'email' => 'E-mail',
             'marital_status' => 'Estado Civil',
             'served_mission' => 'Serviu uma missão?',
+            'has_children' => 'Você tem filhos?',
             'country' => 'País de residência:',
             'stake' => 'Estaca/Distrito/Missão',
             'currently_working' => 'Trabalhando atualmente?',
@@ -75,6 +76,10 @@ return [
             'min_age' => 'Deve ser maior que :min anos',
             'max_age' => 'Deve ser menor que :max anos',
             'unique' => 'Este e-mail já está registrado',
+        ],
+        'options' => [
+            'yes' => 'Sim',
+            'no' => 'Não',
         ],
     ],
     'referral' => [

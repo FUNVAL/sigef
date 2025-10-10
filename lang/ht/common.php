@@ -63,9 +63,10 @@ return [
         'subtitle' => 'Nou kontan resevwa aplikasyon ou an oswa rekòmandasyon zanmi ou a.',
 
         'program_description' => [
-            'title' => 'Èske w ap chèche travay?&nbsp;&nbsp;Pwogram sa a se pou ou! ',
+            'title' => 'Vous cherchez un emploi ou connaissez quelqu\'un qui en a besoin ? ',
 
-            'description' => 'Pwogram sa a vize a moun ki ap chèche travay epi ki pare pou angaje yo nan yon pwosesis fòmasyon entansif, ki dedike ant <span class="font-bold text-blue-700">10 ak 12 èdtan pa jou soti nan Lendi rive Vandredi.</span>'
+            'description' => 'Funval vous offre l\'opportunité idéale de vous préparer et d\'exceller sur le marché du travail. Nos formations intensives, à partir de 5 semaines seulement, sont conçues pour vous permettre d\'acquérir les compétences nécessaires à l\'obtention d\'un emploi. Grâce à une approche pratique et un accompagnement continu, vous augmenterez vos chances d\'évoluer sur le marché du travail.<br>
+            <span class="text-xl font-bold ">Venez transformer l\'avenir avec Funval ! </span>'
         ],
 
         'motivation' => 'Si oumenm oswa moun nan refere a gen motivasyon ak angajman pou reyalize objektif sa a, eben vanse! Nou kontan sipòte yo nan rechèch travay yo. ',
@@ -85,11 +86,11 @@ return [
         'subtitle' => 'Chwazi youn nan opsyon sa yo pou kontinye',
         'referral' => [
             'title' => 'Refere yon zanmi',
-            'description' => 'Rekòmande yon moun ou konnen pou patisipe nan pwogram fòmasyon travay nou yo.',
+            'description' => 'Partagez cette opportunité et aidez quelqu\'un à faire ses premiers pas vers la formation professionnelle. ',
         ],
         'pre_inscription' => [
             'title' => 'Pre-enskri pou kou a',
-            'description' => 'Konplete pre-enskripsyon ou pou patisipe nan pwogram fòmasyon travay nou yo.',
+            'description' => 'Faites le premier pas et inscrivez-vous pour participer à nos programmes de formation professionnelle.',
         ],
     ],
 

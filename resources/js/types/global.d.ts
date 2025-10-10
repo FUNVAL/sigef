@@ -103,6 +103,7 @@ type Translation = {
                     email: string;
                     marital_status: string;
                     served_mission: string;
+                    has_children: string;
                     currently_working: string;
                     job_type_preference: string;
                     available_full_time: string;
@@ -144,6 +145,7 @@ type Translation = {
                 email: string;
                 marital_status: string;
                 served_mission: string;
+                has_children: string;
                 country: string;
                 stake: string;
                 currently_working: string;
@@ -157,8 +159,17 @@ type Translation = {
                 min_age: string;
                 max_age: string;
                 unique: string;
+<<<<<<< HEAD
             };
         };
+=======
+            },
+            options: {
+                yes: string;
+                no: string;
+            }
+        },
+>>>>>>> 683913fe49cbc8041ec8f79473d6852b39d78dfd
         referral: {
             title: string;
             description: string;
@@ -379,4 +390,8 @@ type PaginationData = {
     per_page: number;
     total: number;
     last_page: number;
+<<<<<<< HEAD
 };
+=======
+}
+>>>>>>> 683913fe49cbc8041ec8f79473d6852b39d78dfd

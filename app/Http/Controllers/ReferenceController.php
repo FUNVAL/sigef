@@ -471,7 +471,7 @@ class ReferenceController extends Controller
             $references = $query->orderBy('created_at', 'desc')->get();
 
             // Cargar el template específico para referencias
-            $templatePath = base_path('statics/template-reference.xlsx');
+            $templatePath = base_path('statics/formato-referencias.xlsx');
             if (!file_exists($templatePath)) {
                 return back()->withErrors(['error' => 'Template de referencias no encontrado.']);
             }
@@ -479,37 +479,37 @@ class ReferenceController extends Controller
             $spreadsheet = IOFactory::load($templatePath);
             $worksheet = $spreadsheet->getActiveSheet();
 
-            // Agregar datos a partir de la fila 5 (después de los headers del template)
-            $row = 5;
+            // Agregar datos a partir de la fila 9 (después de los headers del template)
+            $row = 9;
             foreach ($references as $reference) {
-                // Columna B: Nombre del referido (Persona Referida - Nombre)
+                // Columna B: Nombre del referido
                 $worksheet->setCellValue('B' . $row, $reference->name);
 
-                // Columna C: Género (Persona Referida - Género)
+                // Columna C: Género
                 $worksheet->setCellValue('C' . $row, $reference->gender['name'] ?? 'N/A');
 
-                // Columna D: Edad (Persona Referida - Edad)
+                // Columna D: Edad
                 $worksheet->setCellValue('D' . $row, $reference->age);
 
-                // Columna E: Teléfono del referido (Contacto - Número)
+                // Columna E: Número (teléfono del referido)
                 $worksheet->setCellValue('E' . $row, $reference->phone);
 
-                // Columna F: País (Ubicación - País)
+                // Columna F: País
                 $worksheet->setCellValue('F' . $row, $reference->country->name ?? 'N/A');
 
-                // Columna G: Estaca o distrito (Ubicación - Estaca o distrito)
+                // Columna G: Estaca o distrito
                 $worksheet->setCellValue('G' . $row, $reference->stake->name ?? 'N/A');
 
-                // Columna H: Nombre del referente (Referente - Nombre)
+                // Columna H: Nombre del referente
                 $worksheet->setCellValue('H' . $row, $reference->referrer_name ?? 'N/A');
 
-                // Columna I: Relación con el referido (Referente - Relación)
+                // Columna I: Relación
                 $worksheet->setCellValue('I' . $row, $reference->relationship_with_referred['name'] ?? 'N/A');
 
-                // Columna J: Teléfono del referente (Referente - Número)
+                // Columna J: Número del referente
                 $worksheet->setCellValue('J' . $row, $reference->referrer_phone ?? 'N/A');
 
-                // Columna L: Fecha de registro (Fecha)
+                // Columna K: Fecha de referencia
                 $worksheet->setCellValue('K' . $row, $reference->created_at->format('d/m/Y'));
 
                 $row++;

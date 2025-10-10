@@ -105,7 +105,7 @@ type PreInscriptionFilters = BaseFilters & {
 };
 
 /**
- * Tipo para la respuesta paginada de 
+ * Tipo para la respuesta paginada de
  */
 type PreInscriptionsPaginatedResponse = BasePaginatedResponse<PreInscription>;
 
@@ -141,4 +141,5 @@ export type PreRegistrationFormData = BaseFormData & {
     job_type_preference?: number | null;
     currently_working?: boolean | null;
     available_full_time?: boolean | null;
+    has_children: boolean;
 };
