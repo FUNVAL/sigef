@@ -895,30 +895,14 @@ class PreInscriptionController extends Controller
         $hasChildren,
         $gender
     ): array {
+
         $ageLimit = $gender == GenderEnum::FEMALE->value ? 29 : 25;
-
-        // Si es mayor al límite de edad, es elegible
-        if ($age >= $ageLimit) {
-            return [
-                'eligible' => true,
-                'message' => [
-                    'type' => 'success',
-                    'message' => __('messages.success.preinscription_success')
-                ]
-            ];
-        }
-
-        // Si es menor al límite de edad, verificar condiciones adicionales
         $isSingle = $maritalStatus === MaritalStatusEnum::SINGLE->value;
+        $hasServedMission = $servedMission === MissionStatusEnum::YES->value
+            || $servedMission === MissionStatusEnum::CURRENTLY_SERVING->value;
 
-        // Verificar si ya sirvió misión O está sirviendo actualmente
-        $hasServedMission = $servedMission === MissionStatusEnum::YES->value ||
-            $servedMission === MissionStatusEnum::CURRENTLY_SERVING->value;
 
-        // Es elegible si:
-        // 1. Ya sirvió misión o está sirviendo actualmente, O
-        // 2. Es soltero Y tiene hijos (no puede servir misión por responsabilidades familiares)
-        if ($hasServedMission || ($isSingle && $hasChildren)) {
+        if ($age >= $ageLimit || $hasServedMission || $hasChildren || !$isSingle) {
             return [
                 'eligible' => true,
                 'message' => [
@@ -928,7 +912,6 @@ class PreInscriptionController extends Controller
             ];
         }
 
-        // No cumple los requisitos - no ha servido misión y puede servirla (soltero sin hijos)
         return [
             'eligible' => false,
             'message' => [
