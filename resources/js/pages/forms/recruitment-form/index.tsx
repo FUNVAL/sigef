@@ -32,7 +32,7 @@ const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
         household_members: [],
         monthly_income: 0,
         monthly_expenses: [],
-        has_residential_internet: false,
+        has_residential_internet: true,
         device_type: 0,
         housing_type: 0,
         has_employment: false,
@@ -46,6 +46,10 @@ const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
         needs_practice_bonus: false,
         practice_bonus_categories: [],
         practice_bonus_amounts: [],
+
+        // Experiencias laborales
+        work_experiences: [],
+        job_offers: [],
 
         // Salud
         has_health_insurance: false,
