@@ -105,7 +105,7 @@ export function PreInscriptionOverviewStep({ request, countries }: OverviewStepP
                 },
                 ...(getCourseDetails()
                     ? [
-                          { label: 'Duración', value: `${getCourseDetails()?.duration} meses` },
+                          { label: 'Duración', value: `${getCourseDetails()?.duration} ${forms.pre_inscription.course_selection.duration}` },
                           { label: 'Modalidad', value: getModalityBadge(getCourseDetails()?.modality.name || '') },
                       ]
                     : []),
@@ -135,6 +135,10 @@ export function PreInscriptionOverviewStep({ request, countries }: OverviewStepP
             fields: [
                 { label: forms.pre_inscription.overview.fields.marital_status, value: getMaritalStatusName() },
                 { label: forms.pre_inscription.overview.fields.served_mission, value: getMission() },
+                {
+                    label: forms.pre_inscription.overview.fields.has_children,
+                    value: getBadge(data.has_children, ui.labels.yes, ui.labels.no)
+                },
             ],
         },
         // Work Information Section - Only for Female

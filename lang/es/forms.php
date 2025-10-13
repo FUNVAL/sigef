@@ -21,6 +21,7 @@ return [
                 'email' => 'Correo:',
                 'marital_status' => 'Estado Civil:',
                 'served_mission' => '¿Ha servido una misión?:',
+                'has_children' => '¿Tiene hijos?:',
                 'currently_working' => '¿Está trabajando actualmente?:',
                 'job_type_preference' => 'Tipo de empleo que busca:',
                 'available_full_time' => 'Disponibilidad para trabajar tiempo completo:',
@@ -69,6 +70,7 @@ return [
             'job_type_preference' => 'Preferencia de Tipo de Trabajo',
             'available_full_time' => 'Disponibilidad Tiempo Completo',
             'course' => 'Curso de Interés',
+
         ],
         'validation' => [
             'required' => 'Este campo es obligatorio',
