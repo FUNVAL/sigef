@@ -837,7 +837,7 @@ class PreInscriptionController extends Controller
             'exists' => true,
             'message' => [
                 'type' => 'rejected',
-                'message' => __('common.messages.error.email_exists')
+                'message' => __('common.messages.duplicates.pending')
             ]
         ];
     }
