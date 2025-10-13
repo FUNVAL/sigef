@@ -755,18 +755,6 @@ class PreInscriptionController extends Controller
         $statusId = $this->getEnumValue($preInscription->status);
         $responsablePhone = optional(optional($preInscription->stake)->user)->contact_phone_1;
 
-        // Caso: Preinscripción pendiente
-        if ($statusId == RequestStatusEnum::PENDING->value) {
-            $message = str_replace('[**]', $responsablePhone, __('common.messages.duplicates.pending'));
-            return [
-                'exists' => true,
-                'message' => [
-                    'type' => 'rejected',
-                    'message' => $message
-                ]
-            ];
-        }
-
         // Caso: Preinscripción rechazada hace más de 6 meses (reintento)
         if ($moreThanSixMonths && $statusId == RequestStatusEnum::REJECTED->value) {
             return $this->handleRetryAfterSixMonths($preInscription, $request);
@@ -777,12 +765,13 @@ class PreInscriptionController extends Controller
             return $this->handleRejectedPreInscription($preInscription);
         }
 
-        // Caso por defecto: email ya existe
+
+        $message = str_replace('[**]', $responsablePhone, __('common.messages.duplicates.pending'));
         return [
             'exists' => true,
             'message' => [
                 'type' => 'rejected',
-                'message' => __('common.messages.error.email_exists')
+                'message' => $message
             ]
         ];
     }
