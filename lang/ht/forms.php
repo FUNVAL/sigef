@@ -22,6 +22,7 @@ return [
                 'email' => 'Imel:',
                 'marital_status' => 'Estati Sivil:',
                 'served_mission' => 'Ou te sèvi yon misyon?:',
+                'has_children' => 'Ou gen timoun?:',
                 'currently_working' => 'Èske w ap travay kounye a?:',
                 'job_type_preference' => 'Ki kalite travay w ap chèche:',
                 'available_full_time' => 'Disponibilite pou travay tout tan:',
