@@ -833,6 +833,29 @@ class PreInscriptionController extends Controller
             ];
         }
 
+        if ($genderId == GenderEnum::MALE->value) {
+            $missionEligibilityCheck = $this->missionEligibility(
+                $preInscription->age,
+                $this->getEnumValue($preInscription->marital_status),
+                $this->getEnumValue($preInscription->served_mission),
+                $preInscription->has_children,
+                $genderId
+            );
+
+            if (!$missionEligibilityCheck['eligible']) {
+                $rejectedMessage = "<div class='bg-blue-200/30 rounded-md p-2'>" . $missionEligibilityCheck['message']['message'] . "</div>";
+                $message = str_replace('[**]', $rejectedMessage, __('common.messages.duplicates.rejected'));
+
+                return [
+                    'exists' => true,
+                    'message' => [
+                        'type' => $missionEligibilityCheck['message']['type'],
+                        'message' => $message
+                    ]
+                ];
+            }
+        }
+
         return [
             'exists' => true,
             'message' => [
