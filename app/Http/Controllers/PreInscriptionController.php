@@ -805,13 +805,37 @@ class PreInscriptionController extends Controller
         ];
     }
 
-    /**
+        /**
      * Maneja preinscripción previamente rechazada
      */
     private function handleRejectedPreInscription($preInscription): array
     {
         $genderId = $this->getEnumValue($preInscription->gender);
+        $declinedReasonId = $this->getEnumValue($preInscription->declined_reason);
 
+        // Si fue rechazada por ser futuro misionero/a, mostrar mensaje de misión
+        if ($declinedReasonId == ReferenceStatusEnum::FUTURE_MISSIONARY->value) {
+            $missionEligibilityCheck = $this->missionEligibility(
+                $preInscription->age,
+                $this->getEnumValue($preInscription->marital_status),
+                $this->getEnumValue($preInscription->served_mission),
+                $preInscription->has_children,
+                $genderId
+            );
+
+            $rejectedMessage = "<div class='bg-blue-200/30 rounded-md p-2'>" . $missionEligibilityCheck['message']['message'] . "</div>";
+            $message = str_replace('[**]', $rejectedMessage, __('common.messages.duplicates.rejected'));
+
+            return [
+                'exists' => true,
+                'message' => [
+                    'type' => $missionEligibilityCheck['message']['type'],
+                    'message' => $message
+                ]
+            ];
+        }
+
+        // Lógica específica para mujeres rechazadas por otros motivos (trabajo/disponibilidad)
         if ($genderId == GenderEnum::FEMALE->value) {
             $jobTypePref = $this->getEnumValue($preInscription->job_type_preference);
             $eligibilityCheck = $this->checkWomanEligibility(
@@ -833,6 +857,7 @@ class PreInscriptionController extends Controller
             ];
         }
 
+        // Lógica para hombres rechazados por otros motivos (ya no debería usarse mucho ya que el check de misión está arriba)
         if ($genderId == GenderEnum::MALE->value) {
             $missionEligibilityCheck = $this->missionEligibility(
                 $preInscription->age,
