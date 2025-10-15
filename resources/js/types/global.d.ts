@@ -29,6 +29,7 @@ type Enums = {
     housingType: EnumItem[];
     employmentType: EnumItem[];
     jobPosition: EnumItem[];
+    workSchedule: EnumItem[];
     bonusCategory: EnumItem[];
     practiceBonusCategory: EnumItem[];
     expenseType: EnumItem[];

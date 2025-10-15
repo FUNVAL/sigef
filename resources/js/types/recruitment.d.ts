@@ -44,6 +44,7 @@ export type RecruitmentFormData = {
     employment_type?: number;
     company_name?: string;
     job_position?: number;
+    work_schedule?: number;
     employment_income?: number;
     employment_start_date?: string;
     has_work_experience?: boolean;

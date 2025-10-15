@@ -156,4 +156,9 @@ return [
         'family_friend_house' => 'Recibiré clases en la casa de un familiar/amigo',
         'hire_internet_plan' => 'Contrataré un plan de internet para mi casa',
     ],
+    'work_schedule' => [
+        'morning' => 'Matutina',
+        'afternoon' => 'Vespertina',
+        'night' => 'Nocturna',
+    ],
 ];

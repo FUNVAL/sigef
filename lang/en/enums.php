@@ -153,4 +153,9 @@ return [
         'family_friend_house' => 'I will attend classes at a family member/friend\'s house',
         'hire_internet_plan' => 'I will hire an internet plan for my home',
     ],
+    'work_schedule' => [
+        'morning' => 'Morning',
+        'afternoon' => 'Afternoon',
+        'night' => 'Night',
+    ],
 ];

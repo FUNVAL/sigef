@@ -9,6 +9,7 @@ use App\Enums\DeviceTypeEnum;
 use App\Enums\HousingTypeEnum;
 use App\Enums\EmploymentTypeEnum;
 use App\Enums\JobPositionEnum;
+use App\Enums\WorkScheduleEnum;
 use App\Enums\BonusCategoryEnum;
 use App\Enums\PracticeBonusCategoryEnum;
 use App\Enums\ExpenseTypeEnum;
@@ -36,6 +37,7 @@ class RecruitmentController extends Controller
                     'housingType' => HousingTypeEnum::toArray(),
                     'employmentType' => EmploymentTypeEnum::toArray(),
                     'jobPosition' => JobPositionEnum::toArray(),
+                    'workSchedule' => WorkScheduleEnum::toArray(),
                     'bonusCategory' => BonusCategoryEnum::toArray(),
                     'practiceBonusCategory' => PracticeBonusCategoryEnum::toArray(),
                     'expenseType' => ExpenseTypeEnum::toArray(),
@@ -75,7 +77,9 @@ class RecruitmentController extends Controller
                 'employment_type' => 'nullable|integer',
                 'company_name' => 'nullable|string|max:255',
                 'job_position' => 'nullable|integer',
+                'work_schedule' => 'nullable|integer',
                 'employment_income' => 'nullable|numeric|min:0',
+                'employment_start_date' => 'nullable|date',
                 'needs_bonus' => 'required|boolean',
                 'bonus_categories' => 'nullable|array',
                 'bonus_amounts' => 'nullable|array',
@@ -152,6 +156,7 @@ class RecruitmentController extends Controller
                 'housingType' => HousingTypeEnum::toArray(),
                 'employmentType' => EmploymentTypeEnum::toArray(),
                 'jobPosition' => JobPositionEnum::toArray(),
+                'workSchedule' => WorkScheduleEnum::toArray(),
                 'bonusCategory' => BonusCategoryEnum::toArray(),
                 'practiceBonusCategory' => PracticeBonusCategoryEnum::toArray(),
                 'expenseType' => ExpenseTypeEnum::toArray(),
@@ -181,7 +186,9 @@ class RecruitmentController extends Controller
                 'employment_type' => 'nullable|integer',
                 'company_name' => 'nullable|string|max:255',
                 'job_position' => 'nullable|integer',
+                'work_schedule' => 'nullable|integer',
                 'employment_income' => 'nullable|numeric|min:0',
+                'employment_start_date' => 'nullable|date',
                 'needs_bonus' => 'required|boolean',
                 'bonus_categories' => 'nullable|array',
                 'bonus_amounts' => 'nullable|array',

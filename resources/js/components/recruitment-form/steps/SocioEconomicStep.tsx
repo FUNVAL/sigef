@@ -380,8 +380,14 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             if (!data.job_position || data.job_position === 0) {
                 validationErrors.job_position = 'El puesto es requerido';
             }
+            if (!data.work_schedule || data.work_schedule === 0) {
+                validationErrors.work_schedule = 'El tipo de jornada es requerido';
+            }
             if (!data.employment_income || data.employment_income <= 0) {
                 validationErrors.employment_income = 'El salario es requerido';
+            }
+            if (!data.employment_start_date?.trim()) {
+                validationErrors.employment_start_date = 'La fecha de inicio en la empresa es requerida';
             }
         }
 
@@ -897,6 +903,29 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             </Select>
                                             {errors.job_position && (
                                                 <p className="text-sm text-red-500 mt-1">{errors.job_position}</p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <Label>Tipo de jornada</Label>
+                                            <Select
+                                                name="work_schedule"
+                                                value={data.work_schedule && data.work_schedule > 0 ? data.work_schedule?.toString() : ''}
+                                                onValueChange={(value: string) => setData('work_schedule', parseInt(value))}
+                                            >
+                                                <SelectTrigger className={errors.work_schedule ? 'border-red-500' : ''}>
+                                                    <SelectValue placeholder="--- Seleccione un tipo de jornada ---" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {enums.workSchedule?.map((item) => (
+                                                        <SelectItem key={item.id} value={item.id.toString()}>
+                                                            {item.name}
+                                                        </SelectItem>
+                                                    )) || []}
+                                                </SelectContent>
+                                            </Select>
+                                            {errors.work_schedule && (
+                                                <p className="text-sm text-red-500 mt-1">{errors.work_schedule}</p>
                                             )}
                                         </div>
                                         <div className='grid grid-cols-2 gap-4'>
