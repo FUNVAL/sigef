@@ -789,7 +789,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                             onValueChange={(value: string) => setData('housing_type', parseInt(value))}
                         >
                             <SelectTrigger className={errors.housing_type ? 'border-red-500' : ''}>
-                                <SelectValue placeholder="--- Seleccione un tipo de vivienda ---" />
+                                <SelectValue placeholder="--- Seleccione tipo de vivienda ---" />
                             </SelectTrigger>
                             <SelectContent>
                                 {enums.housingType?.map((item) => (
