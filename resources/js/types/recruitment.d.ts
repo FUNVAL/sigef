@@ -45,6 +45,7 @@ export type RecruitmentFormData = {
     company_name?: string;
     job_position?: number;
     employment_income?: number;
+    employment_start_date?: string;
     has_work_experience?: boolean;
     work_experiences: WorkExperience[];
     // Campos legacy para compatibilidad

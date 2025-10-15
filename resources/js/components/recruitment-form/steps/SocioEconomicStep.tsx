@@ -35,13 +35,13 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     // Función para calcular la experiencia laboral
     const calculateWorkExperience = (startDate: string, endDate?: string) => {
         if (!startDate) return '';
-        
+
         const start = new Date(startDate);
         const end = endDate ? new Date(endDate) : new Date();
-        
+
         // Calcular la diferencia en meses
         const monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-        
+
         if (monthsDiff < 1) {
             const daysDiff = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
             return `${daysDiff} días`;
@@ -61,7 +61,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     // Función para calcular el tiempo total combinado de todas las experiencias
     const calculateTotalExperience = (experiences: WorkExperience[]) => {
         let totalMonths = 0;
-        
+
         experiences.forEach(exp => {
             if (exp.start_date) {
                 const start = new Date(exp.start_date);
@@ -74,7 +74,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         });
 
         if (totalMonths === 0) return 'Sin experiencia registrada';
-        
+
         if (totalMonths < 12) {
             return `${totalMonths} ${totalMonths === 1 ? 'mes' : 'meses'} total`;
         } else {
@@ -198,7 +198,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     // Monthly expenses functions
     const addMonthlyExpense = () => {
         const newExpense: HouseholdExpense = {
-            type: 0, 
+            type: 0,
             amount: 0
         };
         const updatedExpenses = [...monthlyExpenses, newExpense];
@@ -261,11 +261,11 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             }
 
             if (categoryId === 1) { // FAMILY
-                
+
                 updatedCategories = updatedCategories.filter(id => id !== 2);
                 delete updatedAmounts[2];
             } else if (categoryId === 2) { // SINGLE
-                
+
                 updatedCategories = updatedCategories.filter(id => id !== 1);
                 delete updatedAmounts[1];
             }
@@ -300,19 +300,19 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             }
 
             // Lógica de exclusión mutua para bonos de prácticas
-            if (categoryId === 2) { 
-               
+            if (categoryId === 2) {
+
                 updatedCategories = updatedCategories.filter(id => id !== 1 && id !== 3);
-                delete updatedAmounts[1]; 
-                delete updatedAmounts[3]; 
-            } else if (categoryId === 3) { 
+                delete updatedAmounts[1];
+                delete updatedAmounts[3];
+            } else if (categoryId === 3) {
 
                 updatedCategories = updatedCategories.filter(id => id !== 2);
-                delete updatedAmounts[2]; 
-            } else if (categoryId === 1) { 
+                delete updatedAmounts[2];
+            } else if (categoryId === 1) {
 
                 updatedCategories = updatedCategories.filter(id => id !== 2);
-                delete updatedAmounts[2]; 
+                delete updatedAmounts[2];
             }
 
             updatedCategories.push(categoryId);
@@ -833,7 +833,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                     <Label>Tipo de empleo</Label>
                                     <Select
                                         name="employment_type"
-                                        value={ data.employment_type && data.employment_type > 0 ? data.employment_type?.toString() : ''}
+                                        value={data.employment_type && data.employment_type > 0 ? data.employment_type?.toString() : ''}
                                         onValueChange={(value: string) => setData('employment_type', parseInt(value))}
                                     >
                                         <SelectTrigger className={errors.employment_type ? 'border-red-500' : ''}>
@@ -890,22 +890,38 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                                 <p className="text-sm text-red-500 mt-1">{errors.job_position}</p>
                                             )}
                                         </div>
+                                        <div className='grid grid-cols-2 gap-4'>
 
-                                        <div>
-                                            <Label>Salario (USD)</Label>
-                                            <Input
-                                                name="employment[income]"
-                                                type="number"
-                                                value={data.employment_income || ''}
-                                                onChange={(e) => setData('employment_income', parseFloat(e.target.value) || 0)}
-                                                placeholder="0.00"
-                                                min="0"
-                                                step="0.01"
-                                                className={errors.employment_income ? 'border-red-500' : ''}
-                                            />
-                                            {errors.employment_income && (
-                                                <p className="text-sm text-red-500 mt-1">{errors.employment_income}</p>
-                                            )}
+                                            <div>
+                                                <Label>Salario (USD)</Label>
+                                                <Input
+                                                    name="employment[income]"
+                                                    type="number"
+                                                    value={data.employment_income || ''}
+                                                    onChange={(e) => setData('employment_income', parseFloat(e.target.value) || 0)}
+                                                    placeholder="0.00"
+                                                    min="0"
+                                                    step="0.01"
+                                                    className={errors.employment_income ? 'border-red-500' : ''}
+                                                />
+                                                {errors.employment_income && (
+                                                    <p className="text-sm text-red-500 mt-1">{errors.employment_income}</p>
+                                                )}
+                                            </div>
+
+                                            <div>
+                                                <Label>Fecha de inicio en la empresa</Label>
+                                                <Input
+                                                    name="employment[start_date]"
+                                                    type="date"
+                                                    value={data.employment_start_date || ''}
+                                                    onChange={(e) => setData('employment_start_date', e.target.value)}
+                                                    className={errors.employment_start_date ? 'border-red-500' : ''}
+                                                />
+                                                {errors.employment_start_date && (
+                                                    <p className="text-sm text-red-500 mt-1">{errors.employment_start_date}</p>
+                                                )}
+                                            </div>
                                         </div>
                                     </>
                                 )}
@@ -948,7 +964,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 {/* Botón para agregar experiencia */}
                                 <div className="flex justify-between items-center">
                                     <h4 className="text-sm font-medium text-gray-700">Experiencias laborales</h4>
-                                    <Button 
+                                    <Button
                                         type="button"
                                         onClick={addWorkExperience}
                                         variant="outline"
@@ -1264,7 +1280,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     <CardContent className="space-y-4">
                         <div className="flex items-center justify-between">
                             <Label>Empresas de interés</Label>
-                            
+
                             <Button
                                 type="button"
                                 variant="outline"
@@ -1312,7 +1328,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         )}
                                     </div>
                                 </div>
-                                
+
                                 {jobOffers.length > 2 && (
                                     <div className="flex justify-end">
                                         <Button
