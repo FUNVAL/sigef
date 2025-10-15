@@ -412,16 +412,6 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     if (!exp.job_position || exp.job_position === 0) {
                         validationErrors[`work_experience_${index}_job_position`] = 'El puesto es requerido';
                     }
-                    if (!exp.start_date) {
-                        validationErrors[`work_experience_${index}_start_date`] = 'La fecha de inicio es requerida';
-                    }
-                    if (exp.start_date && exp.end_date) {
-                        const startDate = new Date(exp.start_date);
-                        const endDate = new Date(exp.end_date);
-                        if (endDate <= startDate) {
-                            validationErrors[`work_experience_${index}_end_date`] = 'La fecha de fin debe ser posterior a la fecha de inicio';
-                        }
-                    }
                 });
             }
         }
