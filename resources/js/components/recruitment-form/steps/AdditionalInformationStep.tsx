@@ -95,13 +95,13 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
     };
 
     return (
-        <div className="mx-auto max-w-4xl space-y-6 p-4">
+        <div className="mx-auto max-w-4xl space-y-4 p-3 sm:space-y-6 sm:p-4">
             <StepsHeader
                 title="Información Adicional"
                 subtitle="Complete la información final para su aplicación"
             />
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 {/* Fecha de inicio */}
                 <Card>
                     <CardHeader>
@@ -111,15 +111,17 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div>
-                                <Label htmlFor="additional_info[start_month]">Mes de inicio</Label>
+                        <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
+                            <div className="space-y-2">
+                                <Label htmlFor="additional_info[start_month]" className="text-sm font-medium">
+                                    Mes de inicio
+                                </Label>
                                 <Select
                                     name="additional_info[start_month]"
                                     value={data.start_month.toString()}
                                     onValueChange={(value) => setData('start_month', parseInt(value))}
                                 >
-                                    <SelectTrigger className={errors.start_month ? 'border-red-500' : ''}>
+                                    <SelectTrigger className={`h-10 ${errors.start_month ? 'border-red-500' : ''}`}>
                                         <SelectValue placeholder="Seleccionar mes" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -131,18 +133,20 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                                     </SelectContent>
                                 </Select>
                                 {errors.start_month && (
-                                    <p className="text-sm text-red-500 mt-1">{errors.start_month}</p>
+                                    <p className="text-xs text-red-500 mt-1">{errors.start_month}</p>
                                 )}
                             </div>
 
-                            <div>
-                                <Label htmlFor="additional_info[start_year]">Año</Label>
+                            <div className="space-y-2">
+                                <Label htmlFor="additional_info[start_year]" className="text-sm font-medium">
+                                    Año
+                                </Label>
                                 <Select
                                     name="additional_info[start_year]"
                                     value={data.start_year.toString()}
                                     onValueChange={(value) => setData('start_year', parseInt(value))}
                                 >
-                                    <SelectTrigger className={errors.start_year ? 'border-red-500' : ''}>
+                                    <SelectTrigger className={`h-10 ${errors.start_year ? 'border-red-500' : ''}`}>
                                         <SelectValue placeholder="Seleccionar año" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -154,7 +158,7 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                                     </SelectContent>
                                 </Select>
                                 {errors.start_year && (
-                                    <p className="text-sm text-red-500 mt-1">{errors.start_year}</p>
+                                    <p className="text-xs text-red-500 mt-1">{errors.start_year}</p>
                                 )}
                             </div>
                         </div>
@@ -170,29 +174,32 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                             {!data.interview_photo ? (
-                                <div>
-                                    <Label htmlFor="interview_photo">
-                                        Sube tu foto de entrevista (JPG, PNG, máximo 2MB)
+                                <div className="space-y-2">
+                                    <Label htmlFor="interview_photo" className="text-sm font-medium">
+                                        Sube tu foto de entrevista
                                     </Label>
+                                    <p className="text-xs text-gray-500 mb-2">
+                                        Formatos permitidos: JPG, PNG. Tamaño máximo: 2MB
+                                    </p>
                                     <Input
                                         id="additional_info[interview_photo]"
                                         name="additional_info[interview_photo]"
                                         type="file"
                                         accept="image/jpeg,image/jpg,image/png"
                                         onChange={handleFileChange}
-                                        className={errors.interview_photo ? 'border-red-500' : ''}
+                                        className={`h-10 ${errors.interview_photo ? 'border-red-500' : ''}`}
                                     />
                                     {errors.interview_photo && (
-                                        <p className="text-sm text-red-500 mt-1">{errors.interview_photo}</p>
+                                        <p className="text-xs text-red-500 mt-1">{errors.interview_photo}</p>
                                     )}
                                 </div>
                             ) : (
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <div className="space-y-3 sm:space-y-4">
+                                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                                         <div className="flex items-center gap-2">
-                                            <Camera className="h-4 w-4 text-green-600" />
+                                            <Camera className="h-4 w-4 text-green-600 flex-shrink-0" />
                                             <span className="text-sm text-green-700 font-medium">
                                                 ✓ Foto de entrevista subida correctamente
                                             </span>
@@ -202,23 +209,23 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                                             variant="outline"
                                             size="sm"
                                             onClick={() => setData('interview_photo', null)}
-                                            className="text-xs"
+                                            className="text-xs w-full sm:w-auto"
                                         >
                                             Cambiar foto
                                         </Button>
                                     </div>
 
                                     {/* Miniatura de la imagen */}
-                                    <div className="flex items-start gap-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                                        <div className="flex-shrink-0">
+                                    <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                                        <div className="flex-shrink-0 mx-auto sm:mx-0">
                                             <img
                                                 src={URL.createObjectURL(data.interview_photo)}
                                                 alt="Vista previa de la foto"
-                                                className="w-24 h-24 object-cover rounded-lg border border-gray-300 shadow-sm"
+                                                className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg border border-gray-300 shadow-sm"
                                             />
                                         </div>
-                                        <div className="flex-1 space-y-1">
-                                            <p className="text-sm font-medium text-gray-900">
+                                        <div className="flex-1 space-y-1 text-center sm:text-left">
+                                            <p className="text-sm font-medium text-gray-900 break-all">
                                                 {data.interview_photo.name}
                                             </p>
                                             <p className="text-xs text-gray-500">
@@ -235,15 +242,20 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                     </CardContent>
                 </Card>
 
-                <div className="flex justify-between">
-                    <Button type="button" variant="outline" onClick={previousStep}>
+                <div className="flex flex-col sm:flex-row gap-3 sm:justify-between">
+                    <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={previousStep}
+                        className="w-full sm:w-auto order-2 sm:order-1"
+                    >
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Anterior
                     </Button>
                     <Button 
                         type="submit" 
                         size="lg"
-                        className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                        className="w-full sm:w-auto sm:min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90 order-1 sm:order-2"
                     >
                         Siguiente
                     </Button>

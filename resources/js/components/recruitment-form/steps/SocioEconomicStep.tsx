@@ -426,13 +426,13 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
     };
 
     return (
-        <div className="mx-auto max-w-4xl space-y-6 p-4">
+        <div className="mx-auto max-w-4xl space-y-4 p-3 sm:space-y-6 sm:p-4">
             <StepsHeader
                 title="Información Socioeconómica"
                 subtitle="Proporcione información sobre su situación económica y familiar"
             />
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
 
                 {/* Miembros del hogar */}
                 <Card>
@@ -444,20 +444,22 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     </CardHeader>
                     <CardContent className="space-y-4">
                         {data.household_members.map((member, index) => (
-                            <div key={index} className="p-4 border rounded-lg space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <Label htmlFor={`household_members[${index}][name]`}>Nombre</Label>
+                            <div key={index} className="p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor={`household_members[${index}][name]`} className="text-sm font-medium">
+                                            Nombre
+                                        </Label>
                                         <Input
                                             id={`household_members[${index}][name]`}
                                             name={`household_members[${index}][name]`}
                                             value={member.name}
                                             onChange={(e) => updateHouseholdMember(index, 'name', e.target.value)}
                                             placeholder="Nombre completo"
-                                            className={errors[`household_member_${index}_name`] ? 'border-red-500' : ''}
+                                            className={`h-10 ${errors[`household_member_${index}_name`] ? 'border-red-500' : ''}`}
                                         />
                                         {errors[`household_member_${index}_name`] && (
-                                            <p className="text-sm text-red-500 mt-1">{errors[`household_member_${index}_name`]}</p>
+                                            <p className="text-xs text-red-500 mt-1">{errors[`household_member_${index}_name`]}</p>
                                         )}
                                     </div>
                                     <div>
@@ -613,42 +615,46 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                         </div>
 
                         {monthlyExpenses.map((expense, index) => (
-                            <div key={index} className="flex gap-2 p-3 border rounded">
-                                <Select
-                                    name={`monthly_expenses[${index}][type]`}
-                                    value={expense.type && expense.type > 0 ? expense.type.toString() : ''}
-                                    onValueChange={(value) => updateMonthlyExpense(index, 'type', parseInt(value))}
-                                >
-                                    <SelectTrigger className="flex-1">
-                                        <SelectValue placeholder="--- Seleccione un tipo de gasto ---" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {enums.expenseType?.map((item) => (
-                                            <SelectItem key={item.id} value={item.id.toString()}>
-                                                {item.name}
-                                            </SelectItem>
-                                        )) || []}
-                                    </SelectContent>
-                                </Select>
-                                <Input
-                                    name={`monthly_expenses[${index}][amount]`}
-                                    type="number"
-                                    placeholder="Monto USD"
-                                    value={expense.amount || ''}
-                                    onChange={(e) => updateMonthlyExpense(index, 'amount', e.target.value)}
-                                    min="0"
-                                    step="0.01"
-                                    className="w-32"
-                                />
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => removeMonthlyExpense(index)}
-                                    className="text-red-600 hover:text-red-700"
-                                >
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
+                            <div key={index} className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-3 border rounded-lg">
+                                <div className="flex-1">
+                                    <Select
+                                        name={`monthly_expenses[${index}][type]`}
+                                        value={expense.type && expense.type > 0 ? expense.type.toString() : ''}
+                                        onValueChange={(value) => updateMonthlyExpense(index, 'type', parseInt(value))}
+                                    >
+                                        <SelectTrigger className="h-10">
+                                            <SelectValue placeholder="--- Seleccione un tipo de gasto ---" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {enums.expenseType?.map((item) => (
+                                                <SelectItem key={item.id} value={item.id.toString()}>
+                                                    {item.name}
+                                                </SelectItem>
+                                            )) || []}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="flex gap-2">
+                                    <Input
+                                        name={`monthly_expenses[${index}][amount]`}
+                                        type="number"
+                                        placeholder="Monto USD"
+                                        value={expense.amount || ''}
+                                        onChange={(e) => updateMonthlyExpense(index, 'amount', e.target.value)}
+                                        min="0"
+                                        step="0.01"
+                                        className="flex-1 sm:w-32 h-10"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => removeMonthlyExpense(index)}
+                                        className="text-red-600 hover:text-red-700 px-3"
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
                             </div>
                         ))}
 
@@ -915,10 +921,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                                 <p className="text-sm text-red-500 mt-1">{errors.work_schedule}</p>
                                             )}
                                         </div>
-                                        <div className='grid grid-cols-2 gap-4'>
+                                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4'>
 
-                                            <div>
-                                                <Label>Salario (USD)</Label>
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-medium">Salario (USD)</Label>
                                                 <Input
                                                     name="employment[income]"
                                                     type="number"
@@ -927,24 +933,24 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                                     placeholder="0.00"
                                                     min="0"
                                                     step="0.01"
-                                                    className={errors.employment_income ? 'border-red-500' : ''}
+                                                    className={`h-10 ${errors.employment_income ? 'border-red-500' : ''}`}
                                                 />
                                                 {errors.employment_income && (
-                                                    <p className="text-sm text-red-500 mt-1">{errors.employment_income}</p>
+                                                    <p className="text-xs text-red-500 mt-1">{errors.employment_income}</p>
                                                 )}
                                             </div>
 
-                                            <div>
-                                                <Label>Fecha de inicio en la empresa</Label>
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-medium">Fecha de inicio en la empresa</Label>
                                                 <Input
                                                     name="employment[start_date]"
                                                     type="date"
                                                     value={data.employment_start_date || ''}
                                                     onChange={(e) => setData('employment_start_date', e.target.value)}
-                                                    className={errors.employment_start_date ? 'border-red-500' : ''}
+                                                    className={`h-10 ${errors.employment_start_date ? 'border-red-500' : ''}`}
                                                 />
                                                 {errors.employment_start_date && (
-                                                    <p className="text-sm text-red-500 mt-1">{errors.employment_start_date}</p>
+                                                    <p className="text-xs text-red-500 mt-1">{errors.employment_start_date}</p>
                                                 )}
                                             </div>
                                         </div>
@@ -1010,19 +1016,19 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 )}
 
                                 {/* Lista de experiencias */}
-                                <div className="border border-gray-200 rounded-lg p-4">
-                                    <div className="grid grid-cols-2 gap-3">
+                                <div className="border border-gray-200 rounded-lg p-3 sm:p-4">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                         {workExperiences.map((experience, index) => (
-                                            <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                            <div key={index} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 bg-gray-50 rounded-lg">
                                                 {/* Selector de experiencia */}
-                                                <div className="flex-1">
+                                                <div className="flex-1 w-full sm:w-auto">
                                                     <Select
                                                         name={`work_experiences[${index}][job_position]`}
                                                         value={experience.job_position > 0 ? experience.job_position.toString() : ''}
                                                         onValueChange={(value: string) => updateWorkExperience(index, 'job_position', parseInt(value))}
                                                     >
-                                                        <SelectTrigger className={errors[`work_experience_${index}_job_position`] ? 'border-red-500' : ''}>
-                                                            <SelectValue placeholder={`-- Seleccione un puesto--`} />
+                                                        <SelectTrigger className={`h-10 ${errors[`work_experience_${index}_job_position`] ? 'border-red-500' : ''}`}>
+                                                            <SelectValue placeholder="-- Seleccione un puesto --" />
                                                         </SelectTrigger>
                                                         <SelectContent>
                                                             {enums.jobPosition?.map((item) => (
@@ -1033,30 +1039,32 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                                         </SelectContent>
                                                     </Select>
                                                     {errors[`work_experience_${index}_job_position`] && (
-                                                        <p className="text-sm text-red-500 mt-1">{errors[`work_experience_${index}_job_position`]}</p>
+                                                        <p className="text-xs text-red-500 mt-1">{errors[`work_experience_${index}_job_position`]}</p>
                                                     )}
                                                 </div>
 
-                                                {/* Icono de experiencia */}
-                                                {experience.job_position > 0 && (
-                                                    <div className="flex items-center gap-2 text-green-600">
-                                                        <Briefcase className="h-5 w-5" />
-                                                        <span className="text-xs font-medium">Registrada</span>
-                                                    </div>
-                                                )}
+                                                <div className="flex items-center justify-between w-full sm:w-auto gap-2">
+                                                    {/* Icono de experiencia */}
+                                                    {experience.job_position > 0 && (
+                                                        <div className="flex items-center gap-2 text-green-600">
+                                                            <Briefcase className="h-4 w-4" />
+                                                            <span className="text-xs font-medium">Registrada</span>
+                                                        </div>
+                                                    )}
 
-                                                {/* Botón eliminar */}
-                                                {workExperiences.length > 1 && (
-                                                    <Button
-                                                        type="button"
-                                                        onClick={() => removeWorkExperience(index)}
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="text-red-600 hover:text-red-700 hover:bg-red-50 px-2"
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                )}
+                                                    {/* Botón eliminar */}
+                                                    {workExperiences.length > 1 && (
+                                                        <Button
+                                                            type="button"
+                                                            onClick={() => removeWorkExperience(index)}
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="text-red-600 hover:text-red-700 hover:bg-red-50 px-2"
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    )}
+                                                </div>
                                             </div>
                                         ))}
 
@@ -1383,11 +1391,11 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     </CardContent>
                 </Card>
 
-                <div className="flex justify-end">
+                <div className="flex justify-center sm:justify-end">
                     <Button
                         type="submit"
                         size="lg"
-                        className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                        className="w-full sm:w-auto sm:min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
                     >
                         Siguiente
                     </Button>

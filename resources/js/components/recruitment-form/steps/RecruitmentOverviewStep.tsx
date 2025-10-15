@@ -57,13 +57,13 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
     };
 
     return (
-        <div className="mx-auto max-w-4xl space-y-6 p-4">
+        <div className="mx-auto max-w-4xl space-y-4 p-3 sm:space-y-6 sm:p-4">
             <StepsHeader
                 title="Resumen de Aplicación"
                 subtitle="Revise su información antes de enviar la aplicación"
             />
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
                 {/* Información Socio-económica */}
                 <Card>
                     <CardHeader>
@@ -72,30 +72,30 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                             Información Socioeconómica
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div>
-                                <p className="text-sm font-medium text-gray-500">Miembros del hogar</p>
-                                <p className="text-sm">{data.household_members.length} personas</p>
+                    <CardContent className="space-y-3 sm:space-y-4">
+                        <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
+                            <div className="space-y-1">
+                                <p className="text-xs sm:text-sm font-medium text-gray-500">Miembros del hogar</p>
+                                <p className="text-sm sm:text-base">{data.household_members.length} personas</p>
                             </div>
-                            <div>
-                                <p className="text-sm font-medium text-gray-500">Ingresos mensuales del hogar</p>
-                                <p className="text-sm text-green-600 font-medium">
+                            <div className="space-y-1">
+                                <p className="text-xs sm:text-sm font-medium text-gray-500">Ingresos mensuales del hogar</p>
+                                <p className="text-sm sm:text-base text-green-600 font-medium">
                                     ${data.household_members.reduce((total, member) => total + (member?.income_contribution || 0), 0).toFixed(2)} USD
                                 </p>
                             </div>
                             {data.monthly_expenses && data.monthly_expenses.length > 0 && (
-                                <div>
-                                    <p className="text-sm font-medium text-gray-500">Egresos mensuales del hogar</p>
-                                    <p className="text-sm text-red-600 font-medium">
+                                <div className="space-y-1">
+                                    <p className="text-xs sm:text-sm font-medium text-gray-500">Egresos mensuales del hogar</p>
+                                    <p className="text-sm sm:text-base text-red-600 font-medium">
                                         ${data.monthly_expenses.reduce((total, expense) => total + (expense?.amount || 0), 0).toFixed(2)} USD
                                     </p>
                                 </div>
                             )}
                             
-                            <div>
-                                <p className="text-sm font-medium text-gray-500">Internet residencial</p>
-                                <p className="text-sm">{data.has_residential_internet ? 'Sí' : 'No'}</p>
+                            <div className="space-y-1">
+                                <p className="text-xs sm:text-sm font-medium text-gray-500">Internet residencial</p>
+                                <p className="text-sm sm:text-base">{data.has_residential_internet ? 'Sí' : 'No'}</p>
                             </div>
                             <div>
                                 <p className="text-sm font-medium text-gray-500">Dispositivo para clases</p>
@@ -435,8 +435,14 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                 </Card>
 
                 {/* Botones de acción */}
-                <div className="flex justify-between pt-6">
-                    <Button type="button" variant="outline" onClick={previousStep} disabled={processing}>
+                <div className="flex flex-col sm:flex-row gap-3 sm:justify-between pt-4 sm:pt-6">
+                    <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={previousStep} 
+                        disabled={processing}
+                        className="w-full sm:w-auto order-2 sm:order-1"
+                    >
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Anterior
                     </Button>
@@ -444,7 +450,7 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                         onClick={onSubmit} 
                         size="lg" 
                         disabled={processing}
-                        className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                        className="w-full sm:w-auto sm:min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90 order-1 sm:order-2"
                     >
                         {processing ? 'Enviando...' : 'Enviar Aplicación'}
                     </Button>
