@@ -61,7 +61,7 @@ export const createColumns = ({ onEditReference }: { onEditReference: (reference
             const reference = row.original;
             return (
                 <div className="space-y-1">
-                    <div className="text-sm font-medium">{reference.phone}</div>
+                    <a href={`https://wa.me/${reference.phone.replace(/\D/g, "")}`} target='_blank' className="text-sm font-medium">{reference.phone}</a>
                     <div className="text-sm text-gray-500">{reference.country.name}</div>
                 </div>
             );

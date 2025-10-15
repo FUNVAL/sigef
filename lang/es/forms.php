@@ -21,6 +21,7 @@ return [
                 'email' => 'Correo:',
                 'marital_status' => 'Estado Civil:',
                 'served_mission' => '¿Ha servido una misión?:',
+                'has_children' => '¿Tiene hijos?:',
                 'currently_working' => '¿Está trabajando actualmente?:',
                 'job_type_preference' => 'Tipo de empleo que busca:',
                 'available_full_time' => 'Disponibilidad para trabajar tiempo completo:',
@@ -62,12 +63,14 @@ return [
             'email' => 'Correo',
             'marital_status' => 'Estado Civil',
             'served_mission' => '¿Ha servido una misión?',
+            'has_children' => '¿Tienes hijos?',
             'country' => 'País de residencia:',
             'stake' => 'Estaca/Distrito/Misión',
             'currently_working' => '¿Trabajando actualmente?',
             'job_type_preference' => 'Preferencia de Tipo de Trabajo',
             'available_full_time' => 'Disponibilidad Tiempo Completo',
             'course' => 'Curso de Interés',
+
         ],
         'validation' => [
             'required' => 'Este campo es obligatorio',
@@ -75,6 +78,10 @@ return [
             'min_age' => 'Debe ser mayor de :min años',
             'max_age' => 'Debe ser menor de :max años',
             'unique' => 'Este correo ya está registrado',
+        ],
+        'options' => [
+            'yes' => 'Sí',
+            'no' => 'No',
         ],
     ],
     'referral' => [

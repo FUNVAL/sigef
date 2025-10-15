@@ -92,6 +92,7 @@ type Translation = {
                     email: string;
                     marital_status: string;
                     served_mission: string;
+                    has_children: string;
                     currently_working: string;
                     job_type_preference: string;
                     available_full_time: string;
@@ -133,6 +134,7 @@ type Translation = {
                 email: string;
                 marital_status: string;
                 served_mission: string;
+                has_children: string;
                 country: string;
                 stake: string;
                 currently_working: string;
@@ -146,6 +148,10 @@ type Translation = {
                 min_age: string;
                 max_age: string;
                 unique: string;
+            },
+            options: {
+                yes: string;
+                no: string;
             }
         },
         referral: {

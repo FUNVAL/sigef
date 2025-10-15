@@ -21,6 +21,7 @@ return [
                 'email' => 'Email:',
                 'marital_status' => 'Marital Status:',
                 'served_mission' => 'Have you served a mission?:',
+                'has_children' => 'Do you have children?:',
                 'currently_working' => 'Are you currently working?:',
                 'job_type_preference' => 'Type of employment you are looking for:',
                 'available_full_time' => 'Availability to work full time:',
@@ -62,6 +63,7 @@ return [
             'email' => 'Email',
             'marital_status' => 'Marital Status',
             'served_mission' => 'Have you served a mission?',
+            'has_children' => 'Do you have children?',
             'country' => 'Country of residence',
             'stake' => 'Stake/District/Mission',
             'currently_working' => 'Currently working?',
@@ -75,6 +77,10 @@ return [
             'min_age' => 'Must be older than :min years',
             'max_age' => 'Must be younger than :max years',
             'unique' => 'This email is already registered',
+        ],
+        'options' => [
+            'yes' => 'Yes',
+            'no' => 'No',
         ],
     ],
     'referral' => [

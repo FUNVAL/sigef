@@ -26,6 +26,7 @@ type PreInscription = BaseEntity & {
     additional_phone?: string;
     email: string;
     served_mission: MissionStatusInfo;
+    has_children?: boolean;
     currently_working?: boolean;
     available_full_time?: boolean;
     comments?: string;
@@ -105,7 +106,7 @@ type PreInscriptionFilters = BaseFilters & {
 };
 
 /**
- * Tipo para la respuesta paginada de 
+ * Tipo para la respuesta paginada de
  */
 type PreInscriptionsPaginatedResponse = BasePaginatedResponse<PreInscription>;
 
@@ -141,4 +142,5 @@ export type PreRegistrationFormData = BaseFormData & {
     job_type_preference?: number | null;
     currently_working?: boolean | null;
     available_full_time?: boolean | null;
+    has_children: boolean;
 };

@@ -62,8 +62,9 @@ return [
         'subtitle' => 'We\'re pleased to receive your application or your friend\'s referral.',
 
         'program_description' => [
-            'title' => 'Are you looking for a job?&nbsp;&nbsp;This Program is for You!',
-            'description' => 'This program is designed for individuals who are seeking employment and are willing to commit to an intensive learning process, dedicating <span class="font-bold text-blue-700">10 to 12 hours a day, Monday through Friday.</span>'
+            'title' => 'Are you looking for a job or know someone who needs one?',
+            'description' => 'Funval provides the perfect opportunity to prepare yourself and stand out in the job market. Our intensive courses, starting at just 5 weeks, are designed to provide the skills you need to get a formal job. With a practical approach and constant support, you will increase your chances of growing in the world of work.<br>
+            <span class="text-xl font-bold ">Come and transform the future with Funval!</span> '
         ],
 
         'motivation' => 'If you or the person referred have the motivation and commitment to reach this goal, let\'s get started! We are excited to guide you through your job search journey.',
@@ -83,11 +84,11 @@ return [
         'subtitle' => 'Select one of the following options to continue',
         'referral' => [
             'title' => 'Refer a friend',
-            'description' => 'Recommend someone you know to participate in our job training programs.',
+            'description' => 'Share this opportunity and help someone else take their first step toward job training.',
         ],
         'pre_inscription' => [
             'title' => 'Pre-register for the course',
-            'description' => 'Complete your pre-registration to participate in our job training programs.',
+            'description' => 'Take your first step and register to access the opportunity to participate in our job training programs.',
         ],
     ],
 

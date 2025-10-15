@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Exception;
 use Illuminate\Validation\ValidationException;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PreInscriptionController extends Controller
 {
@@ -40,7 +42,7 @@ class PreInscriptionController extends Controller
 
             $query = PreInscription::query()->with(['country', 'stake', 'course'])->orderBy('created_at', 'desc');
 
-            if ($request->has('search')) {
+            if ($request->has('search') && $request->input('search') !== '') {
                 $search = $request->input('search');
                 $query->where(function ($q) use ($search) {
                     $q->where('first_name', 'like', '%' . $search . '%')
@@ -82,6 +84,11 @@ class PreInscriptionController extends Controller
                 $query->where('stake_id', $stake);
             }
 
+            $course = $request->input('course') ?? 0;
+            if ($course != 0) {
+                $query->where('course_id', $course);
+            }
+
             $perPage = $request->input('per_page', 10);
             $page = $request->input('page', 1);
             $preInscriptions = $query->paginate($perPage, ['*'], 'page', $page);
@@ -98,6 +105,7 @@ class PreInscriptionController extends Controller
                 ->toArray();
 
             $countries = Country::where('status', StatusEnum::ACTIVE->value)->get();
+            $courses = Course::where('status', StatusEnum::ACTIVE->value)->get();
 
 
             return Inertia::render('pre-registration/pre-inscription', [
@@ -105,13 +113,14 @@ class PreInscriptionController extends Controller
                 'responsables' => $responsables,
                 'countries' => $countries,
                 'stakes' => $stakes,
+                'courses' => $courses,
                 'pagination' => [
                     'current_page' => $preInscriptions->currentPage(),
                     'per_page' => $preInscriptions->perPage(),
                     'total' => $preInscriptions->total(),
                     'last_page' => $preInscriptions->lastPage(),
                 ],
-                'filters' => $request->only(['search', 'status', 'responsable', 'country', 'stake']),
+                'filters' => $request->only(['search', 'status', 'responsable', 'country', 'stake', 'course']),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -164,13 +173,16 @@ class PreInscriptionController extends Controller
             if ($filterResult['shouldReject']) {
                 $preInscription->update([
                     'status' => RequestStatusEnum::REJECTED->value,
-                    'declined_reason' => ReferenceStatusEnum::FILTERED->value,
+                    'declined_reason' => $filterResult['reason'],
                     'declined_description' => 'Preinscripción filtrada automáticamente, no cumple con los requisitos.',
                     'modified_by' => 0
                 ]);
             }
 
-            $this->sendNotificationToResponsible($preInscription);
+            # if APP_ENV is production, send notification to the stake responsible
+            if (config('app.env') === 'production') {
+                $this->sendNotificationToResponsible($preInscription);
+            }
 
             return back()->with('success', $filterResult['message']);
         } catch (Exception $e) {
@@ -291,6 +303,7 @@ class PreInscriptionController extends Controller
                 'job_type_preference' => 'nullable|numeric|in:' . implode(',', JobTypeEnum::values()),
                 'available_full_time' => 'nullable|boolean',
                 'course_id' => 'required|exists:courses,id',
+                'has_children' => 'required|boolean', // ✅ AGREGAR esta línea
             ];
 
             $validated = $request->validate($rules);
@@ -335,7 +348,7 @@ class PreInscriptionController extends Controller
     /**
      * Get the pre-inscription dashboard data.
      */
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         try {
             $user = Auth::user();
@@ -348,7 +361,7 @@ class PreInscriptionController extends Controller
                 return back()->with('forbidden', 'No tienes permiso para realizar esta acción. Si crees que esto es un error, contacta al administrador del sistema.');
             }
 
-            $query = PreInscription::query()->with(['country', 'stake']);
+            $query = PreInscription::query()->with(['country', 'stake.user']);
 
             if ($own && !$all) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
@@ -388,7 +401,40 @@ class PreInscriptionController extends Controller
                 ->values()
                 ->toArray();
 
-            // Pre-inscriptions by stake
+            // Pre-inscriptions by recruiter (pendientes) con filtro de país opcional
+            $recruiterQuery = $preInscriptions->where('status.id', RequestStatusEnum::PENDING->value);
+
+            // Aplicar filtro de país si se proporciona y el usuario tiene permisos
+            if ($all && $request->has('country') && $request->get('country') !== '') {
+                $countryId = (int) $request->get('country');
+                $recruiterQuery = $recruiterQuery->where('country.id', $countryId);
+            }
+
+            $preInscriptionsByRecruiter = $recruiterQuery->groupBy('stake.user.firstname', 'stake.user.lastname', 'stake.user.id')
+                ->map(function ($group, $key) use ($recruiterQuery) {
+                    $quantity = $group->count();
+                    $filteredTotal = $recruiterQuery->count();
+
+                    // Obtener info del reclutador del primer elemento del grupo
+                    $firstItem = $group->first();
+                    $recruiterName = 'Sin asignar';
+
+                    if ($firstItem && $firstItem->stake && $firstItem->stake->user) {
+                        $user = $firstItem->stake->user;
+                        $recruiterName = trim($user->firstname . ' ' . $user->lastname);
+                    }
+
+                    return [
+                        'recruiter' => $recruiterName,
+                        'quantity' => $quantity,
+                        'percentage' => $filteredTotal > 0 ? round(($quantity / $filteredTotal) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
+            // Pre-inscriptions by stake (para usuarios sin permiso view-all)
             $preInscriptionsByStake = $preInscriptions->groupBy('stake.name')
                 ->map(function ($group, $stake) use ($total) {
                     $quantity = $group->count();
@@ -402,11 +448,17 @@ class PreInscriptionController extends Controller
                 ->values()
                 ->toArray();
 
+            // Obtener países solo si el usuario tiene permisos para ver todo
+            $countries = $all ? Country::where('status', StatusEnum::ACTIVE->value)->get(['id', 'name']) : [];
+
             return Inertia::render('pre-registration/pre-inscriptions-dashboard', [
                 'data' => [
                     'stats' => $stats,
                     'preInscriptionsByCountry' => $preInscriptionsByCountry,
-                    'preInscriptionsByStake' => $preInscriptionsByStake
+                    'preInscriptionsByRecruiter' => $preInscriptionsByRecruiter,
+                    'preInscriptionsByStake' => $preInscriptionsByStake,
+                    'countries' => $countries,
+                    'canViewAll' => $all
                 ]
             ]);
         } catch (\Exception $e) {
@@ -415,6 +467,107 @@ class PreInscriptionController extends Controller
                 'message' => 'Error al obtener el dashboard de preinscripciones',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Export pending pre-inscriptions to Excel using template
+     */
+    public function exportPendingToExcel()
+    {
+        try {
+            $user = Auth::user();
+            $all = $user->can('ver todas las preinscripciones');
+            $own = $user->can('ver preinscripciones propias');
+            $staff = $user->can('ver preinscripciones del personal');
+
+            if (!$all && !$own && !$staff) {
+                return back()->with('forbidden', 'No tienes permiso para realizar esta acción.');
+            }
+
+            // Obtener preinscripciones pendientes
+            $query = PreInscription::query()
+                ->with(['country', 'stake', 'course'])
+                ->where('status', RequestStatusEnum::PENDING->value);
+
+            if ($own && !$all) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $preInscriptions = $query->orderBy('created_at', 'desc')->get();
+
+            // Cargar el template específico para preinscripciones
+            $templatePath = base_path('statics/formato-preinscritos.xlsx');
+            if (!file_exists($templatePath)) {
+                return back()->withErrors(['error' => 'Template de preinscripciones no encontrado.']);
+            }
+
+            $spreadsheet = IOFactory::load($templatePath);
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            // Agregar datos a partir de la fila 10 (después de los headers del template)
+            $row = 10;
+            foreach ($preInscriptions as $preInscription) {
+                // Columna B: Nombre completo
+                $fullName = trim($preInscription->first_name . ' ' .
+                    ($preInscription->middle_name ? $preInscription->middle_name . ' ' : '') .
+                    $preInscription->last_name . ' ' .
+                    ($preInscription->second_last_name ? $preInscription->second_last_name : ''));
+                $worksheet->setCellValue('B' . $row, $fullName);
+
+                // Columna C: Género
+                $worksheet->setCellValue('C' . $row, $preInscription->gender['name'] ?? 'N/A');
+
+                // Columna D: Edad
+                $worksheet->setCellValue('D' . $row, $preInscription->age);
+
+                // Columna E: Correo
+                $worksheet->setCellValue('E' . $row, $preInscription->email);
+
+                // Columna F: Número (teléfono)
+                $phoneNumbers = $preInscription->phone;
+                if ($preInscription->additional_phone) {
+                    $phoneNumbers .= ' / ' . $preInscription->additional_phone;
+                }
+                $worksheet->setCellValue('F' . $row, $phoneNumbers);
+
+                // Columna G: País
+                $worksheet->setCellValue('G' . $row, $preInscription->country->name ?? 'N/A');
+
+                // Columna H: Estaca o distrito
+                $worksheet->setCellValue('H' . $row, $preInscription->stake->name ?? 'N/A');
+
+                // Columna I: Estado Civil
+                $worksheet->setCellValue('I' . $row, $preInscription->marital_status['name'] ?? 'N/A');
+
+                // Columna J: Sirvió misión
+                $worksheet->setCellValue('J' . $row, $preInscription->served_mission['name'] ?? 'N/A');
+
+                // Columna K: Curso
+                $worksheet->setCellValue('K' . $row, $preInscription->course->name ?? 'N/A');
+
+                // Columna L: Fecha
+                $worksheet->setCellValue('L' . $row, $preInscription->created_at->format('d/m/Y'));
+
+                $row++;
+            }
+
+            // Generar el archivo
+            $writer = new Xlsx($spreadsheet);
+            $filename = 'preinscripciones_pendientes_' . date('Y-m-d_H-i-s') . '.xlsx';
+            $tempPath = storage_path('app/temp/' . $filename);
+
+            // Crear directorio si no existe
+            if (!file_exists(dirname($tempPath))) {
+                mkdir(dirname($tempPath), 0755, true);
+            }
+
+            $writer->save($tempPath);
+
+            return response()->download($tempPath, $filename)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Error al generar el archivo Excel: ' . $e->getMessage()]);
         }
     }
 
@@ -441,6 +594,7 @@ class PreInscriptionController extends Controller
             'country_id' => 'required|exists:countries,id',
             'stake_id' => 'required|exists:stakes,id',
             'course_id' => 'required|exists:courses,id',
+            'has_children' => 'required|boolean',
         ];
 
         if ($isWoman) {
@@ -463,16 +617,42 @@ class PreInscriptionController extends Controller
      */
     private function applyAutomaticFilters($preInscription, Request $request): array
     {
-        $eligibilityCheck = $this->checkWomanEligibility(
+        // Verificar elegibilidad de mujeres
+        $womanEligibilityCheck = $this->checkWomanEligibility(
             $request->input('gender'),
             $request->input('currently_working'),
             $request->input('job_type_preference'),
             $request->input('available_full_time')
         );
 
+        if (!$womanEligibilityCheck['eligible']) {
+            return [
+                'shouldReject' => true,
+                'message' => $womanEligibilityCheck['message'],
+                'reason' => ReferenceStatusEnum::FILTERED->value
+            ];
+        }
+
+        // ✅ AGREGAR: Verificar elegibilidad para misión
+        $missionEligibilityCheck = $this->missionEligibility(
+            $request->input('age'),
+            $request->input('marital_status'),
+            $request->input('served_mission'),
+            $request->input('has_children', false),
+            $request->input('gender')
+        );
+
+        if (!$missionEligibilityCheck['eligible']) {
+            return [
+                'shouldReject' => true,
+                'message' => $missionEligibilityCheck['message'],
+                'reason' => ReferenceStatusEnum::FUTURE_MISSIONARY->value
+            ];
+        }
+
         return [
-            'shouldReject' => !$eligibilityCheck['eligible'],
-            'message' => $eligibilityCheck['message']
+            'shouldReject' => false,
+            'message' => $womanEligibilityCheck['message']
         ];
     }
 
@@ -575,18 +755,6 @@ class PreInscriptionController extends Controller
         $statusId = $this->getEnumValue($preInscription->status);
         $responsablePhone = optional(optional($preInscription->stake)->user)->contact_phone_1;
 
-        // Caso: Preinscripción pendiente
-        if ($statusId == RequestStatusEnum::PENDING->value) {
-            $message = str_replace('[**]', $responsablePhone, __('common.messages.duplicates.pending'));
-            return [
-                'exists' => true,
-                'message' => [
-                    'type' => 'rejected',
-                    'message' => $message
-                ]
-            ];
-        }
-
         // Caso: Preinscripción rechazada hace más de 6 meses (reintento)
         if ($moreThanSixMonths && $statusId == RequestStatusEnum::REJECTED->value) {
             return $this->handleRetryAfterSixMonths($preInscription, $request);
@@ -597,12 +765,13 @@ class PreInscriptionController extends Controller
             return $this->handleRejectedPreInscription($preInscription);
         }
 
-        // Caso por defecto: email ya existe
+
+        $message = str_replace('[**]', $responsablePhone, __('common.messages.duplicates.pending'));
         return [
             'exists' => true,
             'message' => [
                 'type' => 'rejected',
-                'message' => __('common.messages.error.email_exists')
+                'message' => $message
             ]
         ];
     }
@@ -636,13 +805,37 @@ class PreInscriptionController extends Controller
         ];
     }
 
-    /**
+        /**
      * Maneja preinscripción previamente rechazada
      */
     private function handleRejectedPreInscription($preInscription): array
     {
         $genderId = $this->getEnumValue($preInscription->gender);
+        $declinedReasonId = $this->getEnumValue($preInscription->declined_reason);
 
+        // Si fue rechazada por ser futuro misionero/a, mostrar mensaje de misión
+        if ($declinedReasonId == ReferenceStatusEnum::FUTURE_MISSIONARY->value) {
+            $missionEligibilityCheck = $this->missionEligibility(
+                $preInscription->age,
+                $this->getEnumValue($preInscription->marital_status),
+                $this->getEnumValue($preInscription->served_mission),
+                $preInscription->has_children,
+                $genderId
+            );
+
+            $rejectedMessage = "<div class='bg-blue-200/30 rounded-md p-2'>" . $missionEligibilityCheck['message']['message'] . "</div>";
+            $message = str_replace('[**]', $rejectedMessage, __('common.messages.duplicates.rejected'));
+
+            return [
+                'exists' => true,
+                'message' => [
+                    'type' => $missionEligibilityCheck['message']['type'],
+                    'message' => $message
+                ]
+            ];
+        }
+
+        // Lógica específica para mujeres rechazadas por otros motivos (trabajo/disponibilidad)
         if ($genderId == GenderEnum::FEMALE->value) {
             $jobTypePref = $this->getEnumValue($preInscription->job_type_preference);
             $eligibilityCheck = $this->checkWomanEligibility(
@@ -664,11 +857,35 @@ class PreInscriptionController extends Controller
             ];
         }
 
+        // Lógica para hombres rechazados por otros motivos (ya no debería usarse mucho ya que el check de misión está arriba)
+        if ($genderId == GenderEnum::MALE->value) {
+            $missionEligibilityCheck = $this->missionEligibility(
+                $preInscription->age,
+                $this->getEnumValue($preInscription->marital_status),
+                $this->getEnumValue($preInscription->served_mission),
+                $preInscription->has_children,
+                $genderId
+            );
+
+            if (!$missionEligibilityCheck['eligible']) {
+                $rejectedMessage = "<div class='bg-blue-200/30 rounded-md p-2'>" . $missionEligibilityCheck['message']['message'] . "</div>";
+                $message = str_replace('[**]', $rejectedMessage, __('common.messages.duplicates.rejected'));
+
+                return [
+                    'exists' => true,
+                    'message' => [
+                        'type' => $missionEligibilityCheck['message']['type'],
+                        'message' => $message
+                    ]
+                ];
+            }
+        }
+
         return [
             'exists' => true,
             'message' => [
                 'type' => 'rejected',
-                'message' => __('common.messages.error.email_exists')
+                'message' => __('common.messages.duplicates.pending')
             ]
         ];
     }
@@ -682,14 +899,62 @@ class PreInscriptionController extends Controller
             'greeting' => 'Estimado ' . $user->full_name,
             'subject' => 'Nueva Preinscripción: ' . $reference->name,
             'mensaje' => <<<'EOT'
-Te informamos que tienes un nuevo preinscrito pendiente de revisión.
-Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.
-EOT,
+            Te informamos que tienes un nuevo preinscrito pendiente de revisión.
+            Por favor, acceda al sistema para consultar los detalles y tomar la acción correspondiente.
+            EOT,
             'salutation' =>  'Atentamente: Sistema Integral de Gestión Educativa FUNVAL',
             'action' => [
                 'text' => '👉 Ver Preinscripción',
                 'url' => route('pre-inscription.index'),
             ],
+        ];
+    }
+
+    /**
+     * Verifica elegibilidad para misión según edad, estado civil y otros criterios
+     *
+     * Reglas:
+     * - Hombres: < 25 años son elegibles para misión
+     * - Mujeres: < 29 años son elegibles para misión
+     *
+     * Para MENORES al límite de edad, son ELEGIBLES si:
+     * 1. Ya sirvieron misión O están sirviendo actualmente, O
+     * 2. Son solteros Y tienen hijos (no pueden servir por responsabilidades familiares)
+     *
+     * Para MAYORES al límite de edad: Son elegibles automáticamente
+     *
+     * NO ELEGIBLES: Menores al límite, solteros sin hijos que no han servido misión
+     */
+    private function missionEligibility(
+        $age,
+        $maritalStatus,
+        $servedMission,
+        $hasChildren,
+        $gender
+    ): array {
+
+        $ageLimit = $gender == GenderEnum::FEMALE->value ? 29 : 25;
+        $isSingle = $maritalStatus === MaritalStatusEnum::SINGLE->value;
+        $hasServedMission = $servedMission === MissionStatusEnum::YES->value ||
+            $servedMission === MissionStatusEnum::CURRENTLY_SERVING->value;
+
+
+        if ($age >= $ageLimit || $hasServedMission || $hasChildren || !$isSingle) {
+            return [
+                'eligible' => true,
+                'message' => [
+                    'type' => 'success',
+                    'message' => __('messages.success.preinscription_success')
+                ]
+            ];
+        }
+
+        return [
+            'eligible' => false,
+            'message' => [
+                'type' => 'rejected',
+                'message' => __('messages.rejections.mission_eligible')
+            ]
         ];
     }
 }

@@ -13,6 +13,8 @@ use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 use App\Models\Stake;
 use App\Notifications\RequestNotification;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
@@ -153,7 +155,10 @@ class ReferenceController extends Controller
 
             $stake = Stake::find($validated['stake_id']);
             $user = $stake->user;
-            $user->notify(new RequestNotification($this->buildReferenceNotification($user, $reference)));
+            # if APP_ENV is production, send notification to the stake responsible
+            if (config('app.env') === 'production') {
+                $user->notify(new RequestNotification($this->buildReferenceNotification($user, $reference)));
+            }
 
             return  back()->with('success', $message);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -315,7 +320,7 @@ class ReferenceController extends Controller
     /**
      * Get the reference dashboard data.
      */
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         try {
             $user = Auth::user();
@@ -327,7 +332,7 @@ class ReferenceController extends Controller
                 return back()->with('forbidden', 'No tienes permiso para realizar esta acción. Si crees que esto es un error, contacta al administrador del sistema.');
             }
 
-            $query = Reference::query()->with(['country', 'stake', 'modifier']);
+            $query = Reference::query()->with(['country', 'stake.user']);
 
             if (!$all && $own) {
                 $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
@@ -369,7 +374,40 @@ class ReferenceController extends Controller
                 ->values()
                 ->toArray();
 
-            // References by stake
+            // Referencias por reclutador (pendientes) con filtro de país opcional
+            $recruiterQuery = $references->where('status.id', RequestStatusEnum::PENDING->value);
+
+            // Aplicar filtro de país si se proporciona y el usuario tiene permisos
+            if ($all && $request->has('country') && $request->get('country') !== '') {
+                $countryId = (int) $request->get('country');
+                $recruiterQuery = $recruiterQuery->where('country.id', $countryId);
+            }
+
+            $referencesByRecruiter = $recruiterQuery->groupBy('stake.user.firstname', 'stake.user.lastname', 'stake.user.id')
+                ->map(function ($group, $key) use ($recruiterQuery) {
+                    $quantity = $group->count();
+                    $filteredTotal = $recruiterQuery->count();
+
+                    // Obtener info del reclutador del primer elemento del grupo
+                    $firstItem = $group->first();
+                    $recruiterName = 'Sin asignar';
+
+                    if ($firstItem && $firstItem->stake && $firstItem->stake->user) {
+                        $user = $firstItem->stake->user;
+                        $recruiterName = trim($user->firstname . ' ' . $user->lastname);
+                    }
+
+                    return [
+                        'recruiter' => $recruiterName,
+                        'quantity' => $quantity,
+                        'percentage' => $filteredTotal > 0 ? round(($quantity / $filteredTotal) * 100, 1) : 0
+                    ];
+                })
+                ->sortByDesc('quantity')
+                ->values()
+                ->toArray();
+
+            // Referencias por estaca (para usuarios sin permiso view-all)
             $referencesByStake = $references->groupBy('stake.name')
                 ->map(function ($group, $stake) use ($total) {
                     $quantity = $group->count();
@@ -383,12 +421,17 @@ class ReferenceController extends Controller
                 ->values()
                 ->toArray();
 
+            // Obtener países solo si el usuario tiene permisos para ver todo
+            $countries = $all ? Country::where('status', StatusEnum::ACTIVE->value)->get(['id', 'name']) : [];
+
             return Inertia::render('pre-registration/references-dashboard', [
                 'data' => [
                     'stats' => $stats,
                     'referencesByCountry' => $referencesByCountry,
+                    'referencesByRecruiter' => $referencesByRecruiter,
                     'referencesByStake' => $referencesByStake,
-                    'references' => $references
+                    'countries' => $countries,
+                    'canViewAll' => $all
                 ]
             ]);
         } catch (\Exception $e) {
@@ -397,6 +440,96 @@ class ReferenceController extends Controller
                 'message' => 'Error al obtener el dashboard de referencias',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Exportar referencias pendientes a Excel
+     */
+    public function exportPendingToExcel()
+    {
+        try {
+            $user = Auth::user();
+            $all = $user->can('ver todas las referencias');
+            $own = $user->can('ver referencias propias');
+            $staff = $user->can('ver referencias del personal');
+
+            if (!$all && !$own && !$staff) {
+                return back()->with('forbidden', 'No tienes permiso para realizar esta acción.');
+            }
+
+            // Obtener referencias pendientes
+            $query = Reference::query()
+                ->with(['country', 'stake'])
+                ->where('status', RequestStatusEnum::PENDING->value);
+
+            if ($own && !$all) {
+                $stakesIds = Stake::where('user_id', $user->id)->pluck('id');
+                $query->whereIn('stake_id', $stakesIds);
+            }
+
+            $references = $query->orderBy('created_at', 'desc')->get();
+
+            // Cargar el template específico para referencias
+            $templatePath = base_path('statics/formato-referencias.xlsx');
+            if (!file_exists($templatePath)) {
+                return back()->withErrors(['error' => 'Template de referencias no encontrado.']);
+            }
+
+            $spreadsheet = IOFactory::load($templatePath);
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            // Agregar datos a partir de la fila 9 (después de los headers del template)
+            $row = 9;
+            foreach ($references as $reference) {
+                // Columna B: Nombre del referido
+                $worksheet->setCellValue('B' . $row, $reference->name);
+
+                // Columna C: Género
+                $worksheet->setCellValue('C' . $row, $reference->gender['name'] ?? 'N/A');
+
+                // Columna D: Edad
+                $worksheet->setCellValue('D' . $row, $reference->age);
+
+                // Columna E: Número (teléfono del referido)
+                $worksheet->setCellValue('E' . $row, $reference->phone);
+
+                // Columna F: País
+                $worksheet->setCellValue('F' . $row, $reference->country->name ?? 'N/A');
+
+                // Columna G: Estaca o distrito
+                $worksheet->setCellValue('G' . $row, $reference->stake->name ?? 'N/A');
+
+                // Columna H: Nombre del referente
+                $worksheet->setCellValue('H' . $row, $reference->referrer_name ?? 'N/A');
+
+                // Columna I: Relación
+                $worksheet->setCellValue('I' . $row, $reference->relationship_with_referred['name'] ?? 'N/A');
+
+                // Columna J: Número del referente
+                $worksheet->setCellValue('J' . $row, $reference->referrer_phone ?? 'N/A');
+
+                // Columna K: Fecha de referencia
+                $worksheet->setCellValue('K' . $row, $reference->created_at->format('d/m/Y'));
+
+                $row++;
+            }
+
+            // Generar el archivo
+            $writer = new Xlsx($spreadsheet);
+            $filename = 'referencias_pendientes_' . date('Y-m-d_H-i-s') . '.xlsx';
+            $tempPath = storage_path('app/temp/' . $filename);
+
+            // Crear directorio si no existe
+            if (!file_exists(dirname($tempPath))) {
+                mkdir(dirname($tempPath), 0755, true);
+            }
+
+            $writer->save($tempPath);
+
+            return response()->download($tempPath, $filename)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Error al generar el archivo Excel: ' . $e->getMessage()]);
         }
     }
 
