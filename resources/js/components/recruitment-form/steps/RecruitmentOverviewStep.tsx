@@ -16,6 +16,10 @@ interface RecruitmentOverviewStepProps {
 
 export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: RecruitmentOverviewStepProps) {
     const { previousStep } = useContext(StepperContext);
+    
+    // Debug temporal - remover después
+    console.log('RecruitmentOverviewStep - data.has_work_experience:', data.has_work_experience);
+    console.log('RecruitmentOverviewStep - data.work_experiences:', data.work_experiences);
 
     const getEnumLabel = (enumArray: { id: number; name: string }[], value: number): string => {
         const item = enumArray?.find((enumItem) => enumItem.id === value);
@@ -186,14 +190,25 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                             </div>
                         )}
 
-                        {data.has_work_experience && (
+                        {/* Experiencia laboral - mejorada */}
+                        {data.has_work_experience === true && (
                             <div className="mt-4 p-4 bg-yellow-50 rounded-lg">
                                 <h4 className="font-medium mb-4">Experiencia laboral</h4>
+                                
+                                {/* Debug info - remover después */}
+                                {process.env.NODE_ENV === 'development' && (
+                                    <div className="mb-2 text-xs text-gray-600">
+                                        Debug: has_work_experience={String(data.has_work_experience)}, 
+                                        work_experiences.length={data.work_experiences?.length || 0}
+                                    </div>
+                                )}
                                 
                                 {/* Mostrar múltiples experiencias */}
                                 {data.work_experiences && data.work_experiences.length > 0 ? (
                                     <div className="space-y-4">
-                                        {data.work_experiences.map((experience, index) => (
+                                        {data.work_experiences
+                                            .filter(exp => exp.job_position && exp.job_position > 0) // Solo mostrar experiencias válidas
+                                            .map((experience, index) => (
                                             <div key={index} className="bg-white p-3 rounded-lg border border-yellow-200">
                                                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                                                     <div>
@@ -223,68 +238,65 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                                             </div>
                                         ))}
                                         
-                                        {/* Resumen total */}
-                                        <div className="bg-yellow-100 p-3 rounded-lg border border-yellow-300">
-                                            <div className="flex justify-between items-center">
-                                                <div>
-                                                    <p className="text-sm font-semibold text-yellow-800">Experiencia total combinada</p>
-                                                    <p className="text-lg font-bold text-yellow-900">
-                                                        {(() => {
-                                                            let totalMonths = 0;
-                                                            data.work_experiences.forEach(exp => {
-                                                                if (exp.start_date) {
-                                                                    const start = new Date(exp.start_date);
-                                                                    const end = exp.end_date ? new Date(exp.end_date) : new Date();
-                                                                    const monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-                                                                    if (monthsDiff > 0) {
-                                                                        totalMonths += monthsDiff;
+                                        {/* Resumen total - solo si hay experiencias válidas */}
+                                        {data.work_experiences.filter(exp => exp.job_position && exp.job_position > 0 && exp.start_date).length > 0 && (
+                                            <div className="bg-yellow-100 p-3 rounded-lg border border-yellow-300">
+                                                <div className="flex justify-between items-center">
+                                                    <div>
+                                                        <p className="text-sm font-semibold text-yellow-800">Experiencia total combinada</p>
+                                                        <p className="text-lg font-bold text-yellow-900">
+                                                            {(() => {
+                                                                let totalMonths = 0;
+                                                                data.work_experiences
+                                                                    .filter(exp => exp.job_position && exp.job_position > 0 && exp.start_date)
+                                                                    .forEach(exp => {
+                                                                        const start = new Date(exp.start_date);
+                                                                        const end = exp.end_date ? new Date(exp.end_date) : new Date();
+                                                                        const monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+                                                                        if (monthsDiff > 0) {
+                                                                            totalMonths += monthsDiff;
+                                                                        }
+                                                                    });
+
+                                                                if (totalMonths === 0) return 'Sin experiencia registrada';
+                                                                
+                                                                if (totalMonths < 12) {
+                                                                    return `${totalMonths} ${totalMonths === 1 ? 'mes' : 'meses'}`;
+                                                                } else {
+                                                                    const years = Math.floor(totalMonths / 12);
+                                                                    const remainingMonths = totalMonths % 12;
+                                                                    if (remainingMonths === 0) {
+                                                                        return `${years} ${years === 1 ? 'año' : 'años'}`;
+                                                                    } else {
+                                                                        return `${years} ${years === 1 ? 'año' : 'años'} y ${remainingMonths} ${remainingMonths === 1 ? 'mes' : 'meses'}`;
                                                                     }
                                                                 }
-                                                            });
-
-                                                            if (totalMonths === 0) return 'Sin experiencia registrada';
-                                                            
-                                                            if (totalMonths < 12) {
-                                                                return `${totalMonths} ${totalMonths === 1 ? 'mes' : 'meses'}`;
-                                                            } else {
-                                                                const years = Math.floor(totalMonths / 12);
-                                                                const remainingMonths = totalMonths % 12;
-                                                                if (remainingMonths === 0) {
-                                                                    return `${years} ${years === 1 ? 'año' : 'años'}`;
-                                                                } else {
-                                                                    return `${years} ${years === 1 ? 'año' : 'años'} y ${remainingMonths} ${remainingMonths === 1 ? 'mes' : 'meses'}`;
-                                                                }
-                                                            }
-                                                        })()}
-                                                    </p>
-                                                </div>
-                                                <div className="text-yellow-600">
-                                                    📊
+                                                            })()}
+                                                        </p>
+                                                    </div>
+                                                    <div className="text-yellow-600">
+                                                        📊
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        )}
                                     </div>
                                 ) : (
-                                    // Fallback para compatibilidad con el sistema anterior
-                                    data.experience_start_date && (
-                                        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-500">Puesto o área</p>
-                                                <p className="text-sm">{getEnumLabel(enums.jobPosition, data.experience_job_position || 0)}</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-500">Periodo</p>
-                                                <p className="text-sm">
-                                                    {new Date(data.experience_start_date).toLocaleDateString('es-ES')}
-                                                    {data.experience_end_date ? 
-                                                        ` - ${new Date(data.experience_end_date).toLocaleDateString('es-ES')}` : 
-                                                        ' - Actualidad'
-                                                    }
-                                                </p>
-                                            </div>
-                                        </div>
-                                    )
+                                    <div className="text-center py-4 text-gray-500">
+                                        <p className="text-sm">No hay experiencias laborales registradas o completadas</p>
+                                        <p className="text-xs mt-1">Las experiencias deben tener un puesto seleccionado para mostrarse</p>
+                                    </div>
                                 )}
+                            </div>
+                        )}
+                        
+                        {/* Mostrar cuando NO tiene experiencia laboral */}
+                        {data.has_work_experience === false && (
+                            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                                <h4 className="font-medium mb-2">Experiencia laboral</h4>
+                                <div className="text-center py-2 text-gray-500">
+                                    <p className="text-sm">El aplicante indicó que no cuenta con experiencia laboral</p>
+                                </div>
                             </div>
                         )}
 
