@@ -417,13 +417,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         }
 
         if (Object.keys(validationErrors).length > 0) {
-            console.log('Errores de validación encontrados:', validationErrors);
-            console.log('Datos del formulario:', data);
             setErrors(validationErrors);
             return;
         }
 
-        console.log('Validaciones pasaron correctamente, continuando al siguiente paso');
         setErrors({});
         nextStep();
     };

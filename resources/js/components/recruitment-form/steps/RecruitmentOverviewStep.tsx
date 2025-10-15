@@ -17,9 +17,6 @@ interface RecruitmentOverviewStepProps {
 export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: RecruitmentOverviewStepProps) {
     const { previousStep } = useContext(StepperContext);
     
-    // Debug temporal - remover después
-    console.log('RecruitmentOverviewStep - data.has_work_experience:', data.has_work_experience);
-    console.log('RecruitmentOverviewStep - data.work_experiences:', data.work_experiences);
 
     const getEnumLabel = (enumArray: { id: number; name: string }[], value: number): string => {
         const item = enumArray?.find((enumItem) => enumItem.id === value);
@@ -194,14 +191,7 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                         {data.has_work_experience === true && (
                             <div className="mt-4 p-4 bg-yellow-50 rounded-lg">
                                 <h4 className="font-medium mb-4">Experiencia laboral</h4>
-                                
-                                {/* Debug info - remover después */}
-                                {process.env.NODE_ENV === 'development' && (
-                                    <div className="mb-2 text-xs text-gray-600">
-                                        Debug: has_work_experience={String(data.has_work_experience)}, 
-                                        work_experiences.length={data.work_experiences?.length || 0}
-                                    </div>
-                                )}
+
                                 
                                 {/* Mostrar múltiples experiencias */}
                                 {data.work_experiences && data.work_experiences.length > 0 ? (

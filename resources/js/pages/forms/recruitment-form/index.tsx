@@ -80,13 +80,12 @@ const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
     };
 
     const handleSubmit = () => {
-        console.log('Enviando datos del formulario:', data);
+      
         post(route('recruitment.store'), {
             onSuccess: () => {
                 // La página se redirigirá automáticamente al paso de confirmación
             },
             onError: (errors) => {
-                console.log('Errores en el formulario:', errors);
             },
         });
     };
