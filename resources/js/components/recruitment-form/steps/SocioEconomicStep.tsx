@@ -977,7 +977,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                                         onValueChange={(value: string) => updateWorkExperience(index, 'job_position', parseInt(value))}
                                                     >
                                                         <SelectTrigger className={errors[`work_experience_${index}_job_position`] ? 'border-red-500' : ''}>
-                                                            <SelectValue placeholder={`Experiencia ${index + 1} - Seleccione un puesto`} />
+                                                            <SelectValue placeholder={`-- Seleccione un puesto--`} />
                                                         </SelectTrigger>
                                                         <SelectContent>
                                                             {enums.jobPosition?.map((item) => (
