@@ -445,10 +445,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                             <div key={index} className="p-4 border rounded-lg space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <Label htmlFor={`member-name-${index}`}>Nombre</Label>
+                                        <Label htmlFor={`household_members[${index}][name]`}>Nombre</Label>
                                         <Input
-                                            id={`member-name-${index}`}
-                                            name={`member-name-${index}`}
+                                            id={`household_members[${index}][name]`}
+                                            name={`household_members[${index}][name]`}
                                             value={member.name}
                                             onChange={(e) => updateHouseholdMember(index, 'name', e.target.value)}
                                             placeholder="Nombre completo"
@@ -459,11 +459,11 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         )}
                                     </div>
                                     <div>
-                                        <Label htmlFor={`member-phone-${index}`}>Teléfono</Label>
+                                        <Label htmlFor={`household_members[${index}][phone]`}>Teléfono</Label>
                                         {countries && countries.length > 0 ? (
                                             <PhoneInput
-                                                id={`member-phone-${index}`}
-                                                name={`member-phone-${index}`}
+                                                id={`household_members[${index}][phone]`}
+                                                name={`household_members[${index}][phone]`}
                                                 autoComplete="tel"
                                                 type="tel"
                                                 value={member.phone || ''}
@@ -477,7 +477,8 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             />
                                         ) : (
                                             <Input
-                                                id={`member-phone-${index}`}
+                                                id={`household_members[${index}][phone]`}
+                                                name={`household_members[${index}][phone]`}
                                                 type="tel"
                                                 value={member.phone || ''}
                                                 onChange={(e) => updateHouseholdMember(index, 'phone', e.target.value)}
@@ -490,9 +491,9 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         )}
                                     </div>
                                     <div>
-                                        <Label htmlFor={`member-relationship-${index}`}>Relación</Label>
+                                        <Label htmlFor={`household_members[${index}][relationship]`}>Relación</Label>
                                         <Select
-                                            name={`member-relationship-${index}`}
+                                            name={`household_members[${index}][relationship]`}
                                             value={member.relationship && member.relationship > 0 ? member.relationship.toString() : ''}
                                             onValueChange={(value: string) => updateHouseholdMember(index, 'relationship', parseInt(value))}
 
@@ -515,10 +516,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
                                     <div>
                                         {/* Edad */}
-                                        <Label htmlFor={`member-age-${index}`}>Edad</Label>
+                                        <Label htmlFor={`household_members[${index}][age]`}>Edad</Label>
                                         <Input
-                                            id={`member-age-${index}`}
-                                            name={`member-age-${index}`}
+                                            id={`household_members[${index}][age]`}
+                                            name={`household_members[${index}][age]`}
                                             type="number"
                                             value={member.age || ''}
                                             onChange={(e) => updateHouseholdMember(index, 'age', parseInt(e.target.value) || 0)}
@@ -532,10 +533,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                     </div>
 
                                     <div>
-                                        <Label htmlFor={`member-income-${index}`}>Ingresos que aporta (USD)</Label>
+                                        <Label htmlFor={`household_members[${index}][income_contribution]`}>Ingresos que aporta (USD)</Label>
                                         <Input
-                                            id={`member-income-${index}`}
-                                            name={`member-income-${index}`}
+                                            id={`household_members[${index}][income_contribution]`}
+                                            name={`household_members[${index}][income_contribution]`}
                                             type="number"
                                             value={member.income_contribution || ''}
                                             onChange={(e) => updateHouseholdMember(index, 'income_contribution', parseFloat(e.target.value) || 0)}
@@ -612,7 +613,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                         {monthlyExpenses.map((expense, index) => (
                             <div key={index} className="flex gap-2 p-3 border rounded">
                                 <Select
-                                    name={`expense-type-${index}`}
+                                    name={`monthly_expenses[${index}][type]`}
                                     value={expense.type && expense.type > 0 ? expense.type.toString() : ''}
                                     onValueChange={(value) => updateMonthlyExpense(index, 'type', parseInt(value))}
                                 >
@@ -628,7 +629,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                     </SelectContent>
                                 </Select>
                                 <Input
-                                    name={`expense-amount-${index}`}
+                                    name={`monthly_expenses[${index}][amount]`}
                                     type="number"
                                     placeholder="Monto USD"
                                     value={expense.amount || ''}
@@ -856,7 +857,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         <div>
                                             <Label>Nombre de la empresa</Label>
                                             <Input
-                                                name="company_name"
+                                                name="employment[company_name]"
                                                 value={data.company_name || ''}
                                                 onChange={(e) => setData('company_name', e.target.value)}
                                                 placeholder="Nombre de la empresa"
@@ -893,7 +894,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         <div>
                                             <Label>Salario (USD)</Label>
                                             <Input
-                                                name="employment_income"
+                                                name="employment[income]"
                                                 type="number"
                                                 value={data.employment_income || ''}
                                                 onChange={(e) => setData('employment_income', parseFloat(e.target.value) || 0)}
@@ -989,9 +990,9 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                                                 {/* Puesto */}
                                                 <div>
-                                                    <Label htmlFor={`experience_job_position_${index}`}>Puesto</Label>
+                                                    <Label htmlFor={`work_experiences[${index}][job_position]`}>Puesto</Label>
                                                     <Select
-                                                        name={`experience_job_position_${index}`}
+                                                        name={`work_experiences[${index}][job_position]`}
                                                         value={experience.job_position > 0 ? experience.job_position.toString() : ''}
                                                         onValueChange={(value: string) => updateWorkExperience(index, 'job_position', parseInt(value))}
                                                     >
@@ -1013,10 +1014,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
                                                 {/* Fecha de inicio */}
                                                 <div>
-                                                    <Label htmlFor={`experience_start_date_${index}`}>Fecha de inicio</Label>
+                                                    <Label htmlFor={`work_experiences[${index}][start_date]`}>Fecha de inicio</Label>
                                                     <Input
-                                                        id={`experience_start_date_${index}`}
-                                                        name={`experience_start_date_${index}`}
+                                                        id={`work_experiences[${index}][start_date]`}
+                                                        name={`work_experiences[${index}][start_date]`}
                                                         type="date"
                                                         value={experience.start_date || ''}
                                                         onChange={(e) => updateWorkExperience(index, 'start_date', e.target.value)}
@@ -1031,10 +1032,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
                                                 {/* Fecha de fin */}
                                                 <div>
-                                                    <Label htmlFor={`experience_end_date_${index}`}>Fecha de fin</Label>
+                                                    <Label htmlFor={`work_experiences[${index}][end_date]`}>Fecha de fin</Label>
                                                     <Input
-                                                        id={`experience_end_date_${index}`}
-                                                        name={`experience_end_date_${index}`}
+                                                        id={`work_experiences[${index}][end_date]`}
+                                                        name={`work_experiences[${index}][end_date]`}
                                                         type="date"
                                                         value={experience.end_date || ''}
                                                         onChange={(e) => updateWorkExperience(index, 'end_date', e.target.value)}
@@ -1164,7 +1165,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             <span className="flex-1">{item.name}</span>
                                             {selectedBonusCategories.includes(item.id) && (
                                                 <Input
-                                                    name={`bonus-amount-${item.id}`}
+                                                    name={`bonus_amounts[${item.id}]`}
                                                     type="number"
                                                     placeholder="Monto USD"
                                                     min="0"
@@ -1264,7 +1265,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             <span className="flex-1">{item.name}</span>
                                             {selectedPracticeBonusCategories.includes(item.id) && (
                                                 <Input
-                                                    name={`practice-bonus-amount-${item.id}`}
+                                                    name={`practice_bonus_amounts[${item.id}]`}
                                                     type="number"
                                                     placeholder="Monto USD"
                                                     min="0"
@@ -1325,10 +1326,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                             <div key={index} className="p-4 border rounded-lg space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <Label htmlFor={`job-offer-company-${index}`}>Nombre de la empresa</Label>
+                                        <Label htmlFor={`job_offers[${index}][company_name]`}>Nombre de la empresa</Label>
                                         <Input
-                                            id={`job-offer-company-${index}`}
-                                            name={`job-offer-company-${index}`}
+                                            id={`job_offers[${index}][company_name]`}
+                                            name={`job_offers[${index}][company_name]`}
                                             value={offer.company_name}
                                             onChange={(e) => updateJobOffer(index, 'company_name', e.target.value)}
                                             placeholder="Ingrese el nombre de la empresa"
@@ -1340,10 +1341,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                     </div>
 
                                     <div>
-                                        <Label htmlFor={`salary-expectation-${index}`}>Salario promedio(USD)</Label>
+                                        <Label htmlFor={`job_offers[${index}][salary_expectation]`}>Salario promedio(USD)</Label>
                                         <Input
-                                            id={`salary-expectation-${index}`}
-                                            name={`salary-expectation-${index}`}
+                                            id={`job_offers[${index}][salary_expectation]`}
+                                            name={`job_offers[${index}][salary_expectation]`}
                                             type="number"
                                             value={offer.salary_expectation || ''}
                                             onChange={(e) => updateJobOffer(index, 'salary_expectation', e.target.value)}

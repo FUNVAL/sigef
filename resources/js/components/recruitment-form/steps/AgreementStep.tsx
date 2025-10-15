@@ -162,12 +162,12 @@ export function AgreementStep({ request }: AgreementStepProps) {
 
                                 {/* Agreement checkbox */}
                                 <Label
-                                    htmlFor={`checkbox-${question.id}`}
+                                    htmlFor={`agreements[${question.id}]`}
                                     className="flex items-center gap-3 p-4 rounded-lg border bg-white cursor-pointer select-none"
                                 >
                                     <Checkbox
-                                        id={`checkbox-${question.id}`}
-                                        name={question.id}
+                                        id={`agreements[${question.id}]`}
+                                        name={`agreements[${question.id}]`}
                                         checked={isAccepted}
                                         onCheckedChange={(checked) =>
                                             handleAgreementChange(question.id, checked as boolean)

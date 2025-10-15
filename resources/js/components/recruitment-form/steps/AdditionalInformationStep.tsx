@@ -113,9 +113,9 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                     <CardContent>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
-                                <Label htmlFor="start_month">Mes de inicio</Label>
+                                <Label htmlFor="additional_info[start_month]">Mes de inicio</Label>
                                 <Select
-                                    name="start_month"
+                                    name="additional_info[start_month]"
                                     value={data.start_month.toString()}
                                     onValueChange={(value) => setData('start_month', parseInt(value))}
                                 >
@@ -136,9 +136,9 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                             </div>
 
                             <div>
-                                <Label htmlFor="start_year">Año</Label>
+                                <Label htmlFor="additional_info[start_year]">Año</Label>
                                 <Select
-                                    name="start_year"
+                                    name="additional_info[start_year]"
                                     value={data.start_year.toString()}
                                     onValueChange={(value) => setData('start_year', parseInt(value))}
                                 >
@@ -177,8 +177,8 @@ export function AdditionalInformationStep({ request }: AdditionalInformationStep
                                         Sube tu foto de entrevista (JPG, PNG, máximo 2MB)
                                     </Label>
                                     <Input
-                                        id="interview_photo"
-                                        name="interview_photo"
+                                        id="additional_info[interview_photo]"
+                                        name="additional_info[interview_photo]"
                                         type="file"
                                         accept="image/jpeg,image/jpg,image/png"
                                         onChange={handleFileChange}
