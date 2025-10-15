@@ -48,6 +48,7 @@ const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
         practice_bonus_amounts: [],
 
         // Experiencias laborales
+        has_work_experience: false,
         work_experiences: [],
         job_offers: [],
 

@@ -2,8 +2,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Enums } from '@/types/global';
-import { RecruitmentFormData, HouseholdExpense, WorkExperience } from '@/types/recruitment';
-import { ArrowLeft, Check, Users, Heart, FileText, Calendar, Camera } from 'lucide-react';
+import { RecruitmentFormData, HouseholdExpense, WorkExperience, JobOffer } from '@/types/recruitment';
+import { ArrowLeft, Check, Users, Heart, FileText, Calendar, Camera, Building } from 'lucide-react';
 import { useContext } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
@@ -329,6 +329,54 @@ export function RecruitmentOverviewStep({ data, enums, onSubmit, processing }: R
                         )}
                     </CardContent>
                 </Card>
+
+                {/* Ofertas Laborales */}
+                {data.job_offers && data.job_offers.length > 0 && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
+                                <Building className="h-5 w-5" />
+                                Ofertas Laborales para el Estudiante
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-3">
+                                {data.job_offers.map((offer, index) => (
+                                    <div key={index} className="flex justify-between items-center p-3 bg-purple-50 rounded-lg border border-purple-200">
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium text-purple-800">
+                                                {offer.company_name || 'Empresa no especificada'}
+                                            </p>
+                                            <p className="text-xs text-purple-600">Empresa de interés #{index + 1}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-sm font-medium text-purple-700">
+                                                ${(offer.salary_expectation || 0).toFixed(2)} USD
+                                            </p>
+                                            <p className="text-xs text-purple-600">Salario esperado</p>
+                                        </div>
+                                    </div>
+                                ))}
+                                
+                                {/* Estadísticas de ofertas laborales */}
+                                <div className="mt-4 p-3 bg-purple-100 rounded-lg border border-purple-300">
+                                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                        <div>
+                                            <p className="text-sm font-semibold text-purple-800">Total de empresas de interés:</p>
+                                            <p className="text-lg font-bold text-purple-900">{data.job_offers.length} empresas</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-purple-800">Promedio salarial esperado:</p>
+                                            <p className="text-lg font-bold text-purple-900">
+                                                ${(data.job_offers.reduce((total, offer) => total + (offer.salary_expectation || 0), 0) / data.job_offers.length).toFixed(2)} USD
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Acuerdos */}
                 <Card>

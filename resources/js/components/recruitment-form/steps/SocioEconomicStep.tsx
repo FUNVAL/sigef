@@ -141,11 +141,11 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
     // Sincronizar workExperiences con data.work_experiences
     useEffect(() => {
-        if (data.work_experiences && data.work_experiences.length > 0) {
-            setWorkExperiences(data.work_experiences);
-        } else {
-            // Inicializar con una experiencia vacía por defecto si has_work_experience es true
-            if (data.has_work_experience) {
+        if (data.has_work_experience === true) {
+            if (data.work_experiences && data.work_experiences.length > 0) {
+                setWorkExperiences(data.work_experiences);
+            } else {
+                // Inicializar con una experiencia vacía por defecto si has_work_experience es true
                 const defaultExperience: WorkExperience = {
                     job_position: 0,
                     start_date: '',
@@ -154,6 +154,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 setWorkExperiences([defaultExperience]);
                 setData('work_experiences', [defaultExperience]);
             }
+        } else if (data.has_work_experience === false) {
+            // Limpiar experiencias cuando selecciona "No"
+            setWorkExperiences([]);
+            setData('work_experiences', []);
         }
     }, [data.has_work_experience]);
 
@@ -347,7 +351,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             if (!member.name.trim()) {
                 validationErrors[`household_member_${index}_name`] = 'El nombre es requerido';
             }
-            if (!member.relationship) {
+            if (!member.relationship || member.relationship === 0) {
                 validationErrors[`household_member_${index}_relationship`] = 'La relación es requerida';
             }
             if (member.phone && member.phone.length < 3) {
@@ -357,15 +361,15 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
         // Note: Removed monthly income validation as we're now tracking expenses instead
 
-        if (!data.device_type) {
+        if (!data.device_type || data.device_type === 0) {
             validationErrors.device_type = 'El tipo de dispositivo es requerido';
         }
 
-        if (!data.housing_type) {
+        if (!data.housing_type || data.housing_type === 0) {
             validationErrors.housing_type = 'El tipo de vivienda es requerido';
         }
 
-        if (data.has_employment && !data.employment_type) {
+        if (data.has_employment && (!data.employment_type || data.employment_type === 0)) {
             validationErrors.employment_type = 'El tipo de empleo es requerido';
         }
 
@@ -373,7 +377,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             if (!data.company_name?.trim()) {
                 validationErrors.company_name = 'El nombre de la empresa es requerido';
             }
-            if (!data.job_position) {
+            if (!data.job_position || data.job_position === 0) {
                 validationErrors.job_position = 'El puesto es requerido';
             }
             if (!data.employment_income || data.employment_income <= 0) {
@@ -392,7 +396,9 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         }
 
         // Validar experiencia laboral
-        if (data.has_work_experience) {
+        if (data.has_work_experience === undefined || data.has_work_experience === null) {
+            validationErrors.has_work_experience = 'Debe seleccionar si cuenta con experiencia laboral';
+        } else if (data.has_work_experience === true) {
             if (workExperiences.length === 0) {
                 validationErrors.work_experiences = 'Debe agregar al menos una experiencia laboral';
             } else {
@@ -415,10 +421,13 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         }
 
         if (Object.keys(validationErrors).length > 0) {
+            console.log('Errores de validación encontrados:', validationErrors);
+            console.log('Datos del formulario:', data);
             setErrors(validationErrors);
             return;
         }
 
+        console.log('Validaciones pasaron correctamente, continuando al siguiente paso');
         setErrors({});
         nextStep();
     };
@@ -958,6 +967,10 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 No
                             </label>
                         </div>
+
+                        {errors.has_work_experience && (
+                            <p className="text-sm text-red-500">{errors.has_work_experience}</p>
+                        )}
 
                         {data.has_work_experience && (
                             <div className="space-y-6">
