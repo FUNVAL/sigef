@@ -966,7 +966,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
                                 {/* Lista de experiencias */}
                                 <div className="border border-gray-200 rounded-lg p-4">
-                                    <div className="space-y-3">
+                                    <div className="grid grid-cols-2 gap-3">
                                         {workExperiences.map((experience, index) => (
                                             <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                                                 {/* Selector de experiencia */}
