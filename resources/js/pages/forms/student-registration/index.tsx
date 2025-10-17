@@ -83,9 +83,16 @@ const StudentRegistration = ({ countries, courses, enums }: StudentRegistrationP
 
         // Geographic Information
         province_state: '',
+        address: '',
 
         // Driver License Information
         has_driver_license: false,
+
+        // College Status Information
+        college_status: 0,
+
+        // Facebook Profile
+        facebook_profile: '',
     });
 
     const request = {

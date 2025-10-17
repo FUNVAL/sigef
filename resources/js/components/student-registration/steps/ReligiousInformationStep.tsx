@@ -1,3 +1,4 @@
+import { TieIcon } from '@/components/icons/TieIcon';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,7 +13,7 @@ import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
 import { StudentRegistrationRequest } from '@/types/student-registration';
 import { usePage } from '@inertiajs/react';
-import { ArrowLeft, Church, Heart, Users } from 'lucide-react';
+import { ArrowLeft, BookOpen, Users } from 'lucide-react';
 import { useContext, useState } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
@@ -25,7 +26,9 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
     const { nextStep, previousStep } = useContext(StepperContext);
     const { data, setData } = request;
     const { enums } = usePage<{ enums: Enums }>().props;
+    const { translations } = usePage<{ translations: Translation }>().props;
     const { ui } = usePage<Translation>().props;
+    const t = translations.student_registration;
     const [errors, setErrors] = useState<Record<string, string>>({});
     const { stakes } = useFilteredStakes(data.country_id);
 
@@ -67,19 +70,20 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
         const validationErrors: Record<string, string> = {};
 
         if (data.member_status === undefined || data.member_status === null) {
-            validationErrors.member_status = 'Debe especificar su estado de membresía';
+            validationErrors.member_status = t.validation.is_active_member_required;
         }
-        if (data.is_returned_missionary === undefined) validationErrors.is_returned_missionary = 'Debe especificar si es misionero retornado';
-        if (data.temple_status === null || data.temple_status === undefined)
-            validationErrors.temple_status = 'Debe especificar si está sellado en el templo';
-        if (!data.stake_id) validationErrors.stake_id = 'Debe seleccionar su estaca/distrito/misión';
+        if (data.is_returned_missionary === undefined) validationErrors.is_returned_missionary = t.validation.is_returned_missionary_required;
+        if (data.temple_status === null || data.temple_status === undefined) validationErrors.temple_status = t.validation.temple_status_required;
+        if (!data.stake_id) validationErrors.stake_id = t.validation.stake_required;
 
         // Validación de cédula de miembro (solo si es miembro)
         if (data.member_status !== 0) {
             if (!data.member_number?.trim()) {
-                validationErrors.member_number = 'El número de cédula de miembro es obligatorio';
+                validationErrors.member_number = (t.validation as any)?.member_number_required || 'El número de cédula de miembro es obligatorio';
             } else if (!isValidMemberNumber(data.member_number)) {
-                validationErrors.member_number = 'El número de cédula debe tener el formato completo: XXX-XXXX-XXXX (3-4-4 caracteres)';
+                validationErrors.member_number =
+                    (t.validation as any)?.member_number_format ||
+                    'El número de cédula debe tener el formato completo: XXX-XXXX-XXXX (3-4-4 caracteres)';
             }
         }
 
@@ -87,10 +91,11 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
         if (data.is_returned_missionary) {
             if (!data.mission_served?.trim()) {
-                validationErrors.mission_served = 'Debe especificar en qué misión sirvió';
+                validationErrors.mission_served = (t.validation as any)?.mission_served_required || 'Debe especificar en qué misión sirvió';
             }
             if (!data.mission_end_year) {
-                validationErrors.mission_end_year = 'Debe especificar el año en que finalizó la misión';
+                validationErrors.mission_end_year =
+                    (t.validation as any)?.mission_end_year_required || 'Debe especificar el año en que finalizó la misión';
             }
         }
 
@@ -108,20 +113,24 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
     return (
         <Card className="mx-auto w-full max-w-4xl overflow-hidden border-0 pt-0 shadow-2xl">
-            <StepsHeader title="Información Eclesiástica" subtitle="Complete su información de membresía" />
+            <StepsHeader title="Información Eclesiástica" subtitle={t.steps.religious_information.subtitle} />
 
             <CardContent className="space-y-6 p-3 sm:space-y-8 sm:p-6 md:p-8">
                 <form className="space-y-8" onSubmit={handleSubmit} noValidate>
                     {/* Membresía activa */}
                     <div className="space-y-4">
                         <div className="mb-4 flex items-center gap-2">
-                            <Church className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
-                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Membresía de la Iglesia</h3>
+                            <BookOpen className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
+                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">
+                                {t.sections?.church_membership || 'Membresía de la Iglesia'}
+                            </h3>
                         </div>
 
                         {/* ¿Es miembro activo? */}
                         <div className="space-y-3">
-                            <Label className="text-base font-medium">¿Es un miembro activo de la iglesia?</Label>
+                            <Label className="text-base font-medium">
+                                {t.fields?.is_active_member || '¿Es un miembro activo de La Iglesia de Jesucristo de los Santos de los Últimos Días?'}
+                            </Label>
                             <RadioGroup
                                 value={data.member_status?.toString() || ''}
                                 onValueChange={(value) => {
@@ -143,7 +152,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                 </div>
                                 <div className="flex items-center space-x-2">
                                     <RadioGroupItem value="0" id="not-member" />
-                                    <Label htmlFor="not-member">No soy miembro</Label>
+                                    <Label htmlFor="not-member">{(t as any).labels?.not_member || 'Aún no soy miembro'}</Label>
                                 </div>
                             </RadioGroup>
                             {errors.member_status && <p className="text-sm text-red-500">{errors.member_status}</p>}
@@ -154,13 +163,13 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 {/* Número de cédula de miembro */}
                                 <div>
-                                    <Label htmlFor="member_number">Número de Cédula de Miembro</Label>
+                                    <Label htmlFor="member_number">{t.fields?.member_certificate_number || 'Número de Cédula de Miembro'}</Label>
                                     <Input
                                         id="member_number"
                                         name="member_number"
                                         value={data.member_number || ''}
                                         onChange={handleMemberNumberChange}
-                                        placeholder="ABC-1234-WXYZ"
+                                        placeholder={t.placeholders?.member_certificate_number || 'ABC-1234-WXYZ'}
                                         maxLength={13}
                                         className={`font-mono ${data.member_number && !isValidMemberNumber(data.member_number) ? 'border-orange-300' : ''}`}
                                         required={data.member_status !== 0}
@@ -174,7 +183,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                                 {/* Año de bautismo */}
                                 <div>
-                                    <Label htmlFor="baptism_year">¿En qué año se bautizó?</Label>
+                                    <Label htmlFor="baptism_year">{t.fields?.baptism_year || '¿En qué año se bautizó?'}</Label>
                                     <Select
                                         value={data.baptism_year?.toString() || ''}
                                         onValueChange={(value) => setData('baptism_year', Number(value))}
@@ -182,7 +191,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                         required={data.member_status !== 0}
                                     >
                                         <SelectTrigger id="baptism_year">
-                                            <SelectValue placeholder="Seleccione el año de bautismo" />
+                                            <SelectValue placeholder={t.placeholders?.baptism_year || 'Seleccione el año de bautismo'} />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="0">No recuerdo</SelectItem>
@@ -201,13 +210,15 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                     {/* Información misional */}
                     <div className="space-y-4">
                         <div className="mb-4 flex items-center gap-2">
-                            <Heart className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
-                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Servicio Misional</h3>
+                            <TieIcon className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
+                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">
+                                {t.sections?.missionary_service || 'Servicio Misional'}
+                            </h3>
                         </div>
 
                         {/* ¿Es misionero retornado? */}
                         <div className="space-y-3">
-                            <Label className="text-base font-medium">¿Es misionero retornado? </Label>
+                            <Label className="text-base font-medium">{t.fields?.is_returned_missionary || '¿Es misionero retornado?'} </Label>
                             <RadioGroup
                                 value={data.is_returned_missionary !== undefined ? data.is_returned_missionary.toString() : ''}
                                 onValueChange={(value) => setData('is_returned_missionary', value === 'true')}
@@ -230,20 +241,20 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                         {data.is_returned_missionary && (
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div>
-                                    <Label htmlFor="mission_served">¿En qué misión sirvió?</Label>
+                                    <Label htmlFor="mission_served">{t.fields?.mission_served || '¿En qué misión sirvió?'}</Label>
                                     <Input
                                         id="mission_served"
                                         name="mission_served"
                                         value={data.mission_served || ''}
                                         onChange={(e) => setData('mission_served', e.target.value)}
-                                        placeholder="Ej: Misión México Ciudad de México Norte"
+                                        placeholder={t.placeholders?.mission_served || 'Ej: Misión México Ciudad de México Norte'}
                                         required={data.is_returned_missionary}
                                     />
                                     {errors.mission_served && <p className="text-sm text-red-500">{errors.mission_served}</p>}
                                 </div>
 
                                 <div>
-                                    <Label htmlFor="mission_end_year">¿Año en que finalizó la misión?</Label>
+                                    <Label htmlFor="mission_end_year">{t.fields?.mission_end_year || '¿Año en que finalizó la misión?'}</Label>
                                     <Select
                                         value={data.mission_end_year?.toString() || ''}
                                         onValueChange={(value) => setData('mission_end_year', Number(value))}
@@ -251,7 +262,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                         required={data.is_returned_missionary}
                                     >
                                         <SelectTrigger id="mission_end_year">
-                                            <SelectValue placeholder="Seleccione el año" />
+                                            <SelectValue placeholder={t.placeholders?.mission_end_year || 'Seleccione el año'} />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {years.map((year) => (
@@ -268,7 +279,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
 
                         {/* Estado del templo */}
                         <div className="space-y-3">
-                            <Label className="text-base font-medium">Sellado en el Templo</Label>
+                            <Label className="text-base font-medium">{t.fields?.temple_status || 'Sellado en el Templo'}</Label>
                             <RadioGroup
                                 value={data.temple_status?.toString() || ''}
                                 onValueChange={(value) => setData('temple_status', value === 'true')}
@@ -296,37 +307,31 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                     <div className="space-y-4">
                         <div className="mb-4 flex items-center gap-2">
                             <Users className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
-                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">Organización Eclesiástica</h3>
+                            <h3 className="text-lg font-semibold text-[rgb(46_131_242_/_1)]">
+                                {t.sections?.ecclesiastical_info || 'Organización Eclesiástica'}
+                            </h3>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Llamamiento actual */}
                             <div>
-                                <Label htmlFor="current_calling">Llamamiento Actual</Label>
-                                <Input
-                                    id="current_calling"
-                                    name="current_calling"
-                                    value={data.current_calling || ''}
-                                    onChange={(e) => setData('current_calling', e.target.value)}
-                                    placeholder="Ej: Maestro de Escuela Dominical"
-                                />
-                            </div>
-                            {/* País */}
-                            <div>
                                 <SearchableSelect
-                                    data={countries}
-                                    name="country_id"
-                                    id="country_id"
-                                    value={data.country_id?.toString() || ''}
-                                    onValueChange={(value) => setData('country_id', Number(value))}
-                                    label="País"
-                                    required
-                                    placeholder="Seleccione su país"
+                                    data={[
+                                        { id: 1, name: 'Obispo' },
+                                        { id: 2, name: 'Presidente de estaca' },
+                                        { id: 3, name: 'Maestro de Escuela Dominical' },
+                                        { id: 4, name: 'Presidenta de la Sociedad de Socorro' },
+                                        { id: 5, name: 'Presidente del cuórum de élderes' },
+                                    ]}
+                                    name="current_calling"
+                                    id="current_calling"
+                                    value={data.current_calling || ''}
+                                    onValueChange={(value) => setData('current_calling', value)}
+                                    label={t.fields?.current_calling || 'Llamamiento Actual'}
+                                    placeholder={t.placeholders?.current_calling || 'Busque y seleccione su llamamiento'}
+                                    required={false}
                                 />
-                                {errors.country_id && <p className="text-sm text-red-500">{errors.country_id}</p>}
                             </div>
-
-                            {/* Barrio o rama */}
 
                             {/* Estaca */}
                             <div>
@@ -336,35 +341,41 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                     id="stake_id"
                                     value={data.stake_id?.toString() || ''}
                                     onValueChange={(value) => setData('stake_id', Number(value))}
-                                    label="Estaca, distrito o misión a la que pertenece"
+                                    label={t.fields?.stake || 'Estaca, distrito o misión a la que pertenece'}
                                     disabled={!data.country_id}
-                                    placeholder={data.country_id ? 'Seleccione su estaca/distrito/misión' : 'Primero seleccione un país'}
+                                    placeholder={
+                                        data.country_id
+                                            ? t.placeholders?.select_stake || 'Seleccione su estaca/distrito/misión'
+                                            : 'Primero seleccione un país'
+                                    }
                                     required
                                 />
                                 {errors.stake_id && <p className="text-sm text-red-500">{errors.stake_id}</p>}
                             </div>
 
                             <div>
-                                <Label htmlFor="ward_branch">Barrio o Rama a la que Pertenece</Label>
+                                <Label htmlFor="ward_branch">{t.fields?.ward_branch || 'Barrio o Rama a la que Pertenece'}</Label>
                                 <Input
                                     id="ward_branch"
                                     name="ward_branch"
                                     value={data.ward_branch || ''}
                                     onChange={(e) => setData('ward_branch', e.target.value)}
-                                    placeholder="Ej: Barrio Centro, Rama San Juan"
+                                    placeholder={t.placeholders?.ward_branch || 'Ej: Barrio Centro, Rama San Juan'}
                                     required
                                 />
                             </div>
 
                             {/*Nombre presidente cuorum / presidenta sociedad de socorro*/}
                             <div>
-                                <Label htmlFor="auxiliar_president">Nombre del Presidente(a) de Cuorum / SOC</Label>
+                                <Label htmlFor="auxiliar_president">
+                                    {(t.fields as any)?.auxiliar_president || 'Nombre Presidente(a) de Cuorum / SOC'}
+                                </Label>
                                 <Input
                                     id="auxiliar_president"
                                     name="auxiliar_president"
                                     value={data.auxiliar_president || ''}
                                     onChange={(e) => setData('auxiliar_president', e.target.value)}
-                                    placeholder="Nombre del Presidente(a) de Cuorum / SOC"
+                                    placeholder={(t.placeholders as any)?.auxiliar_president || 'Nombre del Presidente(a) de Cuorum / SOC'}
                                     autoComplete="given-name"
                                     required
                                 />
@@ -372,7 +383,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                             </div>
 
                             <div>
-                                <Label htmlFor="auxiliary_president_phone">Teléfono</Label>
+                                <Label htmlFor="auxiliary_president_phone">{(t.fields as any)?.auxiliary_president_phone || 'Teléfono'}</Label>
                                 <PhoneInput
                                     id="auxiliary_president_phone"
                                     name="auxiliary_president_phone"
@@ -380,7 +391,7 @@ export function ReligiousInformationStep({ countries, request }: ReligiousInform
                                     type="tel"
                                     value={data.auxiliary_president_phone?.toString() || ''}
                                     onInputChange={(value: string) => setData('auxiliary_president_phone', value)}
-                                    placeholder={`Tu número de teléfono`}
+                                    placeholder={(t.placeholders as any)?.auxiliary_president_phone || 'Tu número de teléfono'}
                                     className="max-w-[25rem] rounded-l-none"
                                     countries={countries}
                                     selectedCountryId={data.country_id}

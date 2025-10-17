@@ -101,8 +101,28 @@ const agreementQuestions: AgreementQuestion[] = [
 
 export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStepProps) => {
     const { nextStep, previousStep } = useContext(StepperContext);
+    const { translations } = usePage<{ translations: Translation }>().props;
     const { ui } = usePage<Translation>().props;
-    const [currentAgreementIndex, setCurrentAgreementIndex] = useState(0);
+    const t = translations.student_registration;
+    // Determinar el índice inicial basado en qué acuerdos ya están aceptados
+    const getInitialAgreementIndex = () => {
+        const acceptedStates = [
+            data.agreement_terms_accepted,
+            data.agreement_privacy_accepted,
+            data.agreement_conduct_accepted,
+            data.agreement_health_accepted,
+        ];
+
+        // Encontrar el primer acuerdo no aceptado
+        const firstNotAccepted = acceptedStates.findIndex((accepted) => !accepted);
+
+        // Si todos están aceptados, empezar desde el primero para permitir navegación
+        // Si ninguno está aceptado, mostrar el primero (índice 0)
+        // Si algunos están aceptados, mostrar el primero no aceptado
+        return firstNotAccepted === -1 ? 0 : firstNotAccepted;
+    };
+
+    const [currentAgreementIndex, setCurrentAgreementIndex] = useState(() => getInitialAgreementIndex());
     const [readingProgress, setReadingProgress] = useState<Record<string, { isReading: boolean; timeLeft: number; canAgree: boolean }>>({});
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
@@ -175,8 +195,10 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
         }
     };
 
-    const handleFinalSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleFinalSubmit = (e?: React.FormEvent) => {
+        if (e) {
+            e.preventDefault();
+        }
 
         // Validation
         const newValidationErrors: Record<string, string> = {};
@@ -225,7 +247,10 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
 
     return (
         <Card className="mx-auto w-full max-w-4xl overflow-hidden border-0 pt-0 shadow-2xl">
-            <StepsHeader title={`Acuerdo ${currentAgreementIndex + 1} de ${agreementQuestions.length}`} subtitle={currentAgreement.title} />
+            <StepsHeader
+                title={`${(t as any).agreements?.title_prefix || 'Acuerdo'} ${currentAgreementIndex + 1} ${(t as any).agreements?.title_suffix || 'de'} ${agreementQuestions.length}`}
+                subtitle={currentAgreement.title}
+            />
 
             <CardContent className="space-y-6 p-3 sm:space-y-8 sm:p-6 md:p-8">
                 {/* Indicador de progreso */}
@@ -250,7 +275,7 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
                     ))}
                 </div>
 
-                <form className="space-y-6" onSubmit={handleFinalSubmit} noValidate>
+                <form className="space-y-6" noValidate>
                     <div className="space-y-4">
                         <div className="mb-4 flex items-center gap-2">
                             <currentAgreement.icon className="h-5 w-5 text-[rgb(46_131_242_/_1)]" />
@@ -272,7 +297,7 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
                                         className="flex items-center gap-2"
                                     >
                                         <Clock className="h-4 w-4" />
-                                        Comenzar Lectura ({currentAgreement.minReadTime}s)
+                                        {(t as any).agreements?.read_timer || 'Comenzar Lectura'} ({currentAgreement.minReadTime}s)
                                     </Button>
                                 ) : (
                                     <div className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
@@ -483,7 +508,8 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
                             </Button>
                         ) : (
                             <Button
-                                type="submit"
+                                type="button"
+                                onClick={handleFinalSubmit}
                                 disabled={!allAgreementsAccepted}
                                 size="lg"
                                 className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90 disabled:opacity-50"
@@ -497,8 +523,8 @@ export const AgreementStep = ({ data, onDataChange, errors = {} }: AgreementStep
                     <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-center">
                         <p className="text-sm text-blue-800">
                             {allAgreementsAccepted
-                                ? '✅ Todos los acuerdos han sido aceptados'
-                                : `Progreso: ${[data.agreement_terms_accepted, data.agreement_privacy_accepted, data.agreement_conduct_accepted, data.agreement_health_accepted].filter(Boolean).length} de ${agreementQuestions.length} acuerdos aceptados`}
+                                ? (t as any).agreements?.all_agreements_accepted || '✅ Todos los acuerdos han sido aceptados'
+                                : `${(t as any).agreements?.progress_status || 'Progreso:'} ${[data.agreement_terms_accepted, data.agreement_privacy_accepted, data.agreement_conduct_accepted, data.agreement_health_accepted].filter(Boolean).length} ${(t as any).agreements?.title_suffix || 'de'} ${agreementQuestions.length} ${(t as any).agreements?.agreements_accepted || 'acuerdos aceptados'}`}
                         </p>
                     </div>
                 </form>
