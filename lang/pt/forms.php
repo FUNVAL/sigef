@@ -21,6 +21,7 @@ return [
                 'email' => 'E-mail:',
                 'marital_status' => 'Estado Civil:',
                 'served_mission' => 'Serviu uma missão?:',
+                'has_children' => 'Você tem filhos?:',
                 'currently_working' => 'Está trabalhando atualmente?:',
                 'job_type_preference' => 'Tipo de emprego que procura:',
                 'available_full_time' => 'Disponibilidade para trabalhar tempo integral:',

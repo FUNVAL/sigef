@@ -17,6 +17,7 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
         phone,
         additional_phone,
         served_mission,
+        has_children,
         currently_working,
         available_full_time,
         created_at,
@@ -49,6 +50,11 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
     const getWorkingStatusDisplay = () => {
         if (currently_working === null) return 'No especificado';
         return currently_working ? 'Sí' : 'No';
+    };
+
+    const getHasChildrenDisplay = () => {
+        if (has_children === null || has_children === undefined) return 'No especificado';
+        return has_children ? 'Sí' : 'No';
     };
 
     const getAvailabilityDisplay = () => {
@@ -124,12 +130,24 @@ const PreInscriptionOverview = ({ preInscription }: { preInscription: PreInscrip
                                 <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Teléfono:</Label>
                                 <p className="block text-sm text-gray-900 dark:text-gray-100">{phone}</p>
                             </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className='flex flex-col'>
+                                <Label className="font-bold font-mono text-lg text-gray-800 dark:text-blue-100">
+                                    ¿Tiene hijos?
+                                </Label>
+                                <Badge variant={getVariant(has_children)}>
+                                    {getHasChildrenDisplay()}
+                                </Badge>
+                            </div>
                             {additional_phone && (
                                 <div>
                                     <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Teléfono adicional:</Label>
                                     <p className="block text-sm text-gray-900 dark:text-gray-100">{additional_phone}</p>
                                 </div>
                             )}
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <Label className="font-mono text-lg font-bold text-gray-800 dark:text-blue-100">Curso seleccionado:</Label>
                                 <p className="block text-sm text-gray-900 dark:text-gray-100">{course?.name}</p>

@@ -755,18 +755,6 @@ class PreInscriptionController extends Controller
         $statusId = $this->getEnumValue($preInscription->status);
         $responsablePhone = optional(optional($preInscription->stake)->user)->contact_phone_1;
 
-        // Caso: Preinscripción pendiente
-        if ($statusId == RequestStatusEnum::PENDING->value) {
-            $message = str_replace('[**]', $responsablePhone, __('common.messages.duplicates.pending'));
-            return [
-                'exists' => true,
-                'message' => [
-                    'type' => 'rejected',
-                    'message' => $message
-                ]
-            ];
-        }
-
         // Caso: Preinscripción rechazada hace más de 6 meses (reintento)
         if ($moreThanSixMonths && $statusId == RequestStatusEnum::REJECTED->value) {
             return $this->handleRetryAfterSixMonths($preInscription, $request);
@@ -777,12 +765,13 @@ class PreInscriptionController extends Controller
             return $this->handleRejectedPreInscription($preInscription);
         }
 
-        // Caso por defecto: email ya existe
+
+        $message = str_replace('[**]', $responsablePhone, __('common.messages.duplicates.pending'));
         return [
             'exists' => true,
             'message' => [
                 'type' => 'rejected',
-                'message' => __('common.messages.error.email_exists')
+                'message' => $message
             ]
         ];
     }
@@ -816,13 +805,37 @@ class PreInscriptionController extends Controller
         ];
     }
 
-    /**
+        /**
      * Maneja preinscripción previamente rechazada
      */
     private function handleRejectedPreInscription($preInscription): array
     {
         $genderId = $this->getEnumValue($preInscription->gender);
+        $declinedReasonId = $this->getEnumValue($preInscription->declined_reason);
 
+        // Si fue rechazada por ser futuro misionero/a, mostrar mensaje de misión
+        if ($declinedReasonId == ReferenceStatusEnum::FUTURE_MISSIONARY->value) {
+            $missionEligibilityCheck = $this->missionEligibility(
+                $preInscription->age,
+                $this->getEnumValue($preInscription->marital_status),
+                $this->getEnumValue($preInscription->served_mission),
+                $preInscription->has_children,
+                $genderId
+            );
+
+            $rejectedMessage = "<div class='bg-blue-200/30 rounded-md p-2'>" . $missionEligibilityCheck['message']['message'] . "</div>";
+            $message = str_replace('[**]', $rejectedMessage, __('common.messages.duplicates.rejected'));
+
+            return [
+                'exists' => true,
+                'message' => [
+                    'type' => $missionEligibilityCheck['message']['type'],
+                    'message' => $message
+                ]
+            ];
+        }
+
+        // Lógica específica para mujeres rechazadas por otros motivos (trabajo/disponibilidad)
         if ($genderId == GenderEnum::FEMALE->value) {
             $jobTypePref = $this->getEnumValue($preInscription->job_type_preference);
             $eligibilityCheck = $this->checkWomanEligibility(
@@ -844,11 +857,35 @@ class PreInscriptionController extends Controller
             ];
         }
 
+        // Lógica para hombres rechazados por otros motivos (ya no debería usarse mucho ya que el check de misión está arriba)
+        if ($genderId == GenderEnum::MALE->value) {
+            $missionEligibilityCheck = $this->missionEligibility(
+                $preInscription->age,
+                $this->getEnumValue($preInscription->marital_status),
+                $this->getEnumValue($preInscription->served_mission),
+                $preInscription->has_children,
+                $genderId
+            );
+
+            if (!$missionEligibilityCheck['eligible']) {
+                $rejectedMessage = "<div class='bg-blue-200/30 rounded-md p-2'>" . $missionEligibilityCheck['message']['message'] . "</div>";
+                $message = str_replace('[**]', $rejectedMessage, __('common.messages.duplicates.rejected'));
+
+                return [
+                    'exists' => true,
+                    'message' => [
+                        'type' => $missionEligibilityCheck['message']['type'],
+                        'message' => $message
+                    ]
+                ];
+            }
+        }
+
         return [
             'exists' => true,
             'message' => [
                 'type' => 'rejected',
-                'message' => __('common.messages.error.email_exists')
+                'message' => __('common.messages.duplicates.pending')
             ]
         ];
     }

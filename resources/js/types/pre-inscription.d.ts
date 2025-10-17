@@ -26,6 +26,7 @@ type PreInscription = BaseEntity & {
     additional_phone?: string;
     email: string;
     served_mission: MissionStatusInfo;
+    has_children?: boolean;
     currently_working?: boolean;
     available_full_time?: boolean;
     comments?: string;
