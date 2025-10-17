@@ -124,6 +124,9 @@ class StudentRegistrationController extends Controller
             'phone' => 'required|string|max:20',
             'recruiter_name' => 'nullable|string|max:100',
             'home_location_link' => 'nullable|url|max:255',
+            'province_state' => 'nullable|string|max:100',
+            'address' => 'nullable|string|max:255',
+            'facebook_profile' => 'required|url|regex:/^https:\/\/www\.facebook\.com\/.+/|max:255',
 
             // Documentos Requeridos
             'document_type' => 'required|numeric|in:' . implode(',', DocumentTypeEnum::values()),
@@ -150,6 +153,8 @@ class StudentRegistrationController extends Controller
             'education_level' => 'required|numeric|in:' . implode(',', EducationLevelEnum::values()),
             'course_id' => 'required|exists:courses,id',
             'english_connect_level' => 'required|numeric|in:' . implode(',', EnglishConnectLevelEnum::values()),
+            'pathway_level' => 'required|numeric|in:0,1,2',
+            'college_status' => 'required_if:pathway_level,2|nullable|numeric|in:0,1,2',
             // Acuerdos y Compromisos
             'agreement_terms_accepted' => 'required|boolean|accepted',
             'agreement_privacy_accepted' => 'required|boolean|accepted',
@@ -178,6 +183,13 @@ class StudentRegistrationController extends Controller
             'temple_status.boolean' => 'El estado del templo debe ser verdadero o falso.',
             'education_level.required' => 'Debe especificar su nivel educativo.',
             'english_connect_level.required' => 'Debe especificar su nivel de English Connect.',
+            'pathway_level.required' => 'Debe especificar su situación con Pathway.',
+            'pathway_level.in' => 'La situación con Pathway no es válida.',
+            'college_status.required_if' => 'Debe especificar si está estudiando en BYU o Ensign College.',
+            'college_status.in' => 'La opción de universidad no es válida.',
+            'facebook_profile.required' => 'El perfil de Facebook es obligatorio.',
+            'facebook_profile.url' => 'El perfil de Facebook debe ser una URL válida.',
+            'facebook_profile.regex' => 'El perfil de Facebook debe comenzar con https://www.facebook.com/',
 
             // Mensajes para acuerdos
             'agreement_terms_accepted.accepted' => 'Debe aceptar los términos y condiciones.',

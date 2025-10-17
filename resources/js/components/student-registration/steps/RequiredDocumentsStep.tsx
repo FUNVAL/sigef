@@ -8,7 +8,8 @@ import { Enums, Translation } from '@/types/global';
 import { StudentRegistrationFormData, StudentRegistrationRequest } from '@/types/student-registration';
 import { usePage } from '@inertiajs/react';
 import { ArrowLeft, Camera, FileText, Upload } from 'lucide-react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { CameraCaptureDialog } from '../../../lib/camera';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
 interface RequiredDocumentsStepProps {
@@ -22,6 +23,39 @@ export function RequiredDocumentsStep({ request }: RequiredDocumentsStepProps) {
     const { ui } = usePage<Translation>().props;
     const t = translations.student_registration;
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
+
+    // Limpiar URLs de objetos cuando el componente se desmonte
+    useEffect(() => {
+        return () => {
+            Object.values(imageUrls).forEach((url) => {
+                if (url) URL.revokeObjectURL(url);
+            });
+        };
+    }, []); // Dependencias vacías para que solo se ejecute al desmontar
+
+    // Recrear URLs de vista previa al montar el componente
+    useEffect(() => {
+        const fileFields = ['id_front_photo_file', 'id_back_photo_file', 'driver_license_file', 'utility_bill_photo_file', 'formal_photo_file'];
+
+        const newImageUrls: Record<string, string> = {};
+
+        fileFields.forEach((field) => {
+            const file = data[field] as File | undefined;
+            if (file && file.type.startsWith('image/')) {
+                newImageUrls[field] = URL.createObjectURL(file);
+            }
+        });
+
+        setImageUrls(newImageUrls);
+
+        // Cleanup function para las URLs creadas en este efecto
+        return () => {
+            Object.values(newImageUrls).forEach((url) => {
+                URL.revokeObjectURL(url);
+            });
+        };
+    }, []); // Solo se ejecuta al montar el componente
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,9 +74,7 @@ export function RequiredDocumentsStep({ request }: RequiredDocumentsStepProps) {
         if (data.has_driver_license === undefined) {
             validationErrors.has_driver_license = 'Debe especificar si cuenta con licencia de conducir';
         }
-        if (data.has_driver_license === true && !data.driver_license_file) {
-            validationErrors.driver_license_file = 'Debe subir una foto de su licencia de conducir';
-        }
+        // La licencia es opcional, por lo que no validamos si está presente
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -54,7 +86,34 @@ export function RequiredDocumentsStep({ request }: RequiredDocumentsStepProps) {
     };
 
     const handleFileChange = (field: keyof StudentRegistrationFormData, file: File | null) => {
+        // Limpiar URL anterior si existe
+        const previousUrl = imageUrls[field];
+        if (previousUrl) {
+            URL.revokeObjectURL(previousUrl);
+        }
+
         setData(field, file);
+
+        // Limpiar el error cuando se selecciona un archivo
+        if (file && errors[field]) {
+            setErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors[field];
+                return newErrors;
+            });
+        }
+
+        // Generar URL para la vista previa
+        if (file && file.type.startsWith('image/')) {
+            const url = URL.createObjectURL(file);
+            setImageUrls((prev) => ({ ...prev, [field]: url }));
+        } else {
+            setImageUrls((prev) => {
+                const newUrls = { ...prev };
+                delete newUrls[field];
+                return newUrls;
+            });
+        }
     };
 
     const FileUploadField = ({
@@ -71,6 +130,9 @@ export function RequiredDocumentsStep({ request }: RequiredDocumentsStepProps) {
         description?: string;
     }) => {
         const file = data[field] as File | undefined;
+        const imageUrl = imageUrls[field];
+
+        const [isCameraOpen, setIsCameraOpen] = useState(false);
 
         return (
             <div className="space-y-2">
@@ -79,32 +141,110 @@ export function RequiredDocumentsStep({ request }: RequiredDocumentsStepProps) {
                     {label} {required && <span className="text-red-500">*</span>}
                 </Label>
                 {description && <p className="text-sm text-gray-600">{description}</p>}
-                <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 transition-colors hover:border-[rgb(46_131_242_/_1)]">
-                    <Input
-                        id={field}
-                        name={field}
-                        type="file"
-                        accept={accept}
-                        onChange={(e) => {
-                            const selectedFile = e.target.files?.[0] || null;
-                            handleFileChange(field, selectedFile);
-                        }}
-                        className="cursor-pointer"
-                        required={required}
-                    />
-                    {file && (
-                        <div className="mt-2 rounded border border-green-200 bg-green-50 p-2 text-sm text-green-700">
-                            <div className="flex items-center gap-2">
-                                <FileText className="h-4 w-4" />
-                                <span>
-                                    {t.file_upload.file_selected}: {file.name}
-                                </span>
+
+                {!file ? (
+                    // Estado sin archivo - mostrar opciones de subida
+                    <div className="space-y-3">
+                        {/* Área de drop para archivos */}
+                        <div className="relative rounded-lg border-2 border-dashed border-gray-300 p-6 text-center transition-colors hover:border-[rgb(46_131_242_/_1)] hover:bg-gray-50">
+                            <Upload className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+                            <div className="space-y-2">
+                                <p className="text-sm font-medium text-gray-700">Haga clic para seleccionar archivo</p>
+                                <p className="text-xs text-gray-500">PNG, JPG hasta 5MB</p>
                             </div>
-                            <div className="mt-1 text-xs text-green-600">Tamaño: {(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                            <Input
+                                id={field}
+                                name={field}
+                                type="file"
+                                accept={accept}
+                                onChange={(e) => {
+                                    const selectedFile = e.target.files?.[0] || null;
+                                    handleFileChange(field, selectedFile);
+                                }}
+                                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                required={required}
+                            />
                         </div>
-                    )}
-                </div>
+
+                        {/* Separador */}
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t border-gray-300" />
+                            </div>
+                            <div className="relative flex justify-center text-sm">
+                                <span className="bg-white px-2 text-gray-500">O</span>
+                            </div>
+                        </div>
+
+                        {/* Botón de cámara */}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setIsCameraOpen(true)}
+                            className="w-full border-[rgb(46_131_242_/_1)] text-[rgb(46_131_242_/_1)] hover:bg-[rgb(46_131_242_/_1)] hover:text-white"
+                        >
+                            <Camera className="mr-2 h-4 w-4" />
+                            Tomar Foto con Cámara
+                        </Button>
+                    </div>
+                ) : (
+                    // Estado con archivo - mostrar miniatura y detalles
+                    <div className="space-y-3 rounded-lg border border-green-200 bg-green-50 p-4">
+                        <div className="flex flex-col items-start gap-4 md:flex-row">
+                            {/* Miniatura */}
+                            {imageUrl && (
+                                <div className="w-full flex-shrink-0 md:w-auto">
+                                    <img
+                                        src={imageUrl}
+                                        alt={`Vista previa de ${label}`}
+                                        className="mx-auto h-32 w-full rounded-lg border border-green-300 object-cover md:mx-0 md:h-32 md:w-32"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Información del archivo */}
+                            <div className="min-w-0 flex-1">
+                                <div className="mb-2 flex items-center gap-2">
+                                    <FileText className="h-4 w-4 text-green-600" />
+                                    <span className="text-sm font-medium text-green-800">Archivo seleccionado</span>
+                                </div>
+                                <p className="mb-2 truncate text-sm text-green-700" title={file.name}>
+                                    <strong>Nombre:</strong> {file.name}
+                                </p>
+                                <p className="mb-3 text-xs text-green-600">
+                                    <strong>Tamaño:</strong> {(file.size / 1024 / 1024).toFixed(2)} MB
+                                </p>
+
+                                {/* Botón para cambiar archivo */}
+                                <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-100">
+                                    <Upload className="h-4 w-4" />
+                                    Cambiar archivo
+                                    <Input
+                                        type="file"
+                                        accept={accept}
+                                        onChange={(e) => {
+                                            const selectedFile = e.target.files?.[0] || null;
+                                            handleFileChange(field, selectedFile);
+                                        }}
+                                        className="sr-only"
+                                    />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {errors[field] && <p className="text-sm text-red-500">{errors[field]}</p>}
+
+                {/* Dialog de captura de cámara */}
+                <CameraCaptureDialog
+                    isOpen={isCameraOpen}
+                    onClose={() => setIsCameraOpen(false)}
+                    onCapture={(capturedFile: File) => {
+                        handleFileChange(field, capturedFile);
+                        setIsCameraOpen(false);
+                    }}
+                />
             </div>
         );
     };
@@ -198,60 +338,80 @@ export function RequiredDocumentsStep({ request }: RequiredDocumentsStepProps) {
                         <div className="space-y-6">
                             {/* Pregunta sobre licencia de conducir */}
                             <div className="space-y-3">
-                                <Label className="text-base font-medium">¿Cuenta con licencia de conducir? *</Label>
-                                <div className="flex gap-4">
-                                    <label className="flex items-center gap-2">
+                                <Label className="text-base font-semibold text-gray-900">
+                                    ¿Cuenta con licencia de conducir? <span className="text-red-500">*</span>
+                                </Label>
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                    <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 p-3 transition-colors hover:bg-gray-50 has-[:checked]:border-[rgb(46_131_242_/_1)] has-[:checked]:bg-blue-50">
                                         <input
                                             type="radio"
                                             name="has_driver_license"
                                             value="true"
                                             checked={data.has_driver_license === true}
                                             onChange={() => setData('has_driver_license', true)}
-                                            className="form-radio text-primary"
+                                            className="text-[rgb(46_131_242_/_1)] focus:ring-[rgb(46_131_242_/_1)]"
                                         />
-                                        <span className="text-sm">Sí</span>
+                                        <span className="text-sm font-medium">Sí</span>
                                     </label>
-                                    <label className="flex items-center gap-2">
+                                    <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 p-3 transition-colors hover:bg-gray-50 has-[:checked]:border-[rgb(46_131_242_/_1)] has-[:checked]:bg-blue-50">
                                         <input
                                             type="radio"
                                             name="has_driver_license"
                                             value="false"
                                             checked={data.has_driver_license === false}
                                             onChange={() => setData('has_driver_license', false)}
-                                            className="form-radio text-primary"
+                                            className="text-[rgb(46_131_242_/_1)] focus:ring-[rgb(46_131_242_/_1)]"
                                         />
-                                        <span className="text-sm">No</span>
+                                        <span className="text-sm font-medium">No</span>
                                     </label>
                                 </div>
                                 {errors?.has_driver_license && <p className="text-sm text-red-500">{errors.has_driver_license}</p>}
                             </div>
 
                             {/* Upload de licencia de conducir - solo si tiene licencia */}
-                            {data.has_driver_license && (
+                            <div
+                                className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                                    data.has_driver_license
+                                        ? 'max-h-96 translate-y-0 transform opacity-100'
+                                        : 'max-h-0 -translate-y-4 transform opacity-0'
+                                }`}
+                            >
+                                <div className="space-y-4 rounded-lg border-t border-blue-200 bg-blue-50 p-4 pt-4">
+                                    <div className="mb-3 flex items-center gap-2">
+                                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500">
+                                            <span className="text-xs font-bold text-white">!</span>
+                                        </div>
+                                        <p className="text-sm font-medium text-blue-800">
+                                            Puede subir una foto de su licencia de conducir (opcional)
+                                        </p>
+                                    </div>
+                                    <FileUploadField
+                                        label={t.fields.driver_license}
+                                        field="driver_license_file"
+                                        accept="image/jpeg,image/png,image/jpg"
+                                        required={false}
+                                        description={t.placeholders.upload_driver_license}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                                 <FileUploadField
-                                    label={t.fields.driver_license}
-                                    field="driver_license_file"
+                                    label={t.fields.utility_bill_photo}
+                                    field="utility_bill_photo_file"
                                     accept="image/jpeg,image/png,image/jpg"
                                     required={true}
-                                    description={t.placeholders.upload_driver_license}
+                                    description={t.placeholders.upload_utility_bill}
                                 />
-                            )}
 
-                            <FileUploadField
-                                label={t.fields.utility_bill_photo}
-                                field="utility_bill_photo_file"
-                                accept="image/jpeg,image/png,image/jpg"
-                                required={true}
-                                description={t.placeholders.upload_utility_bill}
-                            />
-
-                            <FileUploadField
-                                label={t.fields.formal_photo}
-                                field="formal_photo_file"
-                                accept="image/jpeg,image/png,image/jpg"
-                                required={true}
-                                description={t.placeholders.upload_formal_photo}
-                            />
+                                <FileUploadField
+                                    label={t.fields.formal_photo}
+                                    field="formal_photo_file"
+                                    accept="image/jpeg,image/png,image/jpg"
+                                    required={true}
+                                    description={t.placeholders.upload_formal_photo}
+                                />
+                            </div>
                         </div>
                     </div>
 

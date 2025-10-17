@@ -4,11 +4,11 @@ import useFilteredStakes from '@/hooks/use-filtered-stakes';
 import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Country } from '@/types/country';
 import { Course } from '@/types/course';
-import { Enums } from '@/types/global';
+import { Enums, Translation } from '@/types/global';
 import { StudentRegistrationFormData } from '@/types/student-registration';
-import { generateStudentRegistrationPDF } from '@/utils/pdfGenerator';
-import { ArrowLeft, CheckCircle2, Download, FileText, Loader2 } from 'lucide-react';
-import { useContext, useState } from 'react';
+import { usePage } from '@inertiajs/react';
+import { ArrowLeft, CheckCircle2, FileText, Loader2 } from 'lucide-react';
+import { useContext } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
 interface StudentRegistrationOverviewStepProps {
@@ -23,30 +23,9 @@ interface StudentRegistrationOverviewStepProps {
 export function StudentRegistrationOverviewStep({ data, countries, courses, enums, onSubmit, processing }: StudentRegistrationOverviewStepProps) {
     const { previousStep } = useContext(StepperContext);
     const { stakes } = useFilteredStakes(data.country_id);
-    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+    const { translations } = usePage<{ translations: Translation }>().props;
+    const t = translations.student_registration;
 
-    const handleGeneratePDF = async () => {
-        setIsGeneratingPDF(true);
-        try {
-            await generateStudentRegistrationPDF({
-                data,
-                enums: {
-                    gender: enums.gender,
-                    maritalStatus: enums.maritalStatus,
-                    documentType: enums.documentType,
-                    educationLevel: enums.educationLevel,
-                    englishConnectLevel: enums.englishConnectLevel,
-                    countries: countries,
-                    stakes: stakes,
-                },
-            });
-        } catch (error) {
-            console.error('Error generando PDF:', error);
-            alert('Error al generar el PDF. Por favor intente nuevamente.');
-        } finally {
-            setIsGeneratingPDF(false);
-        }
-    };
     const getCountryName = (id: number | undefined) => {
         if (!id || id === 0) return 'No especificado';
         const country = countries.find((c) => c.id === id);
@@ -130,7 +109,10 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
 
     return (
         <Card className="mx-auto w-full max-w-4xl overflow-hidden border-0 pt-0 shadow-2xl">
-            <StepsHeader title="Resumen de Inscripción" subtitle="Revise su información antes de enviar el registro" />
+            <StepsHeader
+                title={(t as any).steps?.overview?.title || 'Resumen de Inscripción'}
+                subtitle={(t as any).steps?.overview?.subtitle || 'Revise su información antes de enviar el registro'}
+            />
 
             <CardContent className="space-y-8 p-8">
                 <div className="space-y-6">
@@ -244,45 +226,22 @@ export function StudentRegistrationOverviewStep({ data, countries, courses, enum
                         Anterior
                     </Button>
 
-                    <div className="flex gap-3">
-                        <Button
-                            type="button"
-                            onClick={handleGeneratePDF}
-                            variant="outline"
-                            size="lg"
-                            className="min-w-[160px] border-green-600 text-green-600 hover:bg-green-50"
-                            disabled={processing || isGeneratingPDF}
-                        >
-                            {isGeneratingPDF ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Generando PDF...
-                                </>
-                            ) : (
-                                <>
-                                    <Download className="mr-2 h-4 w-4" />
-                                    Descargar PDF
-                                </>
-                            )}
-                        </Button>
-
-                        <Button
-                            type="button"
-                            onClick={onSubmit}
-                            size="lg"
-                            className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
-                            disabled={processing}
-                        >
-                            {processing ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Enviando...
-                                </>
-                            ) : (
-                                'Enviar Registro'
-                            )}
-                        </Button>
-                    </div>
+                    <Button
+                        type="button"
+                        onClick={onSubmit}
+                        size="lg"
+                        className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                        disabled={processing}
+                    >
+                        {processing ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Enviando...
+                            </>
+                        ) : (
+                            'Finalizar Inscripción'
+                        )}
+                    </Button>
                 </div>
             </CardContent>
         </Card>

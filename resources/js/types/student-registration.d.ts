@@ -165,9 +165,16 @@ type StudentRegistrationFormData = Omit<
 
         // Geographic Information
         province_state?: string; // Provincia/Estado/Departamento
+        address?: string; // Dirección completa del estudiante
 
         // Driver License Information
         has_driver_license?: boolean; // ¿Cuenta con licencia de conducir?
+
+        // College Status Information
+        college_status?: number; // 0: Ninguno, 1: BYU, 2: Ensign College
+
+        // Facebook Profile
+        facebook_profile?: string; // URL del perfil de Facebook
 
         // Index signature for Inertia compatibility
         [key: string]: any;

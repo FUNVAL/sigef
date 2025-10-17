@@ -10,17 +10,21 @@ return [
             'title' => 'Información Personal',
             'subtitle' => 'Complete sus datos personales básicos',
         ],
+        'religious_information' => [
+            'title' => 'Información Eclesiástica',
+            'subtitle' => 'Complete su información religiosa y eclesiástica',
+        ],
         'required_documents' => [
             'title' => 'Documentos Requeridos',
             'subtitle' => 'Suba los documentos necesarios para su registro',
         ],
-        'religious_information' => [
-            'title' => 'Información Religiosa/Eclesiástica',
-            'subtitle' => 'Complete su información religiosa y eclesiástica',
+        'agreements' => [
+            'title' => 'Acuerdos y Términos',
+            'subtitle' => 'Lea y acepte los términos y condiciones',
         ],
-        'academic_information' => [
-            'title' => 'Información Académica y Profesional',
-            'subtitle' => 'Complete su formación académica y experiencia profesional',
+        'overview' => [
+            'title' => 'Resumen de Inscripción',
+            'subtitle' => 'Revise su información antes de enviar',
         ],
     ],
     'sections' => [
@@ -58,8 +62,13 @@ return [
         'marital_status' => 'Estado Civil',
         'email' => 'Correo Electrónico',
         'phone' => 'Teléfono de Contacto',
+        'address' => 'Dirección',
+        'province_state' => 'Estado/Departamento/Provincia',
         'recruiter_name' => 'Reclutador/Responsable',
-        'home_location_link' => 'Link de Ubicación de Casa',
+        'home_location_link' => 'Ubicación de su Casa',
+        'facebook_profile' => 'Perfil de Facebook (URL)',
+        'pathway_level' => '¿Está estudiando en Pathway?',
+        'college_status' => '¿Está estudiando en BYU o Ensign College?',
         
         // Required Documents
         'document_type' => 'Tipo de Documento',
@@ -81,11 +90,21 @@ return [
         'current_calling' => 'Llamamiento Actual',
         'stake' => 'Estaca',
         'ward_branch' => 'Barrio/Rama',
+        'auxiliar_president' => 'Nombre Presidente(a) de Cuorum / SOC',
+        'auxiliary_president_phone' => 'Teléfono del Presidente Auxiliar',
         
         // Academic Information
         'education_level' => 'Nivel Educativo',
         'course' => 'Curso',
         'english_connect_level' => 'Nivel de English Connect',
+        
+        // Additional Fields
+        'province_state' => 'Estado/Departamento/Provincia',
+        'address' => 'Dirección',
+        'home_location_link' => 'Ubicación de su Casa',
+        'facebook_profile' => 'Perfil de Facebook (URL)',
+        'pathway_level' => '¿Está estudiando en Pathway?',
+        'college_status' => '¿Está estudiando en BYU o Ensign College?',
     ],
     'placeholders' => [
         'first_name' => 'Ingrese su primer nombre',
@@ -98,7 +117,10 @@ return [
         'email' => 'ejemplo@correo.com',
         'phone' => 'Ingrese su número de teléfono',
         'recruiter_name' => 'Nombre del reclutador (opcional)',
+        'address' => 'Ingrese su dirección completa',
+        'province_state' => 'Ingrese su estado, departamento o provincia',
         'home_location_link' => 'https://maps.google.com/... (opcional)',
+        'facebook_profile' => 'https://www.facebook.com/tu.nombre.usuario',
         'age_automatic' => 'Se calcula automáticamente',
         
         // Required Documents
@@ -119,6 +141,8 @@ return [
         'current_calling' => 'Su llamamiento actual (opcional)',
         'select_stake' => 'Seleccione su estaca',
         'ward_branch' => 'Nombre del barrio o rama (opcional)',
+        'auxiliar_president' => 'Nombre del Presidente(a) de Cuorum / SOC',
+        'auxiliary_president_phone' => 'Tu número de teléfono',
         
         // Academic Information
         'select_education_level' => 'Seleccione su nivel educativo',
@@ -153,6 +177,24 @@ return [
         'education_level_required' => 'El nivel educativo es obligatorio',
         'course_required' => 'El curso es obligatorio',
         'english_connect_level_required' => 'El nivel de English Connect es obligatorio',
+        
+        // Religious Information - Additional
+        'member_number_required' => 'El número de cédula de miembro es obligatorio',
+        'member_number_format' => 'El número de cédula debe tener el formato completo: XXX-XXXX-XXXX (3-4-4 caracteres)',
+        'mission_served_required' => 'Debe especificar en qué misión sirvió',
+        'mission_end_year_required' => 'Debe especificar el año en que finalizó la misión',
+    ],
+    'labels' => [
+        'not_member' => 'Aún no soy miembro',
+        'location_obtained' => '✓ Ubicación obtenida',
+        'location_registered' => '✓ Ubicación registrada correctamente',
+        'location_capture' => 'Has clic en el "Icono" para mandar tu ubicación actual',
+        'pathway_no' => 'No estoy estudiando en Pathway',
+        'pathway_current' => 'Sí estoy cursando Pathway',
+        'pathway_completed' => 'He completado Pathway',
+        'college_none' => 'Ninguno de los dos',
+        'college_byu' => 'Sí, estoy estudiando en BYU',
+        'college_ensign' => 'Sí, estoy estudiando en Ensign College',
     ],
     'required' => 'obligatorio',
     'optional' => 'opcional',
@@ -180,5 +222,85 @@ return [
         'terms_acceptance' => 'Al enviar este formulario, acepto los términos y condiciones',
         'submit_form' => 'Enviar Registro',
         'processing' => 'Procesando...',
+    ],
+
+    // Agreements Section
+    'agreements' => [
+        'title_prefix' => 'Acuerdo',
+        'title_suffix' => 'de',
+        'read_timer' => 'Comenzar Lectura',
+        'timer_seconds' => 's',
+        'reading_progress' => 'Leyendo...',
+        'seconds_remaining' => 's restantes',
+        'accept_checkbox' => 'He leído y acepto este acuerdo',
+        'next_agreement' => 'Siguiente Acuerdo',
+        'previous_agreement' => 'Acuerdo Anterior',
+        'finalize_registration' => 'Finalizar Inscripción',
+        'all_agreements_accepted' => '✅ Todos los acuerdos han sido aceptados',
+        'progress_status' => 'Progreso:',
+        'agreements_accepted' => 'acuerdos aceptados',
+
+        'terms_title' => 'Términos y Condiciones de Inscripción',
+        'privacy_title' => 'Política de Privacidad y Uso de Datos', 
+        'conduct_title' => 'Código de Conducta y Valores Institucionales',
+        'health_title' => 'Declaración de Salud y Compromiso Académico',
+
+        'health_form' => [
+            'title' => 'Declaración de Salud',
+            'main_question' => '¿Tiene en la actualidad o ha tenido alguna vez enfermedades físicas, mentales o emocionales que le dificultarían mantener un horario intensivo de estudio, que requiere entre 8 y 10 horas diarias de concentración, lectura, análisis, trabajo en computadora y otras actividades similares?',
+            'yes' => 'Sí',
+            'no' => 'No',
+            'medication_info' => 'Información sobre Medicamentos',
+            'medication_question' => '¿Actualmente toma algún tipo de medicamento relacionado con alguna de las siguientes condiciones?',
+            'medication_none' => 'No tomo ningún medicamento actualmente',
+            'medication_physical' => 'Sí, para una condición física crónica (ej. diabetes, hipertensión, epilepsia, problemas respiratorios, etc.)',
+            'medication_emotional' => 'Sí, para una condición emocional (ej. ansiedad, depresión, trastornos del estado de ánimo, etc.)',
+            'medication_mental' => 'Sí, para una condición mental o neurológica (ej. TDAH, trastornos del sueño, bipolaridad, etc.)',
+            'medication_other' => 'Sí, pero no relacionada con ninguna de las categorías anteriores',
+            'medication_specify' => 'Especifique el tipo de medicamento',
+            'medication_frequency' => '¿Con qué frecuencia toma el medicamento?',
+            'frequency_daily' => 'Diariamente',
+            'frequency_weekly' => 'Semanal',
+            'frequency_biweekly' => 'Quincenal',
+            'frequency_monthly' => 'Mensual',
+            'frequency_quarterly' => 'Cada 3 meses',
+            'frequency_biannual' => 'Cada 6 meses',
+            'frequency_as_needed' => 'Solo cuando es necesario',
+        ],
+    ],
+
+    // Overview Section
+    'overview' => [
+        'title' => 'Resumen de Inscripción',
+        'subtitle' => 'Revise su información antes de enviar',
+        'personal_info' => 'Información Personal',
+        'religious_info' => 'Información Religiosa',
+        'documents_info' => 'Documentos',
+        'agreements_info' => 'Acuerdos',
+        'submit_button' => 'Finalizar Inscripción',
+        'previous_button' => 'Anterior',
+        'submitting' => 'Enviando...',
+        'edit' => 'Editar',
+    ],
+
+    // Additional Labels
+    'labels' => [
+        'required_field' => 'Campo obligatorio',
+        'optional_field' => 'Campo opcional',
+        'location_obtained' => '✓ Ubicación obtenida',
+        'location_capture' => 'Has clic en el "Icono" para mandar tu ubicación actual',
+        'location_registered' => '✓ Ubicación registrada correctamente',
+        'pathway_no' => 'No estoy estudiando en Pathway',
+        'pathway_current' => 'Sí estoy cursando Pathway',
+        'pathway_completed' => 'He completado Pathway',
+        'college_none' => 'Ninguno de los dos',
+        'college_byu' => 'Sí, estoy estudiando en BYU',
+        'college_ensign' => 'Sí, estoy estudiando en Ensign College',
+        'take_photo' => 'Tomar Foto con Cámara',
+        'change_file' => 'Cambiar archivo',
+        'file_selected' => 'Archivo seleccionado',
+        'file_name' => 'Nombre:',
+        'file_size' => 'Tamaño:',
+        'mb_unit' => 'MB',
     ],
 ];
