@@ -44,16 +44,16 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
         if (monthsDiff < 1) {
             const daysDiff = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-            return `${daysDiff} días`;
+            return `${daysDiff} ${daysDiff === 1 ? (t as any)?.recruitment_form?.time_periods?.day || 'day' : (t as any)?.recruitment_form?.time_periods?.days || 'days'}`;
         } else if (monthsDiff < 12) {
-            return `${monthsDiff} ${monthsDiff === 1 ? 'mes' : 'meses'}`;
+            return `${monthsDiff} ${monthsDiff === 1 ? (t as any)?.recruitment_form?.time_periods?.month || 'month' : (t as any)?.recruitment_form?.time_periods?.months || 'months'}`;
         } else {
             const years = Math.floor(monthsDiff / 12);
             const remainingMonths = monthsDiff % 12;
             if (remainingMonths === 0) {
-                return `${years} ${years === 1 ? 'año' : 'años'}`;
+                return `${years} ${years === 1 ? (t as any)?.recruitment_form?.time_periods?.year || 'year' : (t as any)?.recruitment_form?.time_periods?.years || 'years'}`;
             } else {
-                return `${years} ${years === 1 ? 'año' : 'años'} y ${remainingMonths} ${remainingMonths === 1 ? 'mes' : 'meses'}`;
+                return `${years} ${years === 1 ? (t as any)?.recruitment_form?.time_periods?.year || 'year' : (t as any)?.recruitment_form?.time_periods?.years || 'years'} ${(t as any)?.recruitment_form?.time_periods?.and || 'and'} ${remainingMonths} ${remainingMonths === 1 ? (t as any)?.recruitment_form?.time_periods?.month || 'month' : (t as any)?.recruitment_form?.time_periods?.months || 'months'}`;
             }
         }
     };
@@ -73,17 +73,17 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
             }
         });
 
-        if (totalMonths === 0) return 'Sin experiencia registrada';
+        if (totalMonths === 0) return (t as any)?.recruitment_form?.time_periods?.no_experience || 'No registered experience';
 
         if (totalMonths < 12) {
-            return `${totalMonths} ${totalMonths === 1 ? 'mes' : 'meses'} total`;
+            return `${totalMonths} ${totalMonths === 1 ? (t as any)?.recruitment_form?.time_periods?.month || 'month' : (t as any)?.recruitment_form?.time_periods?.months || 'months'} ${(t as any)?.recruitment_form?.time_periods?.total || 'total'}`;
         } else {
             const years = Math.floor(totalMonths / 12);
             const remainingMonths = totalMonths % 12;
             if (remainingMonths === 0) {
-                return `${years} ${years === 1 ? 'año' : 'años'} total`;
+                return `${years} ${years === 1 ? (t as any)?.recruitment_form?.time_periods?.year || 'year' : (t as any)?.recruitment_form?.time_periods?.years || 'years'} ${(t as any)?.recruitment_form?.time_periods?.total || 'total'}`;
             } else {
-                return `${years} ${years === 1 ? 'año' : 'años'} y ${remainingMonths} ${remainingMonths === 1 ? 'mes' : 'meses'} total`;
+                return `${years} ${years === 1 ? (t as any)?.recruitment_form?.time_periods?.year || 'year' : (t as any)?.recruitment_form?.time_periods?.years || 'years'} ${(t as any)?.recruitment_form?.time_periods?.and || 'and'} ${remainingMonths} ${remainingMonths === 1 ? (t as any)?.recruitment_form?.time_periods?.month || 'month' : (t as any)?.recruitment_form?.time_periods?.months || 'months'} ${(t as any)?.recruitment_form?.time_periods?.total || 'total'}`;
             }
         }
     };
@@ -344,15 +344,15 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         const validationErrors: Record<string, string> = {};
 
         if (data.household_members.length === 0) {
-            validationErrors.household_members = 'Debe agregar al menos una persona';
+            validationErrors.household_members = (t as any)?.recruitment_form?.errors?.household_members_required || 'You must add at least one person';
         }
 
         data.household_members.forEach((member, index) => {
             if (!member.name.trim()) {
-                validationErrors[`household_member_${index}_name`] = 'El nombre es requerido';
+                validationErrors[`household_member_${index}_name`] = (t as any)?.recruitment_form?.errors?.household_member_name_required || 'Name is required';
             }
             if (!member.relationship || member.relationship === 0) {
-                validationErrors[`household_member_${index}_relationship`] = 'La relación es requerida';
+                validationErrors[`household_member_${index}_relationship`] = (t as any)?.recruitment_form?.errors?.household_member_relationship_required || 'Relationship is required';
             }
             if (member.phone && member.phone.length < 3) {
                 validationErrors[`household_member_${index}_phone`] = 'El teléfono debe tener al menos 3 dígitos';
@@ -362,51 +362,51 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
         // Note: Removed monthly income validation as we're now tracking expenses instead
 
         if (!data.device_type || data.device_type === 0) {
-            validationErrors.device_type = 'El tipo de dispositivo es requerido';
+            validationErrors.device_type = (t as any)?.recruitment_form?.errors?.device_type_required || 'Device type is required';
         }
 
         if (!data.housing_type || data.housing_type === 0) {
-            validationErrors.housing_type = 'El tipo de vivienda es requerido';
+            validationErrors.housing_type = (t as any)?.recruitment_form?.errors?.housing_type_required || 'Housing type is required';
         }
 
         if (data.has_employment && (!data.employment_type || data.employment_type === 0)) {
-            validationErrors.employment_type = 'El tipo de empleo es requerido';
+            validationErrors.employment_type = (t as any)?.recruitment_form?.errors?.employment_type_required || 'Employment type is required';
         }
 
         if (data.has_employment && data.employment_type === 2) { // COMPANY_EMPLOYEE
             if (!data.company_name?.trim()) {
-                validationErrors.company_name = 'El nombre de la empresa es requerido';
+                validationErrors.company_name = (t as any)?.recruitment_form?.errors?.company_name_required || 'Company name is required';
             }
             if (!data.job_position || data.job_position === 0) {
-                validationErrors.job_position = 'El puesto es requerido';
+                validationErrors.job_position = (t as any)?.recruitment_form?.errors?.job_position_required || 'Position is required';
             }
             if (!data.work_schedule || data.work_schedule === 0) {
-                validationErrors.work_schedule = 'El tipo de jornada es requerido';
+                validationErrors.work_schedule = (t as any)?.recruitment_form?.errors?.work_schedule_required || 'Work schedule is required';
             }
             if (!data.employment_income || data.employment_income <= 0) {
-                validationErrors.employment_income = 'El salario es requerido';
+                validationErrors.employment_income = (t as any)?.recruitment_form?.errors?.employment_income_required || 'Salary is required';
             }
             if (!data.employment_start_date?.trim()) {
-                validationErrors.employment_start_date = 'La fecha de inicio en la empresa es requerida';
+                validationErrors.employment_start_date = (t as any)?.recruitment_form?.errors?.employment_start_date_required || 'Start date at company is required';
             }
         }
 
         // Validar bonos (máximo 2)
         if (data.needs_bonus && selectedBonusCategories.length > 2) {
-            validationErrors.bonus_categories = 'Solo se pueden seleccionar máximo 2 categorías de bono';
+            validationErrors.bonus_categories = (t as any)?.recruitment_form?.errors?.bonus_categories_max || 'You can only select up to 2 bonus categories';
         }
 
         // Validar bonos de prácticas (máximo 2)
         if (data.needs_practice_bonus && selectedPracticeBonusCategories.length > 2) {
-            validationErrors.practice_bonus_categories = 'Solo se pueden seleccionar máximo 2 categorías de bono para prácticas';
+            validationErrors.practice_bonus_categories = (t as any)?.recruitment_form?.errors?.practice_bonus_categories_max || 'You can only select up to 2 practice bonus categories';
         }
 
         // Validar experiencia laboral
         if (data.has_work_experience === undefined || data.has_work_experience === null) {
-            validationErrors.has_work_experience = 'Debe seleccionar si cuenta con experiencia laboral';
+            validationErrors.has_work_experience = (t as any)?.recruitment_form?.errors?.has_work_experience_required || 'You must select if you have work experience';
         } else if (data.has_work_experience === true) {
             if (workExperiences.length === 0) {
-                validationErrors.work_experiences = 'Debe agregar al menos una experiencia laboral';
+                validationErrors.work_experiences = (t as any)?.recruitment_form?.errors?.work_experiences_required || 'You must add at least one work experience';
             } else {
                 workExperiences.forEach((exp, index) => {
                     if (!exp.job_position || exp.job_position === 0) {
@@ -463,7 +463,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         )}
                                     </div>
                                     <div>
-                                        <Label htmlFor={`household_members[${index}][phone]`}>Teléfono</Label>
+                                        <Label htmlFor={`household_members[${index}][phone]`}>{(t as any)?.recruitment_form?.labels?.phone || 'Phone'}</Label>
                                         {countries && countries.length > 0 ? (
                                             <PhoneInput
                                                 id={`household_members[${index}][phone]`}
@@ -495,7 +495,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         )}
                                     </div>
                                     <div>
-                                        <Label htmlFor={`household_members[${index}][relationship]`}>Relación</Label>
+                                        <Label htmlFor={`household_members[${index}][relationship]`}>{(t as any)?.recruitment_form?.labels?.relationship || 'Relationship'}</Label>
                                         <Select
                                             name={`household_members[${index}][relationship]`}
                                             value={member.relationship && member.relationship > 0 ? member.relationship.toString() : ''}
@@ -520,7 +520,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
                                     <div>
                                         {/* Edad */}
-                                        <Label htmlFor={`household_members[${index}][age]`}>Edad</Label>
+                                        <Label htmlFor={`household_members[${index}][age]`}>{(t as any)?.recruitment_form?.labels?.age || 'Age'}</Label>
                                         <Input
                                             id={`household_members[${index}][age]`}
                                             name={`household_members[${index}][age]`}
@@ -602,7 +602,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <Label>Gastos mensuales</Label>
+                            <Label>{(t as any)?.recruitment_form?.labels?.monthly_expenses || 'Monthly expenses'}</Label>
                             <Button
                                 type="button"
                                 variant="outline"
@@ -838,7 +838,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                         {data.has_employment && (
                             <div className="space-y-4">
                                 <div>
-                                    <Label>Tipo de empleo</Label>
+                                    <Label>{(t as any)?.recruitment_form?.labels?.employment_type || 'Employment type'}</Label>
                                     <Select
                                         name="employment_type"
                                         value={data.employment_type && data.employment_type > 0 ? data.employment_type?.toString() : ''}
@@ -863,7 +863,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                 {data.employment_type === 2 && ( // COMPANY_EMPLOYEE
                                     <>
                                         <div>
-                                            <Label>Nombre de la empresa</Label>
+                                            <Label>{(t as any)?.recruitment_form?.labels?.company_name || 'Company name'}</Label>
                                             <Input
                                                 name="employment[company_name]"
                                                 value={data.company_name || ''}
@@ -877,7 +877,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         </div>
 
                                         <div>
-                                            <Label>Puesto</Label>
+                                            <Label>{(t as any)?.recruitment_form?.labels?.job_position || 'Position'}</Label>
                                             <Select
                                                 name="job_position"
                                                 value={data.job_position && data.job_position > 0 ? data.job_position?.toString() : ''}
@@ -900,7 +900,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         </div>
 
                                         <div>
-                                            <Label>Tipo de jornada</Label>
+                                            <Label>{(t as any)?.recruitment_form?.labels?.work_type || 'Work type'}</Label>
                                             <Select
                                                 name="work_schedule"
                                                 value={data.work_schedule && data.work_schedule > 0 ? data.work_schedule?.toString() : ''}
@@ -941,7 +941,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                             </div>
 
                                             <div className="space-y-2">
-                                                <Label className="text-sm font-medium">Fecha de inicio en la empresa</Label>
+                                                <Label className="text-sm font-medium">{(t as any)?.recruitment_form?.labels?.company_start_date || 'Start date at company'}</Label>
                                                 <Input
                                                     name="employment[start_date]"
                                                     type="date"
@@ -1000,7 +1000,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                             <div className="space-y-6">
                                 {/* Botón para agregar experiencia */}
                                 <div className="flex justify-between items-center">
-                                    <h4 className="text-sm font-medium text-gray-700">Experiencias laborales</h4>
+                                    <h4 className="text-sm font-medium text-gray-700">{(t as any)?.recruitment_form?.labels?.work_experiences || 'Work experiences'}</h4>
                                     <Button
                                         type="button"
                                         onClick={addWorkExperience}
@@ -1075,7 +1075,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                         {workExperiences.length === 0 && (
                                             <div className="text-center py-4 text-gray-500">
                                                 <Briefcase className="h-8 w-8 mx-auto mb-2 text-gray-300" />
-                                                <p className="text-sm">No hay experiencias agregadas</p>
+                                                <p className="text-sm">{(t as any)?.recruitment_form?.labels?.no_experiences_added || 'No experiences added'}</p>
                                                 <p className="text-xs">Haga clic en "Agregar experiencia" para comenzar</p>
                                             </div>
                                         )}
@@ -1323,7 +1323,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <Label>Empresas de interés</Label>
+                            <Label>{(t as any)?.recruitment_form?.labels?.companies_of_interest || 'Companies of interest'}</Label>
 
                             <Button
                                 type="button"
@@ -1340,7 +1340,7 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                             <div key={index} className="p-4 border rounded-lg space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <Label htmlFor={`job_offers[${index}][company_name]`}>Nombre de la empresa</Label>
+                                        <Label htmlFor={`job_offers[${index}][company_name]`}>{(t as any)?.recruitment_form?.labels?.company_name || 'Company name'}</Label>
                                         <Input
                                             id={`job_offers[${index}][company_name]`}
                                             name={`job_offers[${index}][company_name]`}
