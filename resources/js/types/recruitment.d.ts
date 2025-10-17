@@ -16,6 +16,18 @@ export type BonusInfo = {
     amount: number;
 };
 
+export type JobOffer = {
+    company_name: string;
+    salary_expectation: number;
+};
+
+export type WorkExperience = {
+    job_position: number;
+    start_date: string;
+    end_date?: string;
+    company_name?: string;
+};
+
 export type RecruitmentFormData = {
     // Datos básicos
     country_id?: number;
@@ -25,19 +37,30 @@ export type RecruitmentFormData = {
     monthly_expenses: HouseholdExpense[];
     monthly_income: number;
     has_residential_internet: boolean;
+    internet_access_plan?: number;
     device_type: number;
     housing_type: number;
     has_employment: boolean;
     employment_type?: number;
     company_name?: string;
     job_position?: number;
+    work_schedule?: number;
     employment_income?: number;
+    employment_start_date?: string;
+    has_work_experience?: boolean;
+    work_experiences: WorkExperience[];
+    // Campos legacy para compatibilidad
+    experience_job_position?: number;
+    years_of_experience?: number;
+    experience_start_date?: string;
+    experience_end_date?: string;
     needs_bonus: boolean;
     bonus_categories: number[];
     bonus_amounts: number[];
     needs_practice_bonus: boolean;
     practice_bonus_categories: number[];
     practice_bonus_amounts: number[];
+    job_offers: JobOffer[];
 
     // Salud
     has_health_insurance: boolean;

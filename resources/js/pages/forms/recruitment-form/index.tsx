@@ -32,7 +32,7 @@ const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
         household_members: [],
         monthly_income: 0,
         monthly_expenses: [],
-        has_residential_internet: false,
+        has_residential_internet: true,
         device_type: 0,
         housing_type: 0,
         has_employment: false,
@@ -46,6 +46,11 @@ const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
         needs_practice_bonus: false,
         practice_bonus_categories: [],
         practice_bonus_amounts: [],
+
+        // Experiencias laborales
+        has_work_experience: false,
+        work_experiences: [],
+        job_offers: [],
 
         // Salud
         has_health_insurance: false,
@@ -75,20 +80,19 @@ const RecruitmentForm = ({ enums, countries = [] }: RecruitmentFormProps) => {
     };
 
     const handleSubmit = () => {
-        console.log('Enviando datos del formulario:', data);
+      
         post(route('recruitment.store'), {
             onSuccess: () => {
                 // La página se redirigirá automáticamente al paso de confirmación
             },
             onError: (errors) => {
-                console.log('Errores en el formulario:', errors);
             },
         });
     };
 
     const steps: Stepper[] = [
         {
-            title: 'Información Socio-económica',
+            title: 'Información Socioeconómica',
             component: <SocioEconomicStep request={request} enums={enums} countries={countries} />,
         },
         {

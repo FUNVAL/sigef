@@ -8,14 +8,14 @@ enum GenderEnum: int
 {
     use EnumMethods;
 
-    case MALE = 1;
-    case FEMALE = 2;
+    case FEMALE = 1;
+    case MALE = 2;
 
     public function name(): string
     {
         return match ($this) {
-            self::MALE => __('common.enums.gender.male'),
             self::FEMALE => __('common.enums.gender.female'),
+            self::MALE => __('common.enums.gender.male'),
         };
     }
 }

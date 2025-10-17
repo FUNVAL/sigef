@@ -9,9 +9,11 @@ use App\Enums\DeviceTypeEnum;
 use App\Enums\HousingTypeEnum;
 use App\Enums\EmploymentTypeEnum;
 use App\Enums\JobPositionEnum;
+use App\Enums\WorkScheduleEnum;
 use App\Enums\BonusCategoryEnum;
 use App\Enums\PracticeBonusCategoryEnum;
 use App\Enums\ExpenseTypeEnum;
+use App\Enums\InternetAccessPlanEnum;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Exception;
@@ -35,9 +37,11 @@ class RecruitmentController extends Controller
                     'housingType' => HousingTypeEnum::toArray(),
                     'employmentType' => EmploymentTypeEnum::toArray(),
                     'jobPosition' => JobPositionEnum::toArray(),
+                    'workSchedule' => WorkScheduleEnum::toArray(),
                     'bonusCategory' => BonusCategoryEnum::toArray(),
                     'practiceBonusCategory' => PracticeBonusCategoryEnum::toArray(),
                     'expenseType' => ExpenseTypeEnum::toArray(),
+                    'internetAccessPlan' => InternetAccessPlanEnum::toArray(),
                 ],
                 'translations' => [
                     'recruitment_form' => __('recruitment_form'),
@@ -66,13 +70,16 @@ class RecruitmentController extends Controller
                 'household_members.*.relationship' => 'required|integer',
                 'monthly_income' => 'required|numeric|min:0',
                 'has_residential_internet' => 'required|boolean',
+                'internet_access_plan' => 'nullable|integer|required_if:has_residential_internet,false',
                 'device_type' => 'required|integer',
                 'housing_type' => 'required|integer',
                 'has_employment' => 'required|boolean',
                 'employment_type' => 'nullable|integer',
                 'company_name' => 'nullable|string|max:255',
                 'job_position' => 'nullable|integer',
+                'work_schedule' => 'nullable|integer',
                 'employment_income' => 'nullable|numeric|min:0',
+                'employment_start_date' => 'nullable|date',
                 'needs_bonus' => 'required|boolean',
                 'bonus_categories' => 'nullable|array',
                 'bonus_amounts' => 'nullable|array',
@@ -149,9 +156,11 @@ class RecruitmentController extends Controller
                 'housingType' => HousingTypeEnum::toArray(),
                 'employmentType' => EmploymentTypeEnum::toArray(),
                 'jobPosition' => JobPositionEnum::toArray(),
+                'workSchedule' => WorkScheduleEnum::toArray(),
                 'bonusCategory' => BonusCategoryEnum::toArray(),
                 'practiceBonusCategory' => PracticeBonusCategoryEnum::toArray(),
                 'expenseType' => ExpenseTypeEnum::toArray(),
+                'internetAccessPlan' => InternetAccessPlanEnum::toArray(),
             ]
         ]);
     }
@@ -170,13 +179,16 @@ class RecruitmentController extends Controller
                 'household_members.*.relationship' => 'required|integer',
                 'monthly_income' => 'required|numeric|min:0',
                 'has_residential_internet' => 'required|boolean',
+                'internet_access_plan' => 'nullable|integer|required_if:has_residential_internet,false',
                 'device_type' => 'required|integer',
                 'housing_type' => 'required|integer',
                 'has_employment' => 'required|boolean',
                 'employment_type' => 'nullable|integer',
                 'company_name' => 'nullable|string|max:255',
                 'job_position' => 'nullable|integer',
+                'work_schedule' => 'nullable|integer',
                 'employment_income' => 'nullable|numeric|min:0',
+                'employment_start_date' => 'nullable|date',
                 'needs_bonus' => 'required|boolean',
                 'bonus_categories' => 'nullable|array',
                 'bonus_amounts' => 'nullable|array',

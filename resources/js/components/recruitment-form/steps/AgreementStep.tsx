@@ -77,6 +77,32 @@ Entiendo que puedo solicitar la corrección o eliminación de mis datos en cualq
 Este compromiso forma parte del desarrollo holístico que caracteriza nuestro programa.`,
         icon: Church
     },
+    {
+        id: 'mutual_understanding_accepted',
+        title: 'COMPROMISO DE ENTENDIMIENTO MUTUO',
+        content: `Declaro que:
+
+• He leído y entendido completamente todos los términos y condiciones del programa.
+• Acepto las responsabilidades y compromisos establecidos en este convenio.
+• Entiendo los objetivos y metodología del programa de capacitación.
+• Me comprometo a mantener una comunicación abierta y honesta con los coordinadores del programa.
+• Acepto participar en las evaluaciones y seguimientos requeridos durante y después del programa.
+• Entiendo que el incumplimiento de estos acuerdos puede resultar en la suspensión del programa.`,
+        icon: FileText
+    },
+    {
+        id: 'health_agreement_accepted',
+        title: 'CONVENIO DE CONDICIONES DE SALUD',
+        content: `En relación a mi estado de salud, declaro que:
+
+• He proporcionado información veraz y completa sobre mi estado de salud actual.
+• Me comprometo a informar cualquier cambio significativo en mi condición de salud durante el programa.
+• Entiendo que ciertas condiciones de salud pueden requerir adaptaciones especiales en el programa.
+• Acepto seguir las recomendaciones médicas necesarias para participar seguramente en el programa.
+• Eximo de responsabilidad a FUNVAL por complicaciones de salud preexistentes no declaradas.
+• Me comprometo a mantener un estado de salud adecuado que me permita completar el programa.`,
+        icon: Heart
+    },
 
 ];
 
@@ -110,66 +136,72 @@ export function AgreementStep({ request }: AgreementStepProps) {
     };
 
     return (
-        <div className="mx-auto max-w-4xl space-y-6 p-4">
+        <div className="mx-auto max-w-4xl space-y-4 p-3 sm:space-y-6 sm:p-4">
             <StepsHeader
                 title="Acuerdos y Compromisos"
                 subtitle="Por favor, lea cuidadosamente cada acuerdo y acepte todos los términos para continuar"
             />
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 {agreementQuestions.map((question) => {
                     const Icon = question.icon;
                     const isAccepted = (data as any)[question.id];
 
                     return (
                         <Card key={question.id} className={`${isAccepted ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-lg text-[rgb(46_131_242_/_1)]">
-                                    <Icon className={`h-5 w-5 ${isAccepted ? 'text-green-600' : 'text-blue-600'}`} />
-                                    {question.title}
+                            <CardHeader className="pb-3 sm:pb-4">
+                                <CardTitle className="flex items-start sm:items-center gap-2 text-base sm:text-lg text-[rgb(46_131_242_/_1)] leading-tight">
+                                    <Icon className={`h-5 w-5 flex-shrink-0 mt-0.5 sm:mt-0 ${isAccepted ? 'text-green-600' : 'text-blue-600'}`} />
+                                    <span className="break-words">{question.title}</span>
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="max-h-48 overflow-y-auto rounded border bg-gray-50 p-4">
-                                    <pre className="whitespace-pre-wrap text-sm font-sans">{question.content}</pre>
+                            <CardContent className="space-y-3 sm:space-y-4 pt-0">
+                                <div className="max-h-32 sm:max-h-48 overflow-y-auto rounded border bg-gray-50 p-3 sm:p-4">
+                                    <pre className="whitespace-pre-wrap text-xs sm:text-sm font-sans leading-relaxed">{question.content}</pre>
                                 </div>
 
                                 {/* Agreement checkbox */}
                                 <Label
-                                    htmlFor={`checkbox-${question.id}`}
-                                    className="flex items-center gap-3 p-4 rounded-lg border bg-white cursor-pointer select-none"
+                                    htmlFor={`agreements[${question.id}]`}
+                                    className="flex items-start gap-3 p-3 sm:p-4 rounded-lg border bg-white cursor-pointer select-none hover:bg-gray-50 transition-colors"
                                 >
                                     <Checkbox
-                                        id={`checkbox-${question.id}`}
+                                        id={`agreements[${question.id}]`}
+                                        name={`agreements[${question.id}]`}
                                         checked={isAccepted}
                                         onCheckedChange={(checked) =>
                                             handleAgreementChange(question.id, checked as boolean)
                                         }
-                                        onClick={(e) => e.stopPropagation()} // evita doble toggle si necesario
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="mt-0.5 flex-shrink-0"
                                     />
-                                    <span className="text-sm">
+                                    <span className="text-xs sm:text-sm leading-relaxed">
                                         He verificado nuevamente con el estudiante el convenio de {question.title.toLowerCase()}
                                     </span>
                                 </Label>
 
-
                                 {errors[question.id] && (
-                                    <p className="text-sm text-red-500">{errors[question.id]}</p>
+                                    <p className="text-xs sm:text-sm text-red-500">{errors[question.id]}</p>
                                 )}
                             </CardContent>
                         </Card>
                     );
                 })}
 
-                <div className="flex justify-between pt-6">
-                    <Button type="button" variant="outline" onClick={previousStep}>
+                <div className="flex flex-col sm:flex-row gap-3 sm:justify-between pt-4 sm:pt-6">
+                    <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={previousStep}
+                        className="w-full sm:w-auto order-2 sm:order-1"
+                    >
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Anterior
                     </Button>
                     <Button
                         type="submit"
                         size="lg"
-                        className="min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90"
+                        className="w-full sm:w-auto sm:min-w-[140px] bg-[rgb(46_131_242_/1)] text-white transition-colors hover:bg-[rgb(46_131_242/_1)]/90 order-1 sm:order-2"
                     >
                         Siguiente
                     </Button>

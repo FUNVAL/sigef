@@ -8,32 +8,32 @@ enum EducationLevelEnum: int
 {
     use EnumMethods;
 
-    case PRIMARY_INCOMPLETE = 1;
-    case PRIMARY_COMPLETE = 2;
-    case SECONDARY_INCOMPLETE = 3;
-    case SECONDARY_COMPLETE = 4;
-    case UNIVERSITY_INCOMPLETE = 5;
-    case UNIVERSITY_COMPLETE = 6;
-    case TECHNICAL_INCOMPLETE = 7;
+    case DOCTORATE = 1;
+    case MASTER = 2;
+    case POSTGRADUATE = 3;
+    case PRIMARY_COMPLETE = 4;
+    case PRIMARY_INCOMPLETE = 5;
+    case SECONDARY_COMPLETE = 6;
+    case SECONDARY_INCOMPLETE = 7;
     case TECHNICAL_COMPLETE = 8;
-    case POSTGRADUATE = 9;
-    case MASTER = 10;
-    case DOCTORATE = 11;
+    case TECHNICAL_INCOMPLETE = 9;
+    case UNIVERSITY_COMPLETE = 10;
+    case UNIVERSITY_INCOMPLETE = 11;
 
     public function name(): string
     {
         return match ($this) {
-            self::PRIMARY_INCOMPLETE => __('Primaria Incompleta'),
-            self::PRIMARY_COMPLETE => __('Primaria Completa'),
-            self::SECONDARY_INCOMPLETE => __('Secundaria Incompleta'),
-            self::SECONDARY_COMPLETE => __('Secundaria Completa'),
-            self::UNIVERSITY_INCOMPLETE => __('Universidad Incompleta'),
-            self::UNIVERSITY_COMPLETE => __('Universidad Completa'),
-            self::TECHNICAL_INCOMPLETE => __('Técnica Incompleta'),
-            self::TECHNICAL_COMPLETE => __('Técnica Completa'),
-            self::POSTGRADUATE => __('Postgrado'),
-            self::MASTER => __('Maestría'),
             self::DOCTORATE => __('Doctorado'),
+            self::MASTER => __('Maestría'),
+            self::POSTGRADUATE => __('Postgrado'),
+            self::PRIMARY_COMPLETE => __('Primaria Completa'),
+            self::PRIMARY_INCOMPLETE => __('Primaria Incompleta'),
+            self::SECONDARY_COMPLETE => __('Secundaria Completa'),
+            self::SECONDARY_INCOMPLETE => __('Secundaria Incompleta'),
+            self::TECHNICAL_COMPLETE => __('Técnica Completa'),
+            self::TECHNICAL_INCOMPLETE => __('Técnica Incompleta'),
+            self::UNIVERSITY_COMPLETE => __('Universidad Completa'),
+            self::UNIVERSITY_INCOMPLETE => __('Universidad Incompleta'),
         };
     }
 }
