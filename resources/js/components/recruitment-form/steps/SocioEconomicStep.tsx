@@ -9,7 +9,7 @@ import { StepperContext } from '@/pages/forms/stepper-provider';
 import { Country } from '@/types/country';
 import { Enums, Translation } from '@/types/global';
 import { RecruitmentRequest, HouseholdMember, HouseholdExpense, JobOffer, WorkExperience } from '@/types/recruitment';
-import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase, Activity, Building } from 'lucide-react';
+import { Plus, Trash2, Users, DollarSign, Wifi, Monitor, Home, Briefcase, Activity, Building, CheckCircle } from 'lucide-react';
 import React, { useContext, useState, useEffect } from 'react';
 import { StepsHeader } from '../../pre-registration/steps-header';
 
@@ -964,7 +964,9 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
 
                 <Card>
                     <CardHeader>
+                        
                         <CardTitle className="flex items-center gap-2 text-[rgb(46_131_242_/_1)]">
+                            <Briefcase className="h-5 w-5" />
                             ¿Cuenta con alguna experiencia laboral?
                         </CardTitle>
                     </CardHeader>
@@ -1047,8 +1049,9 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                                                     {/* Icono de experiencia */}
                                                     {experience.job_position > 0 && (
                                                         <div className="flex items-center gap-2 text-green-600">
-                                                            <Briefcase className="h-4 w-4" />
-                                                            <span className="text-xs font-medium">Registrada</span>
+
+                                                            <CheckCircle className="h-4 w-4" />
+
                                                         </div>
                                                     )}
 
@@ -1110,7 +1113,9 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 {/* Bono */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-[rgb(46_131_242_/_1)]">¿Necesita bono durante el tiempo de clases online?</CardTitle>
+                        <CardTitle className="text-[rgb(46_131_242_/_1)] flex items-center gap-2">
+                        <DollarSign className="h-5 w-5" />
+                        ¿Necesita bono durante el tiempo de clases online?</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex gap-4">
@@ -1209,7 +1214,9 @@ export function SocioEconomicStep({ request, enums, countries = [], t }: SocioEc
                 {/* Bono durante prácticas o bootcamps */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-[rgb(46_131_242_/_1)]">¿Necesita bono durante prácticas o bootcamp?</CardTitle>
+                        <CardTitle className="text-[rgb(46_131_242_/_1)] flex items-center gap-2">
+                        <DollarSign className="h-5 w-5" />
+                        ¿Necesita bono durante prácticas o bootcamp?</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex gap-4">
